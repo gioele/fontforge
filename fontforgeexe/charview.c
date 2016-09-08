@@ -6380,7 +6380,7 @@ return( GGadgetDispatchEvent(cv->vsb,event));
 return( true );
 }
 
-CharView* CharViewFindActive()
+CharView* CharViewFindActive(void)
 {
     return ActiveCharView;
 }
@@ -13018,7 +13018,7 @@ return( false );
 
 static int charview_ready = false;
 
-static void CharViewFinish() {
+static void CharViewFinish(void) {
   // The memory leak is limited and reachable.
   if ( !charview_ready ) return;
     charview_ready = false;
@@ -13030,7 +13030,7 @@ static void CharViewFinish() {
     }
 }
 
-void CharViewFinishNonStatic() {
+void CharViewFinishNonStatic(void) {
   CharViewFinish();
 }
 

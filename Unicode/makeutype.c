@@ -134,7 +134,7 @@ const char CantSaveFile[] = "Can't open or write to output file %s\n";	/* exit(2
 const char NoMoreMemory[] = "Can't access more memory.\n";		/* exit(3) */
 const char LineLengthBg[] = "Error with %s. Found line too long: %s\n";	/* exit(4) */
 
-static void FreeNamesMemorySpace() {
+static void FreeNamesMemorySpace(void) {
     long index;
     for ( index=0; index<MAXC ; ++index )
 	free( names[index] );
@@ -633,7 +633,7 @@ static void dumparabicdata(FILE *header) {
     fclose( data );
 }
 
-static void dump() {
+static void dump(void) {
     FILE *header, *data;
     int i,j;
 
@@ -932,7 +932,7 @@ return( 1 );
 return( 0 );
 }
 
-static void dump_alttable() {
+static void dump_alttable(void) {
     int i,j;
     FILE *file;
 

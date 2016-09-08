@@ -300,11 +300,11 @@ struct image_bucket {
 #define IC_SIZE	127
 static struct image_bucket *imagecache[IC_SIZE];
 
-void InitImageCache() {
+void InitImageCache(void) {
   memset(imagecache, 0, IC_SIZE * sizeof(struct image_bucket *));
 }
 
-void ClearImageCache() {
+void ClearImageCache(void) {
       for ( int i=0; i<IC_SIZE; ++i ) {
         struct image_bucket * bucket;
         struct image_bucket * nextbucket;

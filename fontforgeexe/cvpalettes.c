@@ -914,7 +914,7 @@ static GImage *spirosmalls[] = { &GIcon_smallpointer, &GIcon_smallmag,
 				 &GIcon_smallrect,        &GIcon_smallpoly,
 				 &GIcon_smallelipse,      &GIcon_smallstar };
 
-static int getSmallIconsHeight()
+static int getSmallIconsHeight(void)
 {
     return GIcon_smallpointer.u.image->height;
 }

@@ -359,7 +359,7 @@ static void InsChrXorChar(GWindow pixmap, int x, int y) {
     GDrawSetCopyMode(pixmap);
 }
 
-static void InsChrSetNextPrev() {
+static void InsChrSetNextPrev(void) {
 
     if ( inschr.icw==NULL )
 return;
@@ -521,7 +521,7 @@ return(0);
 return( enable );
 }
 
-static int InsChrFigureShow() {
+static int InsChrFigureShow(void) {
     long ch;
     const unichar_t *str;
     int enable = true;
@@ -679,7 +679,7 @@ static void InsChrSetCharset(int map) {
     }
 }
 
-static void InsChrCharset() {
+static void InsChrCharset(void) {
     int map = mapFromIndex(GGadgetGetFirstListSelectedItem(GWidgetGetControl(inschr.icw,INSCHR_CharSet)));
     if ( map!=-1 )
 	InsChrSetCharset(map);
@@ -793,7 +793,7 @@ return;
     GDrawPopClip(pixmap,&old);
 }
 
-static void InsChrTimer() {
+static void InsChrTimer(void) {
     GDrawCancelTimer(inschr.flash_time);
     if ( inschr.flash ) {
 	InsChrXorChar(inschr.icw,inschr.x,inschr.y);

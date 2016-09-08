@@ -369,7 +369,7 @@ return("ANY");
 return( buffer );
 }
 
-void dumpinfo() {
+void dumpinfo(void) {
     FILE *out;
     int i;
     struct transform *t;
@@ -513,7 +513,7 @@ void ParseUnicodeFile(FILE *in) {
     fclose(in);
 }
 
-void AddPredefineds() {
+void AddPredefineds(void) {
     int i;
 
     for ( i=0; predefined[i].ch!='\0'; ++i )

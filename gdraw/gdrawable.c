@@ -54,8 +54,7 @@ static GResInfo gdrawable_ri = {
     NULL
 };
 
-static void GDrawableInit() {
-
+static void GDrawableInit(void) {
     GGadgetInit();
     _GGadgetCopyDefaultBox(&gdrawable_box);
     gdrawable_box.border_width = gdrawable_box.padding = 0;

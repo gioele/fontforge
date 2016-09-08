@@ -720,7 +720,7 @@ static void *GXDrawNativeDisplay(GDisplay *gdisp) {
 return( ((GXDisplay *) gdisp)->display );
 }
 
-static GGC *_GXDraw_NewGGC() {
+static GGC *_GXDraw_NewGGC(void) {
     GGC *ggc = calloc(1,sizeof(GGC));
     ggc->clip.width = ggc->clip.height = 0x7fff;
     ggc->fg = 0;
@@ -4514,7 +4514,7 @@ return( NULL );
 return( (GDisplay *) gdisp);
 }
 
-void _XSyncScreen() {
+void _XSyncScreen(void) {
     XSync(((GXDisplay *) screen_display)->display,false);
 }
 
@@ -4556,7 +4556,7 @@ GDisplay *_GXDraw_CreateDisplay(char *displayname,char *programname) {
     exit(1);
 }
 
-void _XSyncScreen() {
+void _XSyncScreen(void) {
 }
 #endif
 

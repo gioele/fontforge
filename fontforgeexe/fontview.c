@@ -8174,7 +8174,7 @@ static int FontViewFind_ActiveWindow( FontViewBase* fvb, void* udata )
     return( fv->gw == udata || fv->v == udata );
 }
 
-FontViewBase* FontViewFindActive()
+FontViewBase* FontViewFindActive(void)
 {
     return (FontViewBase*) ActiveFontView;
     /* GWindow w = GWindowGetCurrentFocusTopWindow(); */

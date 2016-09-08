@@ -932,7 +932,7 @@ return;
     gdisp->mykeybuild = false;
 }
 
-void GDrawDestroyDisplays() {
+void GDrawDestroyDisplays(void) {
   if (screen_display != NULL) {
     _GXDraw_DestroyDisplay(screen_display);
     screen_display = NULL;
@@ -1074,7 +1074,7 @@ GDrawRemoveReadFD( GDisplay *gdisp,
 /* } */
 
 
-void MacServiceReadFDs()
+void MacServiceReadFDs(void)
 {
 #if (!defined(__MINGW32__))&&(!defined(__CYGWIN__))
     int ret = 0;
