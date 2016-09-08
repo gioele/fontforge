@@ -370,7 +370,7 @@ static void ImageCacheReload(void) {
     struct image_bucket *bucket;
     char *path=NULL;
     size_t pathlen;
-    GImage *temp, hold;
+    GImage *temp=NULL, hold;
 
     ImagePathDefault();
 
