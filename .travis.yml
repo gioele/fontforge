@@ -4,12 +4,6 @@ sudo: false
 dist: trusty
 osx_image: xcode8
 
-branches:
-  only:
-    - master
-    - travis
-    - coverity_scan
-
 env:
   global:
     - MAKEFLAGS="-j4"
