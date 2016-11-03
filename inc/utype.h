@@ -4,44 +4,13 @@
 /* License: BSD-3-clause */
 /* Contributions: Joe Da Silva */
 
-#include <ctype.h>	/* Include here so we can control it. If a system header includes it later bad things happen */
 #include <basics.h>	/* Include here so we can use pre-defined int types to correctly size constant data arrays. */
-#ifdef tolower
-# undef tolower
-#endif
-#ifdef toupper
-# undef toupper
-#endif
-#ifdef islower
-# undef islower
-#endif
-#ifdef isupper
-# undef isupper
-#endif
-#ifdef isalpha
-# undef isalpha
-#endif
-#ifdef isdigit
-# undef isdigit
-#endif
-#ifdef isalnum
-# undef isalnum
-#endif
-#ifdef isspace
-# undef isspace
-#endif
-#ifdef ispunct
-# undef ispunct
-#endif
-#ifdef ishexdigit
-# undef ishexdigit
-#endif
 
-extern const unsigned short ff_unicode_tolower[];
-extern const unsigned short ff_unicode_toupper[];
-extern const unsigned short ff_unicode_totitle[];
-extern const unsigned short ff_unicode_tomirror[];
-extern const unsigned char  ff_unicode_digitval[];
+extern const unsigned short ff_unicode_tolower_data[];
+extern const unsigned short ff_unicode_toupper_data[];
+extern const unsigned short ff_unicode_totitle_data[];
+extern const unsigned short ff_unicode_tomirror_data[];
+extern const unsigned char  ff_unicode_digitval_data[];
 
 /* utype[] holds binary flags used for features of each unicode.org character */
 #define FF_UNICODE_LOWER        0x1
@@ -97,16 +66,16 @@ extern const unsigned char  ff_unicode_digitval[];
 #define FF_UNICODE_DecompositionNormative FF_UNICODE_DECOMPNORM
 #define FF_UNICODE_LIG_OR_FRAC  0x20000000
 
-#define islower(ch)             (ff_unicode_utype[(ch)+1]&FF_UNICODE_L)
-#define isupper(ch)             (ff_unicode_utype[(ch)+1]&FF_UNICODE_U)
+#define islower_ff(ch)          (ff_unicode_utype[(ch)+1]&FF_UNICODE_L)
+#define isupper_ff(ch)          (ff_unicode_utype[(ch)+1]&FF_UNICODE_U)
 #define istitle(ch)             (ff_unicode_utype[(ch)+1]&FF_UNICODE_TITLE)
-#define isalpha(ch)             (ff_unicode_utype[(ch)+1]&(FF_UNICODE_L|FF_UNICODE_U|FF_UNICODE_TITLE|FF_UNICODE_AL))
-#define isdigit(ch)             (ff_unicode_utype[(ch)+1]&FF_UNICODE_D)
-#define isalnum(ch)             (ff_unicode_utype[(ch)+1]&(FF_UNICODE_L|FF_UNICODE_U|FF_UNICODE_TITLE|FF_UNICODE_AL|FF_UNICODE_D))
+#define isalpha_ff(ch)          (ff_unicode_utype[(ch)+1]&(FF_UNICODE_L|FF_UNICODE_U|FF_UNICODE_TITLE|FF_UNICODE_AL))
+#define isdigit_ff(ch)          (ff_unicode_utype[(ch)+1]&FF_UNICODE_D)
+#define isalnum_ff(ch)          (ff_unicode_utype[(ch)+1]&(FF_UNICODE_L|FF_UNICODE_U|FF_UNICODE_TITLE|FF_UNICODE_AL|FF_UNICODE_D))
 #define isideographic(ch)       (ff_unicode_utype[(ch)+1]&FF_UNICODE_ID)
 #define isideoalpha(ch)         (ff_unicode_utype[(ch)+1]&(FF_UNICODE_ID|FF_UNICODE_L|FF_UNICODE_U|FF_UNICODE_TITLE|FF_UNICODE_AL))
-#define isspace(ch)             (ff_unicode_utype[(ch)+1]&FF_UNICODE_S)
-#define ispunct(ch)             (ff_unicode_utype[(ch)+1]&_FF_UNICODE_P)
+#define isspace_ff(ch)          (ff_unicode_utype[(ch)+1]&FF_UNICODE_S)
+#define ispunct_ff(ch)          (ff_unicode_utype[(ch)+1]&_FF_UNICODE_P)
 #define ishexdigit(ch)          (ff_unicode_utype[(ch)+1]&FF_UNICODE_X)
 #define iszerowidth(ch)         (ff_unicode_utype[(ch)+1]&FF_UNICODE_ZW)
 #define islefttoright(ch)       (ff_unicode_utype[(ch)+1]&FF_UNICODE_L2R)
@@ -157,11 +126,11 @@ extern const uint32	ff_unicode_utype2[];		/* hold position boolean flags for eac
 
 extern const uint32	ff_unicode_codepointassigned[]; /* 1bit_boolean_flag x 32 = exists in Unicode.org character chart list. */
 
-#define tolower(ch) (ff_unicode_tolower[(ch)+1])
-#define toupper(ch) (ff_unicode_toupper[(ch)+1])
-#define totitle(ch) (ff_unicode_totitle[(ch)+1])
-#define tomirror(ch) (ff_unicode_tomirror[(ch)+1])
-#define tovalue(ch) (ff_unicode_digitval[(ch)+1])
+#define tolower_ff(ch) (ff_unicode_tolower_data[(ch)+1])
+#define toupper_ff(ch) (ff_unicode_toupper_data[(ch)+1])
+#define totitle(ch)    (ff_unicode_totitle_data[(ch)+1])
+#define tomirror(ch)   (ff_unicode_tomirror_data[(ch)+1])
+#define tovalue(ch)    (ff_unicode_digitval_data[(ch)+1])
 
 
 extern struct arabicforms {

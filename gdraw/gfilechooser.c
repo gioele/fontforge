@@ -83,10 +83,10 @@ return( NULL );
 		if ( ppt[1]=='-' && ppt[2]!=']' && ppt[2]!='\0' ) {
 		    unichar_t ch2 = ppt[2];
 		    if ( (*name>=ch && *name<=ch2) ||
-			    (ignorecase && islower(ch) && islower(ch2) &&
-				    *name>=toupper(ch) && *name<=toupper(ch2)) ||
-			    (ignorecase && isupper(ch) && isupper(ch2) &&
-				    *name>=tolower(ch) && *name<=tolower(ch2))) {
+			    (ignorecase && islower_ff(ch) && islower_ff(ch2) &&
+				    *name>=toupper_ff(ch) && *name<=toupper_ff(ch2)) ||
+			    (ignorecase && isupper_ff(ch) && isupper_ff(ch2) &&
+				    *name>=tolower_ff(ch) && *name<=tolower_ff(ch2))) {
 			if ( !not ) {
 			    found = 1;
 	    break;
@@ -98,7 +98,7 @@ return( NULL );
 			}
 		    }
 		    ppt += 2;
-		} else if ( ch==*name || (ignorecase && tolower(ch)==tolower(*name)) ) {
+		} else if ( ch==*name || (ignorecase && tolower_ff(ch)==tolower_ff(*name)) ) {
 		    if ( !not ) {
 			found = 1;
 	    break;
@@ -132,7 +132,7 @@ return( NULL );
 	    }
 	} else if ( ch==*name ) {
 	    ++name;
-	} else if ( ignorecase && tolower(ch)==tolower(*name)) {
+	} else if ( ignorecase && tolower_ff(ch)==tolower_ff(*name)) {
 	    ++name;
 	} else
 return( NULL );

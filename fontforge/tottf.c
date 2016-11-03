@@ -1638,7 +1638,7 @@ static void dumpdbl(FILE *cfff,double d) {
 	sofar = 0; odd=true;
 	putc(30,cfff);		/* Start a double */
 	for ( pt=buffer; *pt; ++pt ) {
-	    if ( isdigit(*pt) )
+	    if ( isdigit_ff(*pt) )
 		n = *pt-'0';
 	    else if ( *pt=='.' )
 		n = 0xa;
@@ -2809,7 +2809,7 @@ static void sethead(struct head *head,SplineFont *sf,struct alltabs *at,
 	    char *pt=sf->version;
 	    double dval;
 	    int val, mant;
-	    while ( *pt && !isdigit(*pt) && *pt!='.' ) ++pt;
+	    while ( *pt && !isdigit_ff(*pt) && *pt!='.' ) ++pt;
 	    if ( *pt ) {
 		dval = strtod(pt,NULL);
 		val = floor(dval);

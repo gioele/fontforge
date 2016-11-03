@@ -81,7 +81,7 @@ static void dump_ascii(FILE *out, char *name) {
 	    putc('_',out);
 	else if ( *name&0x80 )
 	    /* Skip */;
-	else if ( isalnum(*name) || *name=='.' || *name=='_' )
+	else if ( isalnum_ff(*name) || *name=='.' || *name=='_' )
 	    putc(*name,out);
 	++name;
     }
@@ -342,8 +342,8 @@ static char *lookupname(OTLookup *otl) {
 return( otl->tempname );
 
     for ( pt1=otl->lookup_name,pt2=space; *pt1 && pt2<space+MAXG; ++pt1 ) {
-	if ( !(*pt1&0x80) && (isalpha(*pt1) || *pt1=='_' || *pt1=='.' ||
-		(pt1!=otl->lookup_name && isdigit(*pt1))))
+	if ( !(*pt1&0x80) && (isalpha_ff(*pt1) || *pt1=='_' || *pt1=='.' ||
+		(pt1!=otl->lookup_name && isdigit_ff(*pt1))))
 	    *pt2++ = *pt1;
     }
     *pt2 = '\0';
@@ -2441,7 +2441,7 @@ return;
 
     in = tok->inlist[tok->inc_depth];
     ch = getc(in);
-    while ( isspace(ch))
+    while ( isspace_ff(ch))
 	ch = getc(in);
     pt = namebuf;
     while ( ch!=EOF && ch!=')' && pt<namebuf+sizeof(namebuf)-1 ) {
@@ -2454,7 +2454,7 @@ return;
 	LogError(_("Include filename too long on line %d of %s"), tok->line[tok->inc_depth], tok->filename[tok->inc_depth] );
 	++tok->err_count;
     }
-    while ( pt>=namebuf+1 && isspace(pt[-1]) )
+    while ( pt>=namebuf+1 && isspace_ff(pt[-1]) )
 	--pt;
     *pt = '\0';
     if ( ch!=')' ) {
@@ -2514,7 +2514,7 @@ return;
 
   skip_whitespace:
     ch = getc(in);
-    while ( isspace(ch) || ch=='#' ) {
+    while ( isspace_ff(ch) || ch=='#' ) {
 	if ( ch=='#' )
 	    while ( (ch=getc(in))!=EOF && ch!='\n' && ch!='\r' );
 	if ( ch=='\n' || ch=='\r' ) {
@@ -2547,7 +2547,7 @@ return;
 	ungetc(peekch,in);
     }
 
-    if ( isdigit(ch) || ch=='+' || ((ch=='-' || ch=='\\') && isdigit(peekch)) ) {
+    if ( isdigit_ff(ch) || ch=='+' || ((ch=='-' || ch=='\\') && isdigit_ff(peekch)) ) {
 	tok->type = tk_int;
 	if ( ch=='-' || ch=='+' ) {
 	    if ( ch=='-' ) {
@@ -2559,13 +2559,13 @@ return;
 	    ch = getc(in);
 	    tok->type = tk_cid;
 	}
-	while ( (isdigit( ch ) ||
+	while ( (isdigit_ff( ch ) ||
 		(tok->base==0 && (ch=='x' || ch=='X' || (ch>='a' && ch<='f') || (ch>='A' && ch<='F'))))
 		&& pt<tok->tokbuf+15 ) {
 	    *pt++ = ch;
 	    ch = getc(in);
 	}
-	if ( isdigit(ch)) {
+	if ( isdigit_ff(ch)) {
 	    LogError(_("Number too long on line %d of %s"), tok->line[tok->inc_depth], tok->filename[tok->inc_depth] );
 	    ++tok->err_count;
 	} else if ( pt==start ) {
@@ -2576,7 +2576,7 @@ return;
 	*pt = '\0';
 	tok->value = strtol(tok->tokbuf,NULL,tok->base);
 return;
-    } else if ( ch=='@' || ch=='_' || ch=='\\' || isalnum(ch) || ch=='.') {	/* Most names can't start with dot */
+    } else if ( ch=='@' || ch=='_' || ch=='\\' || isalnum_ff(ch) || ch=='.') {	/* Most names can't start with dot */
 	int check_keywords = true;
 	tok->type = tk_name;
 	if ( ch=='@' ) {
@@ -2589,7 +2589,7 @@ return;
 	    ch = getc(in);
 	    check_keywords = false;
 	}
-	while ( isalnum(ch) || ch=='_' || ch=='.' ) {
+	while ( isalnum_ff(ch) || ch=='_' || ch=='.' ) {
 	    if ( pt<tok->tokbuf+MAXT )
 		*pt++ = ch;
 	    ch = getc(in);
@@ -2689,7 +2689,7 @@ static void fea_ParseTag(struct parseState *tok) {
 	    ungetc(ch,in);
     }
     if ( tok->type!=tk_name && tok->type!=tk_eof &&
-	    strlen(tok->tokbuf)==4 && isalnum(tok->tokbuf[0])) {
+	    strlen(tok->tokbuf)==4 && isalnum_ff(tok->tokbuf[0])) {
 	tok->type = tk_name;
 	tok->could_be_tag = true;
 	tok->tag = CHR(tok->tokbuf[0], tok->tokbuf[1], tok->tokbuf[2], tok->tokbuf[3]);
@@ -2713,7 +2713,7 @@ static int fea_ParseDeciPoints(struct parseState *tok) {
 	ch = getc(in);
 	if ( ch=='.' ) {
 	    *pt++ = ch;
-	    while ( (ch = getc(in))!=EOF && isdigit(ch)) {
+	    while ( (ch = getc(in))!=EOF && isdigit_ff(ch)) {
 		if ( pt<tok->tokbuf+sizeof(tok->tokbuf)-1 )
 		    *pt++ = ch;
 	    }
@@ -3063,10 +3063,10 @@ return( NULL );
 			break;
 				}
 			        start1 = pt1; start2 = pt2;
-			        if ( !isdigit(*pt1) || !isdigit(*pt2))
+			        if ( !isdigit_ff(*pt1) || !isdigit_ff(*pt2))
 				    range_type = 1;
 				else {
-				    for ( range_len=0; range_len<3 && isdigit(*pt1) && isdigit(*pt2);
+				    for ( range_len=0; range_len<3 && isdigit_ff(*pt1) && isdigit_ff(*pt2);
 					    ++range_len, ++pt1, ++pt2 );
 				    range_type = 2;
 			            --pt1; --pt2;
@@ -5610,7 +5610,7 @@ static void fea_ParseTableKeywords(struct parseState *tok, struct tablekeywords 
 		    FILE *in = tok->inlist[tok->inc_depth];
 		    int ch = getc(in);
 		    if ( ch=='.' )
-			for ( ch=getc(in); isdigit(ch); ch=getc(in));
+			for ( ch=getc(in); isdigit_ff(ch); ch=getc(in));
 		    ungetc(ch,in);
 		}
 		if ( index!=-1 && keys[index].cnt!=1 ) {

@@ -864,7 +864,7 @@ static int Group_ToSelection(GGadget *g, GEvent *e) {
 	    end = u_strchr(ret,' ');
 	    if ( end==NULL ) end = ret+u_strlen(ret);
 	    nm = cu_copybetween(ret,end);
-	    for ( ret = end; isspace(*ret); ++ret);
+	    for ( ret = end; isspace_ff(*ret); ++ret);
 	    if ( (nm[0]=='U' || nm[0]=='u') && nm[1]=='+' ) {
 		char *end;
 		int val = strtol(nm+2,&end,16), val2=val;

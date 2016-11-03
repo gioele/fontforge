@@ -427,12 +427,12 @@ return( NULL );
 	pt=buffer+strlen(buffer)-1;
 	bpt = buffer;
 	if (( *pt!='\n' && *pt!='\r') || (pt>buffer && pt[-1]=='\\') ||
-		(pt>buffer+1 && pt[-2]=='\\' && isspace(pt[-1])) ) {
+		(pt>buffer+1 && pt[-2]=='\\' && isspace_ff(pt[-1])) ) {
 	    bpt = copy("");
 	    for (;;) {
 		loop = false;
 		if (( *pt!='\n' && *pt!='\r') || (pt>buffer && pt[-1]=='\\') ||
-			(pt>buffer+1 && pt[-2]=='\\' && isspace(pt[-1])) )
+			(pt>buffer+1 && pt[-2]=='\\' && isspace_ff(pt[-1])) )
 		    loop = true;
 		if ( *pt=='\n' || *pt=='\r') {
 		    if ( pt[-1]=='\\' )
@@ -449,9 +449,9 @@ return( NULL );
 		pt=buffer+strlen(buffer)-1;
 	    }
 	}
-	if ( bpt[0]=='#' || bpt[0]=='\0' || isspace(bpt[0]))
+	if ( bpt[0]=='#' || bpt[0]=='\0' || isspace_ff(bpt[0]))
     continue;
-	for ( pt = bpt; !isspace(*pt) && *pt!='\0'; ++pt );
+	for ( pt = bpt; !isspace_ff(*pt) && *pt!='\0'; ++pt );
 	if ( *pt=='\0' || *pt=='\r' || *pt=='\n' )
     continue;
 	names[subfilecnt] = copyn(bpt,pt-bpt);
@@ -459,14 +459,14 @@ return( NULL );
 	end = pt;
 	thusfar = 0;
 	while ( *end!='\0' ) {
-	    while ( isspace(*end)) ++end;
+	    while ( isspace_ff(*end)) ++end;
 	    if ( *end=='\0' )
 	break;
 	    orig = end;
 	    r1 = strtoul(end,&end,0);
 	    if ( orig==end )
 	break;
-	    while ( isspace(*end)) ++end;
+	    while ( isspace_ff(*end)) ++end;
 	    if ( *end==':' ) {
 		if ( r1>=256 || r1<0)
 		    LogError( _("Bad offset: %d for subfont %s\n"), r1, names[subfilecnt]);

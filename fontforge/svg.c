@@ -1207,7 +1207,7 @@ return( NULL );
 /*  comma or whitespace (both is ok too) */
 /* But the style sheet spec says it, so I probably just missed it */
 static char *skipcomma(char *pt) {
-    while ( isspace(*pt))++pt;
+    while ( isspace_ff(*pt))++pt;
     if ( *pt==',' ) ++pt;
 return( pt );
 }
@@ -1380,7 +1380,7 @@ static SplineSet *SVGParsePath(xmlChar *path) {
 
     while ( *path ) {
 	while ( *path==' ' ) ++path;
-        if ( isalpha(*path)) {
+        if ( isalpha_ff(*path)) {
             type = *path++;
         }
 	if ( *path=='\0' && type!='z' && type!='Z' )
@@ -1846,17 +1846,17 @@ static SplineSet *SVGParsePoly(xmlNodePtr poly, int isgon) {
 return( NULL );
 
     x = strtod(pts,&end);
-    while ( isspace(*end) || *end==',' ) ++end;
+    while ( isspace_ff(*end) || *end==',' ) ++end;
     y = strtod(end,&end);
-    while ( isspace(*end)) ++end;
+    while ( isspace_ff(*end)) ++end;
 
     cur = chunkalloc(sizeof(SplineSet));
     cur->first = cur->last = SplinePointCreate(x,y);
     while ( *end ) {
 	x = strtod(end,&end);
-	while ( isspace(*end) || *end==',' ) ++end;
+	while ( isspace_ff(*end) || *end==',' ) ++end;
 	y = strtod(end,&end);
-	while ( isspace(*end)) ++end;
+	while ( isspace_ff(*end)) ++end;
 	sp = SplinePointCreate(x,y);
 	SplineMake(cur->last,sp,false);
 	cur->last = sp;
@@ -1903,7 +1903,7 @@ static void SVGFigureTransform(struct svg_state *st,char *name) {
 	   skewY(theta)
 	  */
 
-    for ( pt = (char *)name; isspace(*pt); ++pt );
+    for ( pt = (char *)name; isspace_ff(*pt); ++pt );
     while ( *pt ) {
 	paren = strchr(pt,'(');
 	if ( paren==NULL )
@@ -1921,7 +1921,7 @@ static void SVGFigureTransform(struct svg_state *st,char *name) {
 	    trans[0] = trans[3] = cos(a);
 	    trans[1] = sin(a);
 	    trans[2] = -trans[1];
-	    while ( isspace(*end)) ++end;
+	    while ( isspace_ff(*end)) ++end;
 	    if ( *end!=')' ) {
 		cx = strtod(skipcomma(end),&end);
 		cy = strtod(skipcomma(end),&end);
@@ -1938,14 +1938,14 @@ static void SVGFigureTransform(struct svg_state *st,char *name) {
 	} else if ( strncmp(pt,"scale",paren-pt)==0 ) {
 	    trans[1] = trans[2] = trans[4] = trans[5] = 0;
 	    trans[0] = trans[3] = strtod(paren+1,&end);
-	    while ( isspace(*end)) ++end;
+	    while ( isspace_ff(*end)) ++end;
 	    if ( *end!=')' )
 		trans[3] = strtod(skipcomma(end),&end);
 	} else if ( strncmp(pt,"translate",paren-pt)==0 ) {
 	    trans[0] = trans[3] = 1;
 	    trans[1] = trans[2] = trans[5] = 0;
 	    trans[4] = strtod(paren+1,&end);
-	    while ( isspace(*end)) ++end;
+	    while ( isspace_ff(*end)) ++end;
 	    if ( *end!=')' )
 		trans[5] = strtod(skipcomma(end),&end);
 	} else if ( strncmp(pt,"skewX",paren-pt)==0 ) {
@@ -1958,12 +1958,12 @@ static void SVGFigureTransform(struct svg_state *st,char *name) {
 	    trans[1] = tan(strtod(paren+1,&end)*3.1415926535897932/180);
 	} else
     break;
-	while ( isspace(*end)) ++end;
+	while ( isspace_ff(*end)) ++end;
 	if ( *end!=')')
     break;
 	MatMultiply(trans,st->transform,st->transform);
 	pt = end+1;
-	while ( isspace(*pt)) ++pt;
+	while ( isspace_ff(*pt)) ++pt;
     }
 }
 
@@ -2354,7 +2354,7 @@ static void DecodeBase64ToFile(FILE *tmp,char *str) {
     while ( *str ) {
 	fourchars[0] = fourchars[1] = fourchars[2] = fourchars[3] = 64;
 	for ( i=0; i<4; ++i ) {
-	    while ( isspace(*str) || base64ch(*str)==-1 ) ++str;
+	    while ( isspace_ff(*str) || base64ch(*str)==-1 ) ++str;
 	    if ( *str=='\0' )
 	break;
 	    fourchars[i] = base64ch(*str++);
@@ -2514,14 +2514,14 @@ static void SVGFigureStyle(struct svg_state *st,char *name,
     char namebuf[200], propbuf[400];
 
     for (;;) {
-	while ( isspace(*name)) ++name;
+	while ( isspace_ff(*name)) ++name;
 	if ( *name==':' ) {
 	    /* Missing prop name, skip the value */
 	    while ( *name!=';' && *name!='\0' ) ++name;
 	    if ( *name==';' ) ++name;
 	} else if ( *name!='\0' && *name!=';' ) {
 	    pt = namebuf;
-	    while ( *name!='\0' && *name!=':' && *name!=';' && !isspace(*name) ) {
+	    while ( *name!='\0' && *name!=':' && *name!=';' && !isspace_ff(*name) ) {
 		if ( pt<namebuf+sizeof(namebuf)-1 )
 		    *pt++ = *name;
 		++name;
@@ -2531,11 +2531,11 @@ static void SVGFigureStyle(struct svg_state *st,char *name,
 	    if ( *name==':' ) ++name;
 
 	    /* fetch prop value */
-	    while ( isspace(*name) ) ++name;
+	    while ( isspace_ff(*name) ) ++name;
 	    propbuf[0] = '\0';
 	    if ( *name!='\0' && *name!=';' ) {
 		pt = propbuf;
-		while ( *name!='\0' && *name!=';' && !isspace(*name) ) {
+		while ( *name!='\0' && *name!=';' && !isspace_ff(*name) ) {
 		    if ( pt<propbuf+sizeof(propbuf)-1 )
 			*pt++ = *name;
 		    ++name;
@@ -3030,7 +3030,7 @@ static void SVGLigatureFixupCheck(SplineChar *sc,xmlNodePtr glyph) {
 		    sc->unicodeenc = 0xfb05;
 	    } else if ( u[0]=='s' && u[1]=='t' && u[2]==0 )
 		sc->unicodeenc = 0xfb06;
-	    if ( strncmp(sc->name,"glyph",5)==0 && isdigit(sc->name[5])) {
+	    if ( strncmp(sc->name,"glyph",5)==0 && isdigit_ff(sc->name[5])) {
 		/* It's a default name, we can do better */
 		free(sc->name);
 		sc->name = copy(comp);
@@ -3075,15 +3075,15 @@ static char *SVGGetNames(SplineFont *sf,xmlChar *g,xmlChar *utf8,SplineChar **sc
     }
     if ( g!=NULL ) {
 	for ( gpt=(char *) g; *gpt; ) {
-	    if ( *gpt==',' || isspace(*gpt)) {
-		while ( *gpt==',' || isspace(*gpt)) ++gpt;
+	    if ( *gpt==',' || isspace_ff(*gpt)) {
+		while ( *gpt==',' || isspace_ff(*gpt)) ++gpt;
 		*pt++ = ' ';
 	    } else {
 		*pt++ = *gpt++;
 	    }
 	}
 	if ( *sc==NULL ) {
-	    for ( gpt = (char *) g; *gpt!='\0' && *gpt!=',' && !isspace(*gpt); ++gpt );
+	    for ( gpt = (char *) g; *gpt!='\0' && *gpt!=',' && !isspace_ff(*gpt); ++gpt );
 	    ch = *gpt; *gpt = '\0';
 	    *sc = SFGetChar(sf,-1,(char *) g);
 	    *gpt = ch;

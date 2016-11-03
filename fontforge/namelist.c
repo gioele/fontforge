@@ -270,7 +270,7 @@ return( 0 );
     } else {
 	acnt = 0;
 	for ( i=0; i<rcnt; ++i ) {
-	    if ( isalpha(refs[i]->sc->unicodeenc )) {
+	    if ( isalpha_ff(refs[i]->sc->unicodeenc )) {
 		alp[acnt++] = refs[i];
 		--rcnt;
 		for ( j=i; j<rcnt; ++j )

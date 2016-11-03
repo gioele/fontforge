@@ -157,11 +157,11 @@ return NULL;
 #ifdef HAVE_PTHREAD_H
     pthread_mutex_lock(&mutex);
 #endif
-    if ( isdigit(host[0]))
+    if ( isdigit_ff(host[0]))
 	base = &numbers[host[0]-'0'];
-    else if ( isupper(host[0]) && host[0]<127 )
+    else if ( isupper_ff(host[0]) && host[0]<127 )
 	base = &names[host[0]-'A'];
-    else if ( islower(host[0]) && host[0]<127 )
+    else if ( islower_ff(host[0]) && host[0]<127 )
 	base = &names[host[0]-'a'];
     else
 	base = &names['z'-'a'];
@@ -177,7 +177,7 @@ return( cur );
     cur = calloc(1,sizeof(struct hostdata));
     cur->addr.sin_family = AF_INET;
     cur->addr.sin_port = 0;
-    if ( isdigit(host[0])) {
+    if ( isdigit_ff(host[0])) {
     	if ( !inet_aton(host,&cur->addr.sin_addr)) {
 	    free(cur);
 #ifdef HAVE_PTHREAD_H

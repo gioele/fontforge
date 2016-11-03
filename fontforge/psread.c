@@ -219,8 +219,8 @@ static const char (*toknames[]) = { "moveto", "rmoveto", "curveto", "rcurveto",
 static int getfoghex(_IO *io) {
     int ch,val;
 
-    while ( isspace( ch = getc(io->fog)));
-    if ( isdigit(ch))
+    while ( isspace_ff( ch = getc(io->fog)));
+    if ( isdigit_ff(ch))
 	val = ch-'0';
     else if ( ch >= 'A' && ch <= 'F' )
 	val = ch-'A'+10;
@@ -230,8 +230,8 @@ static int getfoghex(_IO *io) {
 return(EOF);
 
     val <<= 4;
-    while ( isspace( ch = getc(io->fog)));
-    if ( isdigit(ch))
+    while ( isspace_ff( ch = getc(io->fog)));
+    if ( isdigit_ff(ch))
 	val |= ch-'0';
     else if ( ch >= 'A' && ch <= 'F' )
 	val |= ch-'A'+10;
@@ -408,7 +408,7 @@ static int CheckCodePointsComment(IO *wrapper) {
     int ch;
 
     /* Eat whitespace and comments. Comments last to eol (or formfeed) */
-    while ( isspace(ch = nextch(wrapper)) );
+    while ( isspace_ff(ch = nextch(wrapper)) );
     if ( ch!='%' ) {
 	unnextch(ch,wrapper);
 return( false );
@@ -436,7 +436,7 @@ static int nextpstoken(IO *wrapper, real *val, char *tokbuf, int tbsize) {
 
     /* Eat whitespace and comments. Comments last to eol (or formfeed) */
     while ( 1 ) {
-	while ( isspace(ch = nextch(wrapper)) );
+	while ( isspace_ff(ch = nextch(wrapper)) );
 	if ( ch!='%' )
     break;
 	while ( (ch=nextch(wrapper))!=EOF && ch!='\r' && ch!='\n' && ch!='\f' )
@@ -507,7 +507,7 @@ return( pt_closearray );
 return( pt_unknown );	/* single character token */
     } else if ( ch=='/' ) {
 	pt = tokbuf;
-	while ( (ch=nextch(wrapper))!=EOF && !isspace(ch) && ch!='%' &&
+	while ( (ch=nextch(wrapper))!=EOF && !isspace_ff(ch) && ch!='%' &&
 		ch!='(' && ch!=')' && ch!='<' && ch!='>' && ch!='[' && ch!=']' &&
 		ch!='{' && ch!='}' && ch!='/' )
 	    if ( pt<tokbuf+tbsize-2 )
@@ -516,7 +516,7 @@ return( pt_unknown );	/* single character token */
 	unnextch(ch,wrapper);
 return( pt_namelit );	/* name literal */
     } else {
-	while ( (ch=nextch(wrapper))!=EOF && !isspace(ch) && ch!='%' &&
+	while ( (ch=nextch(wrapper))!=EOF && !isspace_ff(ch) && ch!='%' &&
 		ch!='(' && ch!=')' && ch!='<' && ch!='>' && ch!='[' && ch!=']' &&
 		ch!='{' && ch!='}' && ch!='/' ) {
 	    if ( pt<tokbuf+tbsize-2 )
@@ -992,9 +992,9 @@ static uint8 *StringToBytes(struct psstack *stackel,int *len) {
     if ( stackel->type==ps_instr ) {
 	/* imagemask operators take strings or procedures or files */
 	/* we support strings, or procedures containing strings */
-	while ( isspace(*pt)) ++pt;
+	while ( isspace_ff(*pt)) ++pt;
 	if ( *pt=='{' || *pt=='[' ) ++pt;
-	while ( isspace(*pt)) ++pt;
+	while ( isspace_ff(*pt)) ++pt;
     } else if ( stackel->type!=ps_string )
 return( NULL );
 
@@ -1070,7 +1070,7 @@ return( NULL );
 		val = *pt++-'a'+10;
 	    else if ( *pt>='A' && *pt<='F' )
 		val = *pt++-'A'+10;
-	    else if ( isdigit(*pt))
+	    else if ( isdigit_ff(*pt))
 		val = *pt++-'0';
 	    else {
 		++pt;		/* Not hex */
@@ -1115,7 +1115,7 @@ return( NULL );
 		    *upt++ =  val     &0xff;
 		if ( i<5 )
 	break;
-	    } else if ( isspace( *pt ) ) {
+	    } else if ( isspace_ff( *pt ) ) {
 		++pt;
 	    } else
 	break;
@@ -3238,7 +3238,7 @@ static void SCInterpretPS(FILE *ps,SplineChar *sc) {
     IO wrapper;
     int ch;
 
-    while ( isspace(ch = getc(ps)) );
+    while ( isspace_ff(ch = getc(ps)) );
     ungetc(ch,ps);
 
     memset(&wrapper,0,sizeof(wrapper));

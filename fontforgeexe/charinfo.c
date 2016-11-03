@@ -509,7 +509,7 @@ return( false );
     } else if ( *name=='\0' ) {
 	ff_post_error(_("Bad Name"),_("Bad Name"));
 return( false );
-    } else if ( isdigit(*name) || *name=='.' ) {
+    } else if ( isdigit_ff(*name) || *name=='.' ) {
 	ff_post_error(_("Bad Name"),_("A glyph name may not start with a digit nor a full stop (period)"));
 return( false );
     }
@@ -520,7 +520,7 @@ return( false );
 		*name==')' || *name==']' || *name=='}' || *name=='>' ||
 		*name=='%' || *name=='/' )
 	    bad=true;
-	else if ( !isalnum(*name) && *name!='.' && *name!='_' )
+	else if ( !isalnum_ff(*name) && *name!='.' && *name!='_' )
 	    questionable = true;
 	++name;
     }
@@ -1891,22 +1891,22 @@ return( NULL );
     /* And if I want a 'c2sc' feature I must convert "A" to "a.sc" */
     if ( cvt2lc ) {
 	if ( alt==NULL && sc->unicodeenc!=-1 && sc->unicodeenc<0x10000 &&
-		isupper(sc->unicodeenc)) {
-	    sprintf( namebuf, "uni%04X.%s", tolower(sc->unicodeenc), suffix );
+		isupper_ff(sc->unicodeenc)) {
+	    sprintf( namebuf, "uni%04X.%s", tolower_ff(sc->unicodeenc), suffix );
 	    alt = SFGetChar(sf,-1,namebuf);
 	}
-	if ( alt==NULL && isupper(*sc->name)) {
-	    sprintf( namebuf, "%c%s.%s", tolower(*sc->name), sc->name+1, suffix );
+	if ( alt==NULL && isupper_ff(*sc->name)) {
+	    sprintf( namebuf, "%c%s.%s", tolower_ff(*sc->name), sc->name+1, suffix );
 	    alt = SFGetChar(sf,-1,namebuf);
 	}
     } else {
 	if ( alt==NULL && sc->unicodeenc!=-1 && sc->unicodeenc<0x10000 &&
-		islower(sc->unicodeenc)) {
-	    sprintf( namebuf, "uni%04X.%s", toupper(sc->unicodeenc), suffix );
+		islower_ff(sc->unicodeenc)) {
+	    sprintf( namebuf, "uni%04X.%s", toupper_ff(sc->unicodeenc), suffix );
 	    alt = SFGetChar(sf,-1,namebuf);
 	}
-	if ( alt==NULL && islower(*sc->name)) {
-	    sprintf( namebuf, "%c%s.%s", toupper(*sc->name), sc->name+1, suffix );
+	if ( alt==NULL && islower_ff(*sc->name)) {
+	    sprintf( namebuf, "%c%s.%s", toupper_ff(*sc->name), sc->name+1, suffix );
 	    alt = SFGetChar(sf,-1,namebuf);
 	}
     }
@@ -3458,7 +3458,7 @@ static struct matrixinit mi_extensionpart =
     { sizeof(extensionpart)/sizeof(struct col_init)-1, extensionpart, 0, NULL, NULL, NULL, extpart_finishedit, NULL, NULL, NULL };
 
 static int isxheight(int uni) {
-    if ( uni>=0x10000 || !islower(uni))
+    if ( uni>=0x10000 || !islower_ff(uni))
 return( false );
 
     if ( uni=='a' || uni=='c' || uni=='e' || uni=='i' || uni=='j' ||
@@ -3514,11 +3514,11 @@ static int TeX_Default(GGadget *g, GEvent *e) {
 		(basesc = SFGetChar(sf,'x',NULL))!=NULL )
 	    /* Done */;
 	else if ( cid==CID_TeX_HeightD && ci->sc->unicodeenc<0x10000 &&
-		islower(ci->sc->unicodeenc) &&
+		islower_ff(ci->sc->unicodeenc) &&
 		(basesc = SFGetChar(sf,'l',NULL))!=NULL )
 	    /* Done */;
 	else if ( cid==CID_TeX_HeightD && ci->sc->unicodeenc<0x10000 &&
-		isupper(ci->sc->unicodeenc) &&
+		isupper_ff(ci->sc->unicodeenc) &&
 		(basesc = SFGetChar(sf,'I',NULL))!=NULL )
 	    /* Done */;
 	else if ( cid==CID_TeX_DepthD && ci->sc->unicodeenc<0x10000 &&

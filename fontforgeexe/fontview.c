@@ -1728,10 +1728,10 @@ return( NULL );
 		if ( ppt[1]=='-' && ppt[2]!=']' && ppt[2]!='\0' ) {
 		    char ch2 = ppt[2];
 		    if ( (*name>=ch && *name<=ch2) ||
-			    (ignorecase && islower(ch) && islower(ch2) &&
-				    *name>=toupper(ch) && *name<=toupper(ch2)) ||
-			    (ignorecase && isupper(ch) && isupper(ch2) &&
-				    *name>=tolower(ch) && *name<=tolower(ch2))) {
+			    (ignorecase && islower_ff(ch) && islower_ff(ch2) &&
+				    *name>=toupper_ff(ch) && *name<=toupper_ff(ch2)) ||
+			    (ignorecase && isupper_ff(ch) && isupper_ff(ch2) &&
+				    *name>=tolower_ff(ch) && *name<=tolower_ff(ch2))) {
 			if ( !not ) {
 			    found = 1;
 	    break;
@@ -1743,7 +1743,7 @@ return( NULL );
 			}
 		    }
 		    ppt += 2;
-		} else if ( ch==*name || (ignorecase && tolower(ch)==tolower(*name)) ) {
+		} else if ( ch==*name || (ignorecase && tolower_ff(ch)==tolower_ff(*name)) ) {
 		    if ( !not ) {
 			found = 1;
 	    break;
@@ -1777,7 +1777,7 @@ return( NULL );
 	    }
 	} else if ( ch==*name ) {
 	    ++name;
-	} else if ( ignorecase && tolower(ch)==tolower(*name)) {
+	} else if ( ignorecase && tolower_ff(ch)==tolower_ff(*name)) {
 	    ++name;
 	} else
 return( NULL );
@@ -2050,10 +2050,10 @@ return;
 	doit = ( SCScriptFromUnicode(sc)==tag );
 	if ( doit ) {
 	    if ( only_uc && (sc->unicodeenc==-1 || sc->unicodeenc>0xffff ||
-		    !isupper(sc->unicodeenc)) )
+		    !isupper_ff(sc->unicodeenc)) )
 		doit = false;
 	    else if ( only_lc && (sc->unicodeenc==-1 || sc->unicodeenc>0xffff ||
-		    !islower(sc->unicodeenc)) )
+		    !islower_ff(sc->unicodeenc)) )
 		doit = false;
 	}
 	fv->b.selected[j] = mergefunc[ merge + (fv->b.selected[j]?2:0) + doit ];
@@ -4999,7 +4999,7 @@ return;
     pt = buffer;
     for (;;) {
 	ch = getc(file);
-	if ( ch!=EOF && !isspace(ch)) {
+	if ( ch!=EOF && !isspace_ff(ch)) {
 	    if ( pt<buffer+sizeof(buffer)-1 )
 		*pt++ = ch;
 	} else {
@@ -6479,7 +6479,7 @@ void FVChar(FontView *fv, GEvent *event) {
 	/* European keyboards need a funky modifier to get \ */
 	FVDoTransform(fv);
 #if !defined(_NO_FFSCRIPT) || !defined(_NO_PYTHON)
-    } else if ( isdigit(event->u.chr.keysym) && (event->u.chr.state&ksm_control) &&
+    } else if ( isdigit_ff(event->u.chr.keysym) && (event->u.chr.state&ksm_control) &&
 	    (event->u.chr.state&ksm_meta) ) {
 	/* The Script menu isn't always up to date, so we might get one of */
 	/*  the shortcuts here */

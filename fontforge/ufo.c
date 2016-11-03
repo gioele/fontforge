@@ -29,14 +29,13 @@
 #ifndef _NO_PYTHON
 # include "Python.h"
 # include "structmember.h"
-#else
-# include <utype.h>
 #endif
 
 #include "autohint.h"
 #include "dumppfa.h"
 #include "fontforgevw.h"
 #include <unistd.h>
+#include <utype.h>
 #include <math.h>
 #include <time.h>
 #include <locale.h>
@@ -2105,9 +2104,9 @@ static char *get_thingy(FILE *file,char *buffer,char *tag) {
 	while ( (ch=getc(file))!='<' && ch!=EOF );
 	if ( ch==EOF )
 return( NULL );
-	while ( (ch=getc(file))!=EOF && isspace(ch) );
+	while ( (ch=getc(file))!=EOF && isspace_ff(ch) );
 	pt = tag;
-	while ( ch==*pt || tolower(ch)==*pt ) {
+	while ( ch==*pt || tolower_ff(ch)==*pt ) {
 	    ++pt;
 	    ch = getc(file);
 	}
@@ -2115,7 +2114,7 @@ return( NULL );
     continue;
 	if ( ch==EOF )
 return( NULL );
-	while ( isspace(ch)) ch=getc(file);
+	while ( isspace_ff(ch)) ch=getc(file);
 	if ( ch!='>' )
     continue;
 	pt = buffer;
@@ -2395,8 +2394,8 @@ static SplineChar *_UFOLoadGlyph(SplineFont *sf, xmlDocPtr doc, char *glifname, 
 		for ( pt=cpt=name; *cpt!='\0'; ++cpt ) {
 			if ( *cpt!='_' )
 			*pt++ = *cpt;
-			else if ( islower(*name))
-			*name = toupper(*name);
+			else if ( islower_ff(*name))
+			*name = toupper_ff(*name);
 		}
 		*pt = '\0';
     } else if ( name==NULL )

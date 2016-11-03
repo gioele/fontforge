@@ -663,7 +663,7 @@ static int _Export(SplineChar *sc,BDFChar *bc,int layer) {
     { char *pt, *bpt, *end;
     bpt = buffer; end = buffer+40;
     for ( pt=sc->name; *pt!='\0' && bpt<end; ) {
-	if ( isupper( *pt ))
+	if ( isupper_ff( *pt ))
 	    *bpt++ = '$';
 	*bpt++ = *pt++;
     }

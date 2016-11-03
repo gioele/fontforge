@@ -4556,11 +4556,11 @@ int GlyphNameCnt(const char *pt) {
     int cnt = 0;
 
     while ( *pt ) {
-	while ( isspace( *pt )) ++pt;
+	while ( isspace_ff( *pt )) ++pt;
 	if ( *pt=='\0' )
 return( cnt );
 	++cnt;
-	while ( !isspace(*pt) && *pt!='\0' ) ++pt;
+	while ( !isspace_ff(*pt) && *pt!='\0' ) ++pt;
     }
 return( cnt );
 }
@@ -4620,12 +4620,12 @@ char *FPSTRule_To_Str(SplineFont *sf,FPST *fpst,struct fpst_rule *rule) {
 	}
 	if ( fpst->type!=pst_contextpos && fpst->type!=pst_contextsub )
 	    GrowBufferAddStr(&gb,"| ");
-	for ( npt=rule->u.glyph.names; isspace(*npt); ++npt)
+	for ( npt=rule->u.glyph.names; isspace_ff(*npt); ++npt)
 	    /* Skip over leading spaces, if any */;
 	for ( npt=rule->u.glyph.names, seq=0; *npt; ++seq ) {
-	    while ( isspace(*npt))
+	    while ( isspace_ff(*npt))
 		++npt;
-	    while ( *npt!='\0' && !isspace( *npt ) ) {
+	    while ( *npt!='\0' && !isspace_ff( *npt ) ) {
 		GrowBufferAdd(&gb, *npt++);
 	    }
 	    GrowBufferAdd(&gb,' ');
@@ -4734,7 +4734,7 @@ char *FPSTRule_From_Str(SplineFont *sf,FPST *fpst,struct fpst_rule *rule,
     first = last = -1;
     *return_is_warning = false;
     for ( lpt=line; *lpt; ) {
-	while ( isspace(*lpt)) ++lpt;
+	while ( isspace_ff(*lpt)) ++lpt;
 	if ( *lpt=='\0' )
     break;
 	start = lpt;
@@ -4788,7 +4788,7 @@ return( xasprintf( _("There must be as many replacement glyphs as there are matc
 	    }
 	} else if ( *start!='@' && *start!='<' && !(*start=='=' && start[1]=='>') ) {
 	    /* Just a normal glyph or class name. (If we expect a coverage table we'll treat it as a table with one glyph) */
-	    while ( *lpt!='\0' && !isspace(*lpt) && *lpt!='@' && *lpt!='<' && *lpt!='[' )
+	    while ( *lpt!='\0' && !isspace_ff(*lpt) && *lpt!='@' && *lpt!='<' && *lpt!='[' )
 		++lpt;
 	    end = lpt;
 	} else if ( *start=='=' && start[1]=='>' ) {
@@ -4805,7 +4805,7 @@ return( xasprintf( _("Only one replacement list may be specified in a reverse co
 return( xasprintf( _("No lookups may be specified in a reverse contextual lookup (use a replacement list instead), starting at: %.20s..."), lpt ));
 
 	    if ( *start=='@' ) {
-		for ( lpt=start+1; isspace( *lpt ); ++lpt );
+		for ( lpt=start+1; isspace_ff( *lpt ); ++lpt );
 		if ( *lpt!='<' )
 return( xasprintf( _("A lookup invocation must be started by the sequence '@<' and ended with '>', starting at: %.20s..." ), start ) );
 	    }
@@ -4988,11 +4988,11 @@ return( xasprintf( _("%s is not a class name for the forward classes." ), parsed
       case pst_reversecoverage:
 	for ( i=0; i<cnt; ++i ) {
 	    for ( lpt = parsed[i].entity; *lpt ; ) {
-		while ( isspace(*lpt)) ++lpt;
+		while ( isspace_ff(*lpt)) ++lpt;
 		if ( *lpt=='\0' )
 	    break;
 		start = lpt;
-		while ( !isspace(*lpt) && *lpt!='\0' )
+		while ( !isspace_ff(*lpt) && *lpt!='\0' )
 		    ++lpt;
 		ch = *lpt; *lpt='\0';
 		if ( SFGetChar(sf,-1,start)==NULL ) {

@@ -64,7 +64,7 @@ static int GetBlueFuzz(SplineFont *sf) {
     char *str, *end;
 
     if ( sf == NULL || sf->private == NULL || 
-	(str=PSDictHasEntry( sf->private,"BlueFuzz" )) == NULL || !isdigit( str[0] ))
+	(str=PSDictHasEntry( sf->private,"BlueFuzz" )) == NULL || !isdigit_ff( str[0] ))
 return 1;
 return strtod( str, &end );
 }

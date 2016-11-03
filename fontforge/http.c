@@ -229,7 +229,7 @@ return( -1 );
     if ( strtol(buf,NULL,10) == 227 ) {
 	/* 227 Entering Passive Mode (h1,h2,h3,h4,p1,p2) */
 	int h1,h2,h3,h4,p1,p2;
-	for ( pt=buf+4; !isdigit(*pt) && *pt!='\n' ; ++pt );
+	for ( pt=buf+4; !isdigit_ff(*pt) && *pt!='\n' ; ++pt );
 	if ( *pt=='\n' )
 return( -2 );		/* can't parse it */
 	sscanf(pt,"%d,%d,%d,%d,%d,%d", &h1, &h2, &h3, &h4, &p1, &p2 );

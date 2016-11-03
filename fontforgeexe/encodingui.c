@@ -339,7 +339,7 @@ return;
 	if ( pt==NULL || pt==ent->d_name )
     continue;
 	pt2 = strchr(pt+1, '-' );
-	if ( pt2==NULL || pt2==pt+1 || !isdigit(pt2[1]))
+	if ( pt2==NULL || pt2==pt+1 || !isdigit_ff(pt2[1]))
     continue;
 	AddToBlock(block,ent->d_name,dir);
     }

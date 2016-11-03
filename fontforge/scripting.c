@@ -804,9 +804,9 @@ static void bisupper(Context *c) {
     if ( c->a.vals[1].type==v_str ) {
 	pt = c->a.vals[1].u.sval;
 	ch = utf8_ildb(&pt);
-	c->return_val.u.ival = ch>=0 && ch<0x10000?isupper(ch):0;
+	c->return_val.u.ival = ch>=0 && ch<0x10000?isupper_ff(ch):0;
     } else if ( c->a.vals[1].type==v_int || c->a.vals[1].type==v_unicode )
-	c->return_val.u.ival = isupper(c->a.vals[1].u.ival);
+	c->return_val.u.ival = isupper_ff(c->a.vals[1].u.ival);
     else
 	c->error = ce_badargtype;
 }
@@ -819,9 +819,9 @@ static void bislower(Context *c) {
     if ( c->a.vals[1].type==v_str ) {
 	pt = c->a.vals[1].u.sval;
 	ch = utf8_ildb(&pt);
-	c->return_val.u.ival = ch>=0 && ch<0x10000?islower(ch):0;
+	c->return_val.u.ival = ch>=0 && ch<0x10000?islower_ff(ch):0;
     } else if ( c->a.vals[1].type==v_int || c->a.vals[1].type==v_unicode )
-	c->return_val.u.ival = islower(c->a.vals[1].u.ival);
+	c->return_val.u.ival = islower_ff(c->a.vals[1].u.ival);
     else
 	c->error = ce_badargtype;
 }
@@ -834,9 +834,9 @@ static void bisdigit(Context *c) {
     if ( c->a.vals[1].type==v_str ) {
 	pt = c->a.vals[1].u.sval;
 	ch = utf8_ildb(&pt);
-	c->return_val.u.ival = ch>=0 && ch<0x10000?isdigit(ch):0;
+	c->return_val.u.ival = ch>=0 && ch<0x10000?isdigit_ff(ch):0;
     } else if ( c->a.vals[1].type==v_int || c->a.vals[1].type==v_unicode )
-	c->return_val.u.ival = isdigit(c->a.vals[1].u.ival);
+	c->return_val.u.ival = isdigit_ff(c->a.vals[1].u.ival);
     else
 	c->error = ce_badargtype;
 }
@@ -864,9 +864,9 @@ static void bisalpha(Context *c) {
     if ( c->a.vals[1].type==v_str ) {
 	pt = c->a.vals[1].u.sval;
 	ch = utf8_ildb(&pt);
-	c->return_val.u.ival = ch>=0 && ch<0x10000?isalpha(ch):0;
+	c->return_val.u.ival = ch>=0 && ch<0x10000?isalpha_ff(ch):0;
     } else if ( c->a.vals[1].type==v_int || c->a.vals[1].type==v_unicode )
-	c->return_val.u.ival = isalpha(c->a.vals[1].u.ival);
+	c->return_val.u.ival = isalpha_ff(c->a.vals[1].u.ival);
     else
 	c->error = ce_badargtype;
 }
@@ -879,9 +879,9 @@ static void bisalnum(Context *c) {
     if ( c->a.vals[1].type==v_str ) {
 	pt = c->a.vals[1].u.sval;
 	ch = utf8_ildb(&pt);
-	c->return_val.u.ival = ch>=0 && ch<0x10000?isalnum(ch):0;
+	c->return_val.u.ival = ch>=0 && ch<0x10000?isalnum_ff(ch):0;
     } else if ( c->a.vals[1].type==v_int || c->a.vals[1].type==v_unicode )
-	c->return_val.u.ival = isalnum(c->a.vals[1].u.ival);
+	c->return_val.u.ival = isalnum_ff(c->a.vals[1].u.ival);
     else
 	c->error = ce_badargtype;
 }
@@ -894,9 +894,9 @@ static void bisspace(Context *c) {
     if ( c->a.vals[1].type==v_str ) {
 	pt = c->a.vals[1].u.sval;
 	ch = utf8_ildb(&pt);
-	c->return_val.u.ival = ch>=0 && ch<0x10000?isspace(ch):0;
+	c->return_val.u.ival = ch>=0 && ch<0x10000?isspace_ff(ch):0;
     } else if ( c->a.vals[1].type==v_int || c->a.vals[1].type==v_unicode )
-	c->return_val.u.ival = isspace(c->a.vals[1].u.ival);
+	c->return_val.u.ival = isspace_ff(c->a.vals[1].u.ival);
     else
 	c->error = ce_badargtype;
 }
@@ -975,13 +975,13 @@ static void btoupper(Context *c) {
 	    ch = utf8_ildb(&ipt);
 	    if ( ch==-1 )
 	break;
-	    if ( ch<0x10000 ) ch = toupper(ch);
+	    if ( ch<0x10000 ) ch = toupper_ff(ch);
 	    pt = utf8_idpb(pt,ch,UTF8IDPB_NOZERO);
 	}
 	*pt = '\0';
     } else if ( c->a.vals[1].type==v_int || c->a.vals[1].type==v_unicode ) {
 	c->return_val.type = v_int;
-	c->return_val.u.ival = c->a.vals[1].u.ival<0x10000?toupper(c->a.vals[1].u.ival): c->a.vals[1].u.ival;
+	c->return_val.u.ival = c->a.vals[1].u.ival<0x10000?toupper_ff(c->a.vals[1].u.ival): c->a.vals[1].u.ival;
     } else
 	c->error = ce_badargtype;
 }
@@ -997,13 +997,13 @@ static void btolower(Context *c) {
 	    ch = utf8_ildb(&ipt);
 	    if ( ch==-1 )
 	break;
-	    if ( ch<0x10000 ) ch = tolower(ch);
+	    if ( ch<0x10000 ) ch = tolower_ff(ch);
 	    pt = utf8_idpb(pt,ch,UTF8IDPB_NOZERO);
 	}
 	*pt = '\0';
     } else if ( c->a.vals[1].type==v_int || c->a.vals[1].type==v_unicode ) {
 	c->return_val.type = v_int;
-	c->return_val.u.ival = c->a.vals[1].u.ival<0x10000?tolower(c->a.vals[1].u.ival): c->a.vals[1].u.ival;
+	c->return_val.u.ival = c->a.vals[1].u.ival<0x10000?tolower_ff(c->a.vals[1].u.ival): c->a.vals[1].u.ival;
     } else
 	c->error = ce_badargtype;
 }
@@ -5567,7 +5567,7 @@ static void bDefaultUseMyMetrics(Context *c) {
 		/* I shan't bother checking for multiple matches */
 		/* I think the transform check is strict enough. */
 		if ( r->unicode_enc>=0 && r->unicode_enc<0x10000 &&
-			isalpha(r->unicode_enc) ) {
+			isalpha_ff(r->unicode_enc) ) {
 		    if ( goodmatch==NULL ) {
 			goodmatch = r;
 	break;
@@ -8862,15 +8862,15 @@ return( c->tok );
     do {
 	ch = cgetc(c);
 	nch = cgetc(c); cungetc(nch,c);
-	if ( isalpha(ch) || ch=='$' || ch=='_' || (ch=='.' && !isdigit(nch)) || ch=='@' ) {
+	if ( isalpha_ff(ch) || ch=='$' || ch=='_' || (ch=='.' && !isdigit_ff(nch)) || ch=='@' ) {
 	    char *pt = c->tok_text, *end = c->tok_text+TOK_MAX;
 	    int toolong = false;
-	    while ( (isalnum(ch) || ch=='$' || ch=='_' || ch=='.' || ch=='@' ) && pt<end ) {
+	    while ( (isalnum_ff(ch) || ch=='$' || ch=='_' || ch=='.' || ch=='@' ) && pt<end ) {
 		*pt++ = ch;
 		ch = cgetc(c);
 	    }
 	    *pt = '\0';
-	    while ( isalnum(ch) || ch=='$' || ch=='_' || ch=='.' ) {
+	    while ( isalnum_ff(ch) || ch=='$' || ch=='_' || ch=='.' ) {
 		ch = cgetc(c);
 		toolong = true;
 	    }
@@ -8886,13 +8886,13 @@ return( c->tok );
 		break;
 		    }
 	    }
-	} else if ( isdigit(ch) || ch=='.' ) {
+	} else if ( isdigit_ff(ch) || ch=='.' ) {
 	    int val=0;
 	    double fval = 0, dval, div;
 	    tok = tt_number;
 	    nch = cgetc(c); cungetc(nch,c);
 	    if ( ch!='0' || nch=='.' ) {
-		while ( isdigit(ch)) {
+		while ( isdigit_ff(ch)) {
 		    val = 10*val+(ch-'0');
 		    ch = cgetc(c);
 		}
@@ -8902,7 +8902,7 @@ return( c->tok );
 		    dval = 0;
 		    div = 1;
 		    ch = cgetc(c);
-		    while ( isdigit(ch)) {
+		    while ( isdigit_ff(ch)) {
 			dval = 10*dval+(ch-'0');
 			div *= 10;
 			ch = cgetc(c);
@@ -8919,7 +8919,7 @@ return( c->tok );
 			s = -1;
 			ch = cgetc(c);
 		    }
-		    while ( isdigit(ch)) {
+		    while ( isdigit_ff(ch)) {
 			e = 10*e+(ch-'0');
 			ch = cgetc(c);
 		    }
@@ -8935,16 +8935,16 @@ return( c->tok );
 			}
 		    }
 		}
-	    } else if ( isdigit(ch=cgetc(c)) ) {
-		while ( isdigit(ch) && ch<'8' ) {
+	    } else if ( isdigit_ff(ch=cgetc(c)) ) {
+		while ( isdigit_ff(ch) && ch<'8' ) {
 		    val = 8*val+(ch-'0');
 		    ch = cgetc(c);
 		}
 	    } else if ( ch=='X' || ch=='x' || ch=='u' || ch=='U' ) {
 		if ( ch=='u' || ch=='U' ) tok = tt_unicode;
 		ch = cgetc(c);
-		while ( isdigit(ch) || (ch>='a' && ch<='f') || (ch>='A'&&ch<='F')) {
-		    if ( isdigit(ch))
+		while ( isdigit_ff(ch) || (ch>='a' && ch<='f') || (ch>='A'&&ch<='F')) {
+		    if ( isdigit_ff(ch))
 			ch -= '0';
 		    else if ( ch>='a' && ch<='f' )
 			ch += 10-'a';
@@ -9391,9 +9391,9 @@ static void handlename(Context *c,Val *val) {
 	ff_backuptok(c);
     } else {
 	if ( *name=='$' ) {
-	    if ( isdigit(name[1])) {
+	    if ( isdigit_ff(name[1])) {
 		temp = 0;
-		for ( pt = name+1; isdigit(*pt); ++pt )
+		for ( pt = name+1; isdigit_ff(*pt); ++pt )
 		    temp = 10*temp+*pt-'0';
 		if ( *pt=='\0' && temp<c->a.argc ) {
 		    val->type = v_lval;

@@ -1800,7 +1800,7 @@ static SplineChar *GetGoodAccentGlyph(SplineFont *sf, int uni, int basech,
     }
 
     /* Look to see if there are upper case variants of the accents available */
-    if ( dot==NULL && ( isupper(basech) || (basech>=0x400 && basech<=0x52f) )) {
+    if ( dot==NULL && ( isupper_ff(basech) || (basech>=0x400 && basech<=0x52f) )) {
 	char *uc_accent;
 	SplineChar *test = NULL;
 	char buffer[80];
@@ -1814,11 +1814,11 @@ static SplineChar *GetGoodAccentGlyph(SplineFont *sf, int uni, int basech,
 	    uc_accent = NULL;
 	memset(suffixes,0,sizeof(suffixes));
 	if ( basech>=0x400 && basech<=0x52f ) {
-	    if ( isupper(basech) )
+	    if ( isupper_ff(basech) )
 		suffixes[scnt++] = "cyrcap";
 	    suffixes[scnt++] = "cyr";
 	}
-	if ( isupper(basech))
+	if ( isupper_ff(basech))
 	    suffixes[scnt++] = "cap";
 
 	for ( i=0; test==NULL && i<scnt; ++i ) {
@@ -1840,13 +1840,13 @@ static SplineChar *GetGoodAccentGlyph(SplineFont *sf, int uni, int basech,
 		}
 	    }
 	}
-	if ( test==NULL && uni>=BottomAccent && uni<=TopAccent && isupper(basech)) {
+	if ( test==NULL && uni>=BottomAccent && uni<=TopAccent && isupper_ff(basech)) {
 	    apt = accents[uni-BottomAccent]; end = apt+sizeof(accents[0])/sizeof(accents[0][0]);
 	    while ( test==NULL && apt<end ) {
 		int acc = *apt ? *apt : uni;
 		sprintf( buffer,"%.70s.%s", StdGlyphName(buffer,acc,ui_none,(NameList *) -1), suffixes[i]);
-		if ( islower(buffer[0])) {
-		    buffer[0] = toupper(buffer[0]);
+		if ( islower_ff(buffer[0])) {
+		    buffer[0] = toupper_ff(buffer[0]);
 		    if ( (test = SFGetChar(sf,-1,buffer))!=NULL )
 			rsc = test;
 		}
@@ -1856,11 +1856,11 @@ static SplineChar *GetGoodAccentGlyph(SplineFont *sf, int uni, int basech,
 	    }
 	}
 	if ( test==NULL && uni>=BottomAccent && uni<BottomAccent+sizeof(uc_accent_names)/sizeof(uc_accent_names[0]) &&
-		uc_accent_names[uni-BottomAccent]!=NULL && isupper(basech))
+		uc_accent_names[uni-BottomAccent]!=NULL && isupper_ff(basech))
 	    if ( (test = SFGetChar(sf,-1,uc_accent_names[uni-BottomAccent]))!=NULL )
 		rsc = test;
-	if ( test==NULL && uc_accent!=NULL && islower(*uc_accent) && isupper(basech)) {
-	    *uc_accent = toupper(*uc_accent);
+	if ( test==NULL && uc_accent!=NULL && islower_ff(*uc_accent) && isupper_ff(basech)) {
+	    *uc_accent = toupper_ff(*uc_accent);
 	    if ( (test=SFGetChar(sf,-1,uc_accent))!=NULL )
 		rsc = test;
 	}
@@ -1961,7 +1961,7 @@ static void _BCCenterAccent( BDFFont *bdf, int gid, int rgid, int ch, int basech
 	    iyoff = ibb.miny - irb.miny + ((ibb.maxy-ibb.miny)-(irb.maxy-irb.miny))/2;
 	else
 	    iyoff = ibb.miny - irb.miny;
-	if ( isupper(basech) && ch==0x342)
+	if ( isupper_ff(basech) && ch==0x342)
 	    ixoff = ibb.minx - irb.minx;
 	else if ( pos & FF_UNICODE_LEFT )
 	    ixoff = ibb.minx - ispacing - irb.maxx;
@@ -2072,8 +2072,8 @@ return;
  /* Obviously this test is only meaningful for latin,greek,cyrillic alphas */
  /*  hence test for isupper,islower. And I'm assuming greek,cyrillic will */
  /*  be consistant with latin */
-	if ( islower(basech) || isupper(basech)) {
-	    SplineChar *common = SFGetChar(sf,islower(basech)?'o':'O',NULL);
+	if ( islower_ff(basech) || isupper_ff(basech)) {
+	    SplineChar *common = SFGetChar(sf,islower_ff(basech)?'o':'O',NULL);
 	    if ( common!=NULL ) {
 		real top = SplineCharQuickTop(common,layer);
 		if ( bb.maxy<top ) {
@@ -2111,13 +2111,13 @@ return;
 		if ( ( basech==0x1fbf || basech==0x1fef || basech==0x1ffe ) &&
 			(ch==0x1fbf || ch==0x1fef || ch==0x1ffe || ch==0x1fbd || ch==0x1ffd )) {
 		    pos = FF_UNICODE_ABOVE|FF_UNICODE_RIGHT;
-		} else if ( isupper(basech) &&
+		} else if ( isupper_ff(basech) &&
 			(ch==0x313 || ch==0x314 || ch==0x301 || ch==0x300 || ch==0x30d ||
 			 ch==0x1ffe || ch==0x1fbf || ch==0x1fcf || ch==0x1fdf ||
 			 ch==0x1fbd || ch==0x1fef || ch==0x1ffd ||
 			 ch==0x1fcd || ch==0x1fdd || ch==0x1fce || ch==0x1fde ) )
 		    pos = FF_UNICODE_ABOVE|FF_UNICODE_LEFT;
-		else if ( isupper(basech) && ch==0x1fbe )
+		else if ( isupper_ff(basech) && ch==0x1fbe )
 		    pos = FF_UNICODE_RIGHT;
 		else if ( ch==0x1fcd || ch==0x1fdd || ch==0x1fce || ch==0x1fde ||
 			 ch==0x1ffe || ch==0x1fbf || ch==0x1fcf || ch==0x1fdf ||
@@ -2197,7 +2197,7 @@ return;
 		    ybase = SCFindBottomXRange(sc,layer,&bb,ia);
 	}
 
-	if ( isupper(basech) && ch==0x342)	/* While this guy rides above PSILI on left */
+	if ( isupper_ff(basech) && ch==0x342)	/* While this guy rides above PSILI on left */
 	    xoff = bb.minx - rbb.minx;
 	else if ( pos & FF_UNICODE_LEFT )
 	    xoff = bb.minx - spacing - rbb.maxx;

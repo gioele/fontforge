@@ -673,7 +673,7 @@ static void MakeExportName(char *buffer, int blen,char *format_spec,
 		/* Windows file systems are not case conscious */
 		/*  nor is the default mac filesystem */
 		for ( pt=sc->name; *pt!='\0' && buffer<bend; ) {
-		    if ( isupper( *pt ))
+		    if ( isupper_ff( *pt ))
 			*buffer++ = '$';
 		    *buffer++ = *pt++;
 		}

@@ -1969,26 +1969,26 @@ static void CVDrawBlues(CharView *cv,GWindow pixmap,char *bluevals,char *others,
     int len,len2;
 
     if ( bluevals!=NULL ) {
-	for ( pt = bluevals; isspace( *pt ) || *pt=='['; ++pt);
+	for ( pt = bluevals; isspace_ff( *pt ) || *pt=='['; ++pt);
 	while ( i<14 && *pt!='\0' && *pt!=']' ) {
 	    blues[i] = c_strtod(pt,&end);
 	    if ( pt==end )
 	break;
 	    ++i;
 	    pt = end;
-	    while ( isspace( *pt )) ++pt;
+	    while ( isspace_ff( *pt )) ++pt;
 	}
 	if ( i&1 ) --i;
     }
     if ( others!=NULL ) {
-	for ( pt = others; isspace( *pt ) || *pt=='['; ++pt);
+	for ( pt = others; isspace_ff( *pt ) || *pt=='['; ++pt);
 	while ( i<24 && *pt!='\0' && *pt!=']' ) {
 	    blues[i] = c_strtod(pt,&end);
 	    if ( pt==end )
 	break;
 	    ++i;
 	    pt = end;
-	    while ( isspace( *pt )) ++pt;
+	    while ( isspace_ff( *pt )) ++pt;
 	}
 	if ( i&1 ) --i;
     }
@@ -9583,7 +9583,7 @@ void CVTransFuncLayer(CharView *cv,Layer *ly,real transform[6], enum fvtrans_fla
 	if ( transform[0]==1 && transform[3]==1 && transform[1]==0 &&
 		transform[2]==0 && transform[5]==0 &&
 		transform[4]!=0 && CVAllSelected(cv) &&
-		cv->b.sc->unicodeenc!=-1 && isalpha(cv->b.sc->unicodeenc)) {
+		cv->b.sc->unicodeenc!=-1 && isalpha_ff(cv->b.sc->unicodeenc)) {
 	    SCUndoSetLBearingChange(cv->b.sc,(int) rint(transform[4]));
 	    SCSynchronizeLBearing(cv->b.sc,transform[4],CVLayer((CharViewBase *) cv));
 	}

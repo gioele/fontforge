@@ -53,8 +53,8 @@ long uc_strmatch(const unichar_t *str1, const char *str2) {
     long ch1, ch2;
     for (;;) {
 	ch1 = *str1++; ch2 = *(unsigned char *) str2++ ;
-	ch1 = tolower(ch1);
-	ch2 = tolower(ch2);
+	ch1 = tolower_ff(ch1);
+	ch2 = tolower_ff(ch2);
 	if ( ch1!=ch2 || ch1=='\0' )
 return(ch1-ch2);
     }
@@ -64,8 +64,8 @@ long uc_strnmatch(const unichar_t *str1, const char *str2, int len) {
     long ch1, ch2;
     for (;--len>=0;) {
 	ch1 = *str1++; ch2 = *(unsigned char *) str2++ ;
-	ch1 = tolower(ch1);
-	ch2 = tolower(ch2);
+	ch1 = tolower_ff(ch1);
+	ch2 = tolower_ff(ch2);
 	if ( ch1!=ch2 || ch1=='\0' || len<=0 )
 return(ch1-ch2);
     }
@@ -76,8 +76,8 @@ long u_strnmatch(const unichar_t *str1, const unichar_t *str2, int len) {
     long ch1, ch2;
     for (;--len>=0;) {
 	ch1 = *str1++; ch2 = *str2++ ;
-	ch1 = tolower(ch1);
-	ch2 = tolower(ch2);
+	ch1 = tolower_ff(ch1);
+	ch2 = tolower_ff(ch2);
 	if ( ch1!=ch2 || ch1=='\0' || len<=0 )
 return(ch1-ch2);
     }
@@ -107,8 +107,8 @@ long u_strmatch(const unichar_t *str1, const unichar_t *str2) {
     long ch1, ch2;
     for (;;) {
 	ch1 = *str1++; ch2 = *str2++ ;
-	ch1 = tolower(ch1);
-	ch2 = tolower(ch2);
+	ch1 = tolower_ff(ch1);
+	ch2 = tolower_ff(ch2);
 	if ( ch1!=ch2 || ch1=='\0' )
 return(ch1-ch2);
     }
@@ -269,8 +269,8 @@ unichar_t *uc_strstrmatch(const unichar_t *longer, const char *substr) {
 	str1 = lpt; str2 = (unsigned char *) substr;
 	for (;;) {
 	    ch1 = *str1++; ch2 = *str2++ ;
-	    ch1 = tolower(ch1);
-	    ch2 = tolower(ch2);
+	    ch1 = tolower_ff(ch1);
+	    ch2 = tolower_ff(ch2);
 	    if ( ch2=='\0' )
 return((unichar_t *) lpt);
 	    if ( ch1!=ch2 )
@@ -288,8 +288,8 @@ unichar_t *u_strstrmatch(const unichar_t *longer, const unichar_t *substr) {
 	str1 = lpt; str2 = substr;
 	for (;;) {
 	    ch1 = *str1++; ch2 = *str2++ ;
-	    ch1 = tolower(ch1);
-	    ch2 = tolower(ch2);
+	    ch1 = tolower_ff(ch1);
+	    ch2 = tolower_ff(ch2);
 	    if ( ch2=='\0' )
 return((unichar_t *) lpt);
 	    if ( ch1!=ch2 )
@@ -470,7 +470,7 @@ return( val );
 unichar_t *cu_strstartmatch(const char *key,const unichar_t *str) {
     if ( key && str ) {
 	while( *key ) {
-	    if(tolower(*key) != tolower(*str))
+	    if(tolower_ff(*key) != tolower_ff(*str))
 return 0;
 	    key++;
 	    str++;
@@ -485,8 +485,8 @@ unichar_t *u_strstartmatch(const unichar_t *initial, const unichar_t *full) {
 	ch1 = *initial++; ch2 = *full++ ;
 	if ( ch1=='\0' )
 return( (unichar_t *) full );
-	ch1 = tolower(ch1);
-	ch2 = tolower(ch2);
+	ch1 = tolower_ff(ch1);
+	ch2 = tolower_ff(ch2);
 	if ( ch1!=ch2 || ch1=='\0' )
 return(NULL);
     }
@@ -955,7 +955,7 @@ char *copytolower(const char *input)
     char* ret = copy(input);
     char* p = ret;
     for( ; *p; ++p ) {
-	*p = tolower(*p);
+	*p = tolower_ff(*p);
     }
     return ret;
 }

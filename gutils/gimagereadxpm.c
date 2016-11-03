@@ -169,9 +169,9 @@ static long parsecol(char *start, char *end) {
     long ret = -1;
     int ch;
 
-    while ( !isspace(*start) && *start!='\0' ) ++start;
-    while ( isspace(*start) ) ++start;
-    while ( end>start && isspace(end[-1]) ) --end;
+    while ( !isspace_ff(*start) && *start!='\0' ) ++start;
+    while ( isspace_ff(*start) ) ++start;
+    while ( end>start && isspace_ff(end[-1]) ) --end;
     ch = *end; *end = '\0';
 
     if ( strcmp(start,"None")==0 )
@@ -206,13 +206,13 @@ static char *findnextkey(char *str) {
     int oktostart=1;
 
     while ( *str ) {
-	if ( isspace(*str)) oktostart=true;
+	if ( isspace_ff(*str)) oktostart=true;
 	else if ( oktostart ) {
-	    if (( *str=='c' && isspace(str[1])) ||
-		    (*str=='m' && isspace(str[1])) ||
-		    (*str=='g' && isspace(str[1])) ||
-		    (*str=='g' && str[1]=='4' && isspace(str[2])) ||
-		    (*str=='s' && isspace(str[1])) )
+	    if (( *str=='c' && isspace_ff(str[1])) ||
+		    (*str=='m' && isspace_ff(str[1])) ||
+		    (*str=='g' && isspace_ff(str[1])) ||
+		    (*str=='g' && str[1]=='4' && isspace_ff(str[2])) ||
+		    (*str=='s' && isspace_ff(str[1])) )
 		return( str );
 	    oktostart = false;
 	}

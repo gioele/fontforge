@@ -3222,7 +3222,7 @@ return( false );
     parent = cv->b.sc->parent;
     curlayer = CVLayer(&cv->b); /* the index of the active layer */
 
-    if ( isdigit(event->u.chr.keysym) ) {
+    if ( isdigit_ff(event->u.chr.keysym) ) {
 	int off = event->u.chr.keysym - '0';
 
 	g = GWidgetGetControl(cvlayers, CID_EBase+off-1);
@@ -3247,8 +3247,8 @@ return( true );
 	    else
 		mnc = 0;
 	    mn = mnc;
-	    if ( islower(mn)) mnc = toupper(mn);
-	    else if ( isupper(mn)) mnc = tolower(mn);
+	    if ( islower_ff(mn)) mnc = toupper_ff(mn);
+	    else if ( isupper_ff(mn)) mnc = tolower_ff(mn);
 	    if ( event->u.chr.chars[0]==mn || event->u.chr.chars[0]==mnc ) {
 		if ( cv->b.sc->parent->multilayer ) {
 		    fake.type = et_mousedown;

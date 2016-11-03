@@ -252,7 +252,7 @@ unichar_t *utf82u_mncopy(const char *utf8buf,unichar_t *mn) {
 	++upt;
 	if ( was_mn==1 ) {
 	    *mn = upt[-1];
-	    if ( islower(*mn) ) *mn = toupper(*mn);
+	    if ( islower_ff(*mn) ) *mn = toupper_ff(*mn);
 	}
 	--was_mn;
     }
@@ -777,10 +777,10 @@ return( NULL );
 		arr[i].ti.text = u_copy(mi[i].ti.text);
 	    arr[i].ti.text_in_resource = arr[i].ti.text_is_1byte = false;
 	}
-	if ( islower(arr[i].ti.mnemonic))
-	    arr[i].ti.mnemonic = toupper(arr[i].ti.mnemonic);
-	if ( islower(arr[i].shortcut))
-	    arr[i].shortcut = toupper(arr[i].shortcut);
+	if ( islower_ff(arr[i].ti.mnemonic))
+	    arr[i].ti.mnemonic = toupper_ff(arr[i].ti.mnemonic);
+	if ( islower_ff(arr[i].shortcut))
+	    arr[i].shortcut = toupper_ff(arr[i].shortcut);
 	if ( mi[i].sub!=NULL )
 	    arr[i].sub = GMenuItemArrayCopy(mi[i].sub,NULL);
     }
@@ -994,9 +994,9 @@ void HotkeyParse( Hotkey* hk, const char *shortcut ) {
     //
 //    fprintf(stderr,"HotkeyParse(1) spec:%d hk->keysym:%d shortcut:%s\n", GK_Special, hk->keysym, shortcut );
     if( hk->keysym < GK_Special ) {
-	hk->keysym = tolower(hk->keysym);
+	hk->keysym = tolower_ff(hk->keysym);
 	if( hk->state & ksm_shift ) {
-	    hk->keysym = toupper(hk->keysym);
+	    hk->keysym = toupper_ff(hk->keysym);
 	}
     }
     if( hk->keysym == GDK_KEY_Tab ) {
@@ -1108,10 +1108,10 @@ return( NULL );
 		arr[i].ti.text = u_copy(mi[i].ti.text);
 	    arr[i].ti.text_in_resource = arr[i].ti.text_is_1byte = false;
 	}
-	if ( islower(arr[i].ti.mnemonic))
-	    arr[i].ti.mnemonic = toupper(arr[i].ti.mnemonic);
-	if ( islower(arr[i].shortcut))
-	    arr[i].shortcut = toupper(arr[i].shortcut);
+	if ( islower_ff(arr[i].ti.mnemonic))
+	    arr[i].ti.mnemonic = toupper_ff(arr[i].ti.mnemonic);
+	if ( islower_ff(arr[i].shortcut))
+	    arr[i].shortcut = toupper_ff(arr[i].shortcut);
 	if ( mi[i].sub!=NULL )
 	    arr[i].sub = GMenuItem2ArrayCopy(mi[i].sub,NULL);
     }

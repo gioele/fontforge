@@ -2409,7 +2409,7 @@ return;
 
     pt = strchr(node->label,'@');
     if ( pt!=NULL ) {
-	for (pt2 = pt-1; pt2>=node->label && isdigit(*pt2); --pt2 );
+	for (pt2 = pt-1; pt2>=node->label && isdigit_ff(*pt2); --pt2 );
 	size = strtol(pt2+1,NULL,10);
 	depth = strtol(pt+1,NULL,10);
     }
@@ -2447,7 +2447,7 @@ static GImage *_ATT_PopupImage(const void *_att) {
 
     if ( att->popup_node==NULL || att->popup_node->label==NULL )
 return( NULL );
-    for ( start=att->popup_node->label; *start==' ' || isdigit(*start); ++start );
+    for ( start=att->popup_node->label; *start==' ' || isdigit_ff(*start); ++start );
     for ( pt=start; *pt!='\0' && *pt!=' '; ++pt );
     ch = *pt; *pt = '\0';
     sc = SFGetChar(att->sf,-1,start);
@@ -2461,7 +2461,7 @@ return( NULL );
 	if ( *pt=='>' ) isliga = false;
 	++pt;
     }
-    if ( !isalpha(*pt))		/* If alphabetic, then show the glyph names that follow too. Otherwise show nothing for gpos lookups */
+    if ( !isalpha_ff(*pt))		/* If alphabetic, then show the glyph names that follow too. Otherwise show nothing for gpos lookups */
 	pt = "";
 return( NameList_GetImage(att->sf,sc,att->def_layer,pt,isliga));
 }

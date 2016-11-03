@@ -290,7 +290,7 @@ return;
     	cu_strcpy(buffer,GDrawKeysyms[shortcut-0xff00]);
     	utf82u_strcpy(pt,dgettext(GMenuGetShortcutDomain(),buffer));
     } else {
-    	*pt++ = islower(shortcut)?toupper(shortcut):shortcut;
+    	*pt++ = islower_ff(shortcut)?toupper_ff(shortcut):shortcut;
     	*pt = '\0';
     }
 }
@@ -1168,8 +1168,8 @@ static GMenuItem *GMenuSearchShortcut(GWindow gw, GMenuItem *mi, GEvent *event,
     int i;
     unichar_t keysym = event->u.chr.keysym;
 
-    if ( keysym<GK_Special && islower(keysym))
-	keysym = toupper(keysym); /*getkey(keysym,event->u.chr.state&0x2000 );*/
+    if ( keysym<GK_Special && islower_ff(keysym))
+	keysym = toupper_ff(keysym); /*getkey(keysym,event->u.chr.state&0x2000 );*/
     for ( i=0; mi[i].ti.text!=NULL || mi[i].ti.image!=NULL || mi[i].ti.line; ++i ) {
 	if ( call_moveto && mi[i].moveto != NULL)
 	    (mi[i].moveto)(gw,&(mi[i]),event);
@@ -1313,7 +1313,7 @@ static int gmenu_key(struct gmenu *m, GEvent *event) {
     GMenu *top;
     unichar_t keysym = event->u.chr.keysym;
 
-    if ( islower(keysym)) keysym = toupper(keysym);
+    if ( islower_ff(keysym)) keysym = toupper_ff(keysym);
     if ( event->u.chr.state&ksm_meta && !(event->u.chr.state&(menumask&~(ksm_meta|ksm_shift)))) {
 	/* Only look for mneumonics in the child */
 	while ( m->child!=NULL )
@@ -1857,7 +1857,7 @@ int osx_fontview_copy_cut_counter = 0;
 
 
 static int GMenuBarCheckHotkey(GWindow top, GGadget *g, GEvent *event) {
-//    TRACE("GMenuBarCheckKey(top) keysym:%d upper:%d lower:%d\n",keysym,toupper(keysym),tolower(keysym));
+//    TRACE("GMenuBarCheckKey(top) keysym:%d upper:%d lower:%d\n",keysym,toupper_ff(keysym),tolower_ff(keysym));
     // see if we should skip processing (e.g. no modifier key pressed)
     GMenuBar *mb = (GMenuBar *) g;
 	GWindow w = GGadgetGetWindow(g);
@@ -1865,7 +1865,7 @@ static int GMenuBarCheckHotkey(GWindow top, GGadget *g, GEvent *event) {
 	if (GGadgetGetSkipHotkeyProcessing(focus))
 	    return 0;
 
-//    TRACE("GMenuBarCheckKey(2) keysym:%d upper:%d lower:%d\n",keysym,toupper(keysym),tolower(keysym));
+//    TRACE("GMenuBarCheckKey(2) keysym:%d upper:%d lower:%d\n",keysym,toupper_ff(keysym),tolower_ff(keysym));
 
     /* then look for hotkeys everywhere */
 
@@ -1988,8 +1988,8 @@ int GMenuBarCheckKey(GWindow top, GGadget *g, GEvent *event) {
 	    !(event->u.chr.state&menumask&(ksm_control|ksm_cmdmacosx)) )
 	keysym = GGadgetUndoMacEnglishOptionCombinations(event);
 
-    if ( keysym<GK_Special && islower(keysym))
-	keysym = toupper(keysym);
+    if ( keysym<GK_Special && islower_ff(keysym))
+	keysym = toupper_ff(keysym);
     if ( event->u.chr.state&ksm_meta && !(event->u.chr.state&(menumask&~(ksm_meta|ksm_shift)))) {
 	/* Only look for mneumonics in the leaf of the displayed menu structure */
 	if ( mb->child!=NULL )
@@ -2396,8 +2396,8 @@ int GMenuIsCommand(GEvent *event,char *shortcut) {
     if ( event->type!=et_char )
 return( false );
 
-    if ( keysym<GK_Special && islower(keysym))
-	keysym = toupper(keysym);
+    if ( keysym<GK_Special && islower_ff(keysym))
+	keysym = toupper_ff(keysym);
 
     memset(&foo,0,sizeof(foo));
 

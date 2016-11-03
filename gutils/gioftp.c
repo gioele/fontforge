@@ -189,7 +189,7 @@ return( -1 );
     if ( gc->return_code == 227 ) {
 	/* 227 Entering Passive Mode (h1,h2,h3,h4,p1,p2) */
 	int h1,h2,h3,h4,p1,p2;
-	for ( pt=ftp->buffer+ftp->base+4; !isdigit(*pt) && *pt!='\n' ; ++pt );
+	for ( pt=ftp->buffer+ftp->base+4; !isdigit_ff(*pt) && *pt!='\n' ; ++pt );
 	if ( *pt=='\n' )
 return( -2 );		/* can't parse it */
 	sscanf(pt,"%d,%d,%d,%d,%d,%d", &h1, &h2, &h3, &h4, &p1, &p2 );
@@ -308,13 +308,13 @@ return( last );
     for ( pt = end; *pt==' '; ++pt );
     while ( *pt!=' ' && *pt!='\0' ) ++pt;	/* skip over the user */
     while ( *pt==' ' ) ++pt;
-    if ( !isdigit( *pt )) {
+    if ( !isdigit_ff( *pt )) {
 	while ( *pt!=' ' && *pt!='\0' ) ++pt;	/* skip over the group */
 	cur->size = strtol(pt,&end,10);
     } else {
 	long temp = strtol(pt,&end,10);
 	for ( pt = end; *pt==' '; ++pt );
-	if ( !isdigit(*pt)) {
+	if ( !isdigit_ff(*pt)) {
 	    /* Then we don't have a group, and pt now points to the month */
 	    cur->size = temp;
 	    end = pt;
@@ -396,11 +396,11 @@ return( cur );
 static dirparser guessdirtype(char *line) {
     char *end;
 
-    if ( isdigit(line[0]) && isdigit(line[1]) && line[2]=='-' &&
-	 isdigit(line[3]) && isdigit(line[4]) && line[5]=='-' &&
-	 isdigit(line[6]) && isdigit(line[7]) && line[8]==' ' && line[9]==' ' &&
-	 isdigit(line[10]) && isdigit(line[11]) && line[12]==':' &&
-	 isdigit(line[13]) && isdigit(line[14]) && line[16]=='M' && line[17]==' ' )
+    if ( isdigit_ff(line[0]) && isdigit_ff(line[1]) && line[2]=='-' &&
+	 isdigit_ff(line[3]) && isdigit_ff(line[4]) && line[5]=='-' &&
+	 isdigit_ff(line[6]) && isdigit_ff(line[7]) && line[8]==' ' && line[9]==' ' &&
+	 isdigit_ff(line[10]) && isdigit_ff(line[11]) && line[12]==':' &&
+	 isdigit_ff(line[13]) && isdigit_ff(line[14]) && line[16]=='M' && line[17]==' ' )
 return( parsedosdir );
 
     /* It's probably unix-l, and this line is junk, so let's check the next line */

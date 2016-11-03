@@ -771,10 +771,10 @@ static int ParseBlue(double blues[14],struct psdict *private,char *key) {
 return( 0 );
     if ( (val = PSDictHasEntry(private,key))==NULL )
 return( 0 );
-    while ( isspace( *val ) || *val=='[' ) ++val;
+    while ( isspace_ff( *val ) || *val=='[' ) ++val;
 
     for ( i=0; i<14; ++i ) {
-	while ( isspace( *val )) ++val;
+	while ( isspace_ff( *val )) ++val;
 	if ( *val==']' || *val=='\0' )
 return( i );
 	blues[i] = strtod(val,&end);

@@ -140,7 +140,7 @@ return;
 
     isprobablybase = true;
     if ( sc->unicodeenc==-1 || sc->unicodeenc>=0x10000 ||
-	    !isalpha(sc->unicodeenc) || iscombining(sc->unicodeenc))
+	    !isalpha_ff(sc->unicodeenc) || iscombining(sc->unicodeenc))
 	isprobablybase = false;
 
     for ( dlist=sc->dependents; dlist!=NULL; dlist=dlist->next ) {
@@ -192,7 +192,7 @@ return;
 
     isprobablybase = true;
     if ( sc->unicodeenc==-1 || sc->unicodeenc>=0x10000 ||
-	    !isalpha(sc->unicodeenc) || iscombining(sc->unicodeenc))
+	    !isalpha_ff(sc->unicodeenc) || iscombining(sc->unicodeenc))
 	isprobablybase = false;
 
     for ( dlist=sc->dependents; dlist!=NULL; dlist=dlist->next ) {

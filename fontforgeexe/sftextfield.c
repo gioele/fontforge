@@ -445,13 +445,13 @@ static int SFTextAreaSelBackword(unichar_t *text,int start) {
 return( 0 ); /* Can't go back */;
 
     ch = text[start-1];
-    if ( isalnum(ch) || ch=='_' ) {
+    if ( isalnum_ff(ch) || ch=='_' ) {
 	int i;
-	for ( i=start-1; i>=0 && (isalnum(text[i]) || text[i]=='_') ; --i );
+	for ( i=start-1; i>=0 && (isalnum_ff(text[i]) || text[i]=='_') ; --i );
 	start = i+1;
     } else {
 	int i;
-	for ( i=start-1; i>=0 && !isalnum(text[i]) && text[i]!='_' ; --i );
+	for ( i=start-1; i>=0 && !isalnum_ff(text[i]) && text[i]!='_' ; --i );
 	start = i+1;
     }
 return( start );
@@ -462,13 +462,13 @@ static int SFTextAreaSelForeword(unichar_t *text,int end) {
 
     if ( ch=='\0' )
 	/* Nothing */;
-    else if ( isalnum(ch) || ch=='_' ) {
+    else if ( isalnum_ff(ch) || ch=='_' ) {
 	int i;
-	for ( i=end; isalnum(text[i]) || text[i]=='_' ; ++i );
+	for ( i=end; isalnum_ff(text[i]) || text[i]=='_' ; ++i );
 	end = i;
     } else {
 	int i;
-	for ( i=end; !isalnum(text[i]) && text[i]!='_' && text[i]!='\0' ; ++i );
+	for ( i=end; !isalnum_ff(text[i]) && text[i]!='_' && text[i]!='\0' ; ++i );
 	end = i;
     }
 return( end );
@@ -480,23 +480,23 @@ static void SFTextAreaSelectWord(SFTextArea *st,int mid, int16 *start, int16 *en
 
     if ( ch=='\0' )
 	*start = *end = mid;
-    else if ( isspace(ch) ) {
+    else if ( isspace_ff(ch) ) {
 	int i;
-	for ( i=mid; isspace(text[i]); ++i );
+	for ( i=mid; isspace_ff(text[i]); ++i );
 	*end = i;
-	for ( i=mid-1; i>=0 && isspace(text[i]) ; --i );
+	for ( i=mid-1; i>=0 && isspace_ff(text[i]) ; --i );
 	*start = i+1;
-    } else if ( isalnum(ch) || ch=='_' ) {
+    } else if ( isalnum_ff(ch) || ch=='_' ) {
 	int i;
-	for ( i=mid; isalnum(text[i]) || text[i]=='_' ; ++i );
+	for ( i=mid; isalnum_ff(text[i]) || text[i]=='_' ; ++i );
 	*end = i;
-	for ( i=mid-1; i>=0 && (isalnum(text[i]) || text[i]=='_') ; --i );
+	for ( i=mid-1; i>=0 && (isalnum_ff(text[i]) || text[i]=='_') ; --i );
 	*start = i+1;
     } else {
 	int i;
-	for ( i=mid; !isalnum(text[i]) && text[i]!='_' && text[i]!='\0' ; ++i );
+	for ( i=mid; !isalnum_ff(text[i]) && text[i]!='_' && text[i]!='\0' ; ++i );
 	*end = i;
-	for ( i=mid-1; i>=0 && !isalnum(text[i]) && text[i]!='_' ; --i );
+	for ( i=mid-1; i>=0 && !isalnum_ff(text[i]) && text[i]!='_' ; --i );
 	*start = i+1;
     }
 }

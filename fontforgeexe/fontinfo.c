@@ -1899,7 +1899,7 @@ static char *rpldecimal(const char *orig,const char *decimal_point, locale_t tmp
     /*  to translate the number, just check that it is valid */
     if ( strcmp(decimal_point,".")==0 ) {
 	strtod(orig,&end);
-	while ( isspace(*end)) ++end;
+	while ( isspace_ff(*end)) ++end;
 	if ( *end!='\0' )
 return( NULL );
 return( copy(orig));
@@ -1924,7 +1924,7 @@ return( copy(orig));
     oldlocale = uselocale_hack(tmplocale);
     strtod(new,&end);
     uselocale_hack(oldlocale);
-    while ( isspace(*end)) ++end;
+    while ( isspace_ff(*end)) ++end;
     if ( *end=='\0' ) {
 	char *ret = copy(new);
 	free(new);
@@ -1933,7 +1933,7 @@ return( ret );
 
     /* OK, can we parse the number in the original local? */
     dval = strtod(new,&end);
-    while ( isspace(*end)) ++end;
+    while ( isspace_ff(*end)) ++end;
     if ( *end!='\0' ) {
 	free(new);
 return( NULL );
@@ -1954,7 +1954,7 @@ static char *rplarraydecimal(const char *orig,const char *decimal_point, locale_
     npt = new = calloc(1,nlen+1);
     *npt++ = '[';
 
-    for ( pt=orig; isspace(*pt) || *pt=='['; ++pt );
+    for ( pt=orig; isspace_ff(*pt) || *pt=='['; ++pt );
     while ( *pt!=']' && *pt!='\0' ) {
 	start=pt;
 	while ( *pt!=']' && *pt!=' ' && *pt!='\0' ) ++pt;
@@ -1977,7 +1977,7 @@ return( NULL );
 	strcpy(npt,rpl);
 	free(rpl);
 	npt += strlen(npt);
-	while ( isspace(*pt)) ++pt;
+	while ( isspace_ff(*pt)) ++pt;
     }
     *npt++ =']';
     *npt = '\0';
@@ -2016,8 +2016,8 @@ return;
 	tmplocale = newlocale_hack(LC_NUMERIC_MASK, "C", NULL);
 	if (tmplocale == NULL) fprintf(stderr, "Locale error.\n");
 
-	for ( pt=val; isspace(*pt); ++pt );
-	for ( ept = val+strlen(val-1); ept>pt && isspace(*ept); --ept );
+	for ( pt=val; isspace_ff(*pt); ++pt );
+	for ( ept = val+strlen(val-1); ept>pt && isspace_ff(*ept); --ept );
 	if ( KnownPrivates[i].type==pt_boolean ) {
 	    if ( strcasecmp(val,"true")==0 || strcasecmp(val,"t")==0 || strtol(val,NULL,10)!=0 ) {
 		/* If they make a mistake about case, correct it */
@@ -2673,7 +2673,7 @@ return( false );
     /*  it can be a "radix number" which is <intval>'#'<intval>. I'll only */
     /*  do a cursory test for that */
     u_strtod(ufamily,&end);
-    if ( *end=='\0' || (isdigit(ufamily[0]) && u_strchr(ufamily,'#')!=NULL) ) {
+    if ( *end=='\0' || (isdigit_ff(ufamily[0]) && u_strchr(ufamily,'#')!=NULL) ) {
 	ff_post_error(_("Bad Font Family Name"),_("A PostScript name may not be a number"));
 return( false );
     }
@@ -2698,7 +2698,7 @@ return( false );
     }
 
     u_strtod(ufont,&end);
-    if ( (*end=='\0' || (isdigit(ufont[0]) && u_strchr(ufont,'#')!=NULL)) &&
+    if ( (*end=='\0' || (isdigit_ff(ufont[0]) && u_strchr(ufont,'#')!=NULL)) &&
 	    *ufont!='\0' ) {
 	ff_post_error(_("Bad Font Name"),_("A PostScript name may not be a number"));
 return( false );
@@ -4115,7 +4115,7 @@ return( true );
 return( true );
 	}
 	txt = _GGadgetGetTitle(GWidgetGetControl(gw,CID_Family));
-	if ( !isalpha(*txt)) {
+	if ( !isalpha_ff(*txt)) {
 	    BadFamily();
 return( true );
 	}

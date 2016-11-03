@@ -303,7 +303,7 @@ uint8 *_IVParse(SplineFont *sf, char *text, int *len,
 	npos = 0;
 	while ( npos<256 ) {
 	    while ( *pt==' ' || *pt=='\t' ) ++pt;
-	    if ( isdigit( *pt ) || *pt=='-' ) {
+	    if ( isdigit_ff( *pt ) || *pt=='-' ) {
 		val = strtol(pt,&end,0);
 		if ( val>32767 || val<-32768 ) {
 		    IVError(iv,_("A value must be between [-32768,32767]"),pt-text);
@@ -320,7 +320,7 @@ return( NULL );
 
 		    pt++;
 
-		    if ( !isdigit( *pt ) ) {
+		    if ( !isdigit_ff( *pt ) ) {
 			IVError(iv,_("Number expected"),pt-text);
 return( NULL );
 		    }
