@@ -386,7 +386,7 @@ static char *SFDReadUTF7Str(FILE *sfd) {
     int prev_cnt=0, prev=0, in=0;
 
     ch1 = nlgetc(sfd);
-    while ( isspace(ch1) && ch1!='\n' && ch1!='\r') ch1 = nlgetc(sfd);
+    while ( isspace_ff(ch1) && ch1!='\n' && ch1!='\r') ch1 = nlgetc(sfd);
     if ( ch1=='\n' || ch1=='\r' )
 	ungetc(ch1,sfd);
     if ( ch1!='"' )
@@ -1743,7 +1743,7 @@ static void appendnames(char *dest,char *dir,const char *dir_char,char *name,con
 	++name;
     }
     while ( *name ) {
-	if ( isupper(*name)) {
+	if ( isupper_ff(*name)) {
 	    *dest++ = '_';
 	    *dest++ = *name;
 	} else
@@ -3235,7 +3235,7 @@ char *getquotedeol(FILE *sfd) {
     int ch;
 
     pt = str = malloc(101); end = str+100;
-    while ( isspace(ch = nlgetc(sfd)) && ch!='\r' && ch!='\n' );
+    while ( isspace_ff(ch = nlgetc(sfd)) && ch!='\r' && ch!='\n' );
     while ( ch!='\n' && ch!='\r' && ch!=EOF ) {
 	if ( ch=='\\' ) {
 	    /* We can't use nlgetc() here, because it would misinterpret */
@@ -3272,7 +3272,7 @@ return( str );
 static int geteol(FILE *sfd, char *tokbuf) {
     char *pt=tokbuf, *end = tokbuf+2000-2; int ch;
 
-    while ( isspace(ch = nlgetc(sfd)) && ch!='\r' && ch!='\n' );
+    while ( isspace_ff(ch = nlgetc(sfd)) && ch!='\r' && ch!='\n' );
     while ( ch!='\n' && ch!='\r' && ch!=EOF ) {
 	if ( pt<end ) *pt++ = ch;
 	ch = nlgetc(sfd);
@@ -3302,7 +3302,7 @@ static int getprotectedname(FILE *sfd, char *tokbuf) {
     char *pt=tokbuf, *end = tokbuf+100-2; int ch;
 
     while ( (ch = nlgetc(sfd))==' ' || ch=='\t' );
-    while ( ch!=EOF && !isspace(ch) && ch!='[' && ch!=']' && ch!='{' && ch!='}' && ch!='<' && ch!='%' ) {
+    while ( ch!=EOF && !isspace_ff(ch) && ch!='[' && ch!=']' && ch!='{' && ch!='}' && ch!='<' && ch!='%' ) {
 	if ( pt<end ) *pt++ = ch;
 	ch = nlgetc(sfd);
     }
@@ -3317,7 +3317,7 @@ return( pt!=tokbuf?1:ch==EOF?-1: 0 );
 int getname(FILE *sfd, char *tokbuf) {
     int ch;
 
-    while ( isspace(ch = nlgetc(sfd)));
+    while ( isspace_ff(ch = nlgetc(sfd)));
     ungetc(ch,sfd);
 return( getprotectedname(sfd,tokbuf));
 }
@@ -3339,12 +3339,12 @@ static int getint(FILE *sfd, int *val) {
     char tokbuf[100]; int ch;
     char *pt=tokbuf, *end = tokbuf+100-2;
 
-    while ( isspace(ch = nlgetc(sfd)));
+    while ( isspace_ff(ch = nlgetc(sfd)));
     if ( ch=='-' || ch=='+' ) {
 	*pt++ = ch;
 	ch = nlgetc(sfd);
     }
-    while ( isdigit(ch)) {
+    while ( isdigit_ff(ch)) {
 	if ( pt<end ) *pt++ = ch;
 	ch = nlgetc(sfd);
     }
@@ -3358,12 +3358,12 @@ static int getlonglong(FILE *sfd, long long *val) {
     char tokbuf[100]; int ch;
     char *pt=tokbuf, *end = tokbuf+100-2;
 
-    while ( isspace(ch = nlgetc(sfd)));
+    while ( isspace_ff(ch = nlgetc(sfd)));
     if ( ch=='-' || ch=='+' ) {
 	*pt++ = ch;
 	ch = nlgetc(sfd);
     }
-    while ( isdigit(ch)) {
+    while ( isdigit_ff(ch)) {
 	if ( pt<end ) *pt++ = ch;
 	ch = nlgetc(sfd);
     }
@@ -3377,7 +3377,7 @@ static int gethex(FILE *sfd, uint32 *val) {
     char tokbuf[100]; int ch;
     char *pt=tokbuf, *end = tokbuf+100-2;
 
-    while ( isspace(ch = nlgetc(sfd)));
+    while ( isspace_ff(ch = nlgetc(sfd)));
     if ( ch=='#' )
 	ch = nlgetc(sfd);
     if ( ch=='-' || ch=='+' ) {
@@ -3393,7 +3393,7 @@ static int gethex(FILE *sfd, uint32 *val) {
 	    ch = '0';
 	}
     }
-    while ( isdigit(ch) || (ch>='a' && ch<='f') || (ch>='A' && ch<='F')) {
+    while ( isdigit_ff(ch) || (ch>='a' && ch<='f') || (ch>='A' && ch<='F')) {
 	if ( pt<end ) *pt++ = ch;
 	ch = nlgetc(sfd);
     }
@@ -3436,9 +3436,9 @@ static int getreal(FILE *sfd, real *val) {
     int ch;
     char *pt=tokbuf, *end = tokbuf+100-2, *nend;
 
-    while ( isspace(ch = nlgetc(sfd)));
+    while ( isspace_ff(ch = nlgetc(sfd)));
     if ( ch!='e' && ch!='E' )		/* real's can't begin with exponants */
-	while ( isdigit(ch) || ch=='-' || ch=='+' || ch=='e' || ch=='E' || ch=='.' || ch==',' ) {
+	while ( isdigit_ff(ch) || ch=='-' || ch=='+' || ch=='e' || ch=='E' || ch=='.' || ch==',' ) {
 	    if ( pt<end ) *pt++ = ch;
 	    ch = nlgetc(sfd);
 	}
@@ -3463,15 +3463,15 @@ static int Dec85(struct enc85 *dec) {
     unsigned int val;
 
     if ( dec->pos<0 ) {
-	while ( isspace(ch1=getc(dec->sfd)));
+	while ( isspace_ff(ch1=getc(dec->sfd)));
 	if ( ch1=='z' ) {
 	    dec->sofar[0] = dec->sofar[1] = dec->sofar[2] = dec->sofar[3] = 0;
 	    dec->pos = 3;
 	} else {
-	    while ( isspace(ch2=getc(dec->sfd)));
-	    while ( isspace(ch3=getc(dec->sfd)));
-	    while ( isspace(ch4=getc(dec->sfd)));
-	    while ( isspace(ch5=getc(dec->sfd)));
+	    while ( isspace_ff(ch2=getc(dec->sfd)));
+	    while ( isspace_ff(ch3=getc(dec->sfd)));
+	    while ( isspace_ff(ch4=getc(dec->sfd)));
+	    while ( isspace_ff(ch5=getc(dec->sfd)));
 	    val = ((((ch1-'!')*85+ ch2-'!')*85 + ch3-'!')*85 + ch4-'!')*85 + ch5-'!';
 	    dec->sofar[3] = val>>24;
 	    dec->sofar[2] = val>>16;
@@ -3562,7 +3562,7 @@ static ImageList *SFDGetImage(FILE *sfd) {
     while ( (ch=nlgetc(sfd))==' ' || ch=='\t' );
     ungetc(ch,sfd);
     rlelen = 0;
-    if ( isdigit(ch))
+    if ( isdigit_ff(ch))
 	getint(sfd,&rlelen);
     base->trans = trans;
     if ( clutlen!=0 ) {
@@ -3840,7 +3840,7 @@ static void SFDGetHintMask(FILE *sfd,HintMask *hintmask) {
     memset(hintmask,0,sizeof(HintMask));
     for (;;) {
 	ch = nlgetc(sfd);
-	if ( isdigit(ch))
+	if ( isdigit_ff(ch))
 	    ch -= '0';
 	else if ( ch>='a' && ch<='f' )
 	    ch -= 'a'-10;
@@ -3912,7 +3912,7 @@ static SplineSet *SFDGetSplineSet(FILE *sfd,int order2) {
 	while ( getreal(sfd,&stack[sp])==1 )
 	    if ( sp<99 )
 		++sp;
-	while ( isspace(ch=nlgetc(sfd)));
+	while ( isspace_ff(ch=nlgetc(sfd)));
 	if ( ch=='E' || ch=='e' || ch==EOF )
     break;
 	if ( ch=='S' ) {
@@ -4283,7 +4283,7 @@ static void SFDGetMinimumDistances(FILE *sfd, SplineChar *sc) {
     last = NULL;
     for ( ch=nlgetc(sfd); ch!=EOF && ch!='\n'; ch=nlgetc(sfd)) {
 	err = false;
-	while ( isspace(ch) && ch!='\n' ) ch=nlgetc(sfd);
+	while ( isspace_ff(ch) && ch!='\n' ) ch=nlgetc(sfd);
 	if ( ch=='\n' )
     break;
 	md = chunkalloc(sizeof(MinimumDistance));
@@ -4542,7 +4542,7 @@ return( lastap );
 	SFDReadDeviceTable(sfd,&ap->yadjust);
 	ch = nlgetc(sfd);
 	ungetc(ch,sfd);
-	if ( isdigit(ch)) {
+	if ( isdigit_ff(ch)) {
 	    getsint(sfd,(int16 *) &ap->ttf_pt_index);
 	    ap->has_ttf_pt = true;
 	}
@@ -4569,7 +4569,7 @@ static RefChar *SFDGetRef(FILE *sfd, int was_enc) {
     rf->encoded = was_enc;
     if ( getint(sfd,&temp))
 	rf->unicode_enc = temp;
-    while ( isspace(ch=nlgetc(sfd)));
+    while ( isspace_ff(ch=nlgetc(sfd)));
     if ( ch=='S' ) rf->selected = true;
     getreal(sfd,&rf->transform[0]);
     getreal(sfd,&rf->transform[1]);
@@ -4579,7 +4579,7 @@ static RefChar *SFDGetRef(FILE *sfd, int was_enc) {
     getreal(sfd,&rf->transform[5]);
     while ( (ch=nlgetc(sfd))==' ');
     ungetc(ch,sfd);
-    if ( isdigit(ch) ) {
+    if ( isdigit_ff(ch) ) {
 	getint(sfd,&temp);
 	rf->use_my_metrics = temp&1;
 	rf->round_translation_to_grid = (temp&2)?1:0;
@@ -4750,12 +4750,12 @@ static struct gradient *SFDParseGradient(FILE *sfd,char *tok) {
     int ch, i;
 
     getreal(sfd,&grad->start.x);
-    while ( isspace(ch=nlgetc(sfd)));
+    while ( isspace_ff(ch=nlgetc(sfd)));
     if ( ch!=';' ) ungetc(ch,sfd);
     getreal(sfd,&grad->start.y);
 
     getreal(sfd,&grad->stop.x);
-    while ( isspace(ch=nlgetc(sfd)));
+    while ( isspace_ff(ch=nlgetc(sfd)));
     if ( ch!=';' ) ungetc(ch,sfd);
     getreal(sfd,&grad->stop.y);
 
@@ -4771,12 +4771,12 @@ static struct gradient *SFDParseGradient(FILE *sfd,char *tok) {
     getint(sfd,&grad->stop_cnt);
     grad->grad_stops = calloc(grad->stop_cnt,sizeof(struct grad_stops));
     for ( i=0; i<grad->stop_cnt; ++i ) {
-	while ( isspace(ch=nlgetc(sfd)));
+	while ( isspace_ff(ch=nlgetc(sfd)));
 	if ( ch!='{' ) ungetc(ch,sfd);
 	getreal( sfd, &grad->grad_stops[i].offset );
 	gethex( sfd, &grad->grad_stops[i].col );
 	getreal( sfd, &grad->grad_stops[i].opacity );
-	while ( isspace(ch=nlgetc(sfd)));
+	while ( isspace_ff(ch=nlgetc(sfd)));
 	if ( ch!='}' ) ungetc(ch,sfd);
     }
 return( grad );
@@ -4790,11 +4790,11 @@ static struct pattern *SFDParsePattern(FILE *sfd,char *tok) {
     pat->pattern = copy(tok);
 
     getreal(sfd,&pat->width);
-    while ( isspace(ch=nlgetc(sfd)));
+    while ( isspace_ff(ch=nlgetc(sfd)));
     if ( ch!=';' ) ungetc(ch,sfd);
     getreal(sfd,&pat->height);
 
-    while ( isspace(ch=nlgetc(sfd)));
+    while ( isspace_ff(ch=nlgetc(sfd)));
     if ( ch!='[' ) ungetc(ch,sfd);
     getreal(sfd,&pat->transform[0]);
     getreal(sfd,&pat->transform[1]);
@@ -4802,7 +4802,7 @@ static struct pattern *SFDParsePattern(FILE *sfd,char *tok) {
     getreal(sfd,&pat->transform[3]);
     getreal(sfd,&pat->transform[4]);
     getreal(sfd,&pat->transform[5]);
-    while ( isspace(ch=nlgetc(sfd)));
+    while ( isspace_ff(ch=nlgetc(sfd)));
     if ( ch!=']' ) ungetc(ch,sfd);
 return( pat );
 }
@@ -4989,7 +4989,7 @@ void SFDGetPSTs( FILE *sfd, SplineChar *sc, char* ttok ) {
 		((PST1 *) pst)->tag = CHR('l','i','g','a');
 		((PST1 *) pst)->script_lang_index = 0xffff;
 		while ( (ch=nlgetc(sfd))==' ' || ch=='\t' );
-		if ( isdigit(ch)) {
+		if ( isdigit_ff(ch)) {
 		    int temp;
 		    ungetc(ch,sfd);
 		    getint(sfd,&temp);
@@ -4997,7 +4997,7 @@ void SFDGetPSTs( FILE *sfd, SplineChar *sc, char* ttok ) {
 		    while ( (ch=nlgetc(sfd))==' ' || ch=='\t' );
 		} else
 		    ((PST1 *) pst)->flags = 0 /*PSTDefaultFlags(type,sc)*/;
-		if ( isdigit(ch)) {
+		if ( isdigit_ff(ch)) {
 		    ungetc(ch,sfd);
 		    getusint(sfd,&((PST1 *) pst)->script_lang_index);
 		    while ( (ch=nlgetc(sfd))==' ' || ch=='\t' );
@@ -5138,7 +5138,7 @@ static SplineChar *SFDGetChar(FILE *sfd,SplineFont *sf, int had_sf_layer_cnt) {
 return( NULL );
     if ( strcmp(tok,"StartChar:")!=0 )
 return( NULL );
-    while ( isspace(ch=nlgetc(sfd)));
+    while ( isspace_ff(ch=nlgetc(sfd)));
     ungetc(ch,sfd);
     sc = SFSplineCharCreate(sf);
     if ( ch!='"' ) {
@@ -5221,7 +5221,7 @@ return( NULL );
 		script = gettag(sfd);
             }
 	} else if ( strmatch(tok,"GlifName:")==0 ) {
-            while ( isspace(ch=nlgetc(sfd)));
+            while ( isspace_ff(ch=nlgetc(sfd)));
             ungetc(ch,sfd);
             if ( ch!='"' ) {
               if ( getname(sfd,tok)!=1 ) {
@@ -5251,7 +5251,7 @@ return( NULL );
 	    getint(sfd,&temp);
 	    sc->lig_caret_cnt_fixed = temp;
 	} else if ( strmatch(tok,"Flags:")==0 ) {
-	    while ( isspace(ch=nlgetc(sfd)) && ch!='\n' && ch!='\r');
+	    while ( isspace_ff(ch=nlgetc(sfd)) && ch!='\n' && ch!='\r');
 	    while ( ch!='\n' && ch!='\r' ) {
 		if ( ch=='H' ) sc->changedsincelasthinted=true;
 		else if ( ch=='M' ) sc->manualhints = true;
@@ -5265,7 +5265,7 @@ return( NULL );
 	} else if ( strmatch(tok,"TeX:")==0 ) {
 	    getsint(sfd,&sc->tex_height);
 	    getsint(sfd,&sc->tex_depth);
-	    while ( isspace(ch=nlgetc(sfd)) && ch!='\n' && ch!='\r');
+	    while ( isspace_ff(ch=nlgetc(sfd)) && ch!='\n' && ch!='\r');
 	    ungetc(ch,sfd);
 	    if ( ch!='\n' && ch!='\r' ) {
 		int16 old_tex;
@@ -5350,7 +5350,7 @@ return( NULL );
 	} else if ( strmatch(tok,"AnchorPoint:")==0 ) {
 	    lastap = SFDReadAnchorPoints(sfd,sc,&sc->anchor,lastap);
 	} else if ( strmatch(tok,"Fore")==0 ) {
-	    while ( isspace(ch = nlgetc(sfd)));
+	    while ( isspace_ff(ch = nlgetc(sfd)));
 	    ungetc(ch,sfd);
 	    if ( ch!='I' && ch!='R' && ch!='S' && ch!='V' && ch!=' ' && ch!='\n' && 
 	         !PeekMatch(sfd, "Pickled") && !PeekMatch(sfd, "EndChar") &&
@@ -5364,7 +5364,7 @@ return( NULL );
 	} else if ( strmatch(tok,"Validated:")==0 ) {
 	    getsint(sfd,(int16 *) &sc->layers[current_layer].validation_state);
 	} else if ( strmatch(tok,"Back")==0 ) {
-	    while ( isspace(ch=nlgetc(sfd)));
+	    while ( isspace_ff(ch=nlgetc(sfd)));
 	    ungetc(ch,sfd);
 	    if ( ch!='I' && ch!='R' && ch!='S' && ch!='V' && ch!=' ' && ch!='\n' &&
 	         !PeekMatch(sfd, "Pickled") && !PeekMatch(sfd, "EndChar") &&
@@ -5682,7 +5682,7 @@ exit(1);
 		((PST1 *) pst)->tag = CHR('l','i','g','a');
 		((PST1 *) pst)->script_lang_index = 0xffff;
 		while ( (ch=nlgetc(sfd))==' ' || ch=='\t' );
-		if ( isdigit(ch)) {
+		if ( isdigit_ff(ch)) {
 		    int temp;
 		    ungetc(ch,sfd);
 		    getint(sfd,&temp);
@@ -5690,7 +5690,7 @@ exit(1);
 		    while ( (ch=nlgetc(sfd))==' ' || ch=='\t' );
 		} else
 		    ((PST1 *) pst)->flags = 0 /*PSTDefaultFlags(type,sc)*/;
-		if ( isdigit(ch)) {
+		if ( isdigit_ff(ch)) {
 		    ungetc(ch,sfd);
 		    getusint(sfd,&((PST1 *) pst)->script_lang_index);
 		    while ( (ch=nlgetc(sfd))==' ' || ch=='\t' );
@@ -5949,7 +5949,7 @@ return( 0 );
 return( 0 );
     if ( getint(sfd,&yoff)!=1 )
 return( 0 );
-    while ( isspace( ch=nlgetc( sfd )) && ch!='\r' && ch!='\n' );
+    while ( isspace_ff( ch=nlgetc( sfd )) && ch!='\r' && ch!='\n' );
 
     ref = calloc( 1,sizeof( BDFRefChar ));
     ref->gid = rgid; ref->xoff = xoff, ref->yoff = yoff;
@@ -6404,7 +6404,7 @@ static void SFDGetDesignSize(FILE *sfd,SplineFont *sf) {
     getsint(sfd,(int16 *) &sf->design_size);
     while ( (ch=nlgetc(sfd))==' ' );
     ungetc(ch,sfd);
-    if ( isdigit(ch)) {
+    if ( isdigit_ff(ch)) {
 	getsint(sfd,(int16 *) &sf->design_range_bottom);
 	while ( (ch=nlgetc(sfd))==' ' );
 	if ( ch!='-' )
@@ -6414,7 +6414,7 @@ static void SFDGetDesignSize(FILE *sfd,SplineFont *sf) {
 	for (;;) {
 	    while ( (ch=nlgetc(sfd))==' ' );
 	    ungetc(ch,sfd);
-	    if ( !isdigit(ch))
+	    if ( !isdigit_ff(ch))
 	break;
 	    cur = chunkalloc(sizeof(struct otfname));
 	    cur->next = sf->fontstyle_name;
@@ -6435,7 +6435,7 @@ static void SFDGetOtfFeatName(FILE *sfd,SplineFont *sf) {
     for (;;) {
 	while ( (ch=nlgetc(sfd))==' ' );
 	ungetc(ch,sfd);
-	if ( !isdigit(ch))
+	if ( !isdigit_ff(ch))
     break;
 	cur = chunkalloc(sizeof(struct otfname));
 	cur->next = fn->names;
@@ -7732,7 +7732,7 @@ bool SFD_GetFontMetaData( FILE *sfd,
     }
     else if ( strmatch(tok,"OS2Vendor:")==0 )
     {
-	while ( isspace(nlgetc(sfd)));
+	while ( isspace_ff(nlgetc(sfd)));
 	sf->pfminfo.os2_vendor[0] = nlgetc(sfd);
 	sf->pfminfo.os2_vendor[1] = nlgetc(sfd);
 	sf->pfminfo.os2_vendor[2] = nlgetc(sfd);
@@ -8025,7 +8025,7 @@ bool SFD_GetFontMetaData( FILE *sfd,
 	int kernclassversion = 0;
 	int isv = tok[0]=='V';
 	int kcvoffset = (isv ? 10 : 9); //Offset to read kerning class version
-	if (isdigit(tok[kcvoffset])) kernclassversion = tok[kcvoffset] - '0';
+	if (isdigit_ff(tok[kcvoffset])) kernclassversion = tok[kcvoffset] - '0';
 	int temp, classstart=1;
 	int old = (kernclassversion == 0);
 
@@ -8489,14 +8489,14 @@ static SplineFont *SFD_GetFont( FILE *sfd,SplineFont *cidmaster,char *tok,
 		    }
 		    while ( (ch=nlgetc(sfd))==' ' || ch=='\t' );
 		    ungetc(ch,sfd);
-		    if ( isdigit(ch)) {
+		    if ( isdigit_ff(ch)) {
 			int temp;
 			getint(sfd,&temp);
 			((AnchorClass1 *) an)->flags = temp;
 		    }
 		    while ( (ch=nlgetc(sfd))==' ' || ch=='\t' );
 		    ungetc(ch,sfd);
-		    if ( isdigit(ch)) {
+		    if ( isdigit_ff(ch)) {
 			int temp;
 			getint(sfd,&temp);
 			((AnchorClass1 *) an)->script_lang_index = temp;
@@ -8504,7 +8504,7 @@ static SplineFont *SFD_GetFont( FILE *sfd,SplineFont *cidmaster,char *tok,
 			((AnchorClass1 *) an)->script_lang_index = 0xffff;		/* Will be fixed up later */
 		    while ( (ch=nlgetc(sfd))==' ' || ch=='\t' );
 		    ungetc(ch,sfd);
-		    if ( isdigit(ch)) {
+		    if ( isdigit_ff(ch)) {
 			int temp;
 			getint(sfd,&temp);
 			((AnchorClass1 *) an)->merge_with = temp;
@@ -8517,7 +8517,7 @@ static SplineFont *SFD_GetFont( FILE *sfd,SplineFont *cidmaster,char *tok,
                 }
 		while ( (ch=nlgetc(sfd))==' ' || ch=='\t' );
 		ungetc(ch,sfd);
-		if ( isdigit(ch) ) {
+		if ( isdigit_ff(ch) ) {
 		    /* Early versions of SfdFormat 2 had a number here */
 		    int temp;
 		    getint(sfd,&temp);
@@ -8575,7 +8575,7 @@ static SplineFont *SFD_GetFont( FILE *sfd,SplineFont *cidmaster,char *tok,
 	    ord->ordered_features = malloc((temp+1)*sizeof(uint32));
 	    ord->ordered_features[temp] = 0;
 	    for ( i=0; i<temp; ++i ) {
-		while ( isspace((ch=nlgetc(sfd))) );
+		while ( isspace_ff((ch=nlgetc(sfd))) );
 		if ( ch=='\'' ) {
 		    ungetc(ch,sfd);
 		    ord->ordered_features[i] = gettag(sfd);
@@ -8664,7 +8664,7 @@ static SplineFont *SFD_GetFont( FILE *sfd,SplineFont *cidmaster,char *tok,
 		mm->axismaps[index].designs = malloc(points*sizeof(real));
 		for ( i=0; i<points; ++i ) {
 		    getreal(sfd,&mm->axismaps[index].blends[i]);
-		    while ( (ch=nlgetc(sfd))!=EOF && isspace(ch));
+		    while ( (ch=nlgetc(sfd))!=EOF && isspace_ff(ch));
 		    ungetc(ch,sfd);
 		    if ( (ch=nlgetc(sfd))!='=' )
 			ungetc(ch,sfd);
@@ -9132,7 +9132,7 @@ static SplineFont *SlurpRecovery(FILE *asfd,char *tok,int sizetok) {
 return(NULL);
 	if ( strcmp(tok,"Base:")!=0 )
 return(NULL);
-	while ( isspace(ch=nlgetc(asfd)) && ch!=EOF && ch!='\n' );
+	while ( isspace_ff(ch=nlgetc(asfd)) && ch!=EOF && ch!='\n' );
 	for ( pt=tok; ch!=EOF && ch!='\n'; ch = nlgetc(asfd) )
 	    if ( pt<tok+sizetok-2 )
 		*pt++ = ch;

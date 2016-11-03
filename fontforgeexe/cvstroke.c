@@ -2423,7 +2423,7 @@ static int Layer_DoColorWheel(GGadget *g, GEvent *e) {
 	    Color val;
 	    struct hslrgb col;
 	    pt = text;
-	    while ( isspace(*pt)) ++pt;
+	    while ( isspace_ff(*pt)) ++pt;
 	    if ( *pt=='0' && (pt[1]=='x' || pt[1]=='X')) pt += 2;
 	    else if ( *pt=='#' ) ++pt;
 	    val = strtoul(pt,NULL,16);

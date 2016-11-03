@@ -169,7 +169,7 @@ static void findbrowser(void) {
     if ( getenv("BROWSER")!=NULL ) {
 	strcpy(browser,getenv("BROWSER"));
 #if __CygWin			/* Get rid of any dos style names */
-	if ( isalpha(browser[0]) && browser[1]==':' && browser[2]=='\\' )
+	if ( isalpha_ff(browser[0]) && browser[1]==':' && browser[2]=='\\' )
 	    cygwin_conv_to_full_posix_path(getenv("BROWSER"),browser);
 	else if ( strchr(browser,'/')==NULL ) {
 	    if ( strstrmatch(browser,".exe")==NULL )

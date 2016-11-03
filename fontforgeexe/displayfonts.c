@@ -136,7 +136,7 @@ return(true);
 return( true );
 	    }
 	    pt = cret+strlen(cret)-1;
-	    while ( isspace(*pt) ) --pt;
+	    while ( isspace_ff(*pt) ) --pt;
 	    if ( strncmp(pt-2,"in",2)==0)
 		scale = 72;
 	    else if ( strncmp(pt-2,"cm",2)==0 )
@@ -231,7 +231,7 @@ return( tis );
     while ( 1 ) {
 	cnt=1;		/* leave room for default printer */
 	while ( fgets(line,sizeof(line),printcap)!=NULL ) {
-	    if ( !isspace(*line) && *line!='#' ) {
+	    if ( !isspace_ff(*line) && *line!='#' ) {
 		if ( tis!=NULL ) {
 		    bpt = strchr(line,'|');
 		    cpt = strchr(line,':');
@@ -1370,12 +1370,12 @@ static int DSP_ScriptLangChanged(GGadget *g, GEvent *e) {
 	    GGadgetSetTitle8(g,di->scriptlangs[e->u.control.u.tf_changed.from_pulldown].userdata );
 	    sstr = _GGadgetGetTitle(g);
 	} else {
-	    if ( u_strlen(sstr)<4 || !isalpha(sstr[0]) || !isalnum(sstr[1]) /*|| !isalnum(sstr[2]) || !isalnum(sstr[3])*/ )
+	    if ( u_strlen(sstr)<4 || !isalpha_ff(sstr[0]) || !isalnum_ff(sstr[1]) /*|| !isalnum_ff(sstr[2]) || !isalnum_ff(sstr[3])*/ )
 return( true );
 	    if ( u_strlen(sstr)==4 )
 		/* No language, we'll use default */;
 	    else if ( u_strlen(sstr)!=10 || sstr[4]!='{' || sstr[9]!='}' ||
-		    !isalpha(sstr[5]) || !isalpha(sstr[6]) || !isalpha(sstr[7])  )
+		    !isalpha_ff(sstr[5]) || !isalpha_ff(sstr[6]) || !isalpha_ff(sstr[7])  )
 return( true );
 	}
 	script = DEFAULT_SCRIPT;

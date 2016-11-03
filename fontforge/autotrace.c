@@ -460,13 +460,13 @@ return( NULL );
     vector = NULL;
     for ( i=0; i<2; ++i ) {
 	cnt = 0;
-	for ( start=str; isspace(*start); ++start );
+	for ( start=str; isspace_ff(*start); ++start );
 	while ( *start ) {
-	    for ( pt=start; !isspace(*pt) && *pt!='\0'; ++pt );
+	    for ( pt=start; !isspace_ff(*pt) && *pt!='\0'; ++pt );
 	    if ( vector!=NULL )
 		vector[cnt] = copyn(start,pt-start);
 	    ++cnt;
-	    for ( start=pt; isspace(*start); ++start);
+	    for ( start=pt; isspace_ff(*start); ++start);
 	}
 	if ( cnt==0 )
 return( NULL );

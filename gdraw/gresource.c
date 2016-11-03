@@ -236,7 +236,7 @@ return;
 	goto bad;
 	    temp.res = copyn(pt+off,ept-(pt+off));
 	    pt = ept+1;
-	    while ( isspace( *pt ) && pt<next ) ++pt;
+	    while ( isspace_ff( *pt ) && pt<next ) ++pt;
 	    temp.val = copyn(pt,next-pt);
 	    temp.new = true;
 	    _GResource_Res[rcur++] = temp;

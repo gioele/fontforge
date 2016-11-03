@@ -972,7 +972,7 @@ static char *gettoken(char *start) {
 
     while ( *start!='\0' && *start!='/' && *start!='(' ) ++start;
     if ( *start=='/' || *start=='(' ) ++start;
-    for ( end = start; *end!='\0' && !isspace(*end) && *end!='[' && *end!='/' && *end!='{' && *end!='(' && *end!=')'; ++end );
+    for ( end = start; *end!='\0' && !isspace_ff(*end) && *end!='[' && *end!='/' && *end!='{' && *end!='(' && *end!=')'; ++end );
     ret = malloc(end-start+1);
     if ( end>start )
 	strncpy(ret,start,end-start);
@@ -982,7 +982,7 @@ return( ret );
 
 static int getbool(char *start) {
 
-    while ( isspace(*start) ) ++start;
+    while ( isspace_ff(*start) ) ++start;
     if ( *start=='T' || *start=='t' )
 return( 1 );
 
@@ -1000,7 +1000,7 @@ static void fillintarray(int *array,char *start,int maxentries) {
 	if ( start==end )
 return;
 	start = end;
-	while ( isspace(*start) ) ++start;
+	while ( isspace_ff(*start) ) ++start;
     }
 }
 
@@ -1011,8 +1011,8 @@ static void fillrealarray(real *array,char *start,int maxentries) {
     while ( *start!='\0' && *start!='[' && *start!='{' ) ++start;
     if ( *start=='[' || *start=='{' ) ++start;
     for ( i=0; i<maxentries && *start!=']' && *start!='}'; ++i ) {
-	while ( isspace( *start )) ++start;
-	if ( isdigit(*start) || *start=='-' || *start=='.' )
+	while ( isspace_ff( *start )) ++start;
+	if ( isdigit_ff(*start) || *start=='-' || *start=='.' )
 	    array[i] = strtod(start,&end);
 	else if ( strncmp(start,"div",3)==0 && i>=2 ) {
 	    /* Some of Luc Devroye's fonts have a "div" in the FontMatrix */
@@ -1024,13 +1024,13 @@ return;
 	if ( start==end )
 return;
 	start = end;
-	while ( isspace(*start) ) ++start;
+	while ( isspace_ff(*start) ) ++start;
     }
 }
 
 static void InitDict(struct psdict *dict,char *line) {
     while ( *line!='/' && *line!='\0' ) ++line;
-    while ( !isspace(*line) && *line!='\0' ) ++line;
+    while ( !isspace_ff(*line) && *line!='\0' ) ++line;
     dict->cnt += strtol(line,NULL,10);
     if ( dict->next>0 ) { int i;		/* Shouldn't happen, but did in a bad file */
 	dict->keys = realloc(dict->keys,dict->cnt*sizeof(char *));
@@ -1046,7 +1046,7 @@ static void InitDict(struct psdict *dict,char *line) {
 
 static void InitChars(struct pschars *chars,char *line) {
     while ( *line!='/' && *line!='\0' ) ++line;
-    while ( !isspace(*line) && *line!='\0' ) ++line;
+    while ( !isspace_ff(*line) && *line!='\0' ) ++line;
     chars->cnt = strtol(line,NULL,10);
     if ( chars->cnt>0 ) {
 	chars->keys = calloc(chars->cnt,sizeof(char *));
@@ -1058,7 +1058,7 @@ static void InitChars(struct pschars *chars,char *line) {
 
 static void InitCharProcs(struct charprocs *cp, char *line) {
     while ( *line!='/' && *line!='\0' ) ++line;
-    while ( !isspace(*line) && *line!='\0' ) ++line;
+    while ( !isspace_ff(*line) && *line!='\0' ) ++line;
     cp->cnt = strtol(line,NULL,10);
     if ( cp->cnt>0 ) {
 	cp->keys = calloc(cp->cnt,sizeof(char *));
@@ -1084,7 +1084,7 @@ static void ContinueValue(struct fontparse *fp, struct psdict *dict, char *line)
 		(strncmp(line,"def",3)==0 ||
 		 strncmp(line,"|-",2)==0 || strncmp(line,"ND",2)==0)) {
 	    while ( 1 ) {
-		while ( fp->vpt>fp->vbuf+1 && isspace(fp->vpt[-1]) )
+		while ( fp->vpt>fp->vbuf+1 && isspace_ff(fp->vpt[-1]) )
 		    --fp->vpt;
 		if ( fp->vpt>fp->vbuf+8 && strncmp(fp->vpt-8,"noaccess",8)==0 )
 		    fp->vpt -= 8;
@@ -1144,8 +1144,8 @@ static void AddValue(struct fontparse *fp, struct psdict *dict, char *line, char
 	dict->keys[dict->next] = copyn(line+1,endtok-(line+1));
     }
     pt = line+strlen(line)-1;
-    while ( isspace(*endtok)) ++endtok;
-    while ( pt>endtok && isspace(*pt)) --pt;
+    while ( isspace_ff(*endtok)) ++endtok;
+    while ( pt>endtok && isspace_ff(*pt)) --pt;
     ++pt;
     if ( strncmp(pt-3,"def",3)==0 )
 	pt -= 3;
@@ -1157,7 +1157,7 @@ static void AddValue(struct fontparse *fp, struct psdict *dict, char *line, char
 return;
     }
     for (;;) {
-	while ( pt-1>endtok && isspace(pt[-1])) --pt;
+	while ( pt-1>endtok && isspace_ff(pt[-1])) --pt;
 	if ( pt-8>endtok && strncmp(pt-8,"noaccess",8)==0 )
 	    pt -= 8;
 	else if ( pt-8>endtok && strncmp(pt-8,"readonly",8)==0 )
@@ -1228,7 +1228,7 @@ static void findstring(struct fontparse *fp,struct pschars *subrs,int index,char
     char buffer[1024], *bpt, *bs, *end = buffer+sizeof(buffer)-1;
     int val;
 
-    while ( isspace(*str)) ++str;
+    while ( isspace_ff(*str)) ++str;
     if ( *str=='(' ) {
 	++str;
 	bpt = buffer;
@@ -1236,11 +1236,11 @@ static void findstring(struct fontparse *fp,struct pschars *subrs,int index,char
 	    if ( *str!='\\' )
 		val = *str++;
 	    else {
-		if ( isdigit( *++str )) {
+		if ( isdigit_ff( *++str )) {
 		    val = *str++-'0';
-		    if ( isdigit( *str )) {
+		    if ( isdigit_ff( *str )) {
 			val = (val<<3) | (*str++-'0');
-			if ( isdigit( *str ))
+			if ( isdigit_ff( *str ))
 			    val = (val<<3) | (*str++-'0');
 		    }
 		} else
@@ -1269,11 +1269,11 @@ static void findnumbers(struct pschars *chars,char *str) {
 	int index = chars->next;
 	char *namestrt;
 
-	while ( isspace(*str)) ++str;
+	while ( isspace_ff(*str)) ++str;
 	if ( *str!='/' )
     break;
 	namestrt = ++str;
-	while ( isalnum(*str) || *str=='.' ) ++str;
+	while ( isalnum_ff(*str) || *str=='.' ) ++str;
 	*str = '\0';
 	index = chars->next;
 
@@ -1284,7 +1284,7 @@ static void findnumbers(struct pschars *chars,char *str) {
 	chars->values[index] = (void *) (intpt) val;
 	chars->next = index+1;
 	str = end;
-	while ( isspace(*str)) ++str;
+	while ( isspace_ff(*str)) ++str;
 	if ( str[0]=='d' && str[1]=='e' && str[2]=='f' )
 	    str += 3;
     }
@@ -1367,9 +1367,9 @@ static void sfnts2tempfile(struct fontparse *fp,FILE *in,char *line) {
 
 	instring = true;
 	for ( ++pt; *pt && *pt!='>'; ++pt ) {
-	    if ( isspace(*pt))
+	    if ( isspace_ff(*pt))
 	continue;
-	    if ( isdigit(*pt))
+	    if ( isdigit_ff(*pt))
 		nibble = *pt-'0';
 	    else if ( *pt>='a' && *pt<='f' )
 		nibble = *pt-'a'+10;
@@ -1406,7 +1406,7 @@ static void sfnts2tempfile(struct fontparse *fp,FILE *in,char *line) {
     while ( (ch=getc(in))!=EOF ) {
 	if ( ch==']' )
   goto skip_to_eol;
-	if ( isspace(ch))
+	if ( isspace_ff(ch))
     continue;
 	if ( !instring && ch=='<' ) {
 	    instring = true;
@@ -1424,7 +1424,7 @@ static void sfnts2tempfile(struct fontparse *fp,FILE *in,char *line) {
 	    }
 	    instring = false;
 	} else {
-	    if ( isdigit(ch))
+	    if ( isdigit_ff(ch))
 		nibble = ch-'0';
 	    else if ( ch>='a' && ch<='f' )
 		nibble = ch-'a'+10;
@@ -1457,7 +1457,7 @@ static void ParseSimpleEncoding(struct fontparse *fp,char *line) {
     char tok[200], *pt;
 
     while ( *line!='\0' && *line!=']' ) {
-	while ( isspace(*line)) ++line;
+	while ( isspace_ff(*line)) ++line;
 	if ( *line==']' )
     break;
 	if ( *line!='/' ) {
@@ -1465,8 +1465,8 @@ static void ParseSimpleEncoding(struct fontparse *fp,char *line) {
     continue;
 	}
 	++line;
-	while ( isspace(*line)) ++line;
-	for ( pt=tok; !isspace(*line) && *line!='\0' && *line!='/' && *line!=']'; ) {
+	while ( isspace_ff(*line)) ++line;
+	for ( pt=tok; !isspace_ff(*line) && *line!='\0' && *line!='/' && *line!=']'; ) {
 	    if ( pt<tok+sizeof(tok)-2 )
 		*pt++ = *line++;
 	    else
@@ -1493,7 +1493,7 @@ return;
 	ParseSimpleEncoding(fp,line);
 return;
     } else if (( fp->inencoding && strncmp(line,"dup",3)==0 ) ||
-	    ( strncmp(line,"dup ",4)==0 && isdigit(line[4]) &&
+	    ( strncmp(line,"dup ",4)==0 && isdigit_ff(line[4]) &&
 	      strstr(line+strlen(line)-6," put")!=NULL && strchr(line,'/')!=NULL )) {
 	/* Fontographer's type3 fonts claim to be standard, but then aren't */
 	fp->fd->encoding_name = &custom;
@@ -1502,17 +1502,17 @@ return;
 	    char *end;
 	    int pos = strtol(line+3,&end,10);
 	    line = end;
-	    while ( isspace( *line )) ++line;
+	    while ( isspace_ff( *line )) ++line;
 	    if ( *line=='/' ) ++line;
-	    for ( pt = buffer; !isspace(*line); *pt++ = *line++ );
+	    for ( pt = buffer; !isspace_ff(*line); *pt++ = *line++ );
 	    *pt = '\0';
 	    if ( pos>=0 && pos<256 ) {
 		free(fp->fd->encoding[pos]);
 		fp->fd->encoding[pos] = copy(buffer);
 	    }
-	    while ( isspace(*line)) ++line;
+	    while ( isspace_ff(*line)) ++line;
 	    if ( strncmp(line,"put",3)==0 ) line+=3;
-	    while ( isspace(*line)) ++line;
+	    while ( isspace_ff(*line)) ++line;
 	}
 return;
     } else if ( fp->inencoding && strstr(line,"for")!=NULL && strstr(line,"/.notdef")!=NULL ) {
@@ -1528,15 +1528,15 @@ return;
 	/* Saw a type 3 font with lines like "Encoding 1 /_a0 put" */
 	char *end;
 	int pos;
-	while ( isspace(*line)) ++line;
+	while ( isspace_ff(*line)) ++line;
 	if ( strncmp(line,"Encoding ",9)==0 ) {
 	    line+=9;
 	    pos = strtol(line,&end,10);
 	    line = end;
-	    while ( isspace(*line)) ++line;
+	    while ( isspace_ff(*line)) ++line;
 	    if ( *line=='/' ) {
 		++line;
-		for ( pt = buffer; !isspace(*line); *pt++ = *line++ );
+		for ( pt = buffer; !isspace_ff(*line); *pt++ = *line++ );
 		*pt = '\0';
 		if ( pos>=0 && pos<256 )
 		    fp->fd->encoding[pos] = copy(buffer);
@@ -1545,7 +1545,7 @@ return;
 return;
     } else if ( fp->insubs ) {
 	struct pschars *subrs = fp->fd->private->subrs;
-	while ( isspace(*line)) ++line;
+	while ( isspace_ff(*line)) ++line;
 	if ( strncmp(line,"dup ",4)==0 ) {
 	    int i;
 	    char *ept;
@@ -1570,12 +1570,12 @@ return;
 	}
     } else if ( fp->inchars ) {
 	struct pschars *chars = fp->fd->chars;
-	while ( isspace(*line)) ++line;
+	while ( isspace_ff(*line)) ++line;
 	if ( strncmp(line,"end",3)==0 )
 	    fp->ignore = fp->inchars = false;
 	else if ( *line=='\n' || *line=='\0' )
 	    /* Ignore it */;
-	else if ( *line!='/' || !(isalpha(line[1]) || line[1]=='.')) {
+	else if ( *line!='/' || !(isalpha_ff(line[1]) || line[1]=='.')) {
 	    LogError( _("No name for CharStrings dictionary \"%s"), rmbinary(line) );
 	    fp->alreadycomplained = true;
 	} else if ( fp->ignore ) {
@@ -1587,7 +1587,7 @@ return;
 	else {
 	    int i = chars->next;
 	    char *namestrt = ++line;
-	    while ( isalnum(*line) || *line=='.' ) ++line;
+	    while ( isalnum_ff(*line) || *line=='.' ) ++line;
 	    *line = '\0';
 	    findstring(fp,chars,i,namestrt,line+1);
 	    ff_progress_next();
@@ -1596,10 +1596,10 @@ return;
     }
     fp->inencoding = 0;
 
-    while ( isspace(*line)) ++line;
+    while ( isspace_ff(*line)) ++line;
     endtok = NULL;
     if ( *line=='/' )
-	for ( endtok=line+1; !isspace(*endtok) && *endtok!='(' && *endtok!='/' &&
+	for ( endtok=line+1; !isspace_ff(*endtok) && *endtok!='(' && *endtok!='/' &&
 		*endtok!='{' && *endtok!='[' && *endtok!='\0'; ++endtok );
 
     if ( strstr(line,"/shareddict")!=NULL && strstr(line,"where")!=NULL ) {
@@ -1983,7 +1983,7 @@ return;
  retry:
     if ( fp->insubs ) {
 	struct pschars *chars = /*fp->insubs ?*/ fp->fd->private->subrs /*: fp->fd->private->othersubrs*/;
-	while ( isspace(*line)) ++line;
+	while ( isspace_ff(*line)) ++line;
 	if ( strncmp(line,"dup ",4)==0 ) {
 	    int i = strtol(line+4,NULL,10);
 	    if ( fp->ignore )
@@ -2125,7 +2125,7 @@ return( 0 );
 	} else if ( inhex ) {
 	    if ( ishexdigit(ch)) {
 		int h;
-		if ( isdigit(ch)) h = ch-'0';
+		if ( isdigit_ff(ch)) h = ch-'0';
 		else if ( ch>='a' && ch<='f' ) h = ch-'a'+10;
 		else h = ch-'A'+10;
 		if ( firstnibble ) {
@@ -2144,7 +2144,7 @@ return( 0 );
 	} else if ( ch=='/' ) {
 	    intok = 1;
 	    tokpt = temptok;
-	} else if ( intok && !isspace(ch) && ch!='{' && ch!='[' ) {
+	} else if ( intok && !isspace_ff(ch) && ch!='{' && ch!='[' ) {
 	    *tokpt++ = ch;
 	} else if ( (intok||sptok) && (ch=='{' || ch=='[') ) {
 	    *tokpt = '\0';
@@ -2173,11 +2173,11 @@ return( 0 );
     break;
 	        }
 	    }
-	} else if ( sptok && isspace(ch) ) {
+	} else if ( sptok && isspace_ff(ch) ) {
 	    nowspace = 1;
 	    if ( ch=='\n' || ch=='\r' )
     break;
-	} else if ( sptok && !isdigit(ch) )
+	} else if ( sptok && !isdigit_ff(ch) )
 	    sptok = 0;
 	else if ( rpt!=NULL && ch==*rpt ) {
 	    if ( *++rpt=='\0' ) {
@@ -2192,14 +2192,14 @@ return( 0 );
 	} else if ( rpt!=NULL ) {
 	    rpt = NULL;
 	    willbehex = false;
-	} else if ( isdigit(ch) ) {
+	} else if ( isdigit_ff(ch) ) {
 	    sptok = 0;
 	    nownum = 1;
 	    if ( innum )
 		val = 10*val + ch-'0';
 	    else
 		val = ch-'0';
-	} else if ( isspace(ch) ) {
+	} else if ( isspace_ff(ch) ) {
 	    nowspace = 1;
 	    if ( ch=='\n' || ch=='\r' )
     break;
@@ -2221,7 +2221,7 @@ return( 0 );
 	    if ( *++rdpt =='\0' ) {
 		ch = getc(temp);
 		*pt++ = ch;
-		if ( isspace(ch) && val!=0 ) {
+		if ( isspace_ff(ch) && val!=0 ) {
 		    inhex = fp->useshexstrings;
 		    inbinary = !fp->useshexstrings;
 		    firstnibble = true;
@@ -2234,7 +2234,7 @@ return( 0 );
 	} else if ( wasminus && ch=='!' ) {
 	    ch = getc(temp);
 	    *pt++ = ch;
-	    if ( isspace(ch) && val!=0 ) {
+	    if ( isspace_ff(ch) && val!=0 ) {
 		inhex = 1;
 		cnt = val;
 		binstart = pt;
@@ -2335,8 +2335,8 @@ return;
 	nrandombytes[3] = decode(hex(ch3,ch4));
 	zcnt = 0;
 	while (( ch1=bgetc(extra,in))!=EOF ) {
-	    while ( ch1!=EOF && isspace(ch1)) ch1 = bgetc(extra,in);
-	    while ( (ch2=bgetc(extra,in))!=EOF && isspace(ch2));
+	    while ( ch1!=EOF && isspace_ff(ch1)) ch1 = bgetc(extra,in);
+	    while ( (ch2=bgetc(extra,in))!=EOF && isspace_ff(ch2));
 	    if ( ch1=='0' && ch2=='0' ) ++zcnt; else { dumpzeros(temp,zeros,zcnt); zcnt = 0;}
 	    if ( zcnt>EODMARKLEN )
 	break;
@@ -2346,7 +2346,7 @@ return;
 		zeros[zcnt-1] = decode(hex(ch1,ch2));
 	}
     }
-    while (( ch1=bgetc(extra,in))=='0' || isspace(ch1) );
+    while (( ch1=bgetc(extra,in))=='0' || isspace_ff(ch1) );
     if ( ch1!=EOF ) ungetc(ch1,in);
 }
 
@@ -2505,7 +2505,7 @@ static void dodata( struct fontparse *fp, FILE *in, FILE *temp) {
 	LogError( _("Failed to parse the StartData command properly, bad count\n") );
     }
     cnt = len;
-    while ( isspace(ch=getc(in)) );
+    while ( isspace_ff(ch=getc(in)) );
     ungetc(ch,in);
     for ( pt="StartData "; *pt; ++pt )
 	getc(in);			/* And if it didn't match, what could I do about it? */
@@ -2518,8 +2518,8 @@ static void dodata( struct fontparse *fp, FILE *in, FILE *temp) {
     } else {
 	while ( cnt>0 ) {
 	    /* Hex data are allowed to contain whitespace */
-	    while ( isspace(ch=getc(in)) );
-	    while ( isspace(ch2=getc(in)) );
+	    while ( isspace_ff(ch=getc(in)) );
+	    while ( isspace_ff(ch2=getc(in)) );
 	    ch = hex(ch,ch2);
 	    putc(ch,temp);
 	    --cnt;
@@ -2763,9 +2763,9 @@ char **_NamesReadPostScript(FILE *ps) {
 		    strstr(buffer,"/CIDFontName")!=NULL ) {
 		pt = strstr(buffer,"FontName");
 		pt += strlen("FontName");
-		while ( isspace(*pt)) ++pt;
+		while ( isspace_ff(*pt)) ++pt;
 		if ( *pt=='/' ) ++pt;
-		for ( end = pt; *end!='\0' && !isspace(*end); ++end );
+		for ( end = pt; *end!='\0' && !isspace_ff(*end); ++end );
 		ret = malloc(2*sizeof(char *));
 		ret[0] = copyn(pt,end-pt);
 		ret[1] = NULL;

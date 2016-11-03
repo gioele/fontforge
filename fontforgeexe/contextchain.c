@@ -175,10 +175,10 @@ static char *rpl(const char *src, const char *find, const char *rpl) {
     int flen = strlen(find);
 
     for ( pt=src; *pt; ) {
-	while ( isspace(*pt)) ++pt;
+	while ( isspace_ff(*pt)) ++pt;
 	if ( *pt=='\0' )
     break;
-	for ( start=pt; !isspace(*pt) && *pt!='\0'; ++pt );
+	for ( start=pt; !isspace_ff(*pt) && *pt!='\0'; ++pt );
 	if ( pt-start==flen && strncmp(find,start,flen)==0 )
 	    ++found_cnt;
     }
@@ -187,11 +187,11 @@ return( copy(src));
 
     rpt = ret = malloc(strlen(src)+found_cnt*(strlen(rpl)-flen)+1);
     for ( pt=src; *pt; ) {
-	while ( isspace(*pt))
+	while ( isspace_ff(*pt))
 	    *rpt++ = *pt++;
 	if ( *pt=='\0' )
     break;
-	for ( start=pt; !isspace(*pt) && *pt!='\0'; ++pt );
+	for ( start=pt; !isspace_ff(*pt) && *pt!='\0'; ++pt );
 	if ( pt-start==flen && strncmp(find,start,flen)==0 ) {
 	    strcpy(rpt,rpl);
 	    rpt += strlen(rpt);
@@ -271,11 +271,11 @@ static int CCD_GlyphNameCnt(const char *pt) {
     int cnt = 0;
 
     while ( *pt ) {
-	while ( isspace( *pt )) ++pt;
+	while ( isspace_ff( *pt )) ++pt;
 	if ( *pt=='\0' )
 return( cnt );
 	++cnt;
-	while ( !isspace(*pt) && *pt!='\0' ) ++pt;
+	while ( !isspace_ff(*pt) && *pt!='\0' ) ++pt;
     }
 return( cnt );
 }
@@ -326,7 +326,7 @@ static void parseseqlookups(SplineFont *sf, const char *solooks, struct fpst_rul
     for (;;) {
 	char *end;
 	r->lookups[cnt].seq = strtol(pt,&end,10);
-	for ( pt = end+1; isspace( *pt ); ++pt );
+	for ( pt = end+1; isspace_ff( *pt ); ++pt );
 	if ( *pt=='<' ) {
 	    const char *eoname; char *temp;
 	    ++pt;
@@ -484,12 +484,12 @@ static void classruleitem2rule(SplineFont *sf,const char *ruletext,struct fpst_r
     for ( pt=ruletext; *pt; ) {
 	ch = utf8_ildb((const char **) &pt);
 	while ( ch!='|' && ch!=0x21d2 && ch!='\0' ) {
-	    while ( isspace(ch))
+	    while ( isspace_ff(ch))
 		ch = utf8_ildb((const char **) &pt);
 	    if ( ch=='|' || ch== 0x21d2 || ch=='\0' )
 	break;
 	    ++len;
-	    while ( !isspace(ch) && ch!='|' && ch!=0x21d2 && ch!='\0' )
+	    while ( !isspace_ff(ch) && ch!='|' && ch!=0x21d2 && ch!='\0' )
 		ch = utf8_ildb((const char **) &pt);
 	}
 	(&r->u.class.ncnt)[i] = len;
@@ -507,14 +507,14 @@ static void classruleitem2rule(SplineFont *sf,const char *ruletext,struct fpst_r
 	start = pt;
 	ch = utf8_ildb((const char **) &pt);
 	while ( ch!='|' && ch!=0x21d2 && ch!='\0' ) {
-	    while ( isspace(ch)) {
+	    while ( isspace_ff(ch)) {
 		start = pt;
 		ch = utf8_ildb((const char **) &pt);
 	    }
 	    if ( ch=='|' || ch== 0x21d2 || ch=='\0' )
 	break;
 	    nstart = start;
-	    while ( !isspace(ch) && ch!='|' && ch!=0x21d2 && ch!='\0' ) {
+	    while ( !isspace_ff(ch) && ch!='|' && ch!=0x21d2 && ch!='\0' ) {
 		nstart = pt;
 		ch = utf8_ildb((const char **) &pt);
 	    }
@@ -1746,7 +1746,7 @@ static void RenameClass(struct contextchaindlg *ccd,char *old,char *new,int sect
 	    char *oldrule = classrules[cols*i+0].u.md_str;
 	    char *newrule;
 	    for ( pt=last_name=oldrule; *pt; ) {
-		while ( isspace(*pt)) ++pt;
+		while ( isspace_ff(*pt)) ++pt;
 		if ( *pt=='|' ) {
 		    if ( end_back == NULL )
 			end_back = pt;
@@ -1760,7 +1760,7 @@ static void RenameClass(struct contextchaindlg *ccd,char *old,char *new,int sect
 		    while ( *pt!='>' && *pt!='\0' ) ++pt;
 		    if ( *pt=='>' ) ++pt;
 		} else {
-		    while ( !isspace( *pt ) && *pt!='\0' )
+		    while ( !isspace_ff( *pt ) && *pt!='\0' )
 			++pt;
 		}
 	    }
@@ -1845,7 +1845,7 @@ static void CCD_FinishClassEdit(GGadget *g,int r, int c, int wasnew) {
 
 	if ( strchr(classes_simple[3*r+0].u.md_str,' ')!=NULL ) {
 	    for ( pt=classes_simple[3*r+0].u.md_str; *pt; ++pt) {
-		if ( isspace(*pt))
+		if ( isspace_ff(*pt))
 		    *pt = '_';
 	    }
 	    GGadgetRedraw(g);

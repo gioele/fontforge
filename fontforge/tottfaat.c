@@ -2110,7 +2110,7 @@ uint16 *props_array(SplineFont *sf,struct glyphinfo *gi) {
 		    dir = 6;
 		else if ( iscommonsep(sc->unicodeenc))
 		    dir = 7;
-		else if ( isspace(sc->unicodeenc))
+		else if ( isspace_ff(sc->unicodeenc))
 		    dir = 10;
 		else if ( islefttoright(sc->unicodeenc) )
 		    dir = 0;

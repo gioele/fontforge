@@ -1480,7 +1480,7 @@ static void ValidatePostScriptFontName(struct ttfinfo *info, char *str) {
 	    pt[-3] = *pt;		/* ANSI says we can't strcpy overlapping strings */
     }
     strtod(str,&end);
-    if ( (*end=='\0' || (isdigit(str[0]) && strchr(str,'#')!=NULL)) &&
+    if ( (*end=='\0' || (isdigit_ff(str[0]) && strchr(str,'#')!=NULL)) &&
 	    *str!='\0' ) {
 	ff_post_error(_("Bad Font Name"),_("A PostScript name may not be a number"));
 	info->bad_ps_fontname = true;
@@ -1517,7 +1517,7 @@ char *EnforcePostScriptName(char *old) {
 return( old );
 
     strtod(str,&end);
-    if ( (*end=='\0' || (isdigit(str[0]) && strchr(str,'#')!=NULL)) &&
+    if ( (*end=='\0' || (isdigit_ff(str[0]) && strchr(str,'#')!=NULL)) &&
 	    *str!='\0' ) {
 	free(str);
 	str=malloc(strlen(old)+2);

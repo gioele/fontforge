@@ -1518,7 +1518,7 @@ return( true );
 	    while ( *pt!=')' )
 		*bpt++ = *pt++;
 	    ++pt;
-	} else if ( isalpha(*(unsigned char *) start) && pt-start==1 && *pt!='(' ) {
+	} else if ( isalpha_ff(*(unsigned char *) start) && pt-start==1 && *pt!='(' ) {
 	    *bpt++ = *start;
 	} else
     break;

@@ -565,7 +565,7 @@ return( private );
 	PSDictChangeEntry(private,"ForceBold",data);
     }
     for ( i=0; i<other->next; ++i ) {
-	if ( *other->values[i]!='[' && !isdigit( *other->values[i]) && *other->values[i]!='.' )
+	if ( *other->values[i]!='[' && !isdigit_ff( *other->values[i]) && *other->values[i]!='.' )
     continue;
 	for ( j=0; j<mm->instance_count; ++j ) {
 	    k = PSDictFindEntry(mm->instances[j]->private,other->keys[i]);

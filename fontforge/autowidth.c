@@ -449,7 +449,7 @@ static void SCFindEdges(struct charone *ch,WidthInfo *wi) {
     sc = ch->sc;
     while ( sc->layers[wi->layer].refs!=NULL ) {
 	for ( ref=ch->sc->layers[wi->layer].refs; ref!=NULL; ref=ref->next )
-	    if ( ref->sc->unicodeenc!=-1 && isalpha(ref->sc->unicodeenc))
+	    if ( ref->sc->unicodeenc!=-1 && isalpha_ff(ref->sc->unicodeenc))
 	break;
 	if ( ref==NULL )
     break;
@@ -928,10 +928,10 @@ return( NULL );
     for ( upt=buffer; *upt; ++upt ) {
 	if ( (*upt=='U' || *upt=='u') && upt[1]=='+' && ishexdigit(upt[2]) &&
 		ishexdigit(upt[3]) && ishexdigit(upt[4]) && ishexdigit(upt[5]) ) {
-	    ch = isdigit(upt[2]) ? upt[2]-'0' : islower(upt[2]) ? upt[2]-'a'+10 : upt[2]-'A'+10;
-	    ch = (ch<<4) + (isdigit(upt[3]) ? upt[3]-'0' : islower(upt[3]) ? upt[3]-'a'+10 : upt[3]-'A'+10);
-	    ch = (ch<<4) + (isdigit(upt[4]) ? upt[4]-'0' : islower(upt[4]) ? upt[4]-'a'+10 : upt[4]-'A'+10);
-	    ch = (ch<<4) + (isdigit(upt[5]) ? upt[5]-'0' : islower(upt[5]) ? upt[5]-'a'+10 : upt[5]-'A'+10);
+	    ch = isdigit_ff(upt[2]) ? upt[2]-'0' : islower_ff(upt[2]) ? upt[2]-'a'+10 : upt[2]-'A'+10;
+	    ch = (ch<<4) + (isdigit_ff(upt[3]) ? upt[3]-'0' : islower_ff(upt[3]) ? upt[3]-'a'+10 : upt[3]-'A'+10);
+	    ch = (ch<<4) + (isdigit_ff(upt[4]) ? upt[4]-'0' : islower_ff(upt[4]) ? upt[4]-'a'+10 : upt[4]-'A'+10);
+	    ch = (ch<<4) + (isdigit_ff(upt[5]) ? upt[5]-'0' : islower_ff(upt[5]) ? upt[5]-'a'+10 : upt[5]-'A'+10);
 	    *upt = ch;
 	    u_strcpy(upt+1,upt+6);
 	}

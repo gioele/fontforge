@@ -552,7 +552,7 @@ static void IkarusFontname(SplineFont *sf,char *fullname,char *fnam) {
     free(sf->fontname);
     sf->fontname=copy(fullname);
     for ( pt=tpt=sf->fontname; *pt; ++pt ) {
-	if ( isalnum(*pt) || *pt=='-' || *pt=='_' || *pt=='$' )
+	if ( isalnum_ff(*pt) || *pt=='-' || *pt=='_' || *pt=='$' )
 	    *tpt++ = *pt;
     }
     *tpt = '\0';
@@ -611,11 +611,11 @@ return( NULL );
 	if ( (ch1=='D' && ch2=='I') || (ch1=='V' && ch2=='C') ||
 		(ch1=='V' && ch2=='S') || (ch1=='V' && ch2=='E') || 
 		(ch1=='S' && ch2=='C') || (ch1=='S' && ch2=='N') || 
-		(ch1=='B' && ch2=='I') || (ch1=='G' && isdigit(ch2)) ||
+		(ch1=='B' && ch2=='I') || (ch1=='G' && isdigit_ff(ch2)) ||
 		(ch1=='d' && ch2=='i') || (ch1=='v' && ch2=='c') ||
 		(ch1=='v' && ch2=='s') || (ch1=='v' && ch2=='e') || 
 		(ch1=='s' && ch2=='c') || (ch1=='s' && ch2=='n') || 
-		(ch1=='b' && ch2=='i') || (ch1=='g' && isdigit(ch2)))
+		(ch1=='b' && ch2=='i') || (ch1=='g' && isdigit_ff(ch2)))
 	    LogError( _("This is probably a valid URW font, but it is in a format (%c%c) which FontForge\ndoes not support. FontForge only supports 'IK' format fonts.\n"), ch1, ch2 );
 	else if ( ch1==0 && ch2==0 && ilen==55 )
 	    LogError( _("This looks like an ikarus format which I have seen examples of, but for which\nI have no documentation. FontForge does not support it yet.\n") );

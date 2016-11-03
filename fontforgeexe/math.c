@@ -219,7 +219,7 @@ return( -1 );
 	scnt = 0;
 	while ( *pt!=' ' && *pt!='\0' ) {
 	    if ( *pt==':' ) ++scnt;
-	    else if ( !isdigit( *pt ))
+	    else if ( !isdigit_ff( *pt ))
 return( -1 );
 	    ++pt;
 	}

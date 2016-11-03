@@ -210,7 +210,7 @@ return;
 return;
     }
     while ( !feof(plate)) {
-	while ( isspace( (ch=getc(plate)) ) );
+	while ( isspace_ff( (ch=getc(plate)) ) );
 	if ( ch==')' || ch==EOF )
     break;
 	if ( ch!='(' ) {

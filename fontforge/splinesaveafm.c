@@ -114,19 +114,19 @@ return( 0 );
     while ( mygets(file,buffer,sizeof(buffer))!=NULL ) {
 	if ( strncmp(buffer,"KPX",3)==0 || strncmp(buffer,"KPY",3)==0 ) {
 	    int isv = strncmp(buffer,"KPY",3)==0;
-	    for ( pt=buffer+3; isspace(*pt); ++pt);
-	    for ( ept = pt; *ept!='\0' && !isspace(*ept); ++ept );
+	    for ( pt=buffer+3; isspace_ff(*pt); ++pt);
+	    for ( ept = pt; *ept!='\0' && !isspace_ff(*ept); ++ept );
 	    ch = *ept; *ept = '\0';
 	    sc1 = SFGetChar(sf,-1,pt);
 	    *ept = ch;
-	    for ( pt=ept; isspace(*pt); ++pt);
-	    for ( ept = pt; *ept!='\0' && !isspace(*ept); ++ept );
+	    for ( pt=ept; isspace_ff(*pt); ++pt);
+	    for ( ept = pt; *ept!='\0' && !isspace_ff(*ept); ++ept );
 	    ch = *ept; *ept = '\0';
 	    sc2 = SFGetChar(sf,-1,pt);
 	    *ept = ch;
 	    off = strtol(ept,NULL,10);
 	    KPInsert(sc1,sc2,rint(off*scale),isv);
-	} else if ( buffer[0]=='C' && isspace(buffer[1])) {
+	} else if ( buffer[0]=='C' && isspace_ff(buffer[1])) {
 	    char *pt;
 	    sc2 = NULL;
 	    for ( pt= strchr(buffer,';'); pt!=NULL; pt=strchr(pt+1,';') ) {
@@ -196,7 +196,7 @@ int LoadKerningDataFromAmfm(SplineFont *sf, char *filename) {
     pt = strstrmatch(filename,".amfm");
     if ( pt!=NULL ) {
 	char *afmname = copy(filename);
-	strcpy(afmname+(pt-filename),isupper(pt[1])?".AFM":".afm");
+	strcpy(afmname+(pt-filename),isupper_ff(pt[1])?".AFM":".afm");
 	LoadKerningDataFromAfm(mm->normal,afmname);
 	free(afmname);
     }
@@ -244,7 +244,7 @@ int CheckAfmOfPostScript(SplineFont *sf,char *psname) {
     strcpy(new,psname);
     pt = strrchr(new,'.');
     if ( pt==NULL ) pt = new+strlen(new);
-    else wasuc = isupper(pt[1]);
+    else wasuc = isupper_ff(pt[1]);
 
     if ( sf->mm!=NULL ) {
 	strcpy(pt,wasuc?".AMFM":".amfm");
@@ -848,7 +848,7 @@ const char *EncodingName(Encoding *map) {
     if ( strmatch(name,"AdobeStandard")==0 )
 return( "AdobeStandardEncoding" );
     if (( strstr(name,"8859")!=NULL && name[len-1]=='1' &&
-	     (!isdigit(name[len-2]) || name[len-2]=='9') ) ||
+	     (!isdigit_ff(name[len-2]) || name[len-2]=='9') ) ||
 	    strstrmatch(name,"latin1")!=NULL )
 return( "ISOLatin1Encoding" );
     else if ( map->is_unicodebmp || map->is_unicodefull )

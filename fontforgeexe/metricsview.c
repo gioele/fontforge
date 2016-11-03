@@ -2143,12 +2143,12 @@ static int MV_ScriptLangChanged(GGadget *g, GEvent *e) {
 	    GGadgetSetTitle8(g,mv->scriptlangs[e->u.control.u.tf_changed.from_pulldown].userdata );
 	    sstr = _GGadgetGetTitle(g);
 	} else {
-	    if ( u_strlen(sstr)<4 || !isalpha(sstr[0]) || !isalnum(sstr[1]) /*|| !isalnum(sstr[2]) || !isalnum(sstr[3])*/ )
+	    if ( u_strlen(sstr)<4 || !isalpha_ff(sstr[0]) || !isalnum_ff(sstr[1]) /*|| !isalnum_ff(sstr[2]) || !isalnum_ff(sstr[3])*/ )
 return( true );
 	    if ( u_strlen(sstr)==4 )
 		/* No language, we'll use default */;
 	    else if ( u_strlen(sstr)!=10 || sstr[4]!='{' || sstr[9]!='}' ||
-		    !isalpha(sstr[5]) || !isalpha(sstr[6]) || !isalpha(sstr[7])  )
+		    !isalpha_ff(sstr[5]) || !isalpha_ff(sstr[6]) || !isalpha_ff(sstr[7])  )
 return( true );
 	}
 	MVSetFeatures(mv);

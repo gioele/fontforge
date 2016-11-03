@@ -373,7 +373,7 @@ return closest;
 static int GetBlueFuzz(SplineFont *sf) {
     char *str, *end;
 
-    if ( sf->private==NULL || (str=PSDictHasEntry(sf->private,"BlueFuzz"))==NULL || !isdigit(str[0]) )
+    if ( sf->private==NULL || (str=PSDictHasEntry(sf->private,"BlueFuzz"))==NULL || !isdigit_ff(str[0]) )
 return 1;
 return strtod(str, &end);
 }
@@ -410,7 +410,7 @@ return NULL;
 
     while (*str)
     {
-        while (!isdigit(*str) && *str!='-' && *str!='+' && *str!='.' && *str!='\0')
+        while (!isdigit_ff(*str) && *str!='-' && *str!='+' && *str!='.' && *str!='\0')
             ++str;
 
         if ( *str=='\0' )

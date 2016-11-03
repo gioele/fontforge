@@ -131,25 +131,25 @@ static void parse_CharMetric_line(struct temp_font *tf, char *line) {
     int ch, ch2, wid; float a1, a2, a3, a4;
     char name[201], *pt;
 
-    while ( isspace(*line)) ++line;
+    while ( isspace_ff(*line)) ++line;
     if ( *line=='\0' )
 return;
     wid = tf->ch_width; ch= -1; name[0]='\0';
     for ( pt=line; pt && *pt ; ) {
-	if ( isspace(*pt) || *pt==';' )
+	if ( isspace_ff(*pt) || *pt==';' )
 	    ++pt;
 	else {
-	    if ( pt[0]=='C' && isspace(pt[1]))
+	    if ( pt[0]=='C' && isspace_ff(pt[1]))
 		sscanf( pt, "C %d", &ch );
-	    else if ( pt[0]=='C' && pt[1]=='H' && isspace(pt[2]))
+	    else if ( pt[0]=='C' && pt[1]=='H' && isspace_ff(pt[2]))
 		sscanf( pt, "CH <%x>", (unsigned *) &ch );
-	    else if ( pt[0]=='W' && pt[1]=='X' && isspace(pt[2]))
+	    else if ( pt[0]=='W' && pt[1]=='X' && isspace_ff(pt[2]))
 		sscanf( pt, "WX %d", &wid );
-	    else if ( pt[0]=='W' && pt[1]=='0' && pt[2]=='X' && isspace(pt[3]))
+	    else if ( pt[0]=='W' && pt[1]=='0' && pt[2]=='X' && isspace_ff(pt[3]))
 		sscanf( pt, "W0X %d", &wid );
-	    else if ( pt[0]=='N' && isspace(pt[1]))
+	    else if ( pt[0]=='N' && isspace_ff(pt[1]))
 		sscanf( pt, "N %200s", name );
-	    else if ( pt[0]=='B' && isspace(pt[1]))
+	    else if ( pt[0]=='B' && isspace_ff(pt[1]))
 		sscanf( pt, "B %g %g %g %g", &a1, &a2, &a3, &a4 );
 	    pt = strchr(pt,';');
 	}
@@ -184,7 +184,7 @@ return;
 }
 
 static char *skipwhite(char *pt) {
-    while ( isspace(*pt)) ++pt;
+    while ( isspace_ff(*pt)) ++pt;
 return( pt );
 }
 
@@ -193,7 +193,7 @@ static void parse_KernData_line(struct temp_font *tf, char *line) {
     char name[200], name2[200];
     struct kern_info *ki;
 
-    while ( isspace(*line)) ++line;
+    while ( isspace_ff(*line)) ++line;
     if ( *line=='\0' )
 return;
     if ( sscanf(line,"KPX %s %s %d", name, name2, &kern )!= 3 ) {

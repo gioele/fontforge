@@ -292,9 +292,9 @@ static int getnth(char *buffer, int col) {
 
     if ( col==1 ) {
 	/* first column is decimal, others are hex */
-	if ( !isdigit(*buffer))
+	if ( !isdigit_ff(*buffer))
 return( -1 );
-	while ( isdigit(*buffer))
+	while ( isdigit_ff(*buffer))
 	    val = 10*val + *buffer++-'0';
 return( val );
     }

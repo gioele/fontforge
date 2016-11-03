@@ -2449,8 +2449,8 @@ return( -1 );
 	    /* First ignore case */
 	    uni1 = (md1->base->unicodeenc!=-1)? md1->base->unicodeenc : 0xffffff;
 	    uni2 = (md2->base->unicodeenc!=-1)? md2->base->unicodeenc : 0xffffff;
-	    if ( uni1<0x10000 && islower(uni1)) uni1 = toupper(uni1);
-	    if ( uni2<0x10000 && islower(uni2)) uni2 = toupper(uni2);
+	    if ( uni1<0x10000 && islower_ff(uni1)) uni1 = toupper_ff(uni1);
+	    if ( uni2<0x10000 && islower_ff(uni2)) uni2 = toupper_ff(uni2);
 
 	    if ( uni1>uni2 )
 return( 1 );
@@ -4294,7 +4294,7 @@ return( copy(str));
 	/*  latin letters (their names are themselves, no need to duplicate) */
 	/*  or things in the private use area */
 	if ( sc!=NULL && sc->unicodeenc>32 && sc->unicodeenc!=')' &&
-		!( sc->unicodeenc<0x7f && isalpha(sc->unicodeenc)) &&
+		!( sc->unicodeenc<0x7f && isalpha_ff(sc->unicodeenc)) &&
 	        !issurrogate(sc->unicodeenc) &&
 		!isprivateuse(sc->unicodeenc)) {
 	    *rpt++ = '(';
@@ -4327,7 +4327,7 @@ return( copy(sc->name));
     temp = malloc(len + 8);
     strcpy(temp,sc->name);
     if ( sc->unicodeenc>32 && sc->unicodeenc!=')' && add_char_to_name_list &&
-	    !( sc->unicodeenc<0x7f && isalpha(sc->unicodeenc)) &&
+	    !( sc->unicodeenc<0x7f && isalpha_ff(sc->unicodeenc)) &&
 	    !issurrogate(sc->unicodeenc) &&
 	    !isprivateuse(sc->unicodeenc)) {
 	pt = temp+len;
@@ -4348,7 +4348,7 @@ return( NULL );
     temp = malloc((strlen(sc->name) + 5) * sizeof(unichar_t));
     utf82u_strcpy(temp,sc->name);
     if ( sc->unicodeenc>32 && sc->unicodeenc!=')' && add_char_to_name_list &&
-	    !( sc->unicodeenc<0x7f && isalpha(sc->unicodeenc)) &&
+	    !( sc->unicodeenc<0x7f && isalpha_ff(sc->unicodeenc)) &&
 	    !issurrogate(sc->unicodeenc) &&
 	    !isprivateuse(sc->unicodeenc)) {
 	len = u_strlen(temp);
@@ -4383,7 +4383,7 @@ return( NULL );
 	++pt;
     do_wildcards = *pt!='\0';
 
-    if (( !do_wildcards && pt-spt==1 && ( *spt>=0x10000 || !isalpha(*spt))) ||
+    if (( !do_wildcards && pt-spt==1 && ( *spt>=0x10000 || !isalpha_ff(*spt))) ||
 	    (!from_tab && do_wildcards && pt-spt==2 && spt[1]==' ')) {
 	sc = SFGetChar(sf,*spt,NULL);
 	/* One unicode character which isn't a glyph name (so not "A") and */
@@ -4431,7 +4431,7 @@ return( NULL );
 			utf82u_strcpy(temp+(spt-basept),sc->name);
 			len = u_strlen(temp);
 			if ( sc->unicodeenc>32 && add_char_to_name_list &&
-				!( sc->unicodeenc<0x7f && isalpha(sc->unicodeenc)) &&
+				!( sc->unicodeenc<0x7f && isalpha_ff(sc->unicodeenc)) &&
 				!issurrogate(sc->unicodeenc) &&
 			        !isprivateuse(sc->unicodeenc)) {
 			    temp[len] = '(';

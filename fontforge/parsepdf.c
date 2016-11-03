@@ -181,11 +181,11 @@ static long *FindObjects(struct pdfcontext *pc) {
 	if ( fseek(pdf,xrefpos,SEEK_SET)!=0 || \
 	     fscanf(pdf,"%ld %ld",&foo,&bar)!=2 )
 	    return( NULL );
-	while ( isspace(ch=getc(pdf)));
+	while ( isspace_ff(ch=getc(pdf)));
 	if ( ch=='o' && \
 	     getc(pdf)=='b' && \
 	     getc(pdf)=='j' && \
-	     isspace(getc(pdf)) )
+	     isspace_ff(getc(pdf)) )
 	    return( FindObjectsFromXREFObject(pc,xrefpos));
 
 	return( NULL );
@@ -446,8 +446,8 @@ static int hex(int ch1, int ch2) {
 static int pdf_getprotectedtok(FILE *stream, char *tokbuf) {
     char *pt=tokbuf, *end=tokbuf+100-2; int ch;
 
-    while ( isspace(ch = getc(stream)) );
-    while ( ch>=0 && !isspace(ch) && ch!='[' && ch!=']' && ch!='{' && ch!='}' && ch!='<' && ch!='>' ) {
+    while ( isspace_ff(ch = getc(stream)) );
+    while ( ch>=0 && !isspace_ff(ch) && ch!='[' && ch!=']' && ch!='{' && ch!='}' && ch!='<' && ch!='>' ) {
 	if ( pt<end ) *pt++ = ch;
 	ch = getc(stream);
     }
@@ -466,7 +466,7 @@ static int pdf_skip_brackets(FILE *stream, char *tokbuf) {
     int ch, ret;
 
     /* first ch should be '<', else return 0 as not found */
-    while ( isspace(ch = getc(stream)) );
+    while ( isspace_ff(ch = getc(stream)) );
     if (ch != '<') return( 0 );
 
     ret = pdf_getprotectedtok(stream, tokbuf);
@@ -678,7 +678,7 @@ static void pdf_addpages(struct pdfcontext *pc, int obj) {
 		if ( (pt=PSDictHasEntry(&pc->pdfdict,"Kids"))!=NULL ) {
 		    char *kids = copy(pt);
 		    for ( pt = kids; *pt!=']' && *pt!='\0' ;  ) {
-			if ( *pt=='[' || isspace(*pt)) {
+			if ( *pt=='[' || isspace_ff(*pt)) {
 			    ++pt;
 			} else {
 			    int o = strtol(pt,&end,10);
@@ -687,7 +687,7 @@ static void pdf_addpages(struct pdfcontext *pc, int obj) {
 			    if ( pt==end )
 return;
 			    pt = end;
-			    while ( isspace( *pt )) ++pt;
+			    while ( isspace_ff( *pt )) ++pt;
 			    if ( *pt=='R' )
 				++pt;
 			    pdf_addpages(pc,o);
@@ -743,7 +743,7 @@ static void pdf_85filter(FILE *to,FILE *from) {
 
     rewind(from);
     for (;;) {
-	while ( isspace(ch1=getc(from)));
+	while ( isspace_ff(ch1=getc(from)));
 	if ( ch1==EOF || ch1=='~' )
     break;
 	if ( ch1=='z' ) {
@@ -752,10 +752,10 @@ static void pdf_85filter(FILE *to,FILE *from) {
 	    putc(0,to);
 	    putc(0,to);
 	} else {
-	    while ( isspace(ch2=getc(from)));
-	    while ( isspace(ch3=getc(from)));
-	    while ( isspace(ch4=getc(from)));
-	    while ( isspace(ch5=getc(from)));
+	    while ( isspace_ff(ch2=getc(from)));
+	    while ( isspace_ff(ch3=getc(from)));
+	    while ( isspace_ff(ch4=getc(from)));
+	    while ( isspace_ff(ch5=getc(from)));
 	    cnt = 4;
 	    if ( ch3=='~' && ch4=='>' ) {
 		cnt=1;
@@ -899,7 +899,7 @@ return( res );
     ptDecodeParms = PSDictHasEntry(&pc->pdfdict,"DecodeParms");
     while ( *pt==' ' || *pt=='[' || *pt==']' || *pt=='/' ) ++pt;	/* Yes, I saw a null array once */
     while ( *pt!='\0' ) {
-	for ( end=pt; isalnum(*end); ++end );
+	for ( end=pt; isalnum_ff(*end); ++end );
 	ch = *end; *end = '\0';
 	old = res;
 	res = tmpfile();
@@ -1108,7 +1108,7 @@ static int nextpdftoken(FILE *file, real *val, char *tokbuf, int tbsize) {
 
     /* Eat whitespace and comments. Comments last to eol */
     while ( 1 ) {
-	while ( isspace(ch = getc(file)) );
+	while ( isspace_ff(ch = getc(file)) );
 	if ( ch!='%' )
     break;
 	while ( (ch=getc(file))!=EOF && ch!='\r' && ch!='\n' );
@@ -1170,7 +1170,7 @@ return( pt_closearray );
 return( pt_unknown );	/* single character token */
     } else if ( ch=='/' ) {
 	pt = tokbuf;
-	while ( (ch=getc(file))!=EOF && !isspace(ch) && ch!='%' &&
+	while ( (ch=getc(file))!=EOF && !isspace_ff(ch) && ch!='%' &&
 		ch!='(' && ch!=')' && ch!='<' && ch!='>' && ch!='[' && ch!=']' &&
 		ch!='{' && ch!='}' && ch!='/' )
 	    if ( pt<tokbuf+tbsize-2 )
@@ -1179,7 +1179,7 @@ return( pt_unknown );	/* single character token */
 	ungetc(ch,file);
 return( pt_namelit );	/* name literal */
     } else {
-	while ( (ch=getc(file))!=EOF && !isspace(ch) && ch!='%' &&
+	while ( (ch=getc(file))!=EOF && !isspace_ff(ch) && ch!='%' &&
 		ch!='(' && ch!=')' && ch!='<' && ch!='>' && ch!='[' && ch!=']' &&
 		ch!='{' && ch!='}' && ch!='/' ) {
 	    if ( pt<tokbuf+tbsize-2 )

@@ -44,11 +44,11 @@ static char *cleancopy(const char *name) {
     /* Look for some common cases */
     /* Often bdf fonts name their glyphs things like "%" or "90". Neither is */
     /*  a good postscript name, so do something reasonable here */
-    if ( !isalpha(*(unsigned char *) fpt) && fpt[0]>=' ' && /* fpt[0]<=0x7f &&*/
+    if ( !isalpha_ff(*(unsigned char *) fpt) && fpt[0]>=' ' && /* fpt[0]<=0x7f &&*/
 	    fpt[1]=='\0' )
 return( copy( StdGlyphName(buf,*(unsigned char *) fpt,ui_none,(NameList *) -1)) );
     tpt = temp = malloc(strlen(name)+2);
-    if ( isdigit(*fpt))
+    if ( isdigit_ff(*fpt))
 	*tpt++ = '$';
     for ( ; *fpt; ++fpt ) {
 	if ( *fpt>' ' && *fpt<127 &&
@@ -131,8 +131,8 @@ void SFDefaultAscent(SplineFont *sf) {
 static int gettoken(FILE *bdf, char *tokbuf, int size) {
     char *pt=tokbuf, *end = tokbuf+size-2; int ch;
 
-    while ( isspace(ch = getc(bdf)));
-    while ( ch!=EOF && !isspace(ch) /* && ch!='[' && ch!=']' && ch!='{' && ch!='}' && ch!='<' && ch!='%' */ ) {
+    while ( isspace_ff(ch = getc(bdf)));
+    while ( ch!=EOF && !isspace_ff(ch) /* && ch!='[' && ch!=']' && ch!='{' && ch!='}' && ch!='<' && ch!='%' */ ) {
 	if ( pt<end ) *pt++ = ch;
 	ch = getc(bdf);
     }
@@ -348,7 +348,7 @@ return;
 	eol = pt + bc->bytes_per_line;
 	while ( pt<end ) {
 	    int ch1, ch2, val;
-	    while ( isspace(ch1=getc(bdf)) );
+	    while ( isspace_ff(ch1=getc(bdf)) );
 	    ch2 = getc(bdf);
 	    val = 0;
 	    if ( ch1>='0' && ch1<='9' ) val = (ch1-'0')<<4;
@@ -399,7 +399,7 @@ return;
 	else
 	    cnt = 8*(xmax-xmin + 1) * (ymax-ymin+1);
 	for ( i=0; i<cnt; ++i ) {
-	    while ( isspace(getc(bdf)) );
+	    while ( isspace_ff(getc(bdf)) );
 	    getc(bdf);
 	}
     }
@@ -529,7 +529,7 @@ static int slurp_header(FILE *bdf, int *_as, int *_ds, Encoding **_enc,
 		dummy->props = realloc(dummy->props,(pmax=pcnt+10)*sizeof(BDFProperties));
 	    dummy->props[pcnt].name = copy(tok);
 	    while ( *buf==' ' || *buf=='\t' ) ++buf;
-	    for ( eol=buf+strlen(buf)-1; eol>=buf && isspace(*eol); --eol);
+	    for ( eol=buf+strlen(buf)-1; eol>=buf && isspace_ff(*eol); --eol);
 	    eol[1] ='\0';
 	    val = strtol(buf,&end,10);
 	    if ( *end=='\0' && buf<=eol ) {
@@ -566,7 +566,7 @@ static int slurp_header(FILE *bdf, int *_as, int *_ds, Encoding **_enc,
 		    if ( point_size<0 ) point_size = -point_size;
 		}
 	    } else {
-		if ( *buf!='\0' && !isdigit(*buf))
+		if ( *buf!='\0' && !isdigit_ff(*buf))
 		    strcpy(family,buf);
 	    }
 	} else if ( strcmp(tok,"SIZE")==0 ) {
@@ -844,7 +844,7 @@ return( -2 );
     *mods = '\0';
     pt = strrchr(filename, '/');
     if ( pt==NULL ) pt = filename; else ++pt;
-    for ( fpt=family; isalpha(*pt);)
+    for ( fpt=family; isalpha_ff(*pt);)
 	*fpt++ = *pt++;
     *fpt = '\0';
     strcpy(full,family);
@@ -1051,7 +1051,7 @@ return( -2 );
     *mods = '\0';
     pt = strrchr(filename, '/');
     if ( pt==NULL ) pt = filename; else ++pt;
-    for ( fpt=family; isalpha(*pt);)
+    for ( fpt=family; isalpha_ff(*pt);)
 	*fpt++ = *pt++;
     *fpt = '\0';
     strcpy(full,family);
@@ -1494,7 +1494,7 @@ return(-2);
 			family, weight, italic )!=0 ) {
 		    for ( pt = props[i].value, dash_cnt=0; *pt && dash_cnt<7; ++pt )
 			if ( *pt=='-' ) ++dash_cnt;
-		    if ( dash_cnt==7 && isdigit(*pt) )
+		    if ( dash_cnt==7 && isdigit_ff(*pt) )
 			pixelsize = strtol(pt,NULL,10);
 		}
 	    }
@@ -1850,7 +1850,7 @@ static int askusersize(char *filename) {
     char *ret, *end;
     char def[10];
 
-    for ( pt=filename; *pt && !isdigit(*pt); ++pt );
+    for ( pt=filename; *pt && !isdigit_ff(*pt); ++pt );
     guess = strtol(pt,NULL,10);
     if ( guess!=0 )
 	sprintf(def,"%d",guess);
@@ -1938,7 +1938,7 @@ void SFSetFontName(SplineFont *sf, char *family, char *mods,char *fullname) {
     free(sf->fullname); sf->fullname = full;
 
     for ( pt=tpt=n; *pt; ) {
-	if ( !isspace(*pt))
+	if ( !isspace_ff(*pt))
 	    *tpt++ = *pt++;
 	else
 	    ++pt;

@@ -150,7 +150,7 @@ static int GI_MatchPtChange(GGadget *g, GEvent *e) {
 	while ( *t2==' ' ) ++t2;
 	GGadgetSetEnabled(GWidgetGetControl(ci->gw,1004),*t1=='\0' && *t2=='\0' );
 	GGadgetSetEnabled(GWidgetGetControl(ci->gw,1005),*t1=='\0' && *t2=='\0' );
-	if ( isdigit(*t1) && isdigit(*t2)) {
+	if ( isdigit_ff(*t1) && isdigit_ff(*t2)) {
 	    BasePoint inbase, inref;
 	    int basept, refpt;
 	    basept = u_strtol(t1,NULL,10);
@@ -197,11 +197,11 @@ return( false );
     else {
 	const unichar_t *txt;
 	txt = _GGadgetGetTitle(GWidgetGetControl(ci->gw,CID_Match_Pt_Base));
-	while ( isspace(*txt)) ++txt;
+	while ( isspace_ff(*txt)) ++txt;
 	if ( *txt!='\0' )
 	    basept = GetInt8(ci->gw,CID_Match_Pt_Base,_("_Base:"),&errs);
 	txt = _GGadgetGetTitle(GWidgetGetControl(ci->gw,CID_Match_Pt_Ref));
-	while ( isspace(*txt)) ++txt;
+	while ( isspace_ff(*txt)) ++txt;
 	if ( *txt!='\0' )
 	    refpt = GetInt8(ci->gw,CID_Match_Pt_Ref,_("Ref:"),&errs);
 	if ( errs )
@@ -1273,7 +1273,7 @@ static int AI_MatchChanged(GGadget *g, GEvent *e) {
 	while ( *t1==' ' ) ++t1;
 	GGadgetSetEnabled(GWidgetGetControl(ci->gw,CID_X),*t1=='\0');
 	GGadgetSetEnabled(GWidgetGetControl(ci->gw,CID_Y),*t1=='\0');
-	if ( isdigit(*t1)) {
+	if ( isdigit_ff(*t1)) {
 	    BasePoint here;
 	    int pt;
 	    pt = u_strtol(t1,&end,10);

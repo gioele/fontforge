@@ -394,7 +394,7 @@ void def_Charset_Enc(EncMap *map,char *reg,char *enc) {
     } else if ( (pt = strstr(map->enc->enc_name,"8859"))!=NULL ) {
 	strcpy( reg, "ISO8859" );
 	pt += 4;
-	if ( !isdigit(*pt)) ++pt;
+	if ( !isdigit_ff(*pt)) ++pt;
 	strcpy(enc, pt );
     } else if ( map->enc->is_unicodebmp || map->enc->is_unicodefull ) {
 	strcpy( reg, "ISO10646" );
@@ -778,11 +778,11 @@ void Default_Properties(BDFFont *bdf,EncMap *map,char *onlyme) {
 	lc_cnt = lc_sum = uc_cnt = uc_sum = 0;
 	for ( gid = 0; gid<bdf->glyphcnt; ++gid ) if ( (bdfc=bdf->glyphs[gid])!=NULL ) {
 	    SplineChar *sc = bdfc->sc;
-	    if ( sc->unicodeenc!=-1 && sc->unicodeenc<0x10000 && islower(sc->unicodeenc ) ) {
+	    if ( sc->unicodeenc!=-1 && sc->unicodeenc<0x10000 && islower_ff(sc->unicodeenc ) ) {
 		++lc_cnt;
 		lc_sum += bdfc->width;
 	    }
-	    if ( sc->unicodeenc!=-1 && sc->unicodeenc<0x10000 && isupper(sc->unicodeenc ) ) {
+	    if ( sc->unicodeenc!=-1 && sc->unicodeenc<0x10000 && isupper_ff(sc->unicodeenc ) ) {
 		++uc_cnt;
 		uc_sum += bdfc->width;
 	    }

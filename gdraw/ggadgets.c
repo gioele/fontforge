@@ -214,7 +214,7 @@ void *GResource_font_cvt(char *val, void *def) {
 	for ( end=pt; *end!=' ' && *end!='\0'; ++end );
 	ch = *end; *end = '\0';
 	ret = match(styles,pt);
-	if ( ret==-1 && isdigit(*pt)) {
+	if ( ret==-1 && isdigit_ff(*pt)) {
 	    char *e;
 	    ret = strtol(pt,&e,10);
 	    if ( strmatch(e,"pt")==0 )
@@ -886,8 +886,8 @@ GGadget *_GGadget_Create(GGadget *g, struct gwindow *base, GGadgetData *gd,void 
 	    g->r.x = last->r.x + last->r.width + GDrawPointsToPixels(base,_GGadget_Skip);
     }
 
-    g->mnemonic = islower(gd->mnemonic)?toupper(gd->mnemonic):gd->mnemonic;
-    g->shortcut = islower(gd->shortcut)?toupper(gd->shortcut):gd->shortcut;
+    g->mnemonic = islower_ff(gd->mnemonic)?toupper_ff(gd->mnemonic):gd->mnemonic;
+    g->shortcut = islower_ff(gd->shortcut)?toupper_ff(gd->shortcut):gd->shortcut;
     g->short_mask = gd->short_mask;
     g->cid = gd->cid;
     g->data = data;
@@ -996,8 +996,8 @@ return;
     char *ctext = u2utf8_copy(label);
     char *cpt = utf8_strchr(ctext,mnemonic);
     GRect space;
-    if ( cpt==NULL && isupper(mnemonic))
-	cpt = strchr(ctext,tolower(mnemonic));
+    if ( cpt==NULL && isupper_ff(mnemonic))
+	cpt = strchr(ctext,tolower_ff(mnemonic));
     if ( cpt==NULL )
 return;
     GDrawLayoutInit(gw,ctext,-1,NULL);

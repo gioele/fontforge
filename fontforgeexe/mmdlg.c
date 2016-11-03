@@ -113,7 +113,7 @@ static int ExecConvertDesignVector(real *designs, int dcnt, char *ndv, char *cdv
     strcpy(temp,dv);
     /*strcpy(temp+len++," ");*/		/* dv always will end in a space */
 
-    while ( isspace(*ndv)) ++ndv;
+    while ( isspace_ff(*ndv)) ++ndv;
     if ( *ndv=='{' )
 	++ndv;
     strcpy(temp+len,ndv);
@@ -121,7 +121,7 @@ static int ExecConvertDesignVector(real *designs, int dcnt, char *ndv, char *cdv
     while ( len>0 && (temp[len-1]==' '||temp[len-1]=='\n') ) --len;
     if ( len>0 && temp[len-1]=='}' ) --len;
 
-    while ( isspace(*cdv)) ++cdv;
+    while ( isspace_ff(*cdv)) ++cdv;
     if ( *cdv=='{' )
 	++cdv;
     strcpy(temp+len,cdv);

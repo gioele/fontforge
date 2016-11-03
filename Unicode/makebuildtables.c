@@ -487,7 +487,7 @@ void ParseUnicodeFile(FILE *in) {
     continue;
 	pt += 7;
 	base = *pt++;
-	if ( lc ) base = tolower(base);
+	if ( lc ) base = tolower_ff(base);
 	if ( strncmp(pt," WITH ",6)!=0 )
     continue;
 	pt += 6;

@@ -836,13 +836,13 @@ static uint32 SFToFOND(FILE *res,SplineFont *sf,uint32 id,int dottf,
     if ( strcnt==1 ) {
 	putc(strlen(sf->fontname),res);	/* basename is full name */
 	/* Mac expects this to be upper case */
-	if ( islower(*sf->fontname)) putc(toupper(*sf->fontname),res);
+	if ( islower_ff(*sf->fontname)) putc(toupper_ff(*sf->fontname),res);
 	else putc(*sf->fontname,res);
 	fwrite(sf->fontname+1,1,strlen(sf->fontname+1),res);
     } else {
         pt = sf->fontname+strlen(sf->familyname);
 	putc(strlen(sf->familyname),res);/* basename */
-	if ( islower(*sf->familyname)) putc(toupper(*sf->familyname),res);
+	if ( islower_ff(*sf->familyname)) putc(toupper_ff(*sf->familyname),res);
 	else putc(*sf->familyname,res);
 	fwrite(sf->familyname+1,1,strlen(sf->familyname+1),res);
 	if ( strcnt==3 ) {
@@ -893,8 +893,8 @@ return(rlenpos);
 static void putpnsstring(FILE *res,char *fontname,int len) {
     putc(len,res);
     if ( *fontname && len>0 ) {
-	if ( islower(*fontname))
-	    putc(toupper(*fontname),res);
+	if ( islower_ff(*fontname))
+	    putc(toupper_ff(*fontname),res);
 	else
 	    putc(*fontname,res);
 	--len;
@@ -1538,10 +1538,10 @@ static void MakeMacPSName(char buffer[63],SplineFont *sf) {
     char *pt, *spt, *lcpt;
 
     for ( pt = buffer, spt = sf->fontname; *spt && pt<buffer+63-1; ++spt ) {
-	if ( isupper(*spt) || spt==sf->fontname ) {
+	if ( isupper_ff(*spt) || spt==sf->fontname ) {
 	    *pt++ = *spt;
 	    lcpt = (spt==sf->fontname?spt+5:spt+3);
-	} else if ( (islower(*spt) || isdigit(*spt)) && spt<lcpt )
+	} else if ( (islower_ff(*spt) || isdigit_ff(*spt)) && spt<lcpt )
 	    *pt++ = *spt;
     }
     *pt = '\0';
@@ -1574,13 +1574,13 @@ return( 0 );
 	/* So Times-Bold => TimesBol, HelveticaDemiBold => HelveDemBol */
 	/* MacBinary limits the name to 63 characters, I dunno what happens if */
 	/*  we excede that */
-    if ( islower(*sf->fontname)) { *sf->fontname = toupper(*sf->fontname); lcfn = true; }
-    if ( islower(*sf->familyname)) { *sf->familyname = toupper(*sf->familyname); lcfam = true; }
+    if ( islower_ff(*sf->fontname)) { *sf->fontname = toupper_ff(*sf->fontname); lcfn = true; }
+    if ( islower_ff(*sf->familyname)) { *sf->familyname = toupper_ff(*sf->familyname); lcfam = true; }
     MakeMacPSName(buffer,sf);
 
     ret = _WritePSFont(temppfb,sf,ff_pfb,flags,map,NULL,layer);
-    if ( lcfn ) *sf->fontname = tolower(*sf->fontname);
-    if ( lcfam ) *sf->familyname = tolower(*sf->familyname);
+    if ( lcfn ) *sf->fontname = tolower_ff(*sf->fontname);
+    if ( lcfam ) *sf->familyname = tolower_ff(*sf->familyname);
     if ( ret==0 || ferror(temppfb) ) {
 	fclose(temppfb);
 return( 0 );
@@ -3001,7 +3001,7 @@ return( NULL );
     while ( (ch=getc(f))!=':' );	/* There may be comments before file start */
     cnt = val = 0;
     while ( (ch=getc(f))!=':' ) {
-	if ( isspace(ch))
+	if ( isspace_ff(ch))
     continue;
 	for ( pt=sixbit; *pt!=ch && *pt!='\0'; ++pt );
 	if ( *pt=='\0' ) {
@@ -3133,8 +3133,8 @@ return( sf );
     /*  names are always lower case 8.3, do some simple things to check */
     spt = strrchr(buffer,'/')+1;
     for ( pt=spt; *pt; ++pt )
-	if ( isupper( *pt ))
-	    *pt = tolower( *pt );
+	if ( isupper_ff( *pt ))
+	    *pt = tolower_ff( *pt );
     dpt = strchr(spt,'.');
     if ( dpt==NULL ) dpt = spt+strlen(spt);
     if ( dpt-spt>8 || strlen(dpt)>4 ) {

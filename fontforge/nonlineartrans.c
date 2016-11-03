@@ -75,14 +75,14 @@ return( ch );
 
     while (( ch = *(c->cur++))==' ' );
 
-    if ( isdigit(ch) || ch=='.' ) {
+    if ( isdigit_ff(ch) || ch=='.' ) {
 	--(c->cur);
 	*val = strtod(c->cur,&end);
 	c->cur = end;
 return( op_value );
-    } else if ( isalpha(ch)) {
+    } else if ( isalpha_ff(ch)) {
 	pt = buffer; *pt++=ch;
-	while ( isalnum(c->cur[0])) {
+	while ( isalnum_ff(c->cur[0])) {
 	    if ( pt<buffer+sizeof(buffer)-1)
 		*pt++ = c->cur[0];
 	    ++c->cur;

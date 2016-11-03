@@ -444,7 +444,7 @@ static long InsChrUniVal(void) {
     long val, val2;
 
     str = _GGadgetGetTitle(GWidgetGetControl(inschr.icw,INSCHR_Char));
-    for ( pt = str; isspace(*pt); ++pt );
+    for ( pt = str; isspace_ff(*pt); ++pt );
     if ( *pt=='\0' )
 return( -1 );
     if ( *pt=='u' || *pt=='U' ) {
@@ -457,7 +457,7 @@ return( val );
     } else if ( u_strchr(pt,',')!=NULL && inschr.map!=em_big5 &&
 	    inschr.map>=em_first2byte && inschr.map<em_max ) {
 	val = u_strtol(pt,&pos,10);
-	while ( isspace(*pos)) ++pos;
+	while ( isspace_ff(*pos)) ++pos;
 	if ( *pos!=',' )
 return( -1 );
 	val2 = u_strtol(pos+1,&pos,10);

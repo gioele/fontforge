@@ -438,7 +438,7 @@ static int GWidgetCheckMn(GContainerD *gd,GEvent *event) {
 	    (event->u.chr.state&ksm_meta) && !(event->u.chr.state&mask) )
 	keysym = GGadgetUndoMacEnglishOptionCombinations(event);
 
-    if ( islower(keysym)) keysym = toupper(keysym);
+    if ( islower_ff(keysym)) keysym = toupper_ff(keysym);
     for ( gadget = gd->gadgets; gadget!=NULL && !handled ; gadget=gadget->prev ) {
 	if ( (event->u.chr.state&ksm_meta) && !(event->u.chr.state&mask) &&
 		gadget->mnemonic==keysym &&

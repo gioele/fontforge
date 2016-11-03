@@ -228,7 +228,7 @@ int u_vsnprintf(unichar_t *str, int len, const unichar_t *format, va_list ap ) {
 	else if ( pt[1]=='%' )
 	    pt += 2;
 	else {
-	    for ( ++pt, arg=0; isdigit(*pt); ++pt )
+	    for ( ++pt, arg=0; isdigit_ff(*pt); ++pt )
 		arg = 10*arg + tovalue(*pt);
 	    ++ac;
 	    if ( *pt=='$' ) {
@@ -240,7 +240,7 @@ int u_vsnprintf(unichar_t *str, int len, const unichar_t *format, va_list ap ) {
 		if ( *pt=='*' ) {
 		    ++ac;
 		    ++pt;
-		    for ( ++pt, arg=0; isdigit(*pt); ++pt )
+		    for ( ++pt, arg=0; isdigit_ff(*pt); ++pt )
 			arg = 10*arg + tovalue(*pt);
 		    if ( *pt=='$' ) {
 			if ( arg>argmax ) argmax = arg;
@@ -269,8 +269,8 @@ int u_vsnprintf(unichar_t *str, int len, const unichar_t *format, va_list ap ) {
 	    ++pt;
 	    memset(&temp,'\0',sizeof(temp));
 	    hadarg = 0;
-	    if ( isdigit(*pt)) {
-		for ( arg=0; isdigit(*pt); ++pt )
+	    if ( isdigit_ff(*pt)) {
+		for ( arg=0; isdigit_ff(*pt); ++pt )
 		    arg = 10*arg + tovalue(*pt);
 		if ( *pt=='$' ) {
 		    hadarg = true;
@@ -291,11 +291,11 @@ int u_vsnprintf(unichar_t *str, int len, const unichar_t *format, va_list ap ) {
 	    }
 	    if ( *pt=='*' ) {
 		temp.fieldwidth = -ac++;
-		for ( ++pt, val=0; isdigit(*pt); ++pt )
+		for ( ++pt, val=0; isdigit_ff(*pt); ++pt )
 		    val = 10*val + tovalue(*pt);
 		if ( *pt=='$' ) temp.fieldwidth = -val;
-	    } else if ( isdigit(*pt)) {
-		while ( isdigit(*pt)) {
+	    } else if ( isdigit_ff(*pt)) {
+		while ( isdigit_ff(*pt)) {
 		    temp.fieldwidth = 10*temp.fieldwidth + tovalue(*pt);
 		    ++pt;
 		}
@@ -305,12 +305,12 @@ int u_vsnprintf(unichar_t *str, int len, const unichar_t *format, va_list ap ) {
 		++pt;
 		if ( *pt=='*' ) {
 		    temp.precision = -ac++;
-		    for ( ++pt, val=0; isdigit(*pt); ++pt )
+		    for ( ++pt, val=0; isdigit_ff(*pt); ++pt )
 			val = 10*val + tovalue(*pt);
 		    if ( *pt=='$' ) temp.precision = -val;
-		} else if ( isdigit(*pt)) {
+		} else if ( isdigit_ff(*pt)) {
 		    temp.precision = 0;
-		    while ( isdigit(*pt)) {
+		    while ( isdigit_ff(*pt)) {
 			temp.precision = 10*temp.precision + tovalue(*pt);
 			++pt;
 		    }
@@ -392,7 +392,7 @@ int u_vsnprintf(unichar_t *str, int len, const unichar_t *format, va_list ap ) {
 	    addchar(&state,'%');
 	    pt+=2;
 	} else {
-	    for ( ++pt, arg=0; isdigit(*pt); ++pt )
+	    for ( ++pt, arg=0; isdigit_ff(*pt); ++pt )
 		arg = 10*arg + tovalue(*pt);
 	    if ( *pt!='$' ) {
 		arg = ac;

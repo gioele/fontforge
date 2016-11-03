@@ -122,7 +122,7 @@ static DumpChar startfileencoding(DumpChar dumpchar,void *data,
 	    /*  a non hex character */
 	    r = 55665;
 	    cypher = ( randombytes[0] ^ (r>>8));
-	    if ( isspace(cypher) )
+	    if ( isspace_ff(cypher) )
 	goto try_again;
 	    if ( cypher<'0' || (cypher>'9' && cypher<'A') || (cypher>'F' && cypher<'a') || cypher>'f' )
 	break;
@@ -1804,7 +1804,7 @@ static void dumpfontcomments(void (*dumpchar)(int ch,void *data), void *data,
 		if ( npt==NULL ) npt = strt+strlen(strt);
 		if ( npt<strt+60 || pt==strt ) {
 		    pt = npt;
-		    if ( isspace(*pt)) {
+		    if ( isspace_ff(*pt)) {
 			++pt;
 			if ( pt[-1]=='\n' || pt[-1]=='\r' )
 	    break;

@@ -259,7 +259,7 @@ return( enc );
 	    orig = -1;
 	if ( orig!=-1 )
 	    enc = map->backmap[orig];
-    } else if ( isdigit(*name)) {
+    } else if ( isdigit_ff(*name)) {
 	enc = strtoul(name,&end,0);
 	if ( *end!='\0' )
 	    enc = -1;

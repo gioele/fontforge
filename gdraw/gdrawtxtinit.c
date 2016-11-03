@@ -135,9 +135,9 @@ return( em_unicode );
 	pt = uc_strstrmatch(setname,"8859");
 	pt += 4;
 	if ( *pt=='-' ) ++pt;
-	if ( !isdigit(*pt) )
+	if ( !isdigit_ff(*pt) )
 	    /* Bad */;
-	else if ( !isdigit(pt[1]) )
+	else if ( !isdigit_ff(pt[1]) )
 return( em_iso8859_1+*pt-'1' );
 	else {
 	    val = (pt[0]-'0')*10 + pt[1]-'0';
@@ -292,7 +292,7 @@ struct font_name *_GDraw_HashFontFamily(FState *fonts,unichar_t *name, int prop)
     int b,i;
 
     ch = *name;
-    if ( isupper(ch)) ch = tolower(ch);
+    if ( isupper_ff(ch)) ch = tolower_ff(ch);
     if ( ch<'a' ) ch = 'q'; else if ( ch>'z' ) ch='z';
     ch -= 'a';
 

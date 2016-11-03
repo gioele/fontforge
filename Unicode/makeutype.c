@@ -711,7 +711,7 @@ static void dump() {
     fprintf( data, "/* Contributions: Werner Lemberg, Khaled Hosny, Joe Da Silva */\n\n" );
     fprintf( data, "#include <utype.h>\n" );
     fprintf( data, GeneratedFileMessage, UnicodeMajor, UnicodeMinor );
-    fprintf( data, "const unsigned short ff_unicode_tolower[]= { 0,\n" );
+    fprintf( data, "const unsigned short ff_unicode_tolower_data[]= { 0,\n" );
     for ( i=0; i<FF_UNICODE_COMPACT_TABLE_SIZE_MAX; i+=j ) {
 	fprintf( data, " " );
 	for ( j=0; j<8 && i+j<FF_UNICODE_COMPACT_TABLE_SIZE_MAX-1; ++j )
@@ -725,7 +725,7 @@ static void dump() {
 	    else
 		fprintf( data, "\n");
     }
-    fprintf( data, "const unsigned short ff_unicode_toupper[] = { 0,\n" );
+    fprintf( data, "const unsigned short ff_unicode_toupper_data[] = { 0,\n" );
     for ( i=0; i<FF_UNICODE_COMPACT_TABLE_SIZE_MAX; i+=j ) {
 	fprintf( data, " " );
 	for ( j=0; j<8 && i+j<FF_UNICODE_COMPACT_TABLE_SIZE_MAX-1; ++j )
@@ -739,7 +739,7 @@ static void dump() {
 	    else
 		fprintf( data, "\n");
     }
-    fprintf( data, "const unsigned short ff_unicode_totitle[] = { 0,\n" );
+    fprintf( data, "const unsigned short ff_unicode_totitle_data[] = { 0,\n" );
     for ( i=0; i<FF_UNICODE_COMPACT_TABLE_SIZE_MAX; i+=j ) {
 	fprintf( data, " " );
 	for ( j=0; j<8 && i+j<FF_UNICODE_COMPACT_TABLE_SIZE_MAX-1; ++j )
@@ -753,7 +753,7 @@ static void dump() {
 	    else
 		fprintf( data, "\n");
     }
-    fprintf( data, "const unsigned short ff_unicode_tomirror[] = { 0,\n" );
+    fprintf( data, "const unsigned short ff_unicode_tomirror_data[] = { 0,\n" );
     for ( i=0; i<FF_UNICODE_COMPACT_TABLE_SIZE_MAX; i+=j ) {
 	fprintf( data, " " );
 	for ( j=0; j<8 && i+j<FF_UNICODE_COMPACT_TABLE_SIZE_MAX-1; ++j )
@@ -767,7 +767,7 @@ static void dump() {
 	    else
 		fprintf( data, "\n");
     }
-    fprintf( data, "const unsigned char ff_unicode_digitval[] = { 0,\n" );
+    fprintf( data, "const unsigned char ff_unicode_digitval_data[] = { 0,\n" );
     for ( i=0; i<FF_UNICODE_COMPACT_TABLE_SIZE_MAX; i+=j ) {
 	fprintf( data, " " );
 	for ( j=0; j<8 && i+j<FF_UNICODE_COMPACT_TABLE_SIZE_MAX-1; ++j )

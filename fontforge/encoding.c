@@ -955,7 +955,7 @@ return( NULL );
 
     if ( *maybefile!=NULL ) {
 	char *pt = strrchr(*maybefile,'.');
-	while ( pt>*maybefile && isdigit(pt[-1]))
+	while ( pt>*maybefile && isdigit_ff(pt[-1]))
 	    --pt;
 	best = strtol(pt,NULL,10);
     }
@@ -974,7 +974,7 @@ return( NULL );
 	if ( strncmp(pt,ordering,olen)!=0 || pt[olen]!='-' )
     continue;
 	pt += olen+1;
-	if ( !isdigit(*pt))
+	if ( !isdigit_ff(*pt))
     continue;
 	test = strtol(pt,&end,10);
 	if ( *end!='.' )
@@ -1024,7 +1024,7 @@ struct cidmap *LoadMapFromFile(char *file,char *registry,char *ordering,
     int cid1, cid2, uni, cnt, i, ch;
     char name[100];
 
-    while ( pt>file && isdigit(pt[-1]))
+    while ( pt>file && isdigit_ff(pt[-1]))
 	--pt;
     ret->supplement = ret->maxsupple = strtol(pt,NULL,10);
     if ( supplement>ret->maxsupple )
@@ -1111,7 +1111,7 @@ return( maybe );	/* User has said it's ok to use maybe at this supplement level 
     if ( file==NULL && (maybe!=NULL || maybefile!=NULL)) {
 	if ( maybefile!=NULL ) {
 	    char *pt = strrchr(maybefile,'.');
-	    while ( pt>maybefile && isdigit(pt[-1]))
+	    while ( pt>maybefile && isdigit_ff(pt[-1]))
 		--pt;
 	    maybe_sup = strtol(pt,NULL,10);
 	    if ( maybe!=NULL && maybe->supplement >= maybe_sup ) {
@@ -1297,7 +1297,7 @@ return( ranges );
 static char *readpsstr(char *str) {
     char *eos;
 
-    while ( isspace(*str)) ++str;
+    while ( isspace_ff(*str)) ++str;
     if ( *str=='(' ) ++str;
     /* PostScript strings can be more complicated than this (hex, nested parens, Enc85...) */
     /*  but none of those should show up here */
@@ -1323,7 +1323,7 @@ return( NULL );
     cmap = calloc(1,sizeof(struct cmap));
     in = cmt_out;
     while ( fgets(buf2,sizeof(buf2),file)!=NULL ) {
-	for ( pt=buf2; isspace(*pt); ++pt);
+	for ( pt=buf2; isspace_ff(*pt); ++pt);
 	if ( in==cmt_out ) {
 	    if ( *pt=='/' ) {
 		if ( strncmp(pt,reg,strlen(reg))==0 )
@@ -1331,14 +1331,14 @@ return( NULL );
 		else if ( strncmp(pt,ord,strlen(ord))==0 )
 		    cmap->ordering = readpsstr(pt+strlen(ord));
 		else if ( strncmp(pt,sup,strlen(sup))==0 ) {
-		    for ( pt += strlen(sup); isspace(*pt); ++pt );
+		    for ( pt += strlen(sup); isspace_ff(*pt); ++pt );
 		    cmap->supplement = strtol(pt,NULL,10);
 		}
     continue;
-	    } else if ( !isdigit(*pt) )
+	    } else if ( !isdigit_ff(*pt) )
     continue;
 	    val = strtol(pt,&end,10);
-	    while ( isspace(*end)) ++end;
+	    while ( isspace_ff(*end)) ++end;
 	    in_is_single = 0;
 	    if ( strncmp(end,bcsr,strlen(bcsr))==0 ) {
 		in = cmt_coderange;
@@ -1365,7 +1365,7 @@ return( NULL );
 	continue;
 	    cmap->groups[in].ranges[pos].first = strtoul(pt+1,&end,16);
 	    if ( *end=='>' ) ++end;
-	    while ( isspace(*end)) ++end;
+	    while ( isspace_ff(*end)) ++end;
 	    if (in_is_single) {
 	      cmap->groups[in].ranges[pos].last = cmap->groups[in].ranges[pos].first;
 	    } else {
@@ -1375,7 +1375,7 @@ return( NULL );
 	      if ( *end=='>' ) ++end;
 	    }
 	    if ( in!=cmt_coderange ) {
-		while ( isspace(*end)) ++end;
+		while ( isspace_ff(*end)) ++end;
 	        // Read the unbracketed argument.
 		cmap->groups[in].ranges[pos].cid = strtol(end,&end,10);
 	    }
