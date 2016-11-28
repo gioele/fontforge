@@ -839,9 +839,9 @@ static void dumpligaturesfractions(FILE *header) {
     for ( f16=0; f16<frm && fraction[f16]<=65535; ++f16 );
 
     fprintf( data, "/* unicode.org codepoints for ligatures, vulgar fractions, other fractions */\n\n" );
-    buildtables(data,ligature,l16,lgm,"____ligature");
-    buildtables(data,vulgfrac,v16,vfm,"____vulgfrac");
-    buildtables(data,fraction,f16,frm,"____fraction");
+    buildtables(data,ligature,l16,lgm,"ligature");
+    buildtables(data,vulgfrac,v16,vfm,"vulgfrac");
+    buildtables(data,fraction,f16,frm,"fraction");
 
     dumpbsearch(data,16); dumpbsearch(data,32);
 
@@ -854,16 +854,16 @@ static void dumpligaturesfractions(FILE *header) {
     fprintf( data, "int FractionCount(void) {\n" );
     fprintf( data, "    return( %d );\n}\n\n", vfm+frm );
 
-    dump_getU(data,ligature,l16,lgm,"____ligature","Ligature");
-    dump_getU(data,vulgfrac,v16,vfm,"____vulgfrac","VulgFrac");
-    dump_getU(data,fraction,f16,frm,"____fraction","Fraction");
+    dump_getU(data,ligature,l16,lgm,"ligature","Ligature");
+    dump_getU(data,vulgfrac,v16,vfm,"vulgfrac","VulgFrac");
+    dump_getU(data,fraction,f16,frm,"fraction","Fraction");
 
     fprintf( data, "int Ligature_find_N(uint32 uCode) {\n" );
-    dumpbsearchfindN(data,ligature,l16,lgm,"____ligature");
+    dumpbsearchfindN(data,ligature,l16,lgm,"ligature");
     fprintf( data, "int VulgFrac_find_N(uint32 uCode) {\n" );
-    dumpbsearchfindN(data,vulgfrac,v16,vfm,"____vulgfrac");
+    dumpbsearchfindN(data,vulgfrac,v16,vfm,"vulgfrac");
     fprintf( data, "int Fraction_find_N(uint32 uCode) {\n" );
-    dumpbsearchfindN(data,fraction,f16,frm,"____fraction");
+    dumpbsearchfindN(data,fraction,f16,frm,"fraction");
 
     fprintf( data, "/* Boolean-style tests (found==0) to see if your codepoint value is listed */\n" );
     fprintf( data, "/* unicode.org codepoints for ligatures, vulgar fractions, other fractions */\n\n" );
