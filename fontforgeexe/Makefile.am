@@ -127,7 +127,8 @@ libfontforgeexe_la_SOURCES = alignment.c anchorsaway.c   \
 	ttfinstrsui.c uiutil.c windowmenu.c justifydlg.c deltaui.c		\
 	usermenu.c macobjective.h                                               \
 	collabclientui.c collabclientui.h                                       \
-	sfundo.c wordlistparser.c wordlistparser.h fontforgeexe.h
+	sfundo.h sfundo.c \
+	wordlistparser.c wordlistparser.h fontforgeexe.h
 
 EXTRA_libfontforgeexe_la_SOURCES = macobjective.m
 

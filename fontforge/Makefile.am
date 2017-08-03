@@ -145,7 +145,7 @@ libfontforge_la_SOURCES = activeinui.c asmfpst.c autohint.c autosave.c	\
 	parsettfatt.c parsettfbmf.c parsettf.c parsettfvar.c plugins.c	\
 	pluginloading.c print.c psread.c pua.c python.c savefont.c	\
 	scripting.c scstyles.c search.c sfd1.c sfd.c sflayout.c		\
-	sfundo.h spiro.c splinechar.c splinefill.c splinefont.c		\
+	spiro.c splinechar.c splinefill.c splinefont.c		\
 	splineorder2.c splineoverlap.c splinesaveafm.c splinesave.c	\
 	splinestroke.c splineutil2.c splineutil.c start.c		\
 	stemdb.c strlist.c svg.c tottfaat.c tottfgpos.c tottf.c		\

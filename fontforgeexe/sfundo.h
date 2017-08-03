@@ -26,8 +26,8 @@
 *******************************************************************************
 ******************************************************************************/
 
-#ifndef _ALREADY_INCLUDED_FF_SFUNDO_H
-#define _ALREADY_INCLUDED_FF_SFUNDO_H
+#ifndef FONTFORGEEXE_SFUNDO_H
+#define FONTFORGEEXE_SFUNDO_H
 
 #include "splinefont.h"
 
@@ -50,6 +50,4 @@ SFUndoes* SFUndoCreateRedo( SFUndoes* undo, SplineFont* sf );
 
 void SFUndoPushFront( struct sfundoes ** undoes, SFUndoes* undo );
 
-
-
-#endif
+#endif /* FONTFORGEEXE_SFUNDO_H */
