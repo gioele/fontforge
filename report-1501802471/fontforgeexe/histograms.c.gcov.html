@@ -1,0 +1,1089 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforgeexe/histograms.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforgeexe</a> - histograms.c<span style="font-size: 80%;"> (source / <a href="histograms.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">639</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">22</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2003-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &quot;autohint.h&quot;
+<span class="lineNum">      28 </span>            : #include &quot;dumppfa.h&quot;
+<span class="lineNum">      29 </span>            : #include &quot;fontforgeui.h&quot;
+<span class="lineNum">      30 </span>            : #include &quot;psfont.h&quot;
+<span class="lineNum">      31 </span>            : #include &quot;splineutil.h&quot;
+<span class="lineNum">      32 </span>            : #include &lt;ustring.h&gt;
+<span class="lineNum">      33 </span>            : #include &lt;gkeysym.h&gt;
+<span class="lineNum">      34 </span>            : #include &lt;utype.h&gt;
+<span class="lineNum">      35 </span>            : #include &lt;math.h&gt;
+<span class="lineNum">      36 </span>            : #include &quot;psfont.h&quot;
+<span class="lineNum">      37 </span>            : #include &lt;ffglib.h&gt;
+<span class="lineNum">      38 </span>            : #include &lt;glib/gprintf.h&gt;
+<span class="lineNum">      39 </span>            : #include &quot;xvasprintf.h&quot;
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span>            : /* This operations are designed to work on a single font. NOT a CID collection*/
+<span class="lineNum">      42 </span>            : /*  A CID collection must be treated one sub-font at a time */
+<span class="lineNum">      43 </span>            : 
+<span class="lineNum">      44 </span>            : struct hentry {
+<span class="lineNum">      45 </span>            :     int cnt, sum;
+<span class="lineNum">      46 </span>            :     int char_cnt, max;
+<span class="lineNum">      47 </span>            :     SplineChar **chars;
+<span class="lineNum">      48 </span>            : };
+<span class="lineNum">      49 </span>            : 
+<span class="lineNum">      50 </span>            : typedef struct histdata {
+<span class="lineNum">      51 </span>            :     int low, high;
+<span class="lineNum">      52 </span>            :     struct hentry *hist;        /* array of high-low+1 elements */
+<span class="lineNum">      53 </span>            :     int tot, max;
+<a name="54"><span class="lineNum">      54 </span>            : } HistData;</a>
+<span class="lineNum">      55 </span>            : 
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 : static void HistDataFree(HistData *h) {</span>
+<span class="lineNum">      57 </span>            :     int i;
+<span class="lineNum">      58 </span>            : 
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :     for ( i=h-&gt;low; i&lt;=h-&gt;high; ++i )</span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 :         free(h-&gt;hist[i-h-&gt;low].chars);</span>
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :     free(h-&gt;hist);</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :     free(h);</span>
+<a name="63"><span class="lineNum">      63 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      64 </span>            : 
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 : static HistData *HistFindBlues(SplineFont *sf,int layer, uint8 *selected, EncMap *map) {</span>
+<span class="lineNum">      66 </span>            :     int i, gid, low,high, top,bottom;
+<span class="lineNum">      67 </span>            :     SplineChar *sc;
+<span class="lineNum">      68 </span>            :     DBounds b;
+<span class="lineNum">      69 </span>            :     HistData *hist;
+<span class="lineNum">      70 </span>            :     struct hentry *h;
+<span class="lineNum">      71 </span>            : 
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :     hist = calloc(1,sizeof(HistData));</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :     hist-&gt;hist = calloc(sf-&gt;ascent+sf-&gt;descent+1,sizeof(struct hentry));</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :     hist-&gt;low = sf-&gt;ascent; hist-&gt;high = -sf-&gt;descent;</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :     low = -sf-&gt;descent; high = sf-&gt;ascent;</span>
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;(selected==NULL?sf-&gt;glyphcnt:map-&gt;enccount); ++i ) {</span>
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :         gid = selected==NULL ? i : map-&gt;map[i];</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :         if ( gid!=-1 &amp;&amp; (sc = sf-&gt;glyphs[gid])!=NULL &amp;&amp;</span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :                 sc-&gt;layers[ly_fore].splines!=NULL &amp;&amp;</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :                 sc-&gt;layers[ly_fore].refs==NULL &amp;&amp;</span>
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :                 (selected==NULL || selected[i])) {</span>
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :             SplineCharLayerFindBounds(sc,layer,&amp;b);</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :             bottom = rint(b.miny);</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :             top = rint(b.maxy);</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :             if ( top==bottom )</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :         continue;</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :             if ( top&gt;hist-&gt;high ) {</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :                 hist-&gt;high = top;</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :                 if ( top&gt;high ) {</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :                     hist-&gt;hist = realloc(hist-&gt;hist,(top+10-low)*sizeof(struct hentry));</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :                     memset(hist-&gt;hist + high-low+1,0,(top+10-high-1)*sizeof(struct hentry));</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :                     high = top+10 -1;</span>
+<span class="lineNum">      94 </span>            :                 }
+<span class="lineNum">      95 </span>            :             }
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :             ++ hist-&gt;hist[top-low].cnt;</span>
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :             if ( hist-&gt;hist[top-low].char_cnt &gt;= hist-&gt;hist[top-low].max ) {</span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :                 if ( hist-&gt;hist[top-low].max==0 )</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :                     hist-&gt;hist[top-low].chars = malloc(10*sizeof(SplineChar *));</span>
+<span class="lineNum">     100 </span>            :                 else
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :                     hist-&gt;hist[top-low].chars = realloc(hist-&gt;hist[top-low].chars,(hist-&gt;hist[top-low].max+10)*sizeof(SplineChar *));</span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :                 hist-&gt;hist[top-low].max += 10;</span>
+<span class="lineNum">     103 </span>            :             }
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :             hist-&gt;hist[top-low].chars[hist-&gt;hist[top-low].char_cnt++] = sc;</span>
+<span class="lineNum">     105 </span>            : 
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :             if ( bottom&lt;hist-&gt;low ) {</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :                 hist-&gt;low = bottom;</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :                 if ( bottom&lt;low ) {</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :                     h = calloc((high-bottom+10),sizeof( struct hentry ));</span>
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :                     memcpy(h+low-(bottom-10+1),hist-&gt;hist,(high+1-low)*sizeof(struct hentry));</span>
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :                     low = bottom-10+1;</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :                     free( hist-&gt;hist );</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :                     hist-&gt;hist = h;</span>
+<span class="lineNum">     114 </span>            :                 }
+<span class="lineNum">     115 </span>            :             }
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :             ++ hist-&gt;hist[bottom-low].cnt;</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :             if ( hist-&gt;hist[bottom-low].char_cnt &gt;= hist-&gt;hist[bottom-low].max ) {</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :                 if ( hist-&gt;hist[bottom-low].max==0 )</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :                     hist-&gt;hist[bottom-low].chars = malloc(10*sizeof(SplineChar *));</span>
+<span class="lineNum">     120 </span>            :                 else
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :                     hist-&gt;hist[bottom-low].chars = realloc(hist-&gt;hist[bottom-low].chars,(hist-&gt;hist[bottom-low].max+10)*sizeof(SplineChar *));</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :                 hist-&gt;hist[bottom-low].max += 10;</span>
+<span class="lineNum">     123 </span>            :             }
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :             hist-&gt;hist[bottom-low].chars[hist-&gt;hist[bottom-low].char_cnt++] = sc;</span>
+<span class="lineNum">     125 </span>            :         }
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :         hist-&gt;tot += 2;</span>
+<span class="lineNum">     127 </span>            :     }
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :     if ( hist-&gt;low&gt;hist-&gt;high ) {              /* Found nothing */</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :         hist-&gt;low = hist-&gt;high = 0;</span>
+<span class="lineNum">     130 </span>            :     }
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :     if ( low!=hist-&gt;low || high!=hist-&gt;high ) {</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :         h = malloc((hist-&gt;high-hist-&gt;low+1)*sizeof(struct hentry));</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :         memcpy(h,hist-&gt;hist + hist-&gt;low-low,(hist-&gt;high-hist-&gt;low+1)*sizeof(struct hentry));</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :         free(hist-&gt;hist);</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :         hist-&gt;hist = h;</span>
+<span class="lineNum">     136 </span>            :     }
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 : return( hist );</span>
+<a name="138"><span class="lineNum">     138 </span>            : }</a>
+<span class="lineNum">     139 </span>            : 
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 : static HistData *HistFindStemWidths(SplineFont *sf,int layer, uint8 *selected,EncMap *map,int hor) {</span>
+<span class="lineNum">     141 </span>            :     int i, gid, low,high, val;
+<span class="lineNum">     142 </span>            :     SplineChar *sc;
+<span class="lineNum">     143 </span>            :     HistData *hist;
+<span class="lineNum">     144 </span>            :     struct hentry *h;
+<span class="lineNum">     145 </span>            :     StemInfo *stem;
+<span class="lineNum">     146 </span>            : 
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :     hist = calloc(1,sizeof(HistData));</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :     hist-&gt;hist = calloc(sf-&gt;ascent+sf-&gt;descent+1,sizeof(struct hentry));</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :     hist-&gt;low = sf-&gt;ascent+sf-&gt;descent;</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :     low = 0; high = sf-&gt;ascent+sf-&gt;descent;</span>
+<span class="lineNum">     151 </span>            : 
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;(selected==NULL?sf-&gt;glyphcnt:map-&gt;enccount); ++i ) {</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :         gid = selected==NULL ? i : map-&gt;map[i];</span>
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :         if ( gid!=-1 &amp;&amp; (sc = sf-&gt;glyphs[gid])!=NULL &amp;&amp;</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :                 sc-&gt;layers[ly_fore].splines!=NULL &amp;&amp;</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :                 sc-&gt;layers[ly_fore].refs==NULL &amp;&amp;</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :                 (selected==NULL || selected[i])) {</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :             if ( autohint_before_generate &amp;&amp; sc-&gt;changedsincelasthinted &amp;&amp; !sc-&gt;manualhints )</span>
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :                 SplineCharAutoHint(sc,layer,NULL);</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :             for ( stem = hor ? sc-&gt;hstem : sc-&gt;vstem ; stem!=NULL; stem = stem-&gt;next ) {</span>
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :                 if ( stem-&gt;ghost )</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :             continue;</span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :                 val = rint(stem-&gt;width);</span>
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :                 if ( val&lt;=0 )</span>
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :                     val = -val;</span>
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :                 if ( val&gt;hist-&gt;high ) {</span>
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :                     hist-&gt;high = val;</span>
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :                     if ( val&gt;high ) {</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :                         hist-&gt;hist = realloc(hist-&gt;hist,(val+10-low)*sizeof(struct hentry));</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :                         memset(hist-&gt;hist + high-low+1,0,(val+10-high-1)*sizeof(struct hentry));</span>
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :                         high = val+10 -1;</span>
+<span class="lineNum">     172 </span>            :                     }
+<span class="lineNum">     173 </span>            :                 }
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :                 if ( val&lt;hist-&gt;low )</span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :                     hist-&gt;low = val;</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :                 ++ hist-&gt;hist[val-low].cnt;</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :                 if ( hist-&gt;hist[val-low].char_cnt==0 ||</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :                         hist-&gt;hist[val-low].chars[hist-&gt;hist[val-low].char_cnt-1]!=sc ) {</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :                     if ( hist-&gt;hist[val-low].char_cnt &gt;= hist-&gt;hist[val-low].max ) {</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :                         if ( hist-&gt;hist[val-low].max==0 )</span>
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 :                             hist-&gt;hist[val-low].chars = malloc(10*sizeof(SplineChar *));</span>
+<span class="lineNum">     182 </span>            :                         else
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :                             hist-&gt;hist[val-low].chars = realloc(hist-&gt;hist[val-low].chars,(hist-&gt;hist[val-low].max+10)*sizeof(SplineChar *));</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :                         hist-&gt;hist[val-low].max += 10;</span>
+<span class="lineNum">     185 </span>            :                     }
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :                     hist-&gt;hist[val-low].chars[hist-&gt;hist[val-low].char_cnt++] = sc;</span>
+<span class="lineNum">     187 </span>            :                 }
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :                 ++ hist-&gt;tot;</span>
+<span class="lineNum">     189 </span>            :             }
+<span class="lineNum">     190 </span>            :         }
+<span class="lineNum">     191 </span>            :     }
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :     if ( hist-&gt;low&gt;hist-&gt;high ) {              /* Found nothing */</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :         hist-&gt;low = hist-&gt;high = 0;</span>
+<span class="lineNum">     194 </span>            :     }
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :     if ( low!=hist-&gt;low || high!=hist-&gt;high ) {</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :         h = malloc((hist-&gt;high-hist-&gt;low+1)*sizeof(struct hentry));</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :         memcpy(h,hist-&gt;hist + hist-&gt;low-low,(hist-&gt;high-hist-&gt;low+1)*sizeof(struct hentry));</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :         free(hist-&gt;hist);</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :         hist-&gt;hist = h;</span>
+<span class="lineNum">     200 </span>            :     }
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 : return( hist );</span>
+<a name="202"><span class="lineNum">     202 </span>            : }</a>
+<span class="lineNum">     203 </span>            : 
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 : static HistData *HistFindHStemWidths(SplineFont *sf,int layer, uint8 *selected,EncMap *map) {</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 : return( HistFindStemWidths(sf,layer,selected,map,true) );</span>
+<a name="206"><span class="lineNum">     206 </span>            : }</a>
+<span class="lineNum">     207 </span>            : 
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 : static HistData *HistFindVStemWidths(SplineFont *sf,int layer, uint8 *selected,EncMap *map) {</span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 : return( HistFindStemWidths(sf,layer,selected,map,false) );</span>
+<a name="210"><span class="lineNum">     210 </span>            : }</a>
+<span class="lineNum">     211 </span>            : 
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 : static void HistFindMax(HistData *h, int sum_around) {</span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :     int i, j, m=1;</span>
+<span class="lineNum">     214 </span>            :     int c;
+<span class="lineNum">     215 </span>            : 
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :     if ( sum_around&lt;0 ) sum_around = 0;</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :     for ( i = h-&gt;low; i&lt;=h-&gt;high; ++i ) {</span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :         c = 0;</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :         for ( j=i-sum_around; j&lt;=i+sum_around; ++j )</span>
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :             if ( j&gt;=h-&gt;low &amp;&amp; j&lt;=h-&gt;high )</span>
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :                 c += h-&gt;hist[j-h-&gt;low].cnt;</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :         h-&gt;hist[i-h-&gt;low].sum = c;</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :         if ( c&gt;m )</span>
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :             m = c;</span>
+<span class="lineNum">     225 </span>            :     }
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :     h-&gt;max = m;</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     228 </span>            : 
+<span class="lineNum">     229 </span>            : #define CID_ScrollBar           1000
+<span class="lineNum">     230 </span>            : #define CID_MainVal             1001
+<span class="lineNum">     231 </span>            : #define CID_SecondaryVal        1002
+<span class="lineNum">     232 </span>            : 
+<span class="lineNum">     233 </span>            : #define CID_SumAround           1003
+<span class="lineNum">     234 </span>            : #define CID_BarWidth            1004
+<span class="lineNum">     235 </span>            : 
+<span class="lineNum">     236 </span>            : #define CID_MainValL            2001
+<span class="lineNum">     237 </span>            : #define CID_SecondaryValL       2002
+<span class="lineNum">     238 </span>            : #define CID_SumAroundL          2003
+<span class="lineNum">     239 </span>            : #define CID_BarWidthL           2004
+<span class="lineNum">     240 </span>            : #define CID_Group               2005
+<span class="lineNum">     241 </span>            : #define CID_BlueMsg             2006
+<span class="lineNum">     242 </span>            : 
+<span class="lineNum">     243 </span>            : #define CID_OK                  3001
+<span class="lineNum">     244 </span>            : #define CID_Cancel              3002
+<span class="lineNum">     245 </span>            : 
+<span class="lineNum">     246 </span>            : #define CID_LeftSide            4001
+<span class="lineNum">     247 </span>            : #define CID_Histogram           4002
+<span class="lineNum">     248 </span>            : #define CID_RightSide           4003
+<span class="lineNum">     249 </span>            : 
+<span class="lineNum">     250 </span>            : struct hist_dlg {
+<span class="lineNum">     251 </span>            :     enum hist_type which;
+<span class="lineNum">     252 </span>            :     SplineFont *sf;
+<span class="lineNum">     253 </span>            :     int layer;
+<span class="lineNum">     254 </span>            :     struct psdict *private;
+<span class="lineNum">     255 </span>            :     uint8 *selected;
+<span class="lineNum">     256 </span>            :     HistData *h;
+<span class="lineNum">     257 </span>            : 
+<span class="lineNum">     258 </span>            :     int pending_blue;
+<span class="lineNum">     259 </span>            :     int is_pending;
+<span class="lineNum">     260 </span>            : 
+<span class="lineNum">     261 </span>            :     int sum_around, barwidth;
+<span class="lineNum">     262 </span>            :     int hoff;
+<span class="lineNum">     263 </span>            : 
+<span class="lineNum">     264 </span>            :     int x,y;
+<span class="lineNum">     265 </span>            :     int hwidth, hheight;
+<span class="lineNum">     266 </span>            :     int yoff;
+<span class="lineNum">     267 </span>            : 
+<span class="lineNum">     268 </span>            :     GWindow gw;
+<span class="lineNum">     269 </span>            :     GFont *font;
+<span class="lineNum">     270 </span>            :     int fh, as;
+<span class="lineNum">     271 </span>            :     int done;
+<a name="272"><span class="lineNum">     272 </span>            : };</a>
+<span class="lineNum">     273 </span>            : 
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 : static void HistPopup(struct hist_dlg *hist,GEvent *e) {</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :     int x = e-&gt;u.mouse.x;</span>
+<span class="lineNum">     276 </span>            :     struct hentry *h;
+<span class="lineNum">     277 </span>            :     static char buffer[300];
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :     char *end = buffer + sizeof(buffer)/sizeof(buffer[0]), *pt, *line;</span>
+<span class="lineNum">     279 </span>            :     int i;
+<span class="lineNum">     280 </span>            : 
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :     x /= hist-&gt;barwidth;</span>
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :     if ( x + hist-&gt;hoff &gt; hist-&gt;h-&gt;high || x + hist-&gt;hoff - hist-&gt;h-&gt;low&lt;0 )</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     284 </span>            : 
+<span class="lineNum">     285 </span><span class="lineNoCov">          0 :     h = &amp;hist-&gt;h-&gt;hist[x + hist-&gt;hoff - hist-&gt;h-&gt;low];</span>
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :     if ( hist-&gt;sum_around==0 ) {</span>
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :         if ( hist-&gt;which == hist_blues )</span>
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :             snprintf(buffer,end-buffer,</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :                     _(&quot;Position: %d\nCount: %d\n&quot;),</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :                     x + hist-&gt;hoff,</span>
+<span class="lineNum">     291 </span>            :                     h-&gt;sum);
+<span class="lineNum">     292 </span>            :         else
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :             snprintf(buffer,end-buffer,</span>
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :                     _(&quot;Width: %d\nCount: %d\nPercentage of Max: %d%%\n&quot;),</span>
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :                     x + hist-&gt;hoff,</span>
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :                     h-&gt;sum, (int) rint(h-&gt;sum*100.0/hist-&gt;h-&gt;max));</span>
+<span class="lineNum">     297 </span>            :     } else {
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :         if ( hist-&gt;which == hist_blues )</span>
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :             snprintf(buffer,end-buffer,</span>
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :                     _(&quot;Position: %d-%d (%d)\nCount: %d (%d)\n&quot;),</span>
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :                     x+hist-&gt;hoff-hist-&gt;sum_around, x+hist-&gt;hoff+hist-&gt;sum_around, x + hist-&gt;hoff,</span>
+<span class="lineNum">     302 </span>            :                     h-&gt;sum, h-&gt;cnt);
+<span class="lineNum">     303 </span>            :         else
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :             snprintf(buffer,end-buffer,</span>
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 :                     _(&quot;Width: %d-%d (%d)\nCount: %d (%d)\nPercentage of Max: %d%%\n&quot;),</span>
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :                     x+hist-&gt;hoff-hist-&gt;sum_around, x+hist-&gt;hoff+hist-&gt;sum_around, x + hist-&gt;hoff,</span>
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :                     h-&gt;sum, h-&gt;cnt, (int) rint(h-&gt;sum*100.0/hist-&gt;h-&gt;max));</span>
+<span class="lineNum">     308 </span>            :     }
+<span class="lineNum">     309 </span><span class="lineNoCov">          0 :     pt = buffer+strlen(buffer);</span>
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 :     line = pt;</span>
+<span class="lineNum">     311 </span><span class="lineNoCov">          0 :     for ( i = 0; i&lt;h-&gt;char_cnt; ++i ) {</span>
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 :         if ( pt+strlen(h-&gt;chars[i]-&gt;name)+4&gt;end ) {</span>
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :             strcpy(pt,&quot;...&quot;);</span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     315 </span>            :         }
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :         strcpy(pt,h-&gt;chars[i]-&gt;name);</span>
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :         pt += strlen(pt);</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :         if ( pt-line&gt;70 ) {</span>
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :             *pt++ = '\n';</span>
+<span class="lineNum">     320 </span><span class="lineNoCov">          0 :             line = pt;</span>
+<span class="lineNum">     321 </span>            :         } else
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 :             *pt++ = ' ';</span>
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :         *pt = '\0';</span>
+<span class="lineNum">     324 </span>            :     }
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :     GGadgetPreparePopup8(hist-&gt;gw,buffer);</span>
+<a name="326"><span class="lineNum">     326 </span>            : }</a>
+<span class="lineNum">     327 </span>            : 
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 : static char *ArrayOrder(char *old,int args,int val1,int val2) {</span>
+<span class="lineNum">     329 </span>            :     char *end;
+<span class="lineNum">     330 </span>            :     double array[40];
+<span class="lineNum">     331 </span>            :     int i,j,k;
+<span class="lineNum">     332 </span>            :     GString *new;
+<span class="lineNum">     333 </span>            : 
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :     if ( *old=='[' ) ++old;</span>
+<span class="lineNum">     335 </span>            : 
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;40 &amp;&amp; *old!=']' &amp;&amp; *old!='\0'; ++i ) {</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :         array[i] = strtod(old,&amp;end);</span>
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 :         if ( old==end )</span>
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :         old = end;</span>
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :         while ( *old==' ' ) ++old;</span>
+<span class="lineNum">     342 </span>            :     }
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :     if (i&lt;40)</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :         array[i++] = val1;</span>
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 :     if (i&lt;40) {</span>
+<span class="lineNum">     346 </span><span class="lineNoCov">          0 :         if ( args==2 )</span>
+<span class="lineNum">     347 </span><span class="lineNoCov">          0 :             array[i++] = val2;</span>
+<span class="lineNum">     348 </span>            :     }
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :     for ( j=0; j&lt;i; ++j ) for ( k=j+1; k&lt;i; ++k ) if ( array[j]&gt;array[k] ) {</span>
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :         double temp = array[j];</span>
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :         array[j] = array[k];</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :         array[k] = temp;</span>
+<span class="lineNum">     353 </span>            :     }
+<span class="lineNum">     354 </span>            : 
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :     new = g_string_new( &quot;[&quot; );</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :     for ( k=0; k&lt;i; ++k ) {</span>
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :         if (k == i-1)</span>
+<span class="lineNum">     358 </span><span class="lineNoCov">          0 :             g_string_append_printf( new, &quot;%g]&quot;, array[k] );</span>
+<span class="lineNum">     359 </span>            :         else
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :             g_string_append_printf( new, &quot;%g &quot;, array[k] );</span>
+<span class="lineNum">     361 </span>            :     }
+<span class="lineNum">     362 </span>            : 
+<span class="lineNum">     363 </span><span class="lineNoCov">          0 : return( (char *) g_string_free( new, FALSE ) );</span>
+<span class="lineNum">     364 </span>            : }
+<a name="365"><span class="lineNum">     365 </span>            : </a>
+<span class="lineNum">     366 </span>            : /* Handle clicks on histogram chart and update text fields below accordingly */
+<span class="lineNum">     367 </span><span class="lineNoCov">          0 : static void HistPress(struct hist_dlg *hist,GEvent *e) {</span>
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :     char *old = NULL;</span>
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 :     char *new = NULL;</span>
+<span class="lineNum">     370 </span><span class="lineNoCov">          0 :     int x = e-&gt;u.mouse.x;</span>
+<span class="lineNum">     371 </span>            : 
+<span class="lineNum">     372 </span><span class="lineNoCov">          0 :     x /= hist-&gt;barwidth;</span>
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 :     x += hist-&gt;hoff;</span>
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 :     if ( x &gt; hist-&gt;h-&gt;high || x&lt;hist-&gt;h-&gt;low )</span>
+<span class="lineNum">     375 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     376 </span>            : 
+<span class="lineNum">     377 </span><span class="lineNoCov">          0 :     if ( hist-&gt;which==hist_blues ) {</span>
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 :         if ( hist-&gt;is_pending ) {</span>
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :             if ( x&lt;hist-&gt;pending_blue )</span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :                 ff_post_error(_(&quot;Bad Value&quot;),_(&quot;The smaller number must be selected first in a pair of bluevalues&quot;));</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :             else if ( x&lt;0 ) {        /* OtherBlues */</span>
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :                 old = GGadgetGetTitle8( GWidgetGetControl( hist-&gt;gw, CID_SecondaryVal ));</span>
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :                 new = ArrayOrder( old, 2, hist-&gt;pending_blue, x );</span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :                 GGadgetSetTitle8( GWidgetGetControl( hist-&gt;gw, CID_SecondaryVal ), new );</span>
+<span class="lineNum">     385 </span>            :             } else {
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :                 old = GGadgetGetTitle8( GWidgetGetControl( hist-&gt;gw, CID_MainVal ));</span>
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :                 new = ArrayOrder( old, 2, hist-&gt;pending_blue, x );</span>
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 :                 GGadgetSetTitle8( GWidgetGetControl( hist-&gt;gw, CID_MainVal ), new );</span>
+<span class="lineNum">     389 </span>            :             }
+<span class="lineNum">     390 </span><span class="lineNoCov">          0 :             GDrawSetCursor(hist-&gt;gw,ct_pointer);</span>
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 :             hist-&gt;is_pending = false;</span>
+<span class="lineNum">     392 </span>            :         } else {
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 :             hist-&gt;is_pending = true;</span>
+<span class="lineNum">     394 </span><span class="lineNoCov">          0 :             hist-&gt;pending_blue = x;</span>
+<span class="lineNum">     395 </span><span class="lineNoCov">          0 :             GDrawSetCursor(hist-&gt;gw,ct_eyedropper);</span>
+<span class="lineNum">     396 </span>            :         }
+<span class="lineNum">     397 </span><span class="lineNoCov">          0 :         GGadgetSetVisible(GWidgetGetControl(hist-&gt;gw,CID_MainVal),!hist-&gt;is_pending);</span>
+<span class="lineNum">     398 </span><span class="lineNoCov">          0 :         GGadgetSetVisible(GWidgetGetControl(hist-&gt;gw,CID_MainValL),!hist-&gt;is_pending);</span>
+<span class="lineNum">     399 </span><span class="lineNoCov">          0 :         GGadgetSetVisible(GWidgetGetControl(hist-&gt;gw,CID_BlueMsg),hist-&gt;is_pending);</span>
+<span class="lineNum">     400 </span>            :     } else { /* HStem and VStem */
+<span class="lineNum">     401 </span><span class="lineNoCov">          0 :         if ( !( e-&gt;u.mouse.state&amp;ksm_shift )) {</span>
+<span class="lineNum">     402 </span><span class="lineNoCov">          0 :             new = xasprintf( &quot;[%d]&quot;, x );</span>
+<span class="lineNum">     403 </span><span class="lineNoCov">          0 :             GGadgetSetTitle8( GWidgetGetControl( hist-&gt;gw, CID_MainVal ), new );</span>
+<span class="lineNum">     404 </span><span class="lineNoCov">          0 :             GGadgetSetTitle8( GWidgetGetControl( hist-&gt;gw, CID_SecondaryVal ), new );</span>
+<span class="lineNum">     405 </span>            :         } else {
+<span class="lineNum">     406 </span><span class="lineNoCov">          0 :             old = GGadgetGetTitle8( GWidgetGetControl( hist-&gt;gw, CID_SecondaryVal ));</span>
+<span class="lineNum">     407 </span><span class="lineNoCov">          0 :             new = ArrayOrder( old, 1, x, 0 );</span>
+<span class="lineNum">     408 </span><span class="lineNoCov">          0 :             GGadgetSetTitle8( GWidgetGetControl( hist-&gt;gw, CID_SecondaryVal ), new );</span>
+<span class="lineNum">     409 </span>            :         }
+<span class="lineNum">     410 </span>            :     }
+<span class="lineNum">     411 </span><span class="lineNoCov">          0 :     free( old );</span>
+<span class="lineNum">     412 </span><span class="lineNoCov">          0 :     free( new );</span>
+<a name="413"><span class="lineNum">     413 </span>            : }</a>
+<span class="lineNum">     414 </span>            : 
+<span class="lineNum">     415 </span><span class="lineNoCov">          0 : static void HistExpose(GWindow pixmap, struct hist_dlg *hist) {</span>
+<span class="lineNum">     416 </span>            :     GRect r,old;
+<span class="lineNum">     417 </span>            :     int height;
+<span class="lineNum">     418 </span>            :     double yscale;
+<span class="lineNum">     419 </span>            :     int i;
+<span class="lineNum">     420 </span>            :     char buf[20];
+<span class="lineNum">     421 </span>            :     GRect size;
+<span class="lineNum">     422 </span><span class="lineNoCov">          0 :     GDrawGetSize(GDrawableGetWindow(GWidgetGetControl(hist-&gt;gw,CID_Histogram)),&amp;size);</span>
+<span class="lineNum">     423 </span>            : 
+<span class="lineNum">     424 </span><span class="lineNoCov">          0 :     height = size.height-hist-&gt;fh-2;</span>
+<span class="lineNum">     425 </span><span class="lineNoCov">          0 :     yscale = (4*height/5.0)/(hist-&gt;h-&gt;max-0);</span>
+<span class="lineNum">     426 </span>            : 
+<span class="lineNum">     427 </span><span class="lineNoCov">          0 :     GDrawSetLineWidth(pixmap,0);</span>
+<span class="lineNum">     428 </span><span class="lineNoCov">          0 :     r.x = 0; r.y = 0;</span>
+<span class="lineNum">     429 </span><span class="lineNoCov">          0 :     r.width = size.width-1; r.height = height-1;</span>
+<span class="lineNum">     430 </span><span class="lineNoCov">          0 :     GDrawDrawRect(pixmap,&amp;r,0x000000);</span>
+<span class="lineNum">     431 </span>            : 
+<span class="lineNum">     432 </span><span class="lineNoCov">          0 :     ++r.x; r.width--;</span>
+<span class="lineNum">     433 </span><span class="lineNoCov">          0 :     ++r.y; r.height--;</span>
+<span class="lineNum">     434 </span><span class="lineNoCov">          0 :     GDrawPushClip(pixmap,&amp;r,&amp;old);</span>
+<span class="lineNum">     435 </span>            : 
+<span class="lineNum">     436 </span><span class="lineNoCov">          0 :     for ( i=hist-&gt;hoff; (i-hist-&gt;hoff)*hist-&gt;barwidth&lt;size.width-2 &amp;&amp; i&lt;=hist-&gt;h-&gt;high; ++i ) {</span>
+<span class="lineNum">     437 </span><span class="lineNoCov">          0 :         r.x = (i-hist-&gt;hoff)*hist-&gt;barwidth+1; r.width = hist-&gt;barwidth;</span>
+<span class="lineNum">     438 </span><span class="lineNoCov">          0 :         r.height = rint(hist-&gt;h-&gt;hist[i-hist-&gt;h-&gt;low].sum * yscale);</span>
+<span class="lineNum">     439 </span><span class="lineNoCov">          0 :         if ( r.height&gt;=0 ) {</span>
+<span class="lineNum">     440 </span><span class="lineNoCov">          0 :             r.y = height - r.height;</span>
+<span class="lineNum">     441 </span><span class="lineNoCov">          0 :             GDrawFillRect(pixmap,&amp;r,0x2020ff);</span>
+<span class="lineNum">     442 </span>            :         }
+<span class="lineNum">     443 </span>            :     }
+<span class="lineNum">     444 </span>            : 
+<span class="lineNum">     445 </span><span class="lineNoCov">          0 :     GDrawPopClip(pixmap,&amp;old);</span>
+<span class="lineNum">     446 </span>            : 
+<span class="lineNum">     447 </span><span class="lineNoCov">          0 :     GDrawSetFont(pixmap,hist-&gt;font);</span>
+<span class="lineNum">     448 </span><span class="lineNoCov">          0 :     sprintf(buf,&quot;%d&quot;,hist-&gt;hoff);</span>
+<span class="lineNum">     449 </span><span class="lineNoCov">          0 :     GDrawDrawText8(pixmap,0,height+2+hist-&gt;as, buf,-1,0x000000);</span>
+<span class="lineNum">     450 </span><span class="lineNoCov">          0 :     sprintf(buf,&quot;%d&quot;,hist-&gt;hoff+hist-&gt;hwidth/hist-&gt;barwidth);</span>
+<span class="lineNum">     451 </span><span class="lineNoCov">          0 :     GDrawDrawText8(pixmap,size.width-GDrawGetText8Width(pixmap,buf,-1),height+2+hist-&gt;as,</span>
+<span class="lineNum">     452 </span>            :             buf,-1,0x000000);
+<a name="453"><span class="lineNum">     453 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     454 </span>            : 
+<span class="lineNum">     455 </span><span class="lineNoCov">          0 : static void HistRExpose(GWindow pixmap, struct hist_dlg *hist) {</span>
+<span class="lineNum">     456 </span>            :     int height;
+<span class="lineNum">     457 </span>            :     double yscale;
+<span class="lineNum">     458 </span>            :     GRect size;
+<span class="lineNum">     459 </span>            :     char buf[20];
+<span class="lineNum">     460 </span>            : 
+<span class="lineNum">     461 </span><span class="lineNoCov">          0 :     GDrawGetSize(GDrawableGetWindow(GWidgetGetControl(hist-&gt;gw,CID_RightSide)),&amp;size);</span>
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 :     height = size.height-hist-&gt;fh-2;</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :     yscale = (4*height/5.0)/(hist-&gt;h-&gt;max-0);</span>
+<span class="lineNum">     464 </span>            : 
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 :     sprintf(buf,&quot;%d&quot;,hist-&gt;h-&gt;max);</span>
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :     GDrawDrawText8(pixmap,1,height-rint(hist-&gt;h-&gt;max*yscale),</span>
+<span class="lineNum">     467 </span>            :             buf,-1,0x000000);
+<a name="468"><span class="lineNum">     468 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     469 </span>            : 
+<span class="lineNum">     470 </span><span class="lineNoCov">          0 : static void HistLExpose(GWindow pixmap, struct hist_dlg *hist) {</span>
+<span class="lineNum">     471 </span>            :     int height;
+<span class="lineNum">     472 </span>            :     double yscale;
+<span class="lineNum">     473 </span>            :     GRect size;
+<span class="lineNum">     474 </span>            :     char buf[20];
+<span class="lineNum">     475 </span>            : 
+<span class="lineNum">     476 </span><span class="lineNoCov">          0 :     GDrawGetSize(GDrawableGetWindow(GWidgetGetControl(hist-&gt;gw,CID_LeftSide)),&amp;size);</span>
+<span class="lineNum">     477 </span><span class="lineNoCov">          0 :     height = size.height-hist-&gt;fh-2;</span>
+<span class="lineNum">     478 </span><span class="lineNoCov">          0 :     yscale = (4*height/5.0)/(hist-&gt;h-&gt;max-0);</span>
+<span class="lineNum">     479 </span>            : 
+<span class="lineNum">     480 </span><span class="lineNoCov">          0 :     sprintf(buf,&quot;%d&quot;,hist-&gt;h-&gt;max);</span>
+<span class="lineNum">     481 </span><span class="lineNoCov">          0 :     GDrawDrawText8(pixmap,size.width-GDrawGetText8Width(pixmap,buf,-1)-1,height-rint(hist-&gt;h-&gt;max*yscale),</span>
+<span class="lineNum">     482 </span>            :             buf,-1,0x000000);
+<a name="483"><span class="lineNum">     483 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     484 </span>            : 
+<span class="lineNum">     485 </span><span class="lineNoCov">          0 : static void HistScroll(struct hist_dlg *hist,struct sbevent *sb) {</span>
+<span class="lineNum">     486 </span><span class="lineNoCov">          0 :     int newpos = hist-&gt;hoff;</span>
+<span class="lineNum">     487 </span>            :     int cols;
+<span class="lineNum">     488 </span>            :     GRect size;
+<span class="lineNum">     489 </span><span class="lineNoCov">          0 :     GGadget *g = GWidgetGetControl(hist-&gt;gw,CID_ScrollBar);</span>
+<span class="lineNum">     490 </span>            : 
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 :     GGadgetGetSize(g,&amp;size);</span>
+<span class="lineNum">     492 </span><span class="lineNoCov">          0 :     cols = (size.width-2)/hist-&gt;barwidth;</span>
+<span class="lineNum">     493 </span>            : 
+<span class="lineNum">     494 </span><span class="lineNoCov">          0 :     switch( sb-&gt;type ) {</span>
+<span class="lineNum">     495 </span>            :       case et_sb_top:
+<span class="lineNum">     496 </span><span class="lineNoCov">          0 :         newpos = 0;</span>
+<span class="lineNum">     497 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     498 </span>            :       case et_sb_uppage:
+<span class="lineNum">     499 </span><span class="lineNoCov">          0 :         newpos -= cols;</span>
+<span class="lineNum">     500 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     501 </span>            :       case et_sb_up:
+<span class="lineNum">     502 </span><span class="lineNoCov">          0 :         --newpos;</span>
+<span class="lineNum">     503 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     504 </span>            :       case et_sb_down:
+<span class="lineNum">     505 </span><span class="lineNoCov">          0 :         ++newpos;</span>
+<span class="lineNum">     506 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     507 </span>            :       case et_sb_downpage:
+<span class="lineNum">     508 </span><span class="lineNoCov">          0 :         newpos += cols;</span>
+<span class="lineNum">     509 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     510 </span>            :       case et_sb_bottom:
+<span class="lineNum">     511 </span><span class="lineNoCov">          0 :         newpos = (hist-&gt;h-&gt;high+1-hist-&gt;h-&gt;low)-cols;</span>
+<span class="lineNum">     512 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     513 </span>            :       case et_sb_thumb:
+<span class="lineNum">     514 </span>            :       case et_sb_thumbrelease:
+<span class="lineNum">     515 </span><span class="lineNoCov">          0 :         newpos = sb-&gt;pos;</span>
+<span class="lineNum">     516 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     517 </span>            :     }
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 :     if ( newpos&gt;(hist-&gt;h-&gt;high+1-hist-&gt;h-&gt;low)-cols + hist-&gt;h-&gt;low )</span>
+<span class="lineNum">     519 </span><span class="lineNoCov">          0 :         newpos = (hist-&gt;h-&gt;high+1-hist-&gt;h-&gt;low)-cols + hist-&gt;h-&gt;low;</span>
+<span class="lineNum">     520 </span><span class="lineNoCov">          0 :     if ( newpos&lt;hist-&gt;h-&gt;low ) newpos = hist-&gt;h-&gt;low;</span>
+<span class="lineNum">     521 </span><span class="lineNoCov">          0 :     if ( newpos!=hist-&gt;hoff ) {</span>
+<span class="lineNum">     522 </span>            :         /*int diff = newpos-hist-&gt;hoff;*/
+<span class="lineNum">     523 </span><span class="lineNoCov">          0 :         hist-&gt;hoff = newpos;</span>
+<span class="lineNum">     524 </span><span class="lineNoCov">          0 :         GScrollBarSetPos(g,hist-&gt;hoff);</span>
+<span class="lineNum">     525 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(GDrawableGetWindow(GWidgetGetControl(hist-&gt;gw,CID_Histogram)),NULL,false);</span>
+<span class="lineNum">     526 </span>            :     }
+<a name="527"><span class="lineNum">     527 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     528 </span>            : 
+<span class="lineNum">     529 </span><span class="lineNoCov">          0 : static void HistRefigureSB(struct hist_dlg *hist) {</span>
+<span class="lineNum">     530 </span><span class="lineNoCov">          0 :     GGadget *g = GWidgetGetControl(hist-&gt;gw,CID_ScrollBar);</span>
+<span class="lineNum">     531 </span>            :     int width, hoff, cols;
+<span class="lineNum">     532 </span>            :     GRect size;
+<span class="lineNum">     533 </span>            : 
+<span class="lineNum">     534 </span><span class="lineNoCov">          0 :     GGadgetGetSize(g,&amp;size);</span>
+<span class="lineNum">     535 </span><span class="lineNoCov">          0 :     width = size.width-2;</span>
+<span class="lineNum">     536 </span><span class="lineNoCov">          0 :     cols = width/hist-&gt;barwidth;</span>
+<span class="lineNum">     537 </span>            : 
+<span class="lineNum">     538 </span><span class="lineNoCov">          0 :     GScrollBarSetBounds(g,hist-&gt;h-&gt;low,hist-&gt;h-&gt;high+1,cols);</span>
+<span class="lineNum">     539 </span><span class="lineNoCov">          0 :     if ( hist-&gt;hoff+cols &gt;hist-&gt;h-&gt;high ) {</span>
+<span class="lineNum">     540 </span><span class="lineNoCov">          0 :         hoff = hist-&gt;h-&gt;high-cols;</span>
+<span class="lineNum">     541 </span><span class="lineNoCov">          0 :         if ( hoff&lt;0 ) hoff = 0;</span>
+<span class="lineNum">     542 </span><span class="lineNoCov">          0 :         if ( hoff!=hist-&gt;hoff ) {</span>
+<span class="lineNum">     543 </span><span class="lineNoCov">          0 :             hist-&gt;hoff = hoff;</span>
+<span class="lineNum">     544 </span><span class="lineNoCov">          0 :             GScrollBarSetPos(g,hoff);</span>
+<span class="lineNum">     545 </span>            :         }
+<span class="lineNum">     546 </span>            :     }
+<a name="547"><span class="lineNum">     547 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     548 </span>            : 
+<span class="lineNum">     549 </span><span class="lineNoCov">          0 : static void HistResize(struct hist_dlg *hist) {</span>
+<span class="lineNum">     550 </span>            : 
+<span class="lineNum">     551 </span><span class="lineNoCov">          0 :     HistRefigureSB(hist);</span>
+<span class="lineNum">     552 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(hist-&gt;gw,NULL,false);</span>
+<a name="553"><span class="lineNum">     553 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     554 </span>            :         
+<span class="lineNum">     555 </span><span class="lineNoCov">          0 : static void HistSet(struct hist_dlg *hist) {</span>
+<span class="lineNum">     556 </span>            :     char *primary, *secondary;
+<span class="lineNum">     557 </span>            :     char *temp;
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :     struct psdict *p = hist-&gt;private ? hist-&gt;private : hist-&gt;sf-&gt;private;</span>
+<span class="lineNum">     559 </span>            :     const unichar_t *ret1, *ret2;
+<span class="lineNum">     560 </span>            : 
+<span class="lineNum">     561 </span><span class="lineNoCov">          0 :     switch ( hist-&gt;which ) {</span>
+<span class="lineNum">     562 </span>            :       case hist_hstem:
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 :         primary = &quot;StdHW&quot;; secondary = &quot;StemSnapH&quot;;</span>
+<span class="lineNum">     564 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     565 </span>            :       case hist_vstem:
+<span class="lineNum">     566 </span><span class="lineNoCov">          0 :         primary = &quot;StdVW&quot;; secondary = &quot;StemSnapV&quot;;</span>
+<span class="lineNum">     567 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     568 </span>            :       case hist_blues:
+<span class="lineNum">     569 </span><span class="lineNoCov">          0 :         primary = &quot;BlueValues&quot;; secondary = &quot;OtherBlues&quot;;</span>
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     571 </span>            :     }
+<span class="lineNum">     572 </span><span class="lineNoCov">          0 :     ret1 = GGadgetGetTitle(GWidgetGetControl(hist-&gt;gw,CID_MainVal));</span>
+<span class="lineNum">     573 </span><span class="lineNoCov">          0 :     ret2 = GGadgetGetTitle(GWidgetGetControl(hist-&gt;gw,CID_SecondaryVal));</span>
+<span class="lineNum">     574 </span><span class="lineNoCov">          0 :     hist-&gt;done = true;</span>
+<span class="lineNum">     575 </span><span class="lineNoCov">          0 :     if ( (*ret1=='\0' || uc_strcmp(ret1,&quot;[]&quot;)==0 ) &amp;&amp;</span>
+<span class="lineNum">     576 </span><span class="lineNoCov">          0 :             (*ret2=='\0' || uc_strcmp(ret2,&quot;[]&quot;)==0 ) &amp;&amp; p==NULL )</span>
+<span class="lineNum">     577 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     578 </span><span class="lineNoCov">          0 :     if ( p==NULL ) {</span>
+<span class="lineNum">     579 </span><span class="lineNoCov">          0 :         hist-&gt;sf-&gt;private = p = calloc(1,sizeof(struct psdict));</span>
+<span class="lineNum">     580 </span><span class="lineNoCov">          0 :         p-&gt;cnt = 10;</span>
+<span class="lineNum">     581 </span><span class="lineNoCov">          0 :         p-&gt;keys = calloc(10,sizeof(char *));</span>
+<span class="lineNum">     582 </span><span class="lineNoCov">          0 :         p-&gt;values = calloc(10,sizeof(char *));</span>
+<span class="lineNum">     583 </span>            :     }
+<span class="lineNum">     584 </span><span class="lineNoCov">          0 :     PSDictChangeEntry(p,primary,temp=cu_copy(ret1)); free(temp);</span>
+<span class="lineNum">     585 </span><span class="lineNoCov">          0 :     PSDictChangeEntry(p,secondary,temp=cu_copy(ret2)); free(temp);</span>
+<a name="586"><span class="lineNum">     586 </span>            : }</a>
+<span class="lineNum">     587 </span>            : 
+<span class="lineNum">     588 </span><span class="lineNoCov">          0 : static int leftside_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     589 </span><span class="lineNoCov">          0 :     struct hist_dlg *hist = GDrawGetUserData(gw);</span>
+<span class="lineNum">     590 </span>            : 
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 :     switch ( event-&gt;type ) {</span>
+<span class="lineNum">     592 </span>            :       case et_char:
+<span class="lineNum">     593 </span><span class="lineNoCov">          0 :         if ( event-&gt;u.chr.keysym == GK_F1 || event-&gt;u.chr.keysym == GK_Help ) {</span>
+<span class="lineNum">     594 </span><span class="lineNoCov">          0 :             help(&quot;histogram.html&quot;);</span>
+<span class="lineNum">     595 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     596 </span>            :         }
+<span class="lineNum">     597 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     598 </span>            :       break;
+<span class="lineNum">     599 </span>            :       case et_expose:
+<span class="lineNum">     600 </span><span class="lineNoCov">          0 :         HistLExpose(gw,hist);</span>
+<span class="lineNum">     601 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     602 </span>            :       case et_mousemove:
+<span class="lineNum">     603 </span>            :       case et_mousedown:
+<span class="lineNum">     604 </span><span class="lineNoCov">          0 :         GGadgetEndPopup();</span>
+<span class="lineNum">     605 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     606 </span>            :     }
+<span class="lineNum">     607 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="608"><span class="lineNum">     608 </span>            : }</a>
+<span class="lineNum">     609 </span>            : 
+<span class="lineNum">     610 </span><span class="lineNoCov">          0 : static int rightside_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     611 </span><span class="lineNoCov">          0 :     struct hist_dlg *hist = GDrawGetUserData(gw);</span>
+<span class="lineNum">     612 </span>            : 
+<span class="lineNum">     613 </span><span class="lineNoCov">          0 :     switch ( event-&gt;type ) {</span>
+<span class="lineNum">     614 </span>            :       case et_char:
+<span class="lineNum">     615 </span><span class="lineNoCov">          0 :         if ( event-&gt;u.chr.keysym == GK_F1 || event-&gt;u.chr.keysym == GK_Help ) {</span>
+<span class="lineNum">     616 </span><span class="lineNoCov">          0 :             help(&quot;histogram.html&quot;);</span>
+<span class="lineNum">     617 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     618 </span>            :         }
+<span class="lineNum">     619 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     620 </span>            :       break;
+<span class="lineNum">     621 </span>            :       case et_expose:
+<span class="lineNum">     622 </span><span class="lineNoCov">          0 :         HistRExpose(gw,hist);</span>
+<span class="lineNum">     623 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     624 </span>            :       case et_mousemove:
+<span class="lineNum">     625 </span>            :       case et_mousedown:
+<span class="lineNum">     626 </span><span class="lineNoCov">          0 :         GGadgetEndPopup();</span>
+<span class="lineNum">     627 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     628 </span>            :     }
+<span class="lineNum">     629 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="630"><span class="lineNum">     630 </span>            : }</a>
+<span class="lineNum">     631 </span>            : 
+<span class="lineNum">     632 </span><span class="lineNoCov">          0 : static int histogram_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     633 </span><span class="lineNoCov">          0 :     struct hist_dlg *hist = GDrawGetUserData(gw);</span>
+<span class="lineNum">     634 </span>            : 
+<span class="lineNum">     635 </span><span class="lineNoCov">          0 :     switch ( event-&gt;type ) {</span>
+<span class="lineNum">     636 </span>            :       case et_char:
+<span class="lineNum">     637 </span><span class="lineNoCov">          0 :         if ( event-&gt;u.chr.keysym == GK_F1 || event-&gt;u.chr.keysym == GK_Help ) {</span>
+<span class="lineNum">     638 </span><span class="lineNoCov">          0 :             help(&quot;histogram.html&quot;);</span>
+<span class="lineNum">     639 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     640 </span>            :         }
+<span class="lineNum">     641 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     642 </span>            :       break;
+<span class="lineNum">     643 </span>            :       case et_expose:
+<span class="lineNum">     644 </span><span class="lineNoCov">          0 :         HistExpose(gw,hist);</span>
+<span class="lineNum">     645 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     646 </span>            :       case et_mousemove:
+<span class="lineNum">     647 </span><span class="lineNoCov">          0 :         GGadgetEndPopup();</span>
+<span class="lineNum">     648 </span><span class="lineNoCov">          0 :         HistPopup(hist,event);</span>
+<span class="lineNum">     649 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     650 </span>            :       case et_mousedown:
+<span class="lineNum">     651 </span><span class="lineNoCov">          0 :         GGadgetEndPopup();</span>
+<span class="lineNum">     652 </span><span class="lineNoCov">          0 :         HistPress(hist,event);</span>
+<span class="lineNum">     653 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     654 </span>            :     }
+<span class="lineNum">     655 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="656"><span class="lineNum">     656 </span>            : }</a>
+<span class="lineNum">     657 </span>            : 
+<span class="lineNum">     658 </span><span class="lineNoCov">          0 : static int hist_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     659 </span><span class="lineNoCov">          0 :     struct hist_dlg *hist = GDrawGetUserData(gw);</span>
+<span class="lineNum">     660 </span>            :     int temp;
+<span class="lineNum">     661 </span>            :     const unichar_t *ret;
+<span class="lineNum">     662 </span>            :     unichar_t *end;
+<span class="lineNum">     663 </span>            : 
+<span class="lineNum">     664 </span><span class="lineNoCov">          0 :     if ( event-&gt;type==et_close ) {</span>
+<span class="lineNum">     665 </span><span class="lineNoCov">          0 :         hist-&gt;done = true;</span>
+<span class="lineNum">     666 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type==et_char ) {</span>
+<span class="lineNum">     667 </span><span class="lineNoCov">          0 :         if ( event-&gt;u.chr.keysym == GK_F1 || event-&gt;u.chr.keysym == GK_Help ) {</span>
+<span class="lineNum">     668 </span><span class="lineNoCov">          0 :             help(&quot;histogram.html&quot;);</span>
+<span class="lineNum">     669 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     670 </span>            :         }
+<span class="lineNum">     671 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     672 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type==et_resize ) {</span>
+<span class="lineNum">     673 </span><span class="lineNoCov">          0 :         HistResize(hist);;</span>
+<span class="lineNum">     674 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type==et_mousemove ) {</span>
+<span class="lineNum">     675 </span><span class="lineNoCov">          0 :         GGadgetEndPopup();</span>
+<span class="lineNum">     676 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type==et_mousedown ) {</span>
+<span class="lineNum">     677 </span><span class="lineNoCov">          0 :         GGadgetEndPopup();</span>
+<span class="lineNum">     678 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type==et_controlevent ) {</span>
+<span class="lineNum">     679 </span><span class="lineNoCov">          0 :         switch ( event-&gt;u.control.subtype ) {</span>
+<span class="lineNum">     680 </span>            :           case et_scrollbarchange:
+<span class="lineNum">     681 </span><span class="lineNoCov">          0 :             HistScroll(hist,&amp;event-&gt;u.control.u.sb);</span>
+<span class="lineNum">     682 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">     683 </span>            :           case et_textchanged:
+<span class="lineNum">     684 </span><span class="lineNoCov">          0 :             switch( GGadgetGetCid(event-&gt;u.control.g)) {</span>
+<span class="lineNum">     685 </span>            :               case CID_SumAround: case CID_BarWidth:
+<span class="lineNum">     686 </span><span class="lineNoCov">          0 :                 ret = _GGadgetGetTitle(event-&gt;u.control.g);</span>
+<span class="lineNum">     687 </span><span class="lineNoCov">          0 :                 temp = u_strtol(ret,&amp;end,10);</span>
+<span class="lineNum">     688 </span><span class="lineNoCov">          0 :                 if ( temp&lt;0 || *end )</span>
+<span class="lineNum">     689 </span>            :               break;
+<span class="lineNum">     690 </span><span class="lineNoCov">          0 :                 if ( GGadgetGetCid(event-&gt;u.control.g)==CID_SumAround ) {</span>
+<span class="lineNum">     691 </span><span class="lineNoCov">          0 :                     hist-&gt;sum_around = temp;</span>
+<span class="lineNum">     692 </span><span class="lineNoCov">          0 :                     HistFindMax(hist-&gt;h,temp);</span>
+<span class="lineNum">     693 </span><span class="lineNoCov">          0 :                 } else if ( temp==0 )</span>
+<span class="lineNum">     694 </span><span class="lineNoCov">          0 :               break;</span>
+<span class="lineNum">     695 </span>            :                 else {
+<span class="lineNum">     696 </span><span class="lineNoCov">          0 :                     hist-&gt;barwidth = temp;</span>
+<span class="lineNum">     697 </span><span class="lineNoCov">          0 :                     HistRefigureSB(hist);</span>
+<span class="lineNum">     698 </span>            :                 }
+<span class="lineNum">     699 </span><span class="lineNoCov">          0 :                 GDrawRequestExpose(GDrawableGetWindow(GWidgetGetControl(gw,CID_Histogram)),NULL,false);</span>
+<span class="lineNum">     700 </span><span class="lineNoCov">          0 :                 GDrawRequestExpose(GDrawableGetWindow(GWidgetGetControl(gw,CID_LeftSide)),NULL,false);</span>
+<span class="lineNum">     701 </span><span class="lineNoCov">          0 :                 GDrawRequestExpose(GDrawableGetWindow(GWidgetGetControl(gw,CID_RightSide)),NULL,false);</span>
+<span class="lineNum">     702 </span><span class="lineNoCov">          0 :               break;</span>
+<span class="lineNum">     703 </span>            :             }
+<span class="lineNum">     704 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">     705 </span>            :           case et_buttonactivate:
+<span class="lineNum">     706 </span><span class="lineNoCov">          0 :             if ( GGadgetGetCid(event-&gt;u.control.g)==CID_OK ) {</span>
+<span class="lineNum">     707 </span><span class="lineNoCov">          0 :                 HistSet(hist);</span>
+<span class="lineNum">     708 </span>            :             } else
+<span class="lineNum">     709 </span><span class="lineNoCov">          0 :                 hist-&gt;done = true;</span>
+<span class="lineNum">     710 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">     711 </span>            :         }
+<span class="lineNum">     712 </span>            :     }
+<span class="lineNum">     713 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="714"><span class="lineNum">     714 </span>            : }</a>
+<span class="lineNum">     715 </span>            : 
+<span class="lineNum">     716 </span><span class="lineNoCov">          0 : static void CheckSmallSelection(uint8 *selected,EncMap *map,SplineFont *sf) {</span>
+<span class="lineNum">     717 </span>            :     int i, cnt, tot;
+<span class="lineNum">     718 </span>            : 
+<span class="lineNum">     719 </span><span class="lineNoCov">          0 :     for ( i=cnt=tot=0; i&lt;map-&gt;enccount; ++i ) {</span>
+<span class="lineNum">     720 </span><span class="lineNoCov">          0 :         int gid = map-&gt;map[i];</span>
+<span class="lineNum">     721 </span><span class="lineNoCov">          0 :         if ( gid!=-1 &amp;&amp; sf-&gt;glyphs[gid]!=NULL ) {</span>
+<span class="lineNum">     722 </span><span class="lineNoCov">          0 :             ++tot;</span>
+<span class="lineNum">     723 </span><span class="lineNoCov">          0 :             if ( selected[i] )</span>
+<span class="lineNum">     724 </span><span class="lineNoCov">          0 :                 ++cnt;</span>
+<span class="lineNum">     725 </span>            :         }
+<span class="lineNum">     726 </span>            :     }
+<span class="lineNum">     727 </span><span class="lineNoCov">          0 :     if ( (cnt==1 &amp;&amp; tot&gt;1) || (cnt&lt;8 &amp;&amp; tot&gt;30) )</span>
+<span class="lineNum">     728 </span><span class="lineNoCov">          0 :         ff_post_notice(_(&quot;Tiny Selection&quot;),_(&quot;There are so few glyphs selected that it seems unlikely to me that you will get a representative sample of this aspect of your font. If you deselect everything the command will apply to all glyphs in the font&quot;));</span>
+<a name="729"><span class="lineNum">     729 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     730 </span>            : 
+<span class="lineNum">     731 </span><span class="lineNoCov">          0 : void SFHistogram(SplineFont *sf,int layer, struct psdict *private, uint8 *selected,</span>
+<span class="lineNum">     732 </span>            :         EncMap *map,enum hist_type which) {
+<span class="lineNum">     733 </span>            :     struct hist_dlg hist;
+<span class="lineNum">     734 </span>            :     GWindow gw;
+<span class="lineNum">     735 </span>            :     GRect pos;
+<span class="lineNum">     736 </span>            :     GWindowAttrs wattrs;
+<span class="lineNum">     737 </span>            :     GGadgetCreateData gcd[17], boxes[6], *hv[4][2], *butarray[9], *hvctls[5][5], *hvbody[3][4];
+<span class="lineNum">     738 </span>            :     GTextInfo label[17];
+<span class="lineNum">     739 </span>            :     int i,j;
+<span class="lineNum">     740 </span>            :     char binsize[20], barwidth[20], *primary, *secondary;
+<span class="lineNum">     741 </span>            :     FontRequest rq;
+<span class="lineNum">     742 </span>            :     int as, ds, ld;
+<span class="lineNum">     743 </span>            :     static unichar_t n9999[] = { '9', '9', '9', '9', 0 };
+<span class="lineNum">     744 </span>            :     static GFont *font = NULL;
+<span class="lineNum">     745 </span>            : 
+<span class="lineNum">     746 </span><span class="lineNoCov">          0 :     memset(&amp;hist,0,sizeof(hist));</span>
+<span class="lineNum">     747 </span><span class="lineNoCov">          0 :     hist.sf = sf;</span>
+<span class="lineNum">     748 </span><span class="lineNoCov">          0 :     hist.layer = layer;</span>
+<span class="lineNum">     749 </span><span class="lineNoCov">          0 :     hist.private = private;</span>
+<span class="lineNum">     750 </span><span class="lineNoCov">          0 :     if ( private==NULL ) private = sf-&gt;private;</span>
+<span class="lineNum">     751 </span><span class="lineNoCov">          0 :     hist.selected = selected;</span>
+<span class="lineNum">     752 </span><span class="lineNoCov">          0 :     hist.which = which;</span>
+<span class="lineNum">     753 </span><span class="lineNoCov">          0 :     hist.barwidth = 6;</span>
+<span class="lineNum">     754 </span><span class="lineNoCov">          0 :     hist.sum_around = 0;</span>
+<span class="lineNum">     755 </span><span class="lineNoCov">          0 :     switch ( which ) {</span>
+<span class="lineNum">     756 </span>            :       case hist_hstem:
+<span class="lineNum">     757 </span><span class="lineNoCov">          0 :         hist.h = HistFindHStemWidths(sf,layer,selected,map);</span>
+<span class="lineNum">     758 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     759 </span>            :       case hist_vstem:
+<span class="lineNum">     760 </span><span class="lineNoCov">          0 :         hist.h = HistFindVStemWidths(sf,layer,selected,map);</span>
+<span class="lineNum">     761 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     762 </span>            :       case hist_blues:
+<span class="lineNum">     763 </span><span class="lineNoCov">          0 :         hist.h = HistFindBlues(sf,layer,selected,map);</span>
+<span class="lineNum">     764 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     765 </span>            :     }
+<span class="lineNum">     766 </span><span class="lineNoCov">          0 :     HistFindMax(hist.h,hist.sum_around);</span>
+<span class="lineNum">     767 </span>            : 
+<span class="lineNum">     768 </span><span class="lineNoCov">          0 :     if ( selected!=NULL )</span>
+<span class="lineNum">     769 </span><span class="lineNoCov">          0 :         CheckSmallSelection(selected,map,sf);</span>
+<span class="lineNum">     770 </span>            : 
+<span class="lineNum">     771 </span><span class="lineNoCov">          0 :     memset(&amp;wattrs,0,sizeof(wattrs));</span>
+<span class="lineNum">     772 </span><span class="lineNoCov">          0 :     wattrs.mask = wam_events|wam_cursor|wam_utf8_wtitle|wam_undercursor|wam_isdlg|wam_restrict;</span>
+<span class="lineNum">     773 </span><span class="lineNoCov">          0 :     wattrs.event_masks = ~(1&lt;&lt;et_charup);</span>
+<span class="lineNum">     774 </span><span class="lineNoCov">          0 :     wattrs.restrict_input_to_me = 1;</span>
+<span class="lineNum">     775 </span><span class="lineNoCov">          0 :     wattrs.undercursor = 1;</span>
+<span class="lineNum">     776 </span><span class="lineNoCov">          0 :     wattrs.cursor = ct_pointer;</span>
+<span class="lineNum">     777 </span><span class="lineNoCov">          0 :     wattrs.utf8_window_title =  which==hist_hstem?_(&quot;HStem&quot;) :</span>
+<span class="lineNum">     778 </span>            :                                               which==hist_vstem?_(&quot;VStem&quot;):
+<span class="lineNum">     779 </span>            :                                                           _(&quot;Blues&quot;);
+<span class="lineNum">     780 </span><span class="lineNoCov">          0 :     wattrs.is_dlg = true;</span>
+<span class="lineNum">     781 </span><span class="lineNoCov">          0 :     pos.x = pos.y = 0;</span>
+<span class="lineNum">     782 </span><span class="lineNoCov">          0 :     pos.width = GGadgetScale(GDrawPointsToPixels(NULL,210));</span>
+<span class="lineNum">     783 </span><span class="lineNoCov">          0 :     hist.yoff = GDrawPointsToPixels(NULL,120);</span>
+<span class="lineNum">     784 </span><span class="lineNoCov">          0 :     pos.height = pos.width + hist.yoff;</span>
+<span class="lineNum">     785 </span><span class="lineNoCov">          0 :     hist.gw = gw = GDrawCreateTopWindow(NULL,&amp;pos,hist_e_h,&amp;hist,&amp;wattrs);</span>
+<span class="lineNum">     786 </span>            : 
+<span class="lineNum">     787 </span><span class="lineNoCov">          0 :     if ( font == NULL ) {</span>
+<span class="lineNum">     788 </span><span class="lineNoCov">          0 :         memset(&amp;rq,0,sizeof(rq));</span>
+<span class="lineNum">     789 </span><span class="lineNoCov">          0 :         rq.utf8_family_name = SANS_UI_FAMILIES;</span>
+<span class="lineNum">     790 </span><span class="lineNoCov">          0 :         rq.point_size = 10;</span>
+<span class="lineNum">     791 </span><span class="lineNoCov">          0 :         rq.weight = 400;</span>
+<span class="lineNum">     792 </span><span class="lineNoCov">          0 :         font = GDrawInstanciateFont(NULL,&amp;rq);</span>
+<span class="lineNum">     793 </span><span class="lineNoCov">          0 :         font = GResourceFindFont(&quot;Histogram.Font&quot;,font);</span>
+<span class="lineNum">     794 </span>            :     }
+<span class="lineNum">     795 </span><span class="lineNoCov">          0 :     hist.font = font;</span>
+<span class="lineNum">     796 </span><span class="lineNoCov">          0 :     GDrawWindowFontMetrics(gw,hist.font,&amp;as,&amp;ds,&amp;ld);</span>
+<span class="lineNum">     797 </span><span class="lineNoCov">          0 :     hist.fh = as+ds; hist.as = as;</span>
+<span class="lineNum">     798 </span>            : 
+<span class="lineNum">     799 </span><span class="lineNoCov">          0 :     GDrawSetFont(gw,hist.font);</span>
+<span class="lineNum">     800 </span><span class="lineNoCov">          0 :     hist.x = 10+GDrawGetTextWidth(gw,n9999,-1);</span>
+<span class="lineNum">     801 </span><span class="lineNoCov">          0 :     hist.hwidth = pos.width - 2*hist.x;</span>
+<span class="lineNum">     802 </span><span class="lineNoCov">          0 :     hist.y = 10; hist.hheight = pos.width-20;</span>
+<span class="lineNum">     803 </span>            : 
+<span class="lineNum">     804 </span><span class="lineNoCov">          0 :     memset(&amp;gcd,0,sizeof(gcd));</span>
+<span class="lineNum">     805 </span><span class="lineNoCov">          0 :     memset(&amp;label,0,sizeof(label));</span>
+<span class="lineNum">     806 </span><span class="lineNoCov">          0 :     memset(&amp;boxes,0,sizeof(boxes));</span>
+<span class="lineNum">     807 </span>            : 
+<span class="lineNum">     808 </span><span class="lineNoCov">          0 :     i=0;</span>
+<span class="lineNum">     809 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.width = hist.x; gcd[i].gd.pos.height = 200;</span>
+<span class="lineNum">     810 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_enabled|gg_visible|gg_pos_in_pixels;</span>
+<span class="lineNum">     811 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_LeftSide;</span>
+<span class="lineNum">     812 </span><span class="lineNoCov">          0 :     gcd[i].gd.u.drawable_e_h = leftside_e_h;</span>
+<span class="lineNum">     813 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GDrawableCreate;</span>
+<span class="lineNum">     814 </span><span class="lineNoCov">          0 :     hvbody[0][0] = &amp;gcd[i-1];</span>
+<span class="lineNum">     815 </span>            : 
+<span class="lineNum">     816 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.width = hist.hwidth+1; gcd[i].gd.pos.height = 200;</span>
+<span class="lineNum">     817 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_enabled|gg_visible|gg_pos_in_pixels;</span>
+<span class="lineNum">     818 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_Histogram;</span>
+<span class="lineNum">     819 </span><span class="lineNoCov">          0 :     gcd[i].gd.u.drawable_e_h = histogram_e_h;</span>
+<span class="lineNum">     820 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GDrawableCreate;</span>
+<span class="lineNum">     821 </span><span class="lineNoCov">          0 :     hvbody[0][1] = &amp;gcd[i-1];</span>
+<span class="lineNum">     822 </span>            : 
+<span class="lineNum">     823 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.width = hist.x; gcd[i].gd.pos.height = 200;</span>
+<span class="lineNum">     824 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_enabled|gg_visible|gg_pos_in_pixels;</span>
+<span class="lineNum">     825 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_RightSide;</span>
+<span class="lineNum">     826 </span><span class="lineNoCov">          0 :     gcd[i].gd.u.drawable_e_h = rightside_e_h;</span>
+<span class="lineNum">     827 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GDrawableCreate;</span>
+<span class="lineNum">     828 </span><span class="lineNoCov">          0 :     hvbody[0][2] = &amp;gcd[i-1];</span>
+<span class="lineNum">     829 </span><span class="lineNoCov">          0 :     hvbody[0][3] = NULL;</span>
+<span class="lineNum">     830 </span>            : 
+<span class="lineNum">     831 </span><span class="lineNoCov">          0 :     hvbody[1][0] = GCD_Glue;</span>
+<span class="lineNum">     832 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.width = hist.hwidth+1;</span>
+<span class="lineNum">     833 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_enabled|gg_visible|gg_pos_in_pixels;</span>
+<span class="lineNum">     834 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_ScrollBar;</span>
+<span class="lineNum">     835 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GScrollBarCreate;</span>
+<span class="lineNum">     836 </span><span class="lineNoCov">          0 :     hvbody[1][1] = &amp;gcd[i-1];</span>
+<span class="lineNum">     837 </span><span class="lineNoCov">          0 :     hvbody[1][2] = GCD_Glue;</span>
+<span class="lineNum">     838 </span><span class="lineNoCov">          0 :     hvbody[1][3] = NULL;</span>
+<span class="lineNum">     839 </span><span class="lineNoCov">          0 :     hvbody[2][0] = NULL;</span>
+<span class="lineNum">     840 </span>            : 
+<span class="lineNum">     841 </span><span class="lineNoCov">          0 :     boxes[2].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     842 </span><span class="lineNoCov">          0 :     boxes[2].gd.u.boxelements = &amp;hvbody[0][0];</span>
+<span class="lineNum">     843 </span><span class="lineNoCov">          0 :     boxes[2].creator = GHVBoxCreate;</span>
+<span class="lineNum">     844 </span>            : 
+<span class="lineNum">     845 </span><span class="lineNoCov">          0 :     label[i].text = (unichar_t *) _(&quot;Sum Around:&quot;);</span>
+<span class="lineNum">     846 </span><span class="lineNoCov">          0 :     label[i].text_is_1byte = true;</span>
+<span class="lineNum">     847 </span><span class="lineNoCov">          0 :     gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     848 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     849 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_SumAroundL;</span>
+<span class="lineNum">     850 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GLabelCreate;</span>
+<span class="lineNum">     851 </span><span class="lineNoCov">          0 :     hvctls[0][0] = &amp;gcd[i-1];</span>
+<span class="lineNum">     852 </span>            : 
+<span class="lineNum">     853 </span><span class="lineNoCov">          0 :     sprintf(binsize,&quot;%d&quot;, hist.sum_around);</span>
+<span class="lineNum">     854 </span><span class="lineNoCov">          0 :     label[i].text = (unichar_t *) binsize;</span>
+<span class="lineNum">     855 </span><span class="lineNoCov">          0 :     label[i].text_is_1byte = true;</span>
+<span class="lineNum">     856 </span><span class="lineNoCov">          0 :     gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     857 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.width = 30;</span>
+<span class="lineNum">     858 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     859 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_SumAround;</span>
+<span class="lineNum">     860 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GTextFieldCreate;</span>
+<span class="lineNum">     861 </span><span class="lineNoCov">          0 :     hvctls[0][1] = &amp;gcd[i-1];</span>
+<span class="lineNum">     862 </span>            : 
+<span class="lineNum">     863 </span><span class="lineNoCov">          0 :     label[i].text = (unichar_t *) _(&quot;Bar Width:&quot;);</span>
+<span class="lineNum">     864 </span><span class="lineNoCov">          0 :     label[i].text_is_1byte = true;</span>
+<span class="lineNum">     865 </span><span class="lineNoCov">          0 :     gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     866 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     867 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_BarWidthL;</span>
+<span class="lineNum">     868 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GLabelCreate;</span>
+<span class="lineNum">     869 </span><span class="lineNoCov">          0 :     hvctls[0][2] = &amp;gcd[i-1];</span>
+<span class="lineNum">     870 </span>            : 
+<span class="lineNum">     871 </span><span class="lineNoCov">          0 :     sprintf(barwidth,&quot;%d&quot;, hist.barwidth);</span>
+<span class="lineNum">     872 </span><span class="lineNoCov">          0 :     label[i].text = (unichar_t *) barwidth;</span>
+<span class="lineNum">     873 </span><span class="lineNoCov">          0 :     label[i].text_is_1byte = true;</span>
+<span class="lineNum">     874 </span><span class="lineNoCov">          0 :     gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     875 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.width = 30;</span>
+<span class="lineNum">     876 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     877 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_BarWidth;</span>
+<span class="lineNum">     878 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GTextFieldCreate;</span>
+<span class="lineNum">     879 </span><span class="lineNoCov">          0 :     hvctls[0][3] = &amp;gcd[i-1];</span>
+<span class="lineNum">     880 </span><span class="lineNoCov">          0 :     hvctls[0][4] = NULL;</span>
+<span class="lineNum">     881 </span>            : 
+<span class="lineNum">     882 </span><span class="lineNoCov">          0 :     label[i].text = (unichar_t *) _(&quot;BlueValues come in pairs. Select another.&quot;);</span>
+<span class="lineNum">     883 </span><span class="lineNoCov">          0 :     label[i].text_is_1byte = true;</span>
+<span class="lineNum">     884 </span><span class="lineNoCov">          0 :     label[i].fg = 0xff0000;</span>
+<span class="lineNum">     885 </span><span class="lineNoCov">          0 :     label[i].bg = GDrawGetDefaultBackground(NULL);</span>
+<span class="lineNum">     886 </span><span class="lineNoCov">          0 :     gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     887 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_enabled;</span>
+<span class="lineNum">     888 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_BlueMsg;</span>
+<span class="lineNum">     889 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GLabelCreate;</span>
+<span class="lineNum">     890 </span><span class="lineNoCov">          0 :     hvctls[1][0] = &amp;gcd[i-1];</span>
+<span class="lineNum">     891 </span><span class="lineNoCov">          0 :     hvctls[1][1] = hvctls[1][2] = hvctls[1][3] = GCD_ColSpan;</span>
+<span class="lineNum">     892 </span><span class="lineNoCov">          0 :     hvctls[1][4] = NULL;</span>
+<span class="lineNum">     893 </span>            : 
+<span class="lineNum">     894 </span><span class="lineNoCov">          0 :     switch ( which ) {</span>
+<span class="lineNum">     895 </span>            :       case hist_hstem:
+<span class="lineNum">     896 </span><span class="lineNoCov">          0 :         label[i].text = (unichar_t *) &quot;StdHW:&quot;;</span>
+<span class="lineNum">     897 </span><span class="lineNoCov">          0 :         label[i+2].text = (unichar_t *) &quot;StemSnapH:&quot;;</span>
+<span class="lineNum">     898 </span><span class="lineNoCov">          0 :         primary = &quot;StdHW&quot;; secondary = &quot;StemSnapH&quot;;</span>
+<span class="lineNum">     899 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     900 </span>            :       case hist_vstem:
+<span class="lineNum">     901 </span><span class="lineNoCov">          0 :         label[i].text = (unichar_t *) &quot;StdVW:&quot;;</span>
+<span class="lineNum">     902 </span><span class="lineNoCov">          0 :         label[i+2].text = (unichar_t *) &quot;StemSnapV:&quot;;</span>
+<span class="lineNum">     903 </span><span class="lineNoCov">          0 :         primary = &quot;StdVW&quot;; secondary = &quot;StemSnapV&quot;;</span>
+<span class="lineNum">     904 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     905 </span>            :       case hist_blues:
+<span class="lineNum">     906 </span><span class="lineNoCov">          0 :         label[i].text = (unichar_t *) &quot;BlueValues:&quot;;</span>
+<span class="lineNum">     907 </span><span class="lineNoCov">          0 :         label[i+2].text = (unichar_t *) &quot;OtherBlues:&quot;;</span>
+<span class="lineNum">     908 </span><span class="lineNoCov">          0 :         primary = &quot;BlueValues&quot;; secondary = &quot;OtherBlues&quot;;</span>
+<span class="lineNum">     909 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     910 </span>            :     }
+<span class="lineNum">     911 </span><span class="lineNoCov">          0 :     label[i].text_is_1byte = true;</span>
+<span class="lineNum">     912 </span><span class="lineNoCov">          0 :     gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     913 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.x = 5; gcd[i].gd.pos.y = gcd[i-2].gd.pos.y+28; </span>
+<span class="lineNum">     914 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     915 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_MainValL;</span>
+<span class="lineNum">     916 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GLabelCreate;</span>
+<span class="lineNum">     917 </span><span class="lineNoCov">          0 :     hvctls[2][0] = &amp;gcd[i-1];</span>
+<span class="lineNum">     918 </span>            : 
+<span class="lineNum">     919 </span><span class="lineNoCov">          0 :     if ( private!=NULL &amp;&amp; (j=PSDictFindEntry(private,primary))!=-1 ) {</span>
+<span class="lineNum">     920 </span><span class="lineNoCov">          0 :         label[i].text = (unichar_t *) private-&gt;values[j];</span>
+<span class="lineNum">     921 </span><span class="lineNoCov">          0 :         label[i].text_is_1byte = true;</span>
+<span class="lineNum">     922 </span><span class="lineNoCov">          0 :         gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     923 </span>            :     }
+<span class="lineNum">     924 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.x = 64; gcd[i].gd.pos.y = gcd[i-1].gd.pos.y-4;</span>
+<span class="lineNum">     925 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.width = 140;</span>
+<span class="lineNum">     926 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     927 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_MainVal;</span>
+<span class="lineNum">     928 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GTextFieldCreate;</span>
+<span class="lineNum">     929 </span><span class="lineNoCov">          0 :     hvctls[2][1] = &amp;gcd[i-1];</span>
+<span class="lineNum">     930 </span><span class="lineNoCov">          0 :     hvctls[2][2] = hvctls[2][3] = GCD_ColSpan;</span>
+<span class="lineNum">     931 </span><span class="lineNoCov">          0 :     hvctls[2][4] = NULL;</span>
+<span class="lineNum">     932 </span>            : 
+<span class="lineNum">     933 </span><span class="lineNoCov">          0 :     label[i].text_is_1byte = true;</span>
+<span class="lineNum">     934 </span><span class="lineNoCov">          0 :     gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     935 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.x = 5; gcd[i].gd.pos.y = gcd[i-1].gd.pos.y+28; </span>
+<span class="lineNum">     936 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     937 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_SecondaryValL;</span>
+<span class="lineNum">     938 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GLabelCreate;</span>
+<span class="lineNum">     939 </span><span class="lineNoCov">          0 :     hvctls[3][0] = &amp;gcd[i-1];</span>
+<span class="lineNum">     940 </span>            : 
+<span class="lineNum">     941 </span><span class="lineNoCov">          0 :     if ( private!=NULL &amp;&amp; (j=PSDictFindEntry(private,secondary))!=-1 ) {</span>
+<span class="lineNum">     942 </span><span class="lineNoCov">          0 :         label[i].text = (unichar_t *) private-&gt;values[j];</span>
+<span class="lineNum">     943 </span><span class="lineNoCov">          0 :         label[i].text_is_1byte = true;</span>
+<span class="lineNum">     944 </span><span class="lineNoCov">          0 :         gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     945 </span>            :     }
+<span class="lineNum">     946 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.x = 64; gcd[i].gd.pos.y = gcd[i-1].gd.pos.y-4;</span>
+<span class="lineNum">     947 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.width = 140;</span>
+<span class="lineNum">     948 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     949 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_SecondaryVal;</span>
+<span class="lineNum">     950 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GTextFieldCreate;</span>
+<span class="lineNum">     951 </span><span class="lineNoCov">          0 :     hvctls[3][1] = &amp;gcd[i-1];</span>
+<span class="lineNum">     952 </span><span class="lineNoCov">          0 :     hvctls[3][2] = hvctls[3][3] = GCD_ColSpan;</span>
+<span class="lineNum">     953 </span><span class="lineNoCov">          0 :     hvctls[3][4] = NULL;</span>
+<span class="lineNum">     954 </span><span class="lineNoCov">          0 :     hvctls[4][0] = NULL;</span>
+<span class="lineNum">     955 </span>            : 
+<span class="lineNum">     956 </span><span class="lineNoCov">          0 :     boxes[3].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     957 </span><span class="lineNoCov">          0 :     boxes[3].gd.u.boxelements = &amp;hvctls[0][0];</span>
+<span class="lineNum">     958 </span><span class="lineNoCov">          0 :     boxes[3].creator = GHVBoxCreate;</span>
+<span class="lineNum">     959 </span>            : 
+<span class="lineNum">     960 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_visible | gg_enabled | gg_but_default;</span>
+<span class="lineNum">     961 </span><span class="lineNoCov">          0 :     label[i].text = (unichar_t *) _(&quot;_OK&quot;);</span>
+<span class="lineNum">     962 </span><span class="lineNoCov">          0 :     label[i].text_is_1byte = true;</span>
+<span class="lineNum">     963 </span><span class="lineNoCov">          0 :     label[i].text_in_resource = true;</span>
+<span class="lineNum">     964 </span><span class="lineNoCov">          0 :     gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     965 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_OK;</span>
+<span class="lineNum">     966 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GButtonCreate;</span>
+<span class="lineNum">     967 </span><span class="lineNoCov">          0 :     butarray[0] = GCD_Glue; butarray[1] = &amp;gcd[i-1]; butarray[2] = GCD_Glue; butarray[3] = GCD_Glue;</span>
+<span class="lineNum">     968 </span>            : 
+<span class="lineNum">     969 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_visible | gg_enabled | gg_but_cancel;</span>
+<span class="lineNum">     970 </span><span class="lineNoCov">          0 :     label[i].text = (unichar_t *) _(&quot;_Cancel&quot;);</span>
+<span class="lineNum">     971 </span><span class="lineNoCov">          0 :     label[i].text_is_1byte = true;</span>
+<span class="lineNum">     972 </span><span class="lineNoCov">          0 :     label[i].text_in_resource = true;</span>
+<span class="lineNum">     973 </span><span class="lineNoCov">          0 :     gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     974 </span><span class="lineNoCov">          0 :     gcd[i].gd.mnemonic = 'C';</span>
+<span class="lineNum">     975 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_Cancel;</span>
+<span class="lineNum">     976 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GButtonCreate;</span>
+<span class="lineNum">     977 </span><span class="lineNoCov">          0 :     butarray[4] = GCD_Glue; butarray[5] = &amp;gcd[i-1]; butarray[6] = GCD_Glue; butarray[7] = NULL;</span>
+<span class="lineNum">     978 </span>            : 
+<span class="lineNum">     979 </span><span class="lineNoCov">          0 :     boxes[4].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     980 </span><span class="lineNoCov">          0 :     boxes[4].gd.u.boxelements = &amp;butarray[0];</span>
+<span class="lineNum">     981 </span><span class="lineNoCov">          0 :     boxes[4].creator = GHBoxCreate;</span>
+<span class="lineNum">     982 </span>            : 
+<span class="lineNum">     983 </span><span class="lineNoCov">          0 :     hv[0][0] = &amp;boxes[2]; hv[0][1] = NULL;</span>
+<span class="lineNum">     984 </span><span class="lineNoCov">          0 :     hv[1][0] = &amp;boxes[3]; hv[1][1] = NULL;</span>
+<span class="lineNum">     985 </span><span class="lineNoCov">          0 :     hv[2][0] = &amp;boxes[4]; hv[2][1] = NULL; hv[3][0] = NULL;</span>
+<span class="lineNum">     986 </span>            : 
+<span class="lineNum">     987 </span><span class="lineNoCov">          0 :     boxes[0].gd.pos.x = boxes[0].gd.pos.y = 2;</span>
+<span class="lineNum">     988 </span><span class="lineNoCov">          0 :     boxes[0].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     989 </span><span class="lineNoCov">          0 :     boxes[0].gd.u.boxelements = &amp;hv[0][0];</span>
+<span class="lineNum">     990 </span><span class="lineNoCov">          0 :     boxes[0].creator = GHVGroupCreate;</span>
+<span class="lineNum">     991 </span>            : 
+<span class="lineNum">     992 </span><span class="lineNoCov">          0 :     GGadgetsCreate(gw,boxes);</span>
+<span class="lineNum">     993 </span>            : 
+<span class="lineNum">     994 </span><span class="lineNoCov">          0 :     GHVBoxSetExpandableRow(boxes[0].ret,0);</span>
+<span class="lineNum">     995 </span><span class="lineNoCov">          0 :     GHVBoxSetExpandableCol(boxes[2].ret,1);</span>
+<span class="lineNum">     996 </span><span class="lineNoCov">          0 :     GHVBoxSetExpandableRow(boxes[2].ret,0);</span>
+<span class="lineNum">     997 </span><span class="lineNoCov">          0 :     GHVBoxSetExpandableCol(boxes[3].ret,1);</span>
+<span class="lineNum">     998 </span><span class="lineNoCov">          0 :     GHVBoxSetExpandableCol(boxes[4].ret,gb_expandglue);</span>
+<span class="lineNum">     999 </span>            : 
+<span class="lineNum">    1000 </span><span class="lineNoCov">          0 :     hist.hoff = 0;</span>
+<span class="lineNum">    1001 </span><span class="lineNoCov">          0 :     if ( hist.h-&gt;low&gt;0 )</span>
+<span class="lineNum">    1002 </span><span class="lineNoCov">          0 :         hist.hoff = hist.h-&gt;low;</span>
+<span class="lineNum">    1003 </span><span class="lineNoCov">          0 :     GScrollBarSetPos(GWidgetGetControl(hist.gw,CID_ScrollBar),hist.hoff);</span>
+<span class="lineNum">    1004 </span><span class="lineNoCov">          0 :     HistRefigureSB(&amp;hist);</span>
+<span class="lineNum">    1005 </span>            : 
+<span class="lineNum">    1006 </span><span class="lineNoCov">          0 :     GHVBoxFitWindow(boxes[0].ret);</span>
+<span class="lineNum">    1007 </span><span class="lineNoCov">          0 :     GDrawSetVisible(gw,true);</span>
+<span class="lineNum">    1008 </span><span class="lineNoCov">          0 :     while ( !hist.done )</span>
+<span class="lineNum">    1009 </span><span class="lineNoCov">          0 :         GDrawProcessOneEvent(NULL);</span>
+<span class="lineNum">    1010 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(gw);</span>
+<span class="lineNum">    1011 </span>            : 
+<span class="lineNum">    1012 </span><span class="lineNoCov">          0 :     HistDataFree(hist.h);</span>
+<span class="lineNum">    1013 </span><span class="lineNoCov">          0 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

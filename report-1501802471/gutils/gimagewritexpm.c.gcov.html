@@ -1,0 +1,195 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - gutils/gimagewritexpm.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gutils</a> - gimagewritexpm.c<span style="font-size: 80%;"> (source / <a href="gimagewritexpm.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">59</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /* 2013apr13, added mono + grey Jose Da Silva */
+<span class="lineNum">       3 </span>            : /*
+<span class="lineNum">       4 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       5 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       8 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      11 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      12 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      15 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      18 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      19 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      20 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      21 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      22 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      23 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      24 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      25 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      26 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      27 </span>            :  */
+<span class="lineNum">      28 </span>            : #include &quot;gimage.h&quot;
+<a name="29"><span class="lineNum">      29 </span>            : #include &quot;string.h&quot;</a>
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span><span class="lineNoCov">          0 : static char *pixname(int i, int ncol) {</span>
+<span class="lineNum">      32 </span>            :     static char one[2], two[3];
+<span class="lineNum">      33 </span><span class="lineNoCov">          0 :     char *usable = &quot;!#$%&amp;'()*+,-./0123456789;:&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~ &quot;;</span>
+<span class="lineNum">      34 </span>            :     static int len=0;
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span><span class="lineNoCov">          0 :     if ( len==0 ) len = strlen(usable);</span>
+<span class="lineNum">      37 </span><span class="lineNoCov">          0 :     if ( ncol&lt;len ) {</span>
+<span class="lineNum">      38 </span><span class="lineNoCov">          0 :         one[0]=usable[i];</span>
+<span class="lineNum">      39 </span><span class="lineNoCov">          0 : return( one );</span>
+<span class="lineNum">      40 </span>            :     } else {
+<span class="lineNum">      41 </span><span class="lineNoCov">          0 :         two[0] = usable[i/len];</span>
+<span class="lineNum">      42 </span><span class="lineNoCov">          0 :         two[1] = usable[i%len];</span>
+<span class="lineNum">      43 </span><span class="lineNoCov">          0 : return( two );</span>
+<span class="lineNum">      44 </span>            :     }
+<a name="45"><span class="lineNum">      45 </span>            : }</a>
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 : int GImageWriteXpm(GImage *gi, char *filename) {</span>
+<span class="lineNum">      48 </span>            : /* Export an *.xpm image. Return 0 if all done okay */
+<span class="lineNum">      49 </span><span class="lineNoCov">          0 :     struct _GImage *base = gi-&gt;list_len==0?gi-&gt;u.image:gi-&gt;u.images[0];</span>
+<span class="lineNum">      50 </span>            :     FILE *file;
+<span class="lineNum">      51 </span>            :     char stem[256];
+<span class="lineNum">      52 </span>            :     char *pt,*color_type; uint8 *scanline;
+<span class="lineNum">      53 </span>            :     int i,j;
+<span class="lineNum">      54 </span>            : 
+<span class="lineNum">      55 </span>            :     /* This routine only exports mono or color-indexed type images */
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :     if ( base-&gt;image_type==it_mono )</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :         color_type = &quot;m&quot;;</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :     else if ( base-&gt;image_type==it_index ) {</span>
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :         color_type = &quot;c&quot;;</span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 :         if ( base-&gt;clut-&gt;is_grey ) {</span>
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :             color_type = &quot;g&quot;;</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :             if ( base-&gt;clut-&gt;clut_len&lt;=4 )</span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :                 color_type = &quot;g4&quot;;</span>
+<span class="lineNum">      64 </span>            :         }
+<span class="lineNum">      65 </span>            :     } else {
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :         fprintf(stderr,&quot;Image must be mono or color-indexed.\n&quot;);</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :         return( -1 );</span>
+<span class="lineNum">      68 </span>            :     }
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span>            :     /* get filename stem (255chars max) */
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :     if ( (pt=strrchr(filename,'/'))!=NULL )</span>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :         ++pt;</span>
+<span class="lineNum">      73 </span>            :     else
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :         pt=filename;</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :     strncpy(stem,pt,sizeof(stem)); stem[255]='\0';</span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :     if ( (pt=strrchr(stem,'.'))!=NULL &amp;&amp; pt!=stem )</span>
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :         *pt = '\0';</span>
+<span class="lineNum">      78 </span>            : 
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :     if ( (file=fopen(filename,&quot;w&quot;))==NULL ) {</span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :         fprintf(stderr,&quot;Can't open \&quot;%s\&quot;\n&quot;, filename);</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :         return( -1 );</span>
+<span class="lineNum">      82 </span>            :     }
+<span class="lineNum">      83 </span>            : 
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :     fprintf(file,&quot;/* XPM */\n&quot; );</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :     fprintf(file,&quot;static char *%s[] = {\n&quot;,stem);</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :     fprintf(file,&quot;/* width height ncolors chars_per_pixel */\n&quot;);</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :     if ( base-&gt;image_type==it_mono )</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :         fprintf(file,&quot;\&quot;%d %d 2 1\&quot;\n&quot;, (int) base-&gt;width, (int) base-&gt;height );</span>
+<span class="lineNum">      89 </span>            :     else
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :         fprintf(file,&quot;\&quot;%d %d %d %d\&quot;\n&quot;, (int) base-&gt;width, (int) base-&gt;height, base-&gt;clut-&gt;clut_len,</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :             base-&gt;clut-&gt;clut_len&gt;95?2:1 );</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :     fprintf(file,&quot;/* colors */\n&quot;);</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :     if ( base-&gt;image_type==it_mono ) {</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :         fprintf(file,&quot;\&quot;%s m #%06x\&quot;\n&quot;, pixname(0,2),0);</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :         fprintf(file,&quot;\&quot;%s m #%06x\&quot;\n&quot;, pixname(1,2),0xffffff);</span>
+<span class="lineNum">      96 </span>            :     } else {
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;base-&gt;clut-&gt;clut_len; ++i )</span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :             fprintf(file,&quot;\&quot;%s %s #%06x\&quot;\n&quot;, pixname(i,base-&gt;clut-&gt;clut_len),color_type,</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :                 (int) base-&gt;clut-&gt;clut[i]);</span>
+<span class="lineNum">     100 </span>            :     }
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :     fprintf(file,&quot;/* image */\n&quot;);</span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;base-&gt;height; ++i ) {</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :         fprintf(file,&quot;\&quot;&quot; );</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :         scanline = base-&gt;data + i*base-&gt;bytes_per_line;</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :         if ( base-&gt;image_type==it_mono )</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :             for ( j=0; j&lt;base-&gt;width; ++j )</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :                 fprintf(file,&quot;%s&quot;, pixname((scanline[j&gt;&gt;3]&gt;&gt;(7-(j&amp;7)))&amp;1,2));</span>
+<span class="lineNum">     108 </span>            :         else
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :             for ( j=0; j&lt;base-&gt;width; ++j )</span>
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :                 fprintf(file,&quot;%s&quot;, pixname(*scanline++,base-&gt;clut-&gt;clut_len));</span>
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :         fprintf(file,&quot;\&quot;%s\n&quot;, i==base-&gt;height-1?&quot;&quot;:&quot;,&quot; );</span>
+<span class="lineNum">     112 </span>            :     }
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :     fprintf(file,&quot;};\n&quot; );</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :     fflush(file);</span>
+<span class="lineNum">     115 </span>            : 
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :     i=ferror(file);</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :     fclose(file);</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :     return( i );</span>
+<span class="lineNum">     119 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

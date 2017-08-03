@@ -1,0 +1,389 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforgeexe/cvknife.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforgeexe</a> - cvknife.c<span style="font-size: 80%;"> (source / <a href="cvknife.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">153</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">5</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &quot;cvundoes.h&quot;
+<span class="lineNum">      28 </span>            : #include &quot;fontforgeui.h&quot;
+<span class="lineNum">      29 </span>            : #include &quot;spiro.h&quot;
+<span class="lineNum">      30 </span>            : #include &quot;collabclientui.h&quot;
+<span class="lineNum">      31 </span>            : #include &quot;splineutil.h&quot;
+<span class="lineNum">      32 </span>            : #include &lt;math.h&gt;
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span>            : #if defined(KNIFE_CONTINUOUS)   /* Use this code to do cuts as we move along. Probably a bad idea, let's wait till the end */
+<span class="lineNum">      35 </span>            : static void ProcessKnife(CharView *cv, PressedOn *p) {
+<span class="lineNum">      36 </span>            :     real dx, dy;
+<span class="lineNum">      37 </span>            :     SplinePoint *n;
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            :     /* If we've already made a cut, don't make another cut too close to it */
+<span class="lineNum">      40 </span>            :     /*  ie. if the hand shakes over a cut let's not get about six tiny cut */
+<span class="lineNum">      41 </span>            :     /*  segments adjacent to one another */
+<span class="lineNum">      42 </span>            :     if ( (dx=cv-&gt;info.x-cv-&gt;lastknife.x)&lt;0 ) dx=-dx;
+<span class="lineNum">      43 </span>            :     if ( (dy=cv-&gt;info.y-cv-&gt;lastknife.y)&lt;0 ) dy=-dy;
+<span class="lineNum">      44 </span>            :     if ( (dx+dy)/cv-&gt;scale &lt;= 6 )
+<span class="lineNum">      45 </span>            : return;
+<span class="lineNum">      46 </span>            :     if ( p-&gt;sp==NULL &amp;&amp; p-&gt;spline==NULL )
+<span class="lineNum">      47 </span>            : return;                                 /* Nothing to cut */
+<span class="lineNum">      48 </span>            : 
+<span class="lineNum">      49 </span>            :     if ( p-&gt;spline!=NULL )
+<span class="lineNum">      50 </span>            :         p-&gt;sp = SplineBisect(p-&gt;spline,p-&gt;t);
+<span class="lineNum">      51 </span>            :     if ( p-&gt;spl==NULL )              /* Kanou says this can happen. It doesn't hurt to check for it */
+<span class="lineNum">      52 </span>            : return;
+<span class="lineNum">      53 </span>            :     if ( p-&gt;spl-&gt;first!=p-&gt;spl-&gt;last )
+<span class="lineNum">      54 </span>            :         if ( p-&gt;sp==p-&gt;spl-&gt;first || p-&gt;sp==p-&gt;spl-&gt;last )
+<span class="lineNum">      55 </span>            : return;                                 /* Already cut here */
+<span class="lineNum">      56 </span>            :     n = chunkalloc(sizeof(SplinePoint));
+<span class="lineNum">      57 </span>            :     p-&gt;sp-&gt;pointtype = pt_corner;
+<span class="lineNum">      58 </span>            :     *n = *p-&gt;sp;
+<span class="lineNum">      59 </span>            :     n-&gt;hintmask = NULL;
+<span class="lineNum">      60 </span>            :     p-&gt;sp-&gt;next = NULL;
+<span class="lineNum">      61 </span>            :     n-&gt;prev = NULL;
+<span class="lineNum">      62 </span>            :     n-&gt;next-&gt;from = n;
+<span class="lineNum">      63 </span>            :     if ( p-&gt;spl-&gt;first==p-&gt;spl-&gt;last ) {
+<span class="lineNum">      64 </span>            :         p-&gt;spl-&gt;first = n;
+<span class="lineNum">      65 </span>            :         p-&gt;spl-&gt;last = p-&gt;sp;
+<span class="lineNum">      66 </span>            :     } else {
+<span class="lineNum">      67 </span>            :         SplinePointList *nspl = chunkalloc(sizeof(SplinePointList));
+<span class="lineNum">      68 </span>            :         nspl-&gt;next = p-&gt;spl-&gt;next;
+<span class="lineNum">      69 </span>            :         p-&gt;spl-&gt;next = nspl;
+<span class="lineNum">      70 </span>            :         nspl-&gt;first = n;
+<span class="lineNum">      71 </span>            :         nspl-&gt;last = p-&gt;spl-&gt;last;
+<span class="lineNum">      72 </span>            :         p-&gt;spl-&gt;last = p-&gt;sp;
+<span class="lineNum">      73 </span>            :     }
+<span class="lineNum">      74 </span>            : 
+<span class="lineNum">      75 </span>            :     cv-&gt;lastknife.x = cv-&gt;info.x;
+<span class="lineNum">      76 </span>            :     cv-&gt;lastknife.y = cv-&gt;info.y;
+<span class="lineNum">      77 </span>            :     CVSetCharChanged(cv,true);
+<span class="lineNum">      78 </span>            :     SCUpdateAll(cv-&gt;b.sc);
+<span class="lineNum">      79 </span>            : }
+<a name="80"><span class="lineNum">      80 </span>            : #endif</a>
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 : void CVMouseDownKnife(CharView *cv) {</span>
+<span class="lineNum">      83 </span>            : #if defined(KNIFE_CONTINUOUS)
+<span class="lineNum">      84 </span>            :     CVPreserveState(&amp;cv-&gt;b);
+<span class="lineNum">      85 </span>            :     cv-&gt;lastknife.x = cv-&gt;lastknife.y = -9999;
+<span class="lineNum">      86 </span>            :     ProcessKnife(cv,&amp;cv-&gt;p);
+<span class="lineNum">      87 </span>            : #else
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :     cv-&gt;p.rubberlining = true;</span>
+<span class="lineNum">      89 </span>            : #endif
+<a name="90"><span class="lineNum">      90 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      91 </span>            : 
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 : void CVMouseMoveKnife(CharView *cv, PressedOn *p) {</span>
+<span class="lineNum">      93 </span>            : #if defined(KNIFE_CONTINUOUS)
+<span class="lineNum">      94 </span>            :     ProcessKnife(cv,p);
+<span class="lineNum">      95 </span>            : #else
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(cv-&gt;v,NULL,false);</span>
+<span class="lineNum">      97 </span>            : #endif
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 : }</span>
+<a name="99"><span class="lineNum">      99 </span>            : </a>
+<span class="lineNum">     100 </span>            : #if !defined(KNIFE_CONTINUOUS)
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 : static void ReorderSpirosAndAddAndCut(SplineSet *spl,int spiro_index) {</span>
+<span class="lineNum">     102 </span>            :     /* We just cut a closed contour. It is now open. */
+<span class="lineNum">     103 </span>            :     /* If spl-&gt;spiros[spiro_index] == spl-&gt;first-&gt;me then they cut on top of */
+<span class="lineNum">     104 </span>            :     /*  a point which already existed */
+<span class="lineNum">     105 </span>            :     /*   If so, move that point to the head of the list */
+<span class="lineNum">     106 </span>            :     /*   copy it so that it's at the end of the list too */
+<span class="lineNum">     107 </span>            :     /*   mark the start as SPIRO_OPEN */
+<span class="lineNum">     108 </span>            :     /* Otherwise they cut between spiro_cps */
+<span class="lineNum">     109 </span>            :     /*  Insert 2 copies of spl-&gt;first-&gt;me after spiro_index */
+<span class="lineNum">     110 </span>            :     /*  rotate so that one of these is at the end of the list and the other at the start */
+<span class="lineNum">     111 </span>            :     /*  mark start as SPIRO_OPEN */
+<span class="lineNum">     112 </span>            :     spiro_cp *newspiros;
+<span class="lineNum">     113 </span>            : 
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :     if ( spiro_index!=spl-&gt;spiro_cnt-1 &amp;&amp;</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :             spl-&gt;first-&gt;me.x == spl-&gt;spiros[spiro_index].x &amp;&amp;</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :             spl-&gt;first-&gt;me.y == spl-&gt;spiros[spiro_index].y ) {</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :         newspiros = malloc((spl-&gt;spiro_cnt+1) * sizeof(spiro_cp));</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :         memcpy(newspiros,spl-&gt;spiros+spiro_index,(spl-&gt;spiro_cnt-1-spiro_index)*sizeof(spiro_cp));</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :         memcpy(newspiros+(spl-&gt;spiro_cnt-1-spiro_index),spl-&gt;spiros,spiro_index*sizeof(spiro_cp));</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :         memcpy(newspiros+spl-&gt;spiro_cnt-1,newspiros,sizeof(spiro_cp));</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :         memcpy(newspiros+spl-&gt;spiro_cnt,spl-&gt;spiros+spl-&gt;spiro_cnt-1,sizeof(spiro_cp));</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :         newspiros[0].ty = SPIRO_OPEN_CONTOUR;</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :         free(spl-&gt;spiros);</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :         spl-&gt;spiros = newspiros;</span>
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 :         ++(spl-&gt;spiro_cnt);</span>
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :         spl-&gt;spiro_max = spl-&gt;spiro_cnt;</span>
+<span class="lineNum">     127 </span>            :     } else {
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :         newspiros = malloc((spl-&gt;spiro_cnt+2) * sizeof(spiro_cp));</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :         newspiros[0].x = spl-&gt;first-&gt;me.x;</span>
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :         newspiros[0].y = spl-&gt;first-&gt;me.y;</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :         newspiros[0].ty = SPIRO_OPEN_CONTOUR;</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :         memcpy(newspiros+1,spl-&gt;spiros+spiro_index+1,(spl-&gt;spiro_cnt-1-(spiro_index+1))*sizeof(spiro_cp));</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :         memcpy(newspiros+1+(spl-&gt;spiro_cnt-1-(spiro_index+1)),spl-&gt;spiros,(spiro_index+1)*sizeof(spiro_cp));</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :         memcpy(newspiros+spl-&gt;spiro_cnt,newspiros,sizeof(spiro_cp));</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :         memcpy(newspiros+spl-&gt;spiro_cnt+1,spl-&gt;spiros+spl-&gt;spiro_cnt-1,sizeof(spiro_cp));</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :         newspiros[spl-&gt;spiro_cnt].ty = SPIRO_G4;</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :         free(spl-&gt;spiros);</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :         spl-&gt;spiros = newspiros;</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :         spl-&gt;spiro_cnt += 2;</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :         spl-&gt;spiro_max = spl-&gt;spiro_cnt;</span>
+<span class="lineNum">     141 </span>            :     }
+<a name="142"><span class="lineNum">     142 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     143 </span>            : 
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 : static void SplitSpirosAndAddAndCut(SplineSet *spl,SplineSet *spl2,int spiro_index) {</span>
+<span class="lineNum">     145 </span>            :     /* OK, spl was an open contour and we just cut it at spiro_index */
+<span class="lineNum">     146 </span>            :     /* We don't need to rotate the spiros */
+<span class="lineNum">     147 </span>            :     /* The first half of spl remains in it. (We'll leave all spiros up to and including spiro_index) */
+<span class="lineNum">     148 </span>            :     /* If spl-&gt;spiros[spiro_index] != spl-&gt;first-&gt;me we must add spl-&gt;first here */
+<span class="lineNum">     149 </span>            :     /* In the spl2 we either start out with spl-&gt;spiros[spiro_index] or with spl-&gt;first */
+<span class="lineNum">     150 </span>            :     /* then add all spiros after spiro_index */
+<span class="lineNum">     151 </span>            : 
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :     spl2-&gt;spiros = malloc((spl-&gt;spiro_cnt-spiro_index+2) * sizeof(spiro_cp));</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :     spl2-&gt;spiro_max = spl-&gt;spiro_cnt-spiro_index+2;</span>
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :     if ( spl2-&gt;first-&gt;me.x == spl-&gt;spiros[spiro_index].x &amp;&amp;</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :             spl2-&gt;first-&gt;me.y == spl-&gt;spiros[spiro_index].y ) {</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :         memcpy(spl2-&gt;spiros,spl-&gt;spiros+spiro_index,(spl-&gt;spiro_cnt-spiro_index)*sizeof(spiro_cp));</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :         spl2-&gt;spiros[0].ty = SPIRO_OPEN_CONTOUR;</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :         memcpy(spl-&gt;spiros+spiro_index+1,spl-&gt;spiros+spl-&gt;spiro_cnt-1,sizeof(spiro_cp));</span>
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :         spl2-&gt;spiro_cnt = spl-&gt;spiro_cnt-spiro_index;</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :         spl-&gt;spiro_cnt = spiro_index+2;</span>
+<span class="lineNum">     161 </span>            :     } else {
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :         spl2-&gt;spiros[0].x = spl2-&gt;first-&gt;me.x;</span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :         spl2-&gt;spiros[0].y = spl2-&gt;first-&gt;me.y;</span>
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :         spl2-&gt;spiros[0].ty = SPIRO_OPEN_CONTOUR;</span>
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :         memcpy(spl2-&gt;spiros+1,spl-&gt;spiros+spiro_index+1,(spl-&gt;spiro_cnt-(spiro_index+1))*sizeof(spiro_cp));</span>
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :         spl2-&gt;spiro_cnt = spl-&gt;spiro_cnt-spiro_index;</span>
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :         if ( spiro_index+3&gt;spl-&gt;spiro_max )</span>
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :             spl-&gt;spiros = realloc(spl-&gt;spiros,(spl-&gt;spiro_max=spiro_index+3)*sizeof(spiro_cp));</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :         memcpy(spl-&gt;spiros+spiro_index+1,spl2-&gt;spiros,sizeof(spiro_cp));</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :         spl-&gt;spiros[spiro_index+1].ty = SPIRO_G4;</span>
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :         memcpy(spl-&gt;spiros+spiro_index+2,spl-&gt;spiros+spl-&gt;spiro_cnt-1,sizeof(spiro_cp));</span>
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :         spl-&gt;spiro_cnt = spiro_index+3;</span>
+<span class="lineNum">     173 </span>            :     }
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 : }</span>
+<a name="175"><span class="lineNum">     175 </span>            : #endif</a>
+<span class="lineNum">     176 </span>            : 
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 : void CVMouseUpKnife(CharView *cv, GEvent *event)</span>
+<span class="lineNum">     178 </span>            : {
+<span class="lineNum">     179 </span>            : #if !defined(KNIFE_CONTINUOUS)
+<span class="lineNum">     180 </span>            :     /* draw a line from (cv-&gt;p.cx,cv-&gt;p.cy) to (cv-&gt;info.x,cv-&gt;info.y) */
+<span class="lineNum">     181 </span>            :     /*  and cut anything intersected by it */
+<span class="lineNum">     182 </span>            :     SplineSet *spl, *spl2;
+<span class="lineNum">     183 </span>            :     Spline *s, *nexts;
+<span class="lineNum">     184 </span>            :     Spline dummy;
+<span class="lineNum">     185 </span>            :     SplinePoint dummyfrom, dummyto, *mid, *mid2;
+<span class="lineNum">     186 </span>            :     BasePoint inters[9];
+<span class="lineNum">     187 </span>            :     extended t1s[10], t2s[10];
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :     int foundsomething = true, ever = false;</span>
+<span class="lineNum">     189 </span>            :     int i;
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :     int spiro_index = 0;</span>
+<span class="lineNum">     191 </span>            : 
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :     memset(&amp;dummy,0,sizeof(dummy));</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :     memset(&amp;dummyfrom,0,sizeof(dummyfrom));</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :     memset(&amp;dummyto,0,sizeof(dummyto));</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :     dummyfrom.me.x = cv-&gt;p.cx; dummyfrom.me.y = cv-&gt;p.cy;</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :     dummyto.me.x = cv-&gt;info.x; dummyto.me.y = cv-&gt;info.y;</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :     dummyfrom.nextcp = dummyfrom.prevcp = dummyfrom.me;</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :     dummyto.nextcp = dummyto.prevcp = dummyto.me;</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :     dummyfrom.nonextcp = dummyfrom.noprevcp = dummyto.nonextcp = dummyto.noprevcp = true;</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :     dummy.splines[0].d = cv-&gt;p.cx; dummy.splines[0].c = cv-&gt;info.x-cv-&gt;p.cx;</span>
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :     dummy.splines[1].d = cv-&gt;p.cy; dummy.splines[1].c = cv-&gt;info.y-cv-&gt;p.cy;</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :     dummy.from = &amp;dummyfrom; dummy.to = &amp;dummyto;</span>
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :     dummy.islinear = dummy.knownlinear = true;</span>
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :     dummyfrom.next = dummyto.prev = &amp;dummy;</span>
+<span class="lineNum">     205 </span>            : 
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :     for ( spl = cv-&gt;b.layerheads[cv-&gt;b.drawmode]-&gt;splines; spl!=NULL ; spl = spl-&gt;next )</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :         spl-&gt;ticked = false;</span>
+<span class="lineNum">     208 </span>            : 
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :     while ( foundsomething ) {</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :         foundsomething = false;</span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :         for ( spl = cv-&gt;b.layerheads[cv-&gt;b.drawmode]-&gt;splines; spl!=NULL &amp;&amp; !foundsomething; spl = spl-&gt;next ) {</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :             for ( s = spl-&gt;first-&gt;next; s!=NULL ; ) {</span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :                 nexts = NULL;</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :                 if ( s-&gt;to!=spl-&gt;first )</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :                     nexts = s-&gt;to-&gt;next;</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :                 if ( SplinesIntersect(s,&amp;dummy,inters,t1s,t2s)&gt;0 ) {</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :                     if ( event-&gt;u.mouse.state&amp;ksm_meta ) {</span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :                         for ( i=0; i&lt;4 &amp;&amp; t1s[i]!=-1 &amp;&amp; (t1s[i]&lt;.0001 || t1s[i]&gt;1-.0001); ++i );</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :                         if ( i&lt;4 &amp;&amp; t1s[i]!=-1 ) {</span>
+<span class="lineNum">     220 </span>            :                             /* With meta down we just remove the spline rather than */
+<span class="lineNum">     221 </span>            :                             /* cutting it */
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :                             foundsomething = true;</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :                             nexts = NULL;</span>
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :                             if ( !ever )</span>
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 :                                 CVPreserveState(&amp;cv-&gt;b);</span>
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :                             ever = true;</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :                             if ( spl-&gt;first==spl-&gt;last ) {</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :                                 spl-&gt;first = s-&gt;to;</span>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :                                 spl-&gt;last = s-&gt;from;</span>
+<span class="lineNum">     230 </span>            :                             } else {
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :                                 spl2 = chunkalloc(sizeof(SplineSet));</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :                                 spl2-&gt;next = spl-&gt;next;</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :                                 spl-&gt;next = spl2;</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :                                 spl2-&gt;first = s-&gt;to;</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :                                 spl2-&gt;last = spl-&gt;last;</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :                                 spl-&gt;last = s-&gt;from;</span>
+<span class="lineNum">     237 </span>            :                             }
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :                             s-&gt;to-&gt;prev = s-&gt;from-&gt;next = NULL;</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :                             SplineFree(s);</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :                             SplineSetSpirosClear(spl);</span>
+<span class="lineNum">     241 </span>            :                         }
+<span class="lineNum">     242 </span>            :                     } else {
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :                         for ( i=0; i&lt;4 &amp;&amp; t1s[i]!=-1 &amp;&amp;</span>
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :                                 (( t1s[i]&lt;.001 &amp;&amp; s-&gt;from-&gt;prev==NULL ) ||</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :                                  ( t1s[i]&gt;1-.001 &amp;&amp; s-&gt;to-&gt;next == NULL ));</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :                                 ++i );</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :                         if ( i&lt;4 &amp;&amp; t1s[i]!=-1 ) {</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :                             foundsomething = true;</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :                             nexts = NULL;</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :                             if ( !ever )</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :                                 CVPreserveState(&amp;cv-&gt;b);</span>
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :                             ever = true;</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :                             spiro_index = -1;</span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :                             if ( cv-&gt;b.sc-&gt;inspiro &amp;&amp; hasspiro()) {</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :                                 if ( spl-&gt;spiro_cnt!=0 )</span>
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :                                     spiro_index = SplineT2SpiroIndex(s,t1s[i],spl);</span>
+<span class="lineNum">     257 </span>            :                             } else
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :                                 SplineSetSpirosClear(spl);</span>
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :                             if ( t1s[i]&lt;.001 ) {</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :                                 mid = s-&gt;from;</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :                             } else if ( t1s[i]&gt;1-.001 ) {</span>
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :                                 mid = s-&gt;to;</span>
+<span class="lineNum">     263 </span>            :                             } else
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :                                 mid = SplineBisect(s,t1s[i]);</span>
+<span class="lineNum">     265 </span>            :                             /* if the intersection is close to an end point */
+<span class="lineNum">     266 </span>            :                             /*  cut at the end point, else break in the middle */
+<span class="lineNum">     267 </span>            :                             /*  Cut here, and then */
+<span class="lineNum">     268 </span>            :                             /*  start all over again (we may need to alter the */
+<span class="lineNum">     269 </span>            :                             /*  splineset structure so drastically that we just */
+<span class="lineNum">     270 </span>            :                             /*  can't continue these loops) */
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :                             mid-&gt;pointtype = pt_corner;</span>
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :                             mid2 = chunkalloc(sizeof(SplinePoint));</span>
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :                             *mid2 = *mid;</span>
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :                             mid2-&gt;hintmask = NULL;</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :                             mid-&gt;next = NULL;</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :                             mid2-&gt;prev = NULL;</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :                             mid2-&gt;next-&gt;from = mid2;</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :                             spl-&gt;ticked = true;</span>
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 :                             if ( spl-&gt;first==spl-&gt;last ) {</span>
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 :                                 spl-&gt;first = mid2;</span>
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :                                 spl-&gt;last = mid;</span>
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :                                 if ( spiro_index!=-1 )</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :                                     ReorderSpirosAndAddAndCut(spl,spiro_index);</span>
+<span class="lineNum">     284 </span>            :                             } else {
+<span class="lineNum">     285 </span><span class="lineNoCov">          0 :                                 spl2 = chunkalloc(sizeof(SplineSet));</span>
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :                                 spl2-&gt;next = spl-&gt;next;</span>
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :                                 spl-&gt;next = spl2;</span>
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :                                 spl2-&gt;first = mid2;</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :                                 spl2-&gt;last = spl-&gt;last;</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :                                 spl-&gt;last = mid;</span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :                                 if ( spiro_index!=-1 )</span>
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :                                     SplitSpirosAndAddAndCut(spl,spl2,spiro_index);</span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :                                 spl2-&gt;ticked = true;</span>
+<span class="lineNum">     294 </span>            :                             }
+<span class="lineNum">     295 </span>            :                         }
+<span class="lineNum">     296 </span>            :                     }
+<span class="lineNum">     297 </span>            :                 }
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :                 s = nexts;</span>
+<span class="lineNum">     299 </span>            :             }
+<span class="lineNum">     300 </span>            :         }
+<span class="lineNum">     301 </span>            :     }
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 :     if ( ever ) {</span>
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :         for ( spl = cv-&gt;b.layerheads[cv-&gt;b.drawmode]-&gt;splines; spl!=NULL ; spl = spl-&gt;next ) {</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :             if ( spl-&gt;ticked &amp;&amp; spl-&gt;spiros!=NULL &amp;&amp; cv-&gt;b.sc-&gt;inspiro &amp;&amp; hasspiro())</span>
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 :                 SSRegenerateFromSpiros(spl);</span>
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :             spl-&gt;ticked = false;</span>
+<span class="lineNum">     307 </span>            :         }
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 :         CVCharChangedUpdate(   &amp;cv-&gt;b );</span>
+<span class="lineNum">     309 </span><span class="lineNoCov">          0 :         collabclient_sendRedo( &amp;cv-&gt;b );</span>
+<span class="lineNum">     310 </span>            :     }
+<span class="lineNum">     311 </span>            : #endif
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     313 </span>            : 
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

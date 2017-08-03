@@ -1,0 +1,1005 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforgeexe/cvhints.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforgeexe</a> - cvhints.c<span style="font-size: 80%;"> (source / <a href="cvhints.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">654</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">20</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &quot;autohint.h&quot;
+<span class="lineNum">      28 </span>            : #include &quot;cvundoes.h&quot;
+<span class="lineNum">      29 </span>            : #include &quot;fontforgeui.h&quot;
+<span class="lineNum">      30 </span>            : #include &quot;ustring.h&quot;
+<span class="lineNum">      31 </span>            : #include &lt;math.h&gt;
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            : #define CID_Base        1001
+<span class="lineNum">      34 </span>            : #define CID_Width       1002
+<span class="lineNum">      35 </span>            : #define CID_Label       1003
+<span class="lineNum">      36 </span>            : #define CID_HStem       1004
+<span class="lineNum">      37 </span>            : #define CID_VStem       1005
+<span class="lineNum">      38 </span>            : #define CID_Next        1006
+<span class="lineNum">      39 </span>            : #define CID_Prev        1007
+<span class="lineNum">      40 </span>            : #define CID_Remove      1008
+<span class="lineNum">      41 </span>            : #define CID_Add         1009
+<span class="lineNum">      42 </span>            : #define CID_Overlap     1010
+<span class="lineNum">      43 </span>            : #define CID_Count       1011
+<span class="lineNum">      44 </span>            : #define CID_MovePoints  1012
+<span class="lineNum">      45 </span>            : #define CID_RegenHM     1013
+<span class="lineNum">      46 </span>            : #define CID_TopBox      1014
+<span class="lineNum">      47 </span>            : 
+<span class="lineNum">      48 </span>            : typedef struct reviewhintdata {
+<span class="lineNum">      49 </span>            :     unsigned int done: 1;
+<span class="lineNum">      50 </span>            :     unsigned int ishstem: 1;
+<span class="lineNum">      51 </span>            :     unsigned int oldmanual: 1;
+<span class="lineNum">      52 </span>            :     unsigned int undocreated: 1;
+<span class="lineNum">      53 </span>            :     unsigned int changed: 1;
+<span class="lineNum">      54 </span>            :     CharView *cv;
+<span class="lineNum">      55 </span>            :     GWindow gw;
+<span class="lineNum">      56 </span>            :     StemInfo *active;
+<span class="lineNum">      57 </span>            :     StemInfo *lastactive;
+<span class="lineNum">      58 </span>            :     StemInfo *oldh, *oldv;
+<a name="59"><span class="lineNum">      59 </span>            : } ReviewHintData;</a>
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 : static void RH_SetNextPrev(ReviewHintData *hd) {</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :     if ( hd-&gt;active==NULL ) {</span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(hd-&gt;gw,CID_Next),false);</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(hd-&gt;gw,CID_Prev),false);</span>
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(hd-&gt;gw,CID_Remove),false);</span>
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(hd-&gt;gw,CID_Base),false);</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(hd-&gt;gw,CID_Width),false);</span>
+<span class="lineNum">      68 </span>            :     } else {
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(hd-&gt;gw,CID_Remove),true);</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(hd-&gt;gw,CID_Base),true);</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(hd-&gt;gw,CID_Width),true);</span>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(hd-&gt;gw,CID_Next),hd-&gt;active-&gt;next!=NULL);</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :         if ( hd-&gt;ishstem )</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :             GGadgetSetEnabled(GWidgetGetControl(hd-&gt;gw,CID_Prev),hd-&gt;active!=hd-&gt;cv-&gt;b.sc-&gt;hstem);</span>
+<span class="lineNum">      75 </span>            :         else
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :             GGadgetSetEnabled(GWidgetGetControl(hd-&gt;gw,CID_Prev),hd-&gt;active!=hd-&gt;cv-&gt;b.sc-&gt;vstem);</span>
+<span class="lineNum">      77 </span>            :     }
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(hd-&gt;gw,NULL,false);</span>
+<a name="79"><span class="lineNum">      79 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      80 </span>            : 
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 : static void RH_SetupHint(ReviewHintData *hd) {</span>
+<span class="lineNum">      82 </span>            :     char buffer[20]; unichar_t ubuf[20];
+<span class="lineNum">      83 </span>            :     static unichar_t nullstr[] = {'\0'};
+<span class="lineNum">      84 </span>            :     StemInfo *h;
+<span class="lineNum">      85 </span>            :     int pos,cnt;
+<span class="lineNum">      86 </span>            : 
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :     if ( hd-&gt;lastactive!=NULL )</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :         hd-&gt;lastactive-&gt;active = false;</span>
+<span class="lineNum">      89 </span>            : 
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :     pos = cnt = 0;</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :     for ( h=hd-&gt;ishstem ? hd-&gt;cv-&gt;b.sc-&gt;hstem : hd-&gt;cv-&gt;b.sc-&gt;vstem; h!=NULL; h=h-&gt;next ) {</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :         ++cnt;</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :         if ( h==hd-&gt;active ) pos=cnt;</span>
+<span class="lineNum">      94 </span>            :     }
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :     sprintf( buffer,&quot;%d/%d&quot;, pos, cnt );</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :     if ( cnt==3 ) {</span>
+<span class="lineNum">      97 </span>            :         StemInfo *h2, *h3;
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :         h = hd-&gt;ishstem ? hd-&gt;cv-&gt;b.sc-&gt;hstem : hd-&gt;cv-&gt;b.sc-&gt;vstem;</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :         h2 = h-&gt;next; h3 = h2-&gt;next;</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :         if ( h-&gt;width == h2-&gt;width &amp;&amp; h2-&gt;width==h3-&gt;width &amp;&amp;</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :                 h2-&gt;start-h-&gt;start == h3-&gt;start-h2-&gt;start )</span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :             strcat( buffer, hd-&gt;ishstem ? &quot; hstem3&quot; : &quot; vstem3&quot; );</span>
+<span class="lineNum">     103 </span>            :     }
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :     uc_strcpy(ubuf,buffer);</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :     GGadgetSetTitle(GWidgetGetControl(hd-&gt;gw,CID_Count),ubuf);</span>
+<span class="lineNum">     106 </span>            :     
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :     if ( hd-&gt;active==NULL ) {</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :         GGadgetSetTitle(GWidgetGetControl(hd-&gt;gw,CID_Base),nullstr);</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :         GGadgetSetTitle(GWidgetGetControl(hd-&gt;gw,CID_Width),nullstr);</span>
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :         GGadgetSetVisible(GWidgetGetControl(hd-&gt;gw,CID_Overlap),false);</span>
+<span class="lineNum">     111 </span>            :     } else {
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :         hd-&gt;active-&gt;active = true;</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :         sprintf( buffer,&quot;%g&quot;, (double) (!hd-&gt;active-&gt;ghost ? hd-&gt;active-&gt;start : hd-&gt;active-&gt;start+hd-&gt;active-&gt;width) );</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :         uc_strcpy(ubuf,buffer);</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :         GGadgetSetTitle(GWidgetGetControl(hd-&gt;gw,CID_Base),ubuf);</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :         GTextFieldShow(GWidgetGetControl(hd-&gt;gw,CID_Base),0);</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :         sprintf( buffer,&quot;%g&quot;, (double) (!hd-&gt;active-&gt;ghost ? hd-&gt;active-&gt;width : -hd-&gt;active-&gt;width) );</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :         uc_strcpy(ubuf,buffer);</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :         GGadgetSetTitle(GWidgetGetControl(hd-&gt;gw,CID_Width),ubuf);</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :         GTextFieldShow(GWidgetGetControl(hd-&gt;gw,CID_Width),0);</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :         GGadgetSetVisible(GWidgetGetControl(hd-&gt;gw,CID_Overlap),hd-&gt;active-&gt;hasconflicts);</span>
+<span class="lineNum">     122 </span>            :     }
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :     if ( hd-&gt;lastactive!=hd-&gt;active ) {</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :         hd-&gt;lastactive = hd-&gt;active;</span>
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 :         SCOutOfDateBackground(hd-&gt;cv-&gt;b.sc);</span>
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :         SCUpdateAll(hd-&gt;cv-&gt;b.sc);        /* Changing the active Hint means we should redraw everything */</span>
+<span class="lineNum">     127 </span>            :     }
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :     RH_SetNextPrev(hd);</span>
+<a name="129"><span class="lineNum">     129 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     130 </span>            : 
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 : static int OnHint(StemInfo *hint,real major,real minor) {</span>
+<span class="lineNum">     132 </span>            :     HintInstance *hi;
+<span class="lineNum">     133 </span>            : 
+<span class="lineNum">     134 </span>            :     if ( true /*hint-&gt;hasconflicts*/ ) {
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :         for ( hi=hint-&gt;where; hi!=NULL; hi=hi-&gt;next ) {</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :             if ( minor&gt;=hi-&gt;begin &amp;&amp; minor&lt;=hi-&gt;end )</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     138 </span>            :         }
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :         if ( hi==NULL )</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 : return( 0 );</span>
+<span class="lineNum">     141 </span>            :         /* Ok, it's active */
+<span class="lineNum">     142 </span>            :     }
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :     if ( major==hint-&gt;start )</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 : return( 1 );</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :     else if ( major==hint-&gt;start+hint-&gt;width )</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 : return( 2 );</span>
+<span class="lineNum">     147 </span>            : 
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 : return( 0 );</span>
+<a name="149"><span class="lineNum">     149 </span>            : }</a>
+<span class="lineNum">     150 </span>            : 
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 : static void RH_MovePoints(ReviewHintData *hd,StemInfo *active,int start,int width) {</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :     SplineChar *sc = hd-&gt;cv-&gt;b.sc;</span>
+<span class="lineNum">     153 </span>            :     SplineSet *spl;
+<span class="lineNum">     154 </span>            :     SplinePoint *sp;
+<span class="lineNum">     155 </span>            :     int which;
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :     int layer = CVLayer( (CharViewBase *) (hd-&gt;cv));</span>
+<span class="lineNum">     157 </span>            : 
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :     if ( !hd-&gt;undocreated ) {</span>
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :         SCPreserveLayer(sc,layer,true);</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :         hd-&gt;undocreated = true;</span>
+<span class="lineNum">     161 </span>            :     }
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :     for ( spl=sc-&gt;layers[layer].splines; spl!=NULL; spl=spl-&gt;next ) {</span>
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :         for ( sp = spl-&gt;first ; ; ) {</span>
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :             if ( hd-&gt;ishstem ) {</span>
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :                 switch ((which = OnHint(active,sp-&gt;me.y,sp-&gt;me.x)) ) {</span>
+<span class="lineNum">     167 </span>            :                   case 1:
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :                     sp-&gt;nextcp.y += start-sp-&gt;me.y;</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :                     sp-&gt;prevcp.y += start-sp-&gt;me.y;</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :                     sp-&gt;me.y = start;</span>
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">     172 </span>            :                   case 2:
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :                     sp-&gt;nextcp.y += start+width-sp-&gt;me.y;</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :                     sp-&gt;prevcp.y += start+width-sp-&gt;me.y;</span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :                     sp-&gt;me.y = start+width;</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">     177 </span>            :                   case 0:
+<span class="lineNum">     178 </span>            :                     /* Not on hint */;
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">     180 </span>            :                 }
+<span class="lineNum">     181 </span>            :             } else {
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :                 switch ( (which = OnHint(active,sp-&gt;me.x,sp-&gt;me.y)) ) {</span>
+<span class="lineNum">     183 </span>            :                   case 1:
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :                     sp-&gt;nextcp.x += start-sp-&gt;me.x;</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :                     sp-&gt;prevcp.x += start-sp-&gt;me.x;</span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :                     sp-&gt;me.x = start;</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">     188 </span>            :                   case 2:
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :                     sp-&gt;nextcp.x += start+width-sp-&gt;me.x;</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :                     sp-&gt;prevcp.x += start+width-sp-&gt;me.x;</span>
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :                     sp-&gt;me.x = start+width;</span>
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">     193 </span>            :                   case 0:
+<span class="lineNum">     194 </span>            :                     /* Not on hint */;
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">     196 </span>            :                 }
+<span class="lineNum">     197 </span>            :             }
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :             if ( which ) {</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :                 if ( sp-&gt;prev )</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :                     SplineRefigure(sp-&gt;prev);</span>
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :                 if ( sp-&gt;next )</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :                     SplineRefigure(sp-&gt;next);</span>
+<span class="lineNum">     203 </span>            :             }
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :             if ( sp-&gt;next==NULL )</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :             sp = sp-&gt;next-&gt;to;</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :             if ( sp== spl-&gt;first )</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     210 </span>            :     }
+<a name="211"><span class="lineNum">     211 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     212 </span>            : 
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 : static int RH_TextChanged(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     214 </span>            :     int wasconflict;
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_textchanged ) {</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :         ReviewHintData *hd = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :         if ( hd-&gt;active!=NULL ) {</span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :             int cid = GGadgetGetCid(g);</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :             int err=0;</span>
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :             real start = GetCalmReal8(hd-&gt;gw,CID_Base,_(&quot;Base:&quot;),&amp;err);</span>
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :             real width = GetCalmReal8(hd-&gt;gw,CID_Width,_(&quot;Size:&quot;),&amp;err);</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :             if ( err )</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :             if ( GGadgetIsChecked(GWidgetGetControl(GGadgetGetWindow(g),CID_MovePoints)) ) {</span>
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 :                 if ( width&lt;0 )</span>
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :                     RH_MovePoints(hd,hd-&gt;active,start+width,-width);</span>
+<span class="lineNum">     227 </span>            :                 else
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :                     RH_MovePoints(hd,hd-&gt;active,start,width);</span>
+<span class="lineNum">     229 </span>            :             }
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :             if ( cid==CID_Base )</span>
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :                 hd-&gt;active-&gt;start = start;</span>
+<span class="lineNum">     232 </span>            :             else
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :                 hd-&gt;active-&gt;width = width;</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :             if ( width&lt;0 ) {</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :                 hd-&gt;active-&gt;ghost = true;</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :                 hd-&gt;active-&gt;width = -width;</span>
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :                 hd-&gt;active-&gt;start = start+width;</span>
+<span class="lineNum">     238 </span>            :             } else
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :                 hd-&gt;active-&gt;ghost = false;</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :             wasconflict = hd-&gt;active-&gt;hasconflicts;</span>
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :             if ( hd-&gt;ishstem )</span>
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :                 hd-&gt;cv-&gt;b.sc-&gt;hconflicts = StemListAnyConflicts(hd-&gt;cv-&gt;b.sc-&gt;hstem);</span>
+<span class="lineNum">     243 </span>            :             else
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :                 hd-&gt;cv-&gt;b.sc-&gt;vconflicts = StemListAnyConflicts(hd-&gt;cv-&gt;b.sc-&gt;vstem);</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :             hd-&gt;cv-&gt;b.sc-&gt;manualhints = true;</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :             hd-&gt;changed = true;</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :             if ( wasconflict!=hd-&gt;active-&gt;hasconflicts ) {</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :                 GGadgetSetVisible(GWidgetGetControl(hd-&gt;gw,CID_Overlap),hd-&gt;active-&gt;hasconflicts);</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :                 if ( hd-&gt;active-&gt;hasconflicts )</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :                     GHVBoxFitWindow(GWidgetGetControl(hd-&gt;gw,CID_TopBox));</span>
+<span class="lineNum">     251 </span>            :             }
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :             SCOutOfDateBackground(hd-&gt;cv-&gt;b.sc);</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :             SCUpdateAll(hd-&gt;cv-&gt;b.sc);</span>
+<span class="lineNum">     254 </span>            :         }
+<span class="lineNum">     255 </span>            :     }
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="257"><span class="lineNum">     257 </span>            : }</a>
+<span class="lineNum">     258 </span>            : 
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 : static void Do_OKRegen(ReviewHintData *hd) {</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :     SplineChar *sc = hd-&gt;cv-&gt;b.sc;</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :     StemInfo *curh = sc-&gt;hstem, *curv = sc-&gt;vstem;</span>
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :     int do_regen = GGadgetIsChecked(GWidgetGetControl(hd-&gt;gw,CID_RegenHM));</span>
+<span class="lineNum">     263 </span>            : 
+<span class="lineNum">     264 </span>            :     /* We go backwards here, but not for long. The point is to go back to */
+<span class="lineNum">     265 </span>            :     /*  the original hint state so we can preserve it, now that we know we*/
+<span class="lineNum">     266 </span>            :     /*  are going to modify it */
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :     sc-&gt;hstem = hd-&gt;oldh; sc-&gt;vstem = hd-&gt;oldv;</span>
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :     SCPreserveHints(sc,CVLayer((CharViewBase *) hd-&gt;cv));</span>
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :     sc-&gt;hstem = curh; sc-&gt;vstem = curv;</span>
+<span class="lineNum">     270 </span>            : 
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :     StemInfosFree(hd-&gt;oldh);</span>
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :     StemInfosFree(hd-&gt;oldv);</span>
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :     if ( hd-&gt;lastactive!=NULL )</span>
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :         hd-&gt;lastactive-&gt;active = false;</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :     if ( hd-&gt;changed ) {</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :         SCClearHintMasks(hd-&gt;cv-&gt;b.sc,CVLayer((CharViewBase *) (hd-&gt;cv)),true);</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :         if ( do_regen )</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :             SCFigureHintMasks(hd-&gt;cv-&gt;b.sc,CVLayer((CharViewBase *) (hd-&gt;cv)));</span>
+<span class="lineNum">     279 </span>            :     }
+<span class="lineNum">     280 </span>            :     /* Everything else got done as we went along... */
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :     SCOutOfDateBackground(hd-&gt;cv-&gt;b.sc);</span>
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :     SCUpdateAll(hd-&gt;cv-&gt;b.sc);</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :     SCHintsChanged(hd-&gt;cv-&gt;b.sc);</span>
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :     hd-&gt;done = true;</span>
+<a name="285"><span class="lineNum">     285 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     286 </span>            : 
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 : static int RH_OK(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :         ReviewHintData *hd = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :         Do_OKRegen(hd);</span>
+<span class="lineNum">     291 </span>            :     }
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="293"><span class="lineNum">     293 </span>            : }</a>
+<span class="lineNum">     294 </span>            : 
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 : static void DoCancel(ReviewHintData *hd) {</span>
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :     StemInfosFree(hd-&gt;cv-&gt;b.sc-&gt;hstem);</span>
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 :     StemInfosFree(hd-&gt;cv-&gt;b.sc-&gt;vstem);</span>
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :     hd-&gt;cv-&gt;b.sc-&gt;hstem = hd-&gt;oldh;</span>
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :     hd-&gt;cv-&gt;b.sc-&gt;vstem = hd-&gt;oldv;</span>
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :     hd-&gt;cv-&gt;b.sc-&gt;hconflicts = StemListAnyConflicts(hd-&gt;cv-&gt;b.sc-&gt;hstem);</span>
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :     hd-&gt;cv-&gt;b.sc-&gt;vconflicts = StemListAnyConflicts(hd-&gt;cv-&gt;b.sc-&gt;vstem);</span>
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 :     hd-&gt;cv-&gt;b.sc-&gt;manualhints = hd-&gt;oldmanual;</span>
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :     if ( hd-&gt;undocreated )</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :         SCDoUndo(hd-&gt;cv-&gt;b.sc,ly_fore);</span>
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 :     SCOutOfDateBackground(hd-&gt;cv-&gt;b.sc);</span>
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :     SCUpdateAll(hd-&gt;cv-&gt;b.sc);</span>
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :     hd-&gt;done = true;</span>
+<a name="308"><span class="lineNum">     308 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     309 </span>            : 
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 : static int RH_Cancel(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     311 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 :         DoCancel( GDrawGetUserData(GGadgetGetWindow(g)));</span>
+<span class="lineNum">     313 </span>            :     }
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="315"><span class="lineNum">     315 </span>            : }</a>
+<span class="lineNum">     316 </span>            : 
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 : static int RH_Remove(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :         ReviewHintData *hd = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">     320 </span>            :         StemInfo *prev;
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 :         if ( hd-&gt;active==NULL )</span>
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 : return( true );                 /* Eh? */</span>
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :         if ( hd-&gt;active==hd-&gt;cv-&gt;b.sc-&gt;hstem ) {</span>
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :             hd-&gt;cv-&gt;b.sc-&gt;hstem = hd-&gt;active-&gt;next;</span>
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :             prev = hd-&gt;cv-&gt;b.sc-&gt;hstem;</span>
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :         } else if ( hd-&gt;active==hd-&gt;cv-&gt;b.sc-&gt;vstem ) {</span>
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :             hd-&gt;cv-&gt;b.sc-&gt;vstem = hd-&gt;active-&gt;next;</span>
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :             prev = hd-&gt;cv-&gt;b.sc-&gt;vstem;</span>
+<span class="lineNum">     329 </span>            :         } else {
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 :             prev = hd-&gt;ishstem ? hd-&gt;cv-&gt;b.sc-&gt;hstem : hd-&gt;cv-&gt;b.sc-&gt;vstem;</span>
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :             for ( ; prev-&gt;next!=hd-&gt;active &amp;&amp; prev-&gt;next!=NULL; prev = prev-&gt;next );</span>
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 :             prev-&gt;next = hd-&gt;active-&gt;next;</span>
+<span class="lineNum">     333 </span>            :         }
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :         if ( hd-&gt;ishstem )</span>
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 :             hd-&gt;cv-&gt;b.sc-&gt;hconflicts = StemListAnyConflicts(hd-&gt;cv-&gt;b.sc-&gt;hstem);</span>
+<span class="lineNum">     336 </span>            :         else
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :             hd-&gt;cv-&gt;b.sc-&gt;vconflicts = StemListAnyConflicts(hd-&gt;cv-&gt;b.sc-&gt;vstem);</span>
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 :         hd-&gt;cv-&gt;b.sc-&gt;manualhints = true;</span>
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 :         hd-&gt;changed = true;</span>
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :         StemInfoFree( hd-&gt;active );</span>
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :         hd-&gt;active = prev;</span>
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :         SCOutOfDateBackground(hd-&gt;cv-&gt;b.sc);</span>
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :         RH_SetupHint(hd);</span>
+<span class="lineNum">     344 </span>            :         /*SCUpdateAll(hd-&gt;cv-&gt;b.sc);*/    /* Done in RH_SetupHint now */
+<span class="lineNum">     345 </span>            :     }
+<span class="lineNum">     346 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="347"><span class="lineNum">     347 </span>            : }</a>
+<span class="lineNum">     348 </span>            : 
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 : static int RH_Add(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :         ReviewHintData *hd = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :         CVCreateHint(hd-&gt;cv,hd-&gt;ishstem,false);</span>
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 :         hd-&gt;active = hd-&gt;ishstem ? hd-&gt;cv-&gt;b.sc-&gt;hstem : hd-&gt;cv-&gt;b.sc-&gt;vstem;</span>
+<span class="lineNum">     354 </span><span class="lineNoCov">          0 :         RH_SetupHint(hd);</span>
+<span class="lineNum">     355 </span>            :     }
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="357"><span class="lineNum">     357 </span>            : }</a>
+<span class="lineNum">     358 </span>            : 
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 : static int RH_NextPrev(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 :         ReviewHintData *hd = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">     362 </span>            :         StemInfo *prev;
+<span class="lineNum">     363 </span><span class="lineNoCov">          0 :         if ( GGadgetGetCid(g)==CID_Next ) {</span>
+<span class="lineNum">     364 </span><span class="lineNoCov">          0 :             if ( hd-&gt;active-&gt;next !=NULL )</span>
+<span class="lineNum">     365 </span><span class="lineNoCov">          0 :                 hd-&gt;active = hd-&gt;active-&gt;next;</span>
+<span class="lineNum">     366 </span>            :         } else {
+<span class="lineNum">     367 </span><span class="lineNoCov">          0 :             prev = hd-&gt;ishstem ? hd-&gt;cv-&gt;b.sc-&gt;hstem : hd-&gt;cv-&gt;b.sc-&gt;vstem;</span>
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :             for ( ; prev-&gt;next!=hd-&gt;active &amp;&amp; prev-&gt;next!=NULL; prev = prev-&gt;next );</span>
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 :             hd-&gt;active = prev;</span>
+<span class="lineNum">     370 </span>            :         }
+<span class="lineNum">     371 </span><span class="lineNoCov">          0 :         RH_SetupHint(hd);</span>
+<span class="lineNum">     372 </span>            :     }
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="374"><span class="lineNum">     374 </span>            : }</a>
+<span class="lineNum">     375 </span>            : 
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 : static int RH_HVStem(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     377 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_radiochanged ) {</span>
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 :         ReviewHintData *hd = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :         hd-&gt;ishstem = GGadgetIsChecked(GWidgetGetControl(GGadgetGetWindow(g),CID_HStem));</span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :         hd-&gt;active =  hd-&gt;ishstem ? hd-&gt;cv-&gt;b.sc-&gt;hstem : hd-&gt;cv-&gt;b.sc-&gt;vstem;</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :         RH_SetupHint(hd);</span>
+<span class="lineNum">     382 </span>            :     }
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="384"><span class="lineNum">     384 </span>            : }</a>
+<span class="lineNum">     385 </span>            : 
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 : static int rh_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :     if ( event-&gt;type==et_close ) {</span>
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 :         DoCancel( GDrawGetUserData(gw));</span>
+<span class="lineNum">     389 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_char ) {</span>
+<span class="lineNum">     390 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_map ) {</span>
+<span class="lineNum">     392 </span>            :         /* Above palettes */
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 :         GDrawRaise(gw);</span>
+<span class="lineNum">     394 </span>            :     }
+<span class="lineNum">     395 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="396"><span class="lineNum">     396 </span>            : }</a>
+<span class="lineNum">     397 </span>            : 
+<span class="lineNum">     398 </span><span class="lineNoCov">          0 : void CVReviewHints(CharView *cv) {</span>
+<span class="lineNum">     399 </span>            :     GRect pos;
+<span class="lineNum">     400 </span>            :     GWindow gw;
+<span class="lineNum">     401 </span>            :     GWindowAttrs wattrs;
+<span class="lineNum">     402 </span>            :     GGadgetCreateData gcd[18], *harray1[6], *harray2[6], *harray3[6], *harray4[6],
+<span class="lineNum">     403 </span>            :         *varray[7][2], boxes[8], *barray[6][6];
+<span class="lineNum">     404 </span>            :     GTextInfo label[18];
+<span class="lineNum">     405 </span>            :     static ReviewHintData hd;
+<span class="lineNum">     406 </span>            :     int k;
+<span class="lineNum">     407 </span>            : 
+<span class="lineNum">     408 </span><span class="lineNoCov">          0 :     hd.done = false;</span>
+<span class="lineNum">     409 </span><span class="lineNoCov">          0 :     hd.cv = cv;</span>
+<span class="lineNum">     410 </span>            : 
+<span class="lineNum">     411 </span><span class="lineNoCov">          0 :     if ( hd.gw==NULL ) {</span>
+<span class="lineNum">     412 </span><span class="lineNoCov">          0 :         memset(&amp;wattrs,0,sizeof(wattrs));</span>
+<span class="lineNum">     413 </span><span class="lineNoCov">          0 :         wattrs.mask = wam_events|wam_cursor|wam_utf8_wtitle|wam_undercursor|wam_isdlg|wam_restrict;</span>
+<span class="lineNum">     414 </span><span class="lineNoCov">          0 :         wattrs.event_masks = ~(1&lt;&lt;et_charup);</span>
+<span class="lineNum">     415 </span><span class="lineNoCov">          0 :         wattrs.restrict_input_to_me = 1;</span>
+<span class="lineNum">     416 </span><span class="lineNoCov">          0 :         wattrs.undercursor = 1;</span>
+<span class="lineNum">     417 </span><span class="lineNoCov">          0 :         wattrs.cursor = ct_pointer;</span>
+<span class="lineNum">     418 </span><span class="lineNoCov">          0 :         wattrs.utf8_window_title = _(&quot;Review Hints&quot;);</span>
+<span class="lineNum">     419 </span><span class="lineNoCov">          0 :         wattrs.is_dlg = true;</span>
+<span class="lineNum">     420 </span><span class="lineNoCov">          0 :         pos.x = pos.y = 0;</span>
+<span class="lineNum">     421 </span><span class="lineNoCov">          0 :         pos.width = GGadgetScale(GDrawPointsToPixels(NULL,170));</span>
+<span class="lineNum">     422 </span><span class="lineNoCov">          0 :         pos.height = GDrawPointsToPixels(NULL,178);</span>
+<span class="lineNum">     423 </span><span class="lineNoCov">          0 :         hd.gw = gw = GDrawCreateTopWindow(NULL,&amp;pos,rh_e_h,&amp;hd,&amp;wattrs);</span>
+<span class="lineNum">     424 </span>            : 
+<span class="lineNum">     425 </span><span class="lineNoCov">          0 :         memset(&amp;label,0,sizeof(label));</span>
+<span class="lineNum">     426 </span><span class="lineNoCov">          0 :         memset(&amp;gcd,0,sizeof(gcd));</span>
+<span class="lineNum">     427 </span><span class="lineNoCov">          0 :         memset(&amp;boxes,0,sizeof(boxes));</span>
+<span class="lineNum">     428 </span>            : 
+<span class="lineNum">     429 </span><span class="lineNoCov">          0 :         k=0;</span>
+<span class="lineNum">     430 </span>            : 
+<span class="lineNum">     431 </span><span class="lineNoCov">          0 :         label[k].text = (unichar_t *) _(&quot;_HStem&quot;);</span>
+<span class="lineNum">     432 </span><span class="lineNoCov">          0 :         label[k].text_is_1byte = true;</span>
+<span class="lineNum">     433 </span><span class="lineNoCov">          0 :         label[k].text_in_resource = true;</span>
+<span class="lineNum">     434 </span><span class="lineNoCov">          0 :         gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     435 </span><span class="lineNoCov">          0 :         gcd[k].gd.flags = gg_enabled|gg_visible|gg_cb_on;</span>
+<span class="lineNum">     436 </span><span class="lineNoCov">          0 :         gcd[k].gd.cid = CID_HStem;</span>
+<span class="lineNum">     437 </span><span class="lineNoCov">          0 :         gcd[k].gd.handle_controlevent = RH_HVStem;</span>
+<span class="lineNum">     438 </span><span class="lineNoCov">          0 :         gcd[k].creator = GRadioCreate;</span>
+<span class="lineNum">     439 </span><span class="lineNoCov">          0 :         harray2[0] = &amp;gcd[k++];</span>
+<span class="lineNum">     440 </span>            : 
+<span class="lineNum">     441 </span><span class="lineNoCov">          0 :         label[k].text = (unichar_t *) _(&quot;_VStem&quot;);</span>
+<span class="lineNum">     442 </span><span class="lineNoCov">          0 :         label[k].text_is_1byte = true;</span>
+<span class="lineNum">     443 </span><span class="lineNoCov">          0 :         label[k].text_in_resource = true;</span>
+<span class="lineNum">     444 </span><span class="lineNoCov">          0 :         gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     445 </span><span class="lineNoCov">          0 :         gcd[k].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     446 </span><span class="lineNoCov">          0 :         gcd[k].gd.cid = CID_VStem;</span>
+<span class="lineNum">     447 </span><span class="lineNoCov">          0 :         gcd[k].gd.handle_controlevent = RH_HVStem;</span>
+<span class="lineNum">     448 </span><span class="lineNoCov">          0 :         gcd[k].creator = GRadioCreate;</span>
+<span class="lineNum">     449 </span><span class="lineNoCov">          0 :         harray2[1] = &amp;gcd[k++];</span>
+<span class="lineNum">     450 </span>            : 
+<span class="lineNum">     451 </span><span class="lineNoCov">          0 :         label[k].text = (unichar_t *) &quot;999/999 hstem3&quot;;</span>
+<span class="lineNum">     452 </span><span class="lineNoCov">          0 :         label[k].text_is_1byte = true;</span>
+<span class="lineNum">     453 </span><span class="lineNoCov">          0 :         gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     454 </span><span class="lineNoCov">          0 :         gcd[k].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     455 </span><span class="lineNoCov">          0 :         gcd[k].gd.cid = CID_Count;</span>
+<span class="lineNum">     456 </span><span class="lineNoCov">          0 :         gcd[k].creator = GLabelCreate;</span>
+<span class="lineNum">     457 </span><span class="lineNoCov">          0 :         harray2[2] = GCD_HPad10; harray2[3] = &amp;gcd[k++]; harray2[4] = GCD_Glue; harray2[5] = NULL;</span>
+<span class="lineNum">     458 </span>            : 
+<span class="lineNum">     459 </span><span class="lineNoCov">          0 :         label[k].text = (unichar_t *) _(&quot;_Move Points&quot;);</span>
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 :         label[k].text_is_1byte = true;</span>
+<span class="lineNum">     461 </span><span class="lineNoCov">          0 :         label[k].text_in_resource = true;</span>
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 :         gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :         gcd[k].gd.flags = gg_enabled|gg_visible|gg_utf8_popup;</span>
+<span class="lineNum">     464 </span><span class="lineNoCov">          0 :         gcd[k].gd.cid = CID_MovePoints;</span>
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 :         gcd[k].gd.popup_msg = (unichar_t *) _(&quot;When the hint's position is changed\nadjust the postion of any points\nwhich lie on that hint&quot;);</span>
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :         gcd[k].creator = GCheckBoxCreate;</span>
+<span class="lineNum">     467 </span><span class="lineNoCov">          0 :         harray3[0] = &amp;gcd[k++]; harray3[1] = GCD_Glue; harray3[2] = NULL;</span>
+<span class="lineNum">     468 </span>            : 
+<span class="lineNum">     469 </span><span class="lineNoCov">          0 :         label[k].text = (unichar_t *) _(&quot;_Base:&quot;);</span>
+<span class="lineNum">     470 </span><span class="lineNoCov">          0 :         label[k].text_is_1byte = true;</span>
+<span class="lineNum">     471 </span><span class="lineNoCov">          0 :         label[k].text_in_resource = true;</span>
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 :         gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     473 </span><span class="lineNoCov">          0 :         gcd[k].gd.pos.x = 5; gcd[k].gd.pos.y = 14+17+5+3; </span>
+<span class="lineNum">     474 </span><span class="lineNoCov">          0 :         gcd[k].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 :         gcd[k].creator = GLabelCreate;</span>
+<span class="lineNum">     476 </span><span class="lineNoCov">          0 :         harray1[0] = &amp;gcd[k++];</span>
+<span class="lineNum">     477 </span>            : 
+<span class="lineNum">     478 </span><span class="lineNoCov">          0 :         gcd[k].gd.pos.width = 40;</span>
+<span class="lineNum">     479 </span><span class="lineNoCov">          0 :         gcd[k].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     480 </span><span class="lineNoCov">          0 :         gcd[k].gd.cid = CID_Base;</span>
+<span class="lineNum">     481 </span><span class="lineNoCov">          0 :         gcd[k].gd.handle_controlevent = RH_TextChanged;</span>
+<span class="lineNum">     482 </span><span class="lineNoCov">          0 :         gcd[k].creator = GTextFieldCreate;</span>
+<span class="lineNum">     483 </span><span class="lineNoCov">          0 :         harray1[1] = &amp;gcd[k++];</span>
+<span class="lineNum">     484 </span>            : 
+<span class="lineNum">     485 </span><span class="lineNoCov">          0 :         label[k].text = (unichar_t *) _(&quot;_Size:&quot;);</span>
+<span class="lineNum">     486 </span><span class="lineNoCov">          0 :         label[k].text_is_1byte = true;</span>
+<span class="lineNum">     487 </span><span class="lineNoCov">          0 :         label[k].text_in_resource = true;</span>
+<span class="lineNum">     488 </span><span class="lineNoCov">          0 :         gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     489 </span><span class="lineNoCov">          0 :         gcd[k].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     490 </span><span class="lineNoCov">          0 :         gcd[k].creator = GLabelCreate;</span>
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 :         harray1[2] = &amp;gcd[k++];</span>
+<span class="lineNum">     492 </span>            : 
+<span class="lineNum">     493 </span><span class="lineNoCov">          0 :         gcd[k].gd.pos.width = 40;</span>
+<span class="lineNum">     494 </span><span class="lineNoCov">          0 :         gcd[k].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     495 </span><span class="lineNoCov">          0 :         gcd[k].gd.cid = CID_Width;</span>
+<span class="lineNum">     496 </span><span class="lineNoCov">          0 :         gcd[k].gd.handle_controlevent = RH_TextChanged;</span>
+<span class="lineNum">     497 </span><span class="lineNoCov">          0 :         gcd[k].creator = GTextFieldCreate;</span>
+<span class="lineNum">     498 </span><span class="lineNoCov">          0 :         harray1[3] = &amp;gcd[k++]; harray1[4] = GCD_Glue; harray1[5] = NULL;</span>
+<span class="lineNum">     499 </span>            : 
+<span class="lineNum">     500 </span><span class="lineNoCov">          0 :         gcd[k].gd.flags = gg_visible | gg_enabled;</span>
+<span class="lineNum">     501 </span><span class="lineNoCov">          0 :         label[k].text = (unichar_t *) &quot;Overlaps another hint&quot;;</span>
+<span class="lineNum">     502 </span><span class="lineNoCov">          0 :         label[k].text_is_1byte = true;</span>
+<span class="lineNum">     503 </span><span class="lineNoCov">          0 :         label[k].fg = 0xff0000; label[k].bg = COLOR_DEFAULT;    /* Doesn't work, needs to be in box */</span>
+<span class="lineNum">     504 </span><span class="lineNoCov">          0 :         gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     505 </span><span class="lineNoCov">          0 :         gcd[k].gd.cid = CID_Overlap;</span>
+<span class="lineNum">     506 </span><span class="lineNoCov">          0 :         gcd[k].creator = GLabelCreate;</span>
+<span class="lineNum">     507 </span><span class="lineNoCov">          0 :         harray4[0] = GCD_Glue; harray4[1] = &amp;gcd[k++]; harray4[2] = GCD_Glue; harray4[3] = NULL;</span>
+<span class="lineNum">     508 </span>            : 
+<span class="lineNum">     509 </span>            : 
+<span class="lineNum">     510 </span><span class="lineNoCov">          0 :         gcd[k].gd.flags = gg_visible | gg_enabled;</span>
+<span class="lineNum">     511 </span><span class="lineNoCov">          0 :         label[k].text = (unichar_t *) _(&quot;Cr_eate&quot;);</span>
+<span class="lineNum">     512 </span><span class="lineNoCov">          0 :         label[k].text_is_1byte = true;</span>
+<span class="lineNum">     513 </span><span class="lineNoCov">          0 :         label[k].text_in_resource = true;</span>
+<span class="lineNum">     514 </span><span class="lineNoCov">          0 :         gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     515 </span><span class="lineNoCov">          0 :         gcd[k].gd.cid = CID_Add;</span>
+<span class="lineNum">     516 </span><span class="lineNoCov">          0 :         gcd[k].gd.handle_controlevent = RH_Add;</span>
+<span class="lineNum">     517 </span><span class="lineNoCov">          0 :         gcd[k].creator = GButtonCreate;</span>
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 :         barray[0][0] = GCD_Glue; barray[0][1] = &amp;gcd[k++]; barray[0][2] = GCD_Glue;</span>
+<span class="lineNum">     519 </span>            : 
+<span class="lineNum">     520 </span><span class="lineNoCov">          0 :         gcd[k].gd.flags = gg_visible | gg_enabled;</span>
+<span class="lineNum">     521 </span><span class="lineNoCov">          0 :         label[k].text = (unichar_t *) _(&quot;Re_move&quot;);</span>
+<span class="lineNum">     522 </span><span class="lineNoCov">          0 :         label[k].text_is_1byte = true;</span>
+<span class="lineNum">     523 </span><span class="lineNoCov">          0 :         label[k].text_in_resource = true;</span>
+<span class="lineNum">     524 </span><span class="lineNoCov">          0 :         gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     525 </span><span class="lineNoCov">          0 :         gcd[k].gd.cid = CID_Remove;</span>
+<span class="lineNum">     526 </span><span class="lineNoCov">          0 :         gcd[k].gd.handle_controlevent = RH_Remove;</span>
+<span class="lineNum">     527 </span><span class="lineNoCov">          0 :         gcd[k].creator = GButtonCreate;</span>
+<span class="lineNum">     528 </span><span class="lineNoCov">          0 :         barray[0][3] = &amp;gcd[k++]; barray[0][4] = GCD_Glue; barray[0][5] = NULL;</span>
+<span class="lineNum">     529 </span>            : 
+<span class="lineNum">     530 </span><span class="lineNoCov">          0 :         gcd[k].gd.pos.width = 170-10;</span>
+<span class="lineNum">     531 </span><span class="lineNoCov">          0 :         gcd[k].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     532 </span><span class="lineNoCov">          0 :         gcd[k].creator = GLineCreate;</span>
+<span class="lineNum">     533 </span><span class="lineNoCov">          0 :         barray[1][0] = GCD_Glue; barray[1][1] = &amp;gcd[k++]; barray[1][2] = barray[1][3] = GCD_ColSpan; barray[1][4] = GCD_Glue; barray[1][5] = NULL;</span>
+<span class="lineNum">     534 </span>            : 
+<span class="lineNum">     535 </span><span class="lineNoCov">          0 :         gcd[k].gd.flags = gg_visible | gg_enabled | gg_utf8_popup;</span>
+<span class="lineNum">     536 </span><span class="lineNoCov">          0 :         label[k].text = (unichar_t *) _(&quot;&lt; _Prev&quot;);</span>
+<span class="lineNum">     537 </span><span class="lineNoCov">          0 :         label[k].text_is_1byte = true;</span>
+<span class="lineNum">     538 </span><span class="lineNoCov">          0 :         label[k].text_in_resource = true;</span>
+<span class="lineNum">     539 </span><span class="lineNoCov">          0 :         gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     540 </span><span class="lineNoCov">          0 :         gcd[k].gd.cid = CID_Prev;</span>
+<span class="lineNum">     541 </span><span class="lineNoCov">          0 :         gcd[k].gd.popup_msg = (unichar_t *) _(&quot;Previous Hint.&quot;);</span>
+<span class="lineNum">     542 </span><span class="lineNoCov">          0 :         gcd[k].gd.handle_controlevent = RH_NextPrev;</span>
+<span class="lineNum">     543 </span><span class="lineNoCov">          0 :         gcd[k].creator = GButtonCreate;</span>
+<span class="lineNum">     544 </span><span class="lineNoCov">          0 :         barray[2][0] = GCD_Glue; barray[2][1] = &amp;gcd[k++]; barray[2][2] = GCD_Glue;</span>
+<span class="lineNum">     545 </span>            : 
+<span class="lineNum">     546 </span><span class="lineNoCov">          0 :         gcd[k].gd.flags = gg_visible | gg_enabled | gg_utf8_popup;</span>
+<span class="lineNum">     547 </span><span class="lineNoCov">          0 :         label[k].text = (unichar_t *) _(&quot;_Next &gt;&quot;);</span>
+<span class="lineNum">     548 </span><span class="lineNoCov">          0 :         label[k].text_is_1byte = true;</span>
+<span class="lineNum">     549 </span><span class="lineNoCov">          0 :         label[k].text_in_resource = true;</span>
+<span class="lineNum">     550 </span><span class="lineNoCov">          0 :         gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     551 </span><span class="lineNoCov">          0 :         gcd[k].gd.cid = CID_Next;</span>
+<span class="lineNum">     552 </span><span class="lineNoCov">          0 :         gcd[k].gd.popup_msg = (unichar_t *) _(&quot;Next Hint.&quot;);</span>
+<span class="lineNum">     553 </span><span class="lineNoCov">          0 :         gcd[k].gd.handle_controlevent = RH_NextPrev;</span>
+<span class="lineNum">     554 </span><span class="lineNoCov">          0 :         gcd[k].creator = GButtonCreate;</span>
+<span class="lineNum">     555 </span><span class="lineNoCov">          0 :         barray[2][3] = &amp;gcd[k++]; barray[2][4] = GCD_Glue; barray[2][5] = NULL;</span>
+<span class="lineNum">     556 </span>            : 
+<span class="lineNum">     557 </span><span class="lineNoCov">          0 :         label[k].text = (unichar_t *) _(&quot;Regenerate Hint Substitution Points&quot;);</span>
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :         label[k].text_is_1byte = true;</span>
+<span class="lineNum">     559 </span><span class="lineNoCov">          0 :         label[k].text_in_resource = true;</span>
+<span class="lineNum">     560 </span><span class="lineNoCov">          0 :         gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     561 </span><span class="lineNoCov">          0 :         gcd[k].gd.flags = gg_enabled|gg_visible|gg_cb_on|gg_utf8_popup;</span>
+<span class="lineNum">     562 </span><span class="lineNoCov">          0 :         gcd[k].gd.cid = CID_RegenHM;</span>
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 :         gcd[k].gd.popup_msg = (unichar_t *) _(&quot;If you have made any changes to the hints,\nthen in addition to changing the glyph's hints\nrefigure it's hint masks and substitution points.&quot;);</span>
+<span class="lineNum">     564 </span><span class="lineNoCov">          0 :         gcd[k].creator = GCheckBoxCreate;</span>
+<span class="lineNum">     565 </span><span class="lineNoCov">          0 :         barray[3][0] = &amp;gcd[k++]; barray[3][1] = barray[3][2] = barray[3][3] = barray[3][4] = GCD_ColSpan; barray[3][5] = NULL;</span>
+<span class="lineNum">     566 </span>            : 
+<span class="lineNum">     567 </span><span class="lineNoCov">          0 :         gcd[k].gd.flags = gg_visible | gg_enabled;</span>
+<span class="lineNum">     568 </span><span class="lineNoCov">          0 :         label[k].text = (unichar_t *) _(&quot;_OK&quot;);</span>
+<span class="lineNum">     569 </span><span class="lineNoCov">          0 :         label[k].text_is_1byte = true;</span>
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 :         label[k].text_in_resource = true;</span>
+<span class="lineNum">     571 </span><span class="lineNoCov">          0 :         gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     572 </span><span class="lineNoCov">          0 :         gcd[k].gd.handle_controlevent = RH_OK;</span>
+<span class="lineNum">     573 </span><span class="lineNoCov">          0 :         gcd[k].creator = GButtonCreate;</span>
+<span class="lineNum">     574 </span><span class="lineNoCov">          0 :         barray[4][0] = GCD_Glue; barray[4][1] = &amp;gcd[k++]; barray[4][2] = GCD_Glue;</span>
+<span class="lineNum">     575 </span>            : 
+<span class="lineNum">     576 </span><span class="lineNoCov">          0 :         gcd[k].gd.flags = gg_visible | gg_enabled | gg_but_cancel;</span>
+<span class="lineNum">     577 </span><span class="lineNoCov">          0 :         label[k].text = (unichar_t *) _(&quot;_Cancel&quot;);</span>
+<span class="lineNum">     578 </span><span class="lineNoCov">          0 :         label[k].text_is_1byte = true;</span>
+<span class="lineNum">     579 </span><span class="lineNoCov">          0 :         label[k].text_in_resource = true;</span>
+<span class="lineNum">     580 </span><span class="lineNoCov">          0 :         gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     581 </span><span class="lineNoCov">          0 :         gcd[k].gd.handle_controlevent = RH_Cancel;</span>
+<span class="lineNum">     582 </span><span class="lineNoCov">          0 :         gcd[k].creator = GButtonCreate;</span>
+<span class="lineNum">     583 </span><span class="lineNoCov">          0 :         barray[4][3] = &amp;gcd[k++]; barray[4][4] = GCD_Glue; barray[4][5] = NULL;</span>
+<span class="lineNum">     584 </span><span class="lineNoCov">          0 :         barray[5][0] = NULL;</span>
+<span class="lineNum">     585 </span>            : 
+<span class="lineNum">     586 </span><span class="lineNoCov">          0 :         boxes[2].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     587 </span><span class="lineNoCov">          0 :         boxes[2].gd.u.boxelements = harray2;</span>
+<span class="lineNum">     588 </span><span class="lineNoCov">          0 :         boxes[2].creator = GHBoxCreate;</span>
+<span class="lineNum">     589 </span>            : 
+<span class="lineNum">     590 </span><span class="lineNoCov">          0 :         boxes[3].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 :         boxes[3].gd.u.boxelements = harray3;</span>
+<span class="lineNum">     592 </span><span class="lineNoCov">          0 :         boxes[3].creator = GHBoxCreate;</span>
+<span class="lineNum">     593 </span>            : 
+<span class="lineNum">     594 </span><span class="lineNoCov">          0 :         boxes[4].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     595 </span><span class="lineNoCov">          0 :         boxes[4].gd.u.boxelements = harray1;</span>
+<span class="lineNum">     596 </span><span class="lineNoCov">          0 :         boxes[4].creator = GHBoxCreate;</span>
+<span class="lineNum">     597 </span>            : 
+<span class="lineNum">     598 </span><span class="lineNoCov">          0 :         boxes[5].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     599 </span><span class="lineNoCov">          0 :         boxes[5].gd.u.boxelements = harray4;</span>
+<span class="lineNum">     600 </span><span class="lineNoCov">          0 :         boxes[5].creator = GHBoxCreate;</span>
+<span class="lineNum">     601 </span>            : 
+<span class="lineNum">     602 </span><span class="lineNoCov">          0 :         boxes[6].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     603 </span><span class="lineNoCov">          0 :         boxes[6].gd.u.boxelements = barray[0];</span>
+<span class="lineNum">     604 </span><span class="lineNoCov">          0 :         boxes[6].creator = GHVBoxCreate;</span>
+<span class="lineNum">     605 </span>            : 
+<span class="lineNum">     606 </span><span class="lineNoCov">          0 :         varray[0][0] = &amp;boxes[2]; varray[0][1] = NULL;</span>
+<span class="lineNum">     607 </span><span class="lineNoCov">          0 :         varray[1][0] = &amp;boxes[3]; varray[1][1] = NULL;</span>
+<span class="lineNum">     608 </span><span class="lineNoCov">          0 :         varray[2][0] = &amp;boxes[4]; varray[2][1] = NULL;</span>
+<span class="lineNum">     609 </span><span class="lineNoCov">          0 :         varray[3][0] = &amp;boxes[5]; varray[3][1] = NULL;</span>
+<span class="lineNum">     610 </span><span class="lineNoCov">          0 :         varray[4][0] = &amp;boxes[6]; varray[4][1] = NULL;</span>
+<span class="lineNum">     611 </span><span class="lineNoCov">          0 :         varray[5][0] = NULL;</span>
+<span class="lineNum">     612 </span>            : 
+<span class="lineNum">     613 </span><span class="lineNoCov">          0 :         boxes[0].gd.pos.x = boxes[0].gd.pos.y = 2;</span>
+<span class="lineNum">     614 </span><span class="lineNoCov">          0 :         boxes[0].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     615 </span><span class="lineNoCov">          0 :         boxes[0].gd.u.boxelements = varray[0];</span>
+<span class="lineNum">     616 </span><span class="lineNoCov">          0 :         boxes[0].gd.cid = CID_TopBox;</span>
+<span class="lineNum">     617 </span><span class="lineNoCov">          0 :         boxes[0].creator = GHVGroupCreate;</span>
+<span class="lineNum">     618 </span>            : 
+<span class="lineNum">     619 </span>            : 
+<span class="lineNum">     620 </span><span class="lineNoCov">          0 :         GGadgetsCreate(gw,boxes);</span>
+<span class="lineNum">     621 </span>            : 
+<span class="lineNum">     622 </span><span class="lineNoCov">          0 :         GHVBoxSetExpandableRow(boxes[0].ret,3);</span>
+<span class="lineNum">     623 </span><span class="lineNoCov">          0 :         GHVBoxSetExpandableCol(boxes[2].ret,gb_expandglue);</span>
+<span class="lineNum">     624 </span><span class="lineNoCov">          0 :         GHVBoxSetExpandableCol(boxes[3].ret,gb_expandglue);</span>
+<span class="lineNum">     625 </span><span class="lineNoCov">          0 :         GHVBoxSetExpandableCol(boxes[4].ret,gb_expandglue);</span>
+<span class="lineNum">     626 </span><span class="lineNoCov">          0 :         GHVBoxSetExpandableCol(boxes[5].ret,gb_expandglue);</span>
+<span class="lineNum">     627 </span><span class="lineNoCov">          0 :         GHVBoxSetExpandableCol(boxes[6].ret,gb_expandglue);</span>
+<span class="lineNum">     628 </span><span class="lineNoCov">          0 :         GHVBoxFitWindow(boxes[0].ret);</span>
+<span class="lineNum">     629 </span>            :     } else {
+<span class="lineNum">     630 </span><span class="lineNoCov">          0 :         gw = hd.gw;</span>
+<span class="lineNum">     631 </span><span class="lineNoCov">          0 :         GDrawSetTransientFor(gw,(GWindow) -1);</span>
+<span class="lineNum">     632 </span>            :     }
+<span class="lineNum">     633 </span><span class="lineNoCov">          0 :     if ( cv-&gt;b.sc-&gt;hstem==NULL &amp;&amp; cv-&gt;b.sc-&gt;vstem==NULL )</span>
+<span class="lineNum">     634 </span><span class="lineNoCov">          0 :         hd.active = NULL;</span>
+<span class="lineNum">     635 </span><span class="lineNoCov">          0 :     else if ( cv-&gt;b.sc-&gt;hstem!=NULL &amp;&amp; cv-&gt;b.sc-&gt;vstem!=NULL ) {</span>
+<span class="lineNum">     636 </span><span class="lineNoCov">          0 :         if ( GGadgetIsChecked(GWidgetGetControl(gw,CID_HStem)))</span>
+<span class="lineNum">     637 </span><span class="lineNoCov">          0 :             hd.active = cv-&gt;b.sc-&gt;hstem;</span>
+<span class="lineNum">     638 </span>            :         else
+<span class="lineNum">     639 </span><span class="lineNoCov">          0 :             hd.active = cv-&gt;b.sc-&gt;vstem;</span>
+<span class="lineNum">     640 </span><span class="lineNoCov">          0 :     } else if ( cv-&gt;b.sc-&gt;hstem!=NULL ) {</span>
+<span class="lineNum">     641 </span><span class="lineNoCov">          0 :         GGadgetSetChecked(GWidgetGetControl(gw,CID_HStem),true);</span>
+<span class="lineNum">     642 </span><span class="lineNoCov">          0 :         hd.active = cv-&gt;b.sc-&gt;hstem;</span>
+<span class="lineNum">     643 </span>            :     } else {
+<span class="lineNum">     644 </span><span class="lineNoCov">          0 :         GGadgetSetChecked(GWidgetGetControl(gw,CID_VStem),true);</span>
+<span class="lineNum">     645 </span><span class="lineNoCov">          0 :         hd.active = cv-&gt;b.sc-&gt;vstem;</span>
+<span class="lineNum">     646 </span>            :     }
+<span class="lineNum">     647 </span><span class="lineNoCov">          0 :     hd.ishstem = (hd.active==cv-&gt;b.sc-&gt;hstem);</span>
+<span class="lineNum">     648 </span><span class="lineNoCov">          0 :     hd.oldh = StemInfoCopy(cv-&gt;b.sc-&gt;hstem);</span>
+<span class="lineNum">     649 </span><span class="lineNoCov">          0 :     hd.oldv = StemInfoCopy(cv-&gt;b.sc-&gt;vstem);</span>
+<span class="lineNum">     650 </span><span class="lineNoCov">          0 :     hd.oldmanual = cv-&gt;b.sc-&gt;manualhints;</span>
+<span class="lineNum">     651 </span><span class="lineNoCov">          0 :     hd.changed = false;</span>
+<span class="lineNum">     652 </span><span class="lineNoCov">          0 :     RH_SetupHint(&amp;hd);</span>
+<span class="lineNum">     653 </span><span class="lineNoCov">          0 :     if ( hd.active!=NULL ) {</span>
+<span class="lineNum">     654 </span><span class="lineNoCov">          0 :         GWidgetIndicateFocusGadget(GWidgetGetControl(gw,CID_Base));</span>
+<span class="lineNum">     655 </span><span class="lineNoCov">          0 :         GTextFieldSelect(GWidgetGetControl(gw,CID_Base),0,-1);</span>
+<span class="lineNum">     656 </span>            :     }
+<span class="lineNum">     657 </span>            : 
+<span class="lineNum">     658 </span><span class="lineNoCov">          0 :     GWidgetHidePalettes();</span>
+<span class="lineNum">     659 </span><span class="lineNoCov">          0 :     GDrawSetVisible(gw,true);</span>
+<span class="lineNum">     660 </span><span class="lineNoCov">          0 :     while ( !hd.done )</span>
+<span class="lineNum">     661 </span><span class="lineNoCov">          0 :         GDrawProcessOneEvent(NULL);</span>
+<span class="lineNum">     662 </span><span class="lineNoCov">          0 :     GDrawSetVisible(gw,false);</span>
+<span class="lineNum">     663 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     664 </span>            : 
+<span class="lineNum">     665 </span>            : typedef struct createhintdata {
+<span class="lineNum">     666 </span>            :     unsigned int done: 1;
+<span class="lineNum">     667 </span>            :     unsigned int ishstem: 1;
+<span class="lineNum">     668 </span>            :     unsigned int preservehints: 1;
+<span class="lineNum">     669 </span>            :     CharView *cv;
+<span class="lineNum">     670 </span>            :     GWindow gw;
+<a name="671"><span class="lineNum">     671 </span>            : } CreateHintData;</a>
+<span class="lineNum">     672 </span>            : 
+<span class="lineNum">     673 </span><span class="lineNoCov">          0 : static int CH_OK(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     674 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     675 </span><span class="lineNoCov">          0 :         CreateHintData *hd = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">     676 </span>            :         real base, width;
+<span class="lineNum">     677 </span><span class="lineNoCov">          0 :         int err = 0;</span>
+<span class="lineNum">     678 </span>            :         StemInfo *h;
+<span class="lineNum">     679 </span><span class="lineNoCov">          0 :         int layer = CVLayer((CharViewBase *) hd-&gt;cv);</span>
+<span class="lineNum">     680 </span>            : 
+<span class="lineNum">     681 </span><span class="lineNoCov">          0 :         base = GetReal8(hd-&gt;gw,CID_Base,_(&quot;Base:&quot;),&amp;err);</span>
+<span class="lineNum">     682 </span><span class="lineNoCov">          0 :         width = GetReal8(hd-&gt;gw,CID_Width,_(&quot;Size:&quot;),&amp;err);</span>
+<span class="lineNum">     683 </span><span class="lineNoCov">          0 :         if ( err )</span>
+<span class="lineNum">     684 </span><span class="lineNoCov">          0 : return(true);</span>
+<span class="lineNum">     685 </span><span class="lineNoCov">          0 :         if ( hd-&gt;preservehints ) {</span>
+<span class="lineNum">     686 </span><span class="lineNoCov">          0 :             SCPreserveHints(hd-&gt;cv-&gt;b.sc,layer);</span>
+<span class="lineNum">     687 </span><span class="lineNoCov">          0 :             SCHintsChanged(hd-&gt;cv-&gt;b.sc);</span>
+<span class="lineNum">     688 </span>            :         }
+<span class="lineNum">     689 </span><span class="lineNoCov">          0 :         h = chunkalloc(sizeof(StemInfo));</span>
+<span class="lineNum">     690 </span><span class="lineNoCov">          0 :         if ( width==-21 || width==-20 ) {</span>
+<span class="lineNum">     691 </span><span class="lineNoCov">          0 :             base += width;</span>
+<span class="lineNum">     692 </span><span class="lineNoCov">          0 :             width = -width;</span>
+<span class="lineNum">     693 </span><span class="lineNoCov">          0 :             h-&gt;ghost = true;</span>
+<span class="lineNum">     694 </span>            :         }
+<span class="lineNum">     695 </span><span class="lineNoCov">          0 :         h-&gt;start = base;</span>
+<span class="lineNum">     696 </span><span class="lineNoCov">          0 :         h-&gt;width = width;</span>
+<span class="lineNum">     697 </span><span class="lineNoCov">          0 :         if ( hd-&gt;ishstem ) {</span>
+<span class="lineNum">     698 </span><span class="lineNoCov">          0 :             SCGuessHHintInstancesAndAdd(hd-&gt;cv-&gt;b.sc,layer,h,0x80000000,0x80000000);</span>
+<span class="lineNum">     699 </span><span class="lineNoCov">          0 :             hd-&gt;cv-&gt;b.sc-&gt;hconflicts = StemListAnyConflicts(hd-&gt;cv-&gt;b.sc-&gt;hstem);</span>
+<span class="lineNum">     700 </span>            :         } else {
+<span class="lineNum">     701 </span><span class="lineNoCov">          0 :             SCGuessVHintInstancesAndAdd(hd-&gt;cv-&gt;b.sc,layer,h,0x80000000,0x80000000);</span>
+<span class="lineNum">     702 </span><span class="lineNoCov">          0 :             hd-&gt;cv-&gt;b.sc-&gt;vconflicts = StemListAnyConflicts(hd-&gt;cv-&gt;b.sc-&gt;vstem);</span>
+<span class="lineNum">     703 </span>            :         }
+<span class="lineNum">     704 </span><span class="lineNoCov">          0 :         hd-&gt;cv-&gt;b.sc-&gt;manualhints = true;</span>
+<span class="lineNum">     705 </span><span class="lineNoCov">          0 :         if ( h!=NULL &amp;&amp; hd-&gt;cv-&gt;b.sc-&gt;parent-&gt;mm==NULL )</span>
+<span class="lineNum">     706 </span><span class="lineNoCov">          0 :             SCModifyHintMasksAdd(hd-&gt;cv-&gt;b.sc,layer,h);</span>
+<span class="lineNum">     707 </span>            :         else
+<span class="lineNum">     708 </span><span class="lineNoCov">          0 :             SCClearHintMasks(hd-&gt;cv-&gt;b.sc,layer,true);</span>
+<span class="lineNum">     709 </span><span class="lineNoCov">          0 :         SCOutOfDateBackground(hd-&gt;cv-&gt;b.sc);</span>
+<span class="lineNum">     710 </span><span class="lineNoCov">          0 :         SCUpdateAll(hd-&gt;cv-&gt;b.sc);</span>
+<span class="lineNum">     711 </span><span class="lineNoCov">          0 :         hd-&gt;done = true;</span>
+<span class="lineNum">     712 </span>            :     }
+<span class="lineNum">     713 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="714"><span class="lineNum">     714 </span>            : }</a>
+<span class="lineNum">     715 </span>            : 
+<span class="lineNum">     716 </span><span class="lineNoCov">          0 : static int CH_Cancel(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     717 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     718 </span><span class="lineNoCov">          0 :         CreateHintData *hd = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">     719 </span><span class="lineNoCov">          0 :         hd-&gt;done = true;</span>
+<span class="lineNum">     720 </span>            :     }
+<span class="lineNum">     721 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="722"><span class="lineNum">     722 </span>            : }</a>
+<span class="lineNum">     723 </span>            : 
+<span class="lineNum">     724 </span><span class="lineNoCov">          0 : static int chd_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     725 </span><span class="lineNoCov">          0 :     if ( event-&gt;type==et_close ) {</span>
+<span class="lineNum">     726 </span><span class="lineNoCov">          0 :         CreateHintData *hd = GDrawGetUserData(gw);</span>
+<span class="lineNum">     727 </span><span class="lineNoCov">          0 :         hd-&gt;done = true;</span>
+<span class="lineNum">     728 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_char ) {</span>
+<span class="lineNum">     729 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     730 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_map ) {</span>
+<span class="lineNum">     731 </span>            :         /* Above palettes */
+<span class="lineNum">     732 </span><span class="lineNoCov">          0 :         GDrawRaise(gw);</span>
+<span class="lineNum">     733 </span>            :     }
+<span class="lineNum">     734 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="735"><span class="lineNum">     735 </span>            : }</a>
+<span class="lineNum">     736 </span>            : 
+<span class="lineNum">     737 </span><span class="lineNoCov">          0 : void CVCreateHint(CharView *cv,int ishstem,int preservehints) {</span>
+<span class="lineNum">     738 </span>            :     GRect pos;
+<span class="lineNum">     739 </span>            :     GWindow gw;
+<span class="lineNum">     740 </span>            :     GWindowAttrs wattrs;
+<span class="lineNum">     741 </span>            :     GGadgetCreateData gcd[9], *harray1[4], *harray2[9], *barray[7], *varray[5][2], boxes[5];
+<span class="lineNum">     742 </span>            :     GTextInfo label[9];
+<span class="lineNum">     743 </span>            :     static CreateHintData chd;
+<span class="lineNum">     744 </span>            :     char buffer[20]; unichar_t ubuf[20];
+<span class="lineNum">     745 </span>            : 
+<span class="lineNum">     746 </span><span class="lineNoCov">          0 :     chd.done = false;</span>
+<span class="lineNum">     747 </span><span class="lineNoCov">          0 :     chd.ishstem = ishstem;</span>
+<span class="lineNum">     748 </span><span class="lineNoCov">          0 :     chd.preservehints = preservehints;</span>
+<span class="lineNum">     749 </span><span class="lineNoCov">          0 :     chd.cv = cv;</span>
+<span class="lineNum">     750 </span>            : 
+<span class="lineNum">     751 </span><span class="lineNoCov">          0 :     if ( chd.gw==NULL ) {</span>
+<span class="lineNum">     752 </span><span class="lineNoCov">          0 :         memset(&amp;wattrs,0,sizeof(wattrs));</span>
+<span class="lineNum">     753 </span><span class="lineNoCov">          0 :         wattrs.mask = wam_events|wam_cursor|wam_utf8_wtitle|wam_undercursor|wam_isdlg|wam_restrict;</span>
+<span class="lineNum">     754 </span><span class="lineNoCov">          0 :         wattrs.event_masks = ~(1&lt;&lt;et_charup);</span>
+<span class="lineNum">     755 </span><span class="lineNoCov">          0 :         wattrs.restrict_input_to_me = 1;</span>
+<span class="lineNum">     756 </span><span class="lineNoCov">          0 :         wattrs.undercursor = 1;</span>
+<span class="lineNum">     757 </span><span class="lineNoCov">          0 :         wattrs.cursor = ct_pointer;</span>
+<span class="lineNum">     758 </span><span class="lineNoCov">          0 :         wattrs.utf8_window_title = _(&quot;Create Hint&quot;);</span>
+<span class="lineNum">     759 </span><span class="lineNoCov">          0 :         wattrs.is_dlg = true;</span>
+<span class="lineNum">     760 </span><span class="lineNoCov">          0 :         pos.x = pos.y = 0;</span>
+<span class="lineNum">     761 </span><span class="lineNoCov">          0 :         pos.width = GGadgetScale(GDrawPointsToPixels(NULL,170));</span>
+<span class="lineNum">     762 </span><span class="lineNoCov">          0 :         pos.height = GDrawPointsToPixels(NULL,90);</span>
+<span class="lineNum">     763 </span><span class="lineNoCov">          0 :         chd.gw = gw = GDrawCreateTopWindow(NULL,&amp;pos,chd_e_h,&amp;chd,&amp;wattrs);</span>
+<span class="lineNum">     764 </span>            : 
+<span class="lineNum">     765 </span><span class="lineNoCov">          0 :         memset(&amp;label,0,sizeof(label));</span>
+<span class="lineNum">     766 </span><span class="lineNoCov">          0 :         memset(&amp;gcd,0,sizeof(gcd));</span>
+<span class="lineNum">     767 </span><span class="lineNoCov">          0 :         memset(&amp;boxes,0,sizeof(boxes));</span>
+<span class="lineNum">     768 </span>            : 
+<span class="lineNum">     769 </span><span class="lineNoCov">          0 :         label[0].text = (unichar_t *) _(&quot;_Base:&quot;);</span>
+<span class="lineNum">     770 </span><span class="lineNoCov">          0 :         label[0].text_is_1byte = true;</span>
+<span class="lineNum">     771 </span><span class="lineNoCov">          0 :         label[0].text_in_resource = true;</span>
+<span class="lineNum">     772 </span><span class="lineNoCov">          0 :         gcd[0].gd.label = &amp;label[0];</span>
+<span class="lineNum">     773 </span><span class="lineNoCov">          0 :         gcd[0].gd.pos.x = 5; gcd[0].gd.pos.y = 17+5+6; </span>
+<span class="lineNum">     774 </span><span class="lineNoCov">          0 :         gcd[0].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     775 </span><span class="lineNoCov">          0 :         gcd[0].creator = GLabelCreate;</span>
+<span class="lineNum">     776 </span><span class="lineNoCov">          0 :         harray2[0] = GCD_Glue; harray2[1] = &amp;gcd[0];</span>
+<span class="lineNum">     777 </span>            : 
+<span class="lineNum">     778 </span><span class="lineNoCov">          0 :         sprintf( buffer, &quot;%g&quot;, (double) (ishstem ? cv-&gt;p.cy : cv-&gt;p.cx) );</span>
+<span class="lineNum">     779 </span><span class="lineNoCov">          0 :         label[1].text = (unichar_t *) buffer;</span>
+<span class="lineNum">     780 </span><span class="lineNoCov">          0 :         label[1].text_is_1byte = true;</span>
+<span class="lineNum">     781 </span><span class="lineNoCov">          0 :         gcd[1].gd.label = &amp;label[1];</span>
+<span class="lineNum">     782 </span><span class="lineNoCov">          0 :         gcd[1].gd.pos.x = 37; gcd[1].gd.pos.y = 17+5;  gcd[1].gd.pos.width = 40;</span>
+<span class="lineNum">     783 </span><span class="lineNoCov">          0 :         gcd[1].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     784 </span><span class="lineNoCov">          0 :         gcd[1].gd.cid = CID_Base;</span>
+<span class="lineNum">     785 </span><span class="lineNoCov">          0 :         gcd[1].creator = GTextFieldCreate;</span>
+<span class="lineNum">     786 </span><span class="lineNoCov">          0 :         harray2[2] = &amp;gcd[1];</span>
+<span class="lineNum">     787 </span>            : 
+<span class="lineNum">     788 </span><span class="lineNoCov">          0 :         label[2].text = (unichar_t *) _(&quot;_Size:&quot;);</span>
+<span class="lineNum">     789 </span><span class="lineNoCov">          0 :         label[2].text_is_1byte = true;</span>
+<span class="lineNum">     790 </span><span class="lineNoCov">          0 :         label[2].text_in_resource = true;</span>
+<span class="lineNum">     791 </span><span class="lineNoCov">          0 :         gcd[2].gd.label = &amp;label[2];</span>
+<span class="lineNum">     792 </span><span class="lineNoCov">          0 :         gcd[2].gd.pos.x = 90; gcd[2].gd.pos.y = 17+5+6; </span>
+<span class="lineNum">     793 </span><span class="lineNoCov">          0 :         gcd[2].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     794 </span><span class="lineNoCov">          0 :         gcd[2].creator = GLabelCreate;</span>
+<span class="lineNum">     795 </span><span class="lineNoCov">          0 :         harray2[3] = GCD_Glue; harray2[4] = &amp;gcd[2];</span>
+<span class="lineNum">     796 </span>            : 
+<span class="lineNum">     797 </span><span class="lineNoCov">          0 :         label[3].text = (unichar_t *) &quot;60&quot;;</span>
+<span class="lineNum">     798 </span><span class="lineNoCov">          0 :         label[3].text_is_1byte = true;</span>
+<span class="lineNum">     799 </span><span class="lineNoCov">          0 :         gcd[3].gd.label = &amp;label[3];</span>
+<span class="lineNum">     800 </span><span class="lineNoCov">          0 :         gcd[3].gd.pos.x = 120; gcd[3].gd.pos.y = 17+5;  gcd[3].gd.pos.width = 40;</span>
+<span class="lineNum">     801 </span><span class="lineNoCov">          0 :         gcd[3].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     802 </span><span class="lineNoCov">          0 :         gcd[3].gd.cid = CID_Width;</span>
+<span class="lineNum">     803 </span><span class="lineNoCov">          0 :         gcd[3].creator = GTextFieldCreate;</span>
+<span class="lineNum">     804 </span><span class="lineNoCov">          0 :         harray2[5] = &amp;gcd[3]; harray2[6] = GCD_Glue; harray2[7] = NULL;</span>
+<span class="lineNum">     805 </span>            : 
+<span class="lineNum">     806 </span><span class="lineNoCov">          0 :         gcd[4].gd.pos.x = 20-3; gcd[4].gd.pos.y = 17+37;</span>
+<span class="lineNum">     807 </span><span class="lineNoCov">          0 :         gcd[4].gd.pos.width = -1; gcd[4].gd.pos.height = 0;</span>
+<span class="lineNum">     808 </span><span class="lineNoCov">          0 :         gcd[4].gd.flags = gg_visible | gg_enabled | gg_but_default;</span>
+<span class="lineNum">     809 </span><span class="lineNoCov">          0 :         label[4].text = (unichar_t *) _(&quot;_OK&quot;);</span>
+<span class="lineNum">     810 </span><span class="lineNoCov">          0 :         label[4].text_is_1byte = true;</span>
+<span class="lineNum">     811 </span><span class="lineNoCov">          0 :         label[4].text_in_resource = true;</span>
+<span class="lineNum">     812 </span><span class="lineNoCov">          0 :         gcd[4].gd.mnemonic = 'O';</span>
+<span class="lineNum">     813 </span><span class="lineNoCov">          0 :         gcd[4].gd.label = &amp;label[4];</span>
+<span class="lineNum">     814 </span><span class="lineNoCov">          0 :         gcd[4].gd.handle_controlevent = CH_OK;</span>
+<span class="lineNum">     815 </span><span class="lineNoCov">          0 :         gcd[4].creator = GButtonCreate;</span>
+<span class="lineNum">     816 </span><span class="lineNoCov">          0 :         barray[0] = GCD_Glue; barray[1] = &amp;gcd[4]; barray[2] = GCD_Glue;</span>
+<span class="lineNum">     817 </span>            : 
+<span class="lineNum">     818 </span><span class="lineNoCov">          0 :         gcd[5].gd.pos.x = -20; gcd[5].gd.pos.y = 17+37+3;</span>
+<span class="lineNum">     819 </span><span class="lineNoCov">          0 :         gcd[5].gd.pos.width = -1; gcd[5].gd.pos.height = 0;</span>
+<span class="lineNum">     820 </span><span class="lineNoCov">          0 :         gcd[5].gd.flags = gg_visible | gg_enabled | gg_but_cancel;</span>
+<span class="lineNum">     821 </span><span class="lineNoCov">          0 :         label[5].text = (unichar_t *) _(&quot;_Cancel&quot;);</span>
+<span class="lineNum">     822 </span><span class="lineNoCov">          0 :         label[5].text_is_1byte = true;</span>
+<span class="lineNum">     823 </span><span class="lineNoCov">          0 :         label[5].text_in_resource = true;</span>
+<span class="lineNum">     824 </span><span class="lineNoCov">          0 :         gcd[5].gd.label = &amp;label[5];</span>
+<span class="lineNum">     825 </span><span class="lineNoCov">          0 :         gcd[5].gd.mnemonic = 'C';</span>
+<span class="lineNum">     826 </span><span class="lineNoCov">          0 :         gcd[5].gd.handle_controlevent = CH_Cancel;</span>
+<span class="lineNum">     827 </span><span class="lineNoCov">          0 :         gcd[5].creator = GButtonCreate;</span>
+<span class="lineNum">     828 </span><span class="lineNoCov">          0 :         barray[3] = GCD_Glue; barray[4] = &amp;gcd[5]; barray[5] = GCD_Glue; barray[6] = NULL;</span>
+<span class="lineNum">     829 </span>            : 
+<span class="lineNum">     830 </span><span class="lineNoCov">          0 :         label[6].text = (unichar_t *) _(&quot;Create Horizontal Stem Hint&quot;);       /* Initialize to bigger size */</span>
+<span class="lineNum">     831 </span><span class="lineNoCov">          0 :         label[6].text_is_1byte = true;</span>
+<span class="lineNum">     832 </span><span class="lineNoCov">          0 :         gcd[6].gd.label = &amp;label[6];</span>
+<span class="lineNum">     833 </span><span class="lineNoCov">          0 :         gcd[6].gd.pos.x = 17; gcd[6].gd.pos.y = 5; </span>
+<span class="lineNum">     834 </span><span class="lineNoCov">          0 :         gcd[6].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     835 </span><span class="lineNoCov">          0 :         gcd[6].gd.cid = CID_Label;</span>
+<span class="lineNum">     836 </span><span class="lineNoCov">          0 :         gcd[6].creator = GLabelCreate;</span>
+<span class="lineNum">     837 </span><span class="lineNoCov">          0 :         harray1[0] = GCD_Glue; harray1[1] = &amp;gcd[6]; harray1[2] = GCD_Glue; harray1[3] = NULL;</span>
+<span class="lineNum">     838 </span>            : 
+<span class="lineNum">     839 </span><span class="lineNoCov">          0 :         gcd[7].gd.pos.x = 5; gcd[7].gd.pos.y = 17+31;</span>
+<span class="lineNum">     840 </span><span class="lineNoCov">          0 :         gcd[7].gd.pos.width = 170-10;</span>
+<span class="lineNum">     841 </span><span class="lineNoCov">          0 :         gcd[7].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     842 </span><span class="lineNoCov">          0 :         gcd[7].creator = GLineCreate;</span>
+<span class="lineNum">     843 </span>            : 
+<span class="lineNum">     844 </span><span class="lineNoCov">          0 :         boxes[2].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     845 </span><span class="lineNoCov">          0 :         boxes[2].gd.u.boxelements = harray1;</span>
+<span class="lineNum">     846 </span><span class="lineNoCov">          0 :         boxes[2].creator = GHBoxCreate;</span>
+<span class="lineNum">     847 </span>            : 
+<span class="lineNum">     848 </span><span class="lineNoCov">          0 :         boxes[3].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     849 </span><span class="lineNoCov">          0 :         boxes[3].gd.u.boxelements = harray2;</span>
+<span class="lineNum">     850 </span><span class="lineNoCov">          0 :         boxes[3].creator = GHBoxCreate;</span>
+<span class="lineNum">     851 </span>            : 
+<span class="lineNum">     852 </span><span class="lineNoCov">          0 :         boxes[4].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     853 </span><span class="lineNoCov">          0 :         boxes[4].gd.u.boxelements = barray;</span>
+<span class="lineNum">     854 </span><span class="lineNoCov">          0 :         boxes[4].creator = GHBoxCreate;</span>
+<span class="lineNum">     855 </span>            : 
+<span class="lineNum">     856 </span><span class="lineNoCov">          0 :         varray[0][0] = &amp;boxes[2]; varray[0][1] = NULL;</span>
+<span class="lineNum">     857 </span><span class="lineNoCov">          0 :         varray[1][0] = &amp;boxes[3]; varray[1][1] = NULL;</span>
+<span class="lineNum">     858 </span><span class="lineNoCov">          0 :         varray[2][0] = &amp;gcd[7];   varray[2][1] = NULL;</span>
+<span class="lineNum">     859 </span><span class="lineNoCov">          0 :         varray[3][0] = &amp;boxes[4]; varray[3][1] = NULL;</span>
+<span class="lineNum">     860 </span><span class="lineNoCov">          0 :         varray[4][0] = NULL;</span>
+<span class="lineNum">     861 </span>            : 
+<span class="lineNum">     862 </span><span class="lineNoCov">          0 :         boxes[0].gd.pos.x = boxes[0].gd.pos.y = 2;</span>
+<span class="lineNum">     863 </span><span class="lineNoCov">          0 :         boxes[0].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     864 </span><span class="lineNoCov">          0 :         boxes[0].gd.u.boxelements = varray[0];</span>
+<span class="lineNum">     865 </span><span class="lineNoCov">          0 :         boxes[0].creator = GHVGroupCreate;</span>
+<span class="lineNum">     866 </span>            :         
+<span class="lineNum">     867 </span>            : 
+<span class="lineNum">     868 </span><span class="lineNoCov">          0 :         GGadgetsCreate(gw,boxes);</span>
+<span class="lineNum">     869 </span><span class="lineNoCov">          0 :         GHVBoxSetExpandableCol(boxes[2].ret,gb_expandglue);</span>
+<span class="lineNum">     870 </span><span class="lineNoCov">          0 :         GHVBoxSetExpandableCol(boxes[3].ret,gb_expandglue);</span>
+<span class="lineNum">     871 </span><span class="lineNoCov">          0 :         GHVBoxSetExpandableCol(boxes[4].ret,gb_expandgluesame);</span>
+<span class="lineNum">     872 </span><span class="lineNoCov">          0 :         GHVBoxFitWindow(boxes[0].ret);</span>
+<span class="lineNum">     873 </span>            :     } else {
+<span class="lineNum">     874 </span><span class="lineNoCov">          0 :         gw = chd.gw;</span>
+<span class="lineNum">     875 </span><span class="lineNoCov">          0 :         sprintf( buffer, &quot;%g&quot;, (double) (ishstem ? cv-&gt;p.cy : cv-&gt;p.cx) );</span>
+<span class="lineNum">     876 </span><span class="lineNoCov">          0 :         uc_strcpy(ubuf,buffer);</span>
+<span class="lineNum">     877 </span><span class="lineNoCov">          0 :         GGadgetSetTitle(GWidgetGetControl(gw,CID_Base),ubuf);</span>
+<span class="lineNum">     878 </span><span class="lineNoCov">          0 :         GDrawSetTransientFor(gw,(GWindow) -1);</span>
+<span class="lineNum">     879 </span>            :     }
+<span class="lineNum">     880 </span><span class="lineNoCov">          0 :     GGadgetSetTitle8(GWidgetGetControl(gw,CID_Label),</span>
+<span class="lineNum">     881 </span>            :             ishstem ? _(&quot;Create Horizontal Stem Hint&quot;) :
+<span class="lineNum">     882 </span>            :                     _(&quot;Create Vertical Stem Hint&quot;));
+<span class="lineNum">     883 </span><span class="lineNoCov">          0 :     GWidgetIndicateFocusGadget(GWidgetGetControl(gw,CID_Base));</span>
+<span class="lineNum">     884 </span><span class="lineNoCov">          0 :     GTextFieldSelect(GWidgetGetControl(gw,CID_Base),0,-1);</span>
+<span class="lineNum">     885 </span>            : 
+<span class="lineNum">     886 </span><span class="lineNoCov">          0 :     GWidgetHidePalettes();</span>
+<span class="lineNum">     887 </span><span class="lineNoCov">          0 :     GDrawSetVisible(gw,true);</span>
+<span class="lineNum">     888 </span><span class="lineNoCov">          0 :     while ( !chd.done )</span>
+<span class="lineNum">     889 </span><span class="lineNoCov">          0 :         GDrawProcessOneEvent(NULL);</span>
+<span class="lineNum">     890 </span><span class="lineNoCov">          0 :     GDrawSetVisible(gw,false);</span>
+<a name="891"><span class="lineNum">     891 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     892 </span>            : 
+<span class="lineNum">     893 </span><span class="lineNoCov">          0 : void SCRemoveSelectedMinimumDistances(SplineChar *sc,int inx) {</span>
+<span class="lineNum">     894 </span>            :     /* Remove any minimum distance where at least one of the two points is */
+<span class="lineNum">     895 </span>            :     /*  selected */
+<span class="lineNum">     896 </span>            :     MinimumDistance *md, *prev, *next;
+<span class="lineNum">     897 </span>            :     SplineSet *ss;
+<span class="lineNum">     898 </span>            :     SplinePoint *sp;
+<span class="lineNum">     899 </span>            : 
+<span class="lineNum">     900 </span><span class="lineNoCov">          0 :     prev = NULL;</span>
+<span class="lineNum">     901 </span><span class="lineNoCov">          0 :     for ( md = sc-&gt;md; md!=NULL; md = next ) {</span>
+<span class="lineNum">     902 </span><span class="lineNoCov">          0 :         next = md-&gt;next;</span>
+<span class="lineNum">     903 </span><span class="lineNoCov">          0 :         if ( (inx==2 || inx==md-&gt;x) &amp;&amp;</span>
+<span class="lineNum">     904 </span><span class="lineNoCov">          0 :                 ((md-&gt;sp1!=NULL &amp;&amp; md-&gt;sp1-&gt;selected) ||</span>
+<span class="lineNum">     905 </span><span class="lineNoCov">          0 :                  (md-&gt;sp2!=NULL &amp;&amp; md-&gt;sp2-&gt;selected))) {</span>
+<span class="lineNum">     906 </span><span class="lineNoCov">          0 :             if ( prev==NULL )</span>
+<span class="lineNum">     907 </span><span class="lineNoCov">          0 :                 sc-&gt;md = next;</span>
+<span class="lineNum">     908 </span>            :             else
+<span class="lineNum">     909 </span><span class="lineNoCov">          0 :                 prev-&gt;next = next;</span>
+<span class="lineNum">     910 </span><span class="lineNoCov">          0 :             chunkfree(md,sizeof(MinimumDistance));</span>
+<span class="lineNum">     911 </span>            :         } else
+<span class="lineNum">     912 </span><span class="lineNoCov">          0 :             prev = md;</span>
+<span class="lineNum">     913 </span>            :     }
+<span class="lineNum">     914 </span>            : 
+<span class="lineNum">     915 </span><span class="lineNoCov">          0 :     for ( ss=sc-&gt;layers[ly_fore].splines; ss!=NULL; ss=ss-&gt;next ) {</span>
+<span class="lineNum">     916 </span><span class="lineNoCov">          0 :         for ( sp=ss-&gt;first; ; ) {</span>
+<span class="lineNum">     917 </span><span class="lineNoCov">          0 :             if ( sp-&gt;selected ) {</span>
+<span class="lineNum">     918 </span><span class="lineNoCov">          0 :                 if ( inx==2 ) sp-&gt;roundx = sp-&gt;roundy = false;</span>
+<span class="lineNum">     919 </span><span class="lineNoCov">          0 :                 else if ( inx==1 ) sp-&gt;roundx = false;</span>
+<span class="lineNum">     920 </span><span class="lineNoCov">          0 :                 else sp-&gt;roundy = false;</span>
+<span class="lineNum">     921 </span>            :             }
+<span class="lineNum">     922 </span><span class="lineNoCov">          0 :             if ( sp-&gt;next==NULL )</span>
+<span class="lineNum">     923 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     924 </span><span class="lineNoCov">          0 :             sp = sp-&gt;next-&gt;to;</span>
+<span class="lineNum">     925 </span><span class="lineNoCov">          0 :             if ( sp==ss-&gt;first )</span>
+<span class="lineNum">     926 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     927 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     928 </span>            :     }
+<span class="lineNum">     929 </span><span class="lineNoCov">          0 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

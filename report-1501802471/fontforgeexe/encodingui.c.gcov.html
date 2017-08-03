@@ -1,0 +1,694 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforgeexe/encodingui.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforgeexe</a> - encodingui.c<span style="font-size: 80%;"> (source / <a href="encodingui.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">354</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">18</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* -*- coding: utf-8 -*- */</a>
+<span class="lineNum">       2 </span>            : /* Copyright (C) 2000-2012 by George Williams */
+<span class="lineNum">       3 </span>            : /*
+<span class="lineNum">       4 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       5 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       8 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      11 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      12 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      15 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      18 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      19 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      20 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      21 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      22 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      23 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      24 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      25 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      26 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      27 </span>            :  */
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            : #include &quot;bitmapchar.h&quot;
+<span class="lineNum">      30 </span>            : #include &quot;fontforgeui.h&quot;
+<span class="lineNum">      31 </span>            : #include &lt;ustring.h&gt;
+<span class="lineNum">      32 </span>            : #include &lt;utype.h&gt;
+<span class="lineNum">      33 </span>            : #include &lt;unistd.h&gt;
+<span class="lineNum">      34 </span>            : #include &lt;sys/types.h&gt;
+<span class="lineNum">      35 </span>            : #include &lt;dirent.h&gt;
+<span class="lineNum">      36 </span>            : #include &lt;gfile.h&gt;
+<span class="lineNum">      37 </span>            : #include &lt;gresource.h&gt;
+<span class="lineNum">      38 </span>            : #include &quot;plugins.h&quot;
+<a name="39"><span class="lineNum">      39 </span>            : #include &quot;encoding.h&quot;</a>
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span><span class="lineNoCov">          0 : static GTextInfo *EncodingList(void) {</span>
+<span class="lineNum">      42 </span>            :     GTextInfo *ti;
+<span class="lineNum">      43 </span>            :     int i;
+<span class="lineNum">      44 </span>            :     Encoding *item;
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span><span class="lineNoCov">          0 :     i = 0;</span>
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 :     for ( item=enclist; item!=NULL ; item=item-&gt;next )</span>
+<span class="lineNum">      48 </span><span class="lineNoCov">          0 :         if ( !item-&gt;builtin )</span>
+<span class="lineNum">      49 </span><span class="lineNoCov">          0 :             ++i;</span>
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 :     ti = calloc(i+1,sizeof(GTextInfo));</span>
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 :     i = 0;</span>
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 :     for ( item=enclist; item!=NULL ; item=item-&gt;next )</span>
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :         if ( !item-&gt;builtin )</span>
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :             ti[i++].text = uc_copy(item-&gt;enc_name);</span>
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :     if ( i!=0 )</span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :         ti[0].selected = true;</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 : return( ti );</span>
+<span class="lineNum">      58 </span>            : }
+<span class="lineNum">      59 </span>            : 
+<a name="60"><span class="lineNum">      60 </span>            : #define CID_Encodings   1001</a>
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 : static int DE_Delete(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">      63 </span>            :     GWindow gw;
+<span class="lineNum">      64 </span>            :     int *done;
+<span class="lineNum">      65 </span>            :     GGadget *list;
+<span class="lineNum">      66 </span>            :     int sel,i;
+<span class="lineNum">      67 </span>            :     Encoding *item;
+<span class="lineNum">      68 </span>            : 
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp;</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :             (e-&gt;u.control.subtype == et_buttonactivate ||</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :              e-&gt;u.control.subtype == et_listdoubleclick )) {</span>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :         gw = GGadgetGetWindow(g);</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :         done = GDrawGetUserData(gw);</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :         list = GWidgetGetControl(gw,CID_Encodings);</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :         sel = GGadgetGetFirstListSelectedItem(list);</span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :         i=0;</span>
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :         for ( item=enclist; item!=NULL; item=item-&gt;next ) {</span>
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :             if ( item-&gt;builtin )</span>
+<span class="lineNum">      79 </span>            :                 /* Do Nothing */;
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :             else if ( i==sel )</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">      82 </span>            :             else
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :                 ++i;</span>
+<span class="lineNum">      84 </span>            :         }
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :         if ( item!=NULL )</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :             DeleteEncoding(item);</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :         *done = true;</span>
+<span class="lineNum">      88 </span>            :     }
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="90"><span class="lineNum">      90 </span>            : }</a>
+<span class="lineNum">      91 </span>            : 
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 : static int DE_Cancel(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">      93 </span>            :     GWindow gw;
+<span class="lineNum">      94 </span>            :     int *done;
+<span class="lineNum">      95 </span>            : 
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :         gw = GGadgetGetWindow(g);</span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :         done = GDrawGetUserData(gw);</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :         *done = true;</span>
+<span class="lineNum">     100 </span>            :     }
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="102"><span class="lineNum">     102 </span>            : }</a>
+<span class="lineNum">     103 </span>            : 
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 : static int de_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :     if ( event-&gt;type==et_close ) {</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :         int *done = GDrawGetUserData(gw);</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :         *done = true;</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_char ) {</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     110 </span>            :     }
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="112"><span class="lineNum">     112 </span>            : }</a>
+<span class="lineNum">     113 </span>            : 
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 : void RemoveEncoding(void) {</span>
+<span class="lineNum">     115 </span>            :     GRect pos;
+<span class="lineNum">     116 </span>            :     GWindow gw;
+<span class="lineNum">     117 </span>            :     GWindowAttrs wattrs;
+<span class="lineNum">     118 </span>            :     GGadgetCreateData gcd[5];
+<span class="lineNum">     119 </span>            :     GTextInfo label[5];
+<span class="lineNum">     120 </span>            :     Encoding *item;
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :     int done = 0;</span>
+<span class="lineNum">     122 </span>            : 
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :     for ( item=enclist; item!=NULL &amp;&amp; item-&gt;builtin; item=item-&gt;next );</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :     if ( item==NULL )</span>
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     126 </span>            : 
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :     memset(&amp;gcd,0,sizeof(gcd));</span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :     memset(&amp;label,0,sizeof(label));</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :     memset(&amp;wattrs,0,sizeof(wattrs));</span>
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :     wattrs.mask = wam_events|wam_cursor|wam_utf8_wtitle|wam_undercursor|wam_restrict|wam_isdlg;</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :     wattrs.event_masks = ~(1&lt;&lt;et_charup);</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :     wattrs.restrict_input_to_me = 1;</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :     wattrs.is_dlg = 1;</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :     wattrs.undercursor = 1;</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :     wattrs.cursor = ct_pointer;</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :     wattrs.utf8_window_title = _(&quot;Remove Encoding&quot;);</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :     pos.x = pos.y = 0;</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :     pos.width = GGadgetScale(GDrawPointsToPixels(NULL,150));</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :     pos.height = GDrawPointsToPixels(NULL,110);</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :     gw = GDrawCreateTopWindow(NULL,&amp;pos,de_e_h,&amp;done,&amp;wattrs);</span>
+<span class="lineNum">     141 </span>            : 
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :     gcd[0].gd.pos.x = 10; gcd[0].gd.pos.y = 6;</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :     gcd[0].gd.pos.width = 130; gcd[0].gd.pos.height = 5*12+10;</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :     gcd[0].gd.flags = gg_visible | gg_enabled;</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :     gcd[0].gd.cid = CID_Encodings;</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :     gcd[0].gd.u.list = EncodingList();</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :     gcd[0].gd.handle_controlevent = DE_Delete;</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :     gcd[0].creator = GListCreate;</span>
+<span class="lineNum">     149 </span>            : 
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :     gcd[2].gd.pos.x = -10; gcd[2].gd.pos.y = gcd[0].gd.pos.y+gcd[0].gd.pos.height+5;</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :     gcd[2].gd.pos.width = -1; gcd[2].gd.pos.height = 0;</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :     gcd[2].gd.flags = gg_visible | gg_enabled | gg_but_cancel ;</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :     label[2].text = (unichar_t *) _(&quot;_Cancel&quot;);</span>
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :     label[2].text_is_1byte = true;</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :     label[2].text_in_resource = true;</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :     gcd[2].gd.label = &amp;label[2];</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :     gcd[2].gd.mnemonic = 'C';</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :     gcd[2].gd.handle_controlevent = DE_Cancel;</span>
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :     gcd[2].creator = GButtonCreate;</span>
+<span class="lineNum">     160 </span>            : 
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :     gcd[1].gd.pos.x = 10-3; gcd[1].gd.pos.y = gcd[2].gd.pos.y-3;</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :     gcd[1].gd.pos.width = -1; gcd[1].gd.pos.height = 0;</span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :     gcd[1].gd.flags = gg_visible | gg_enabled | gg_but_default ;</span>
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :     label[1].text = (unichar_t *) _(&quot;_Delete&quot;);</span>
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :     label[1].text_is_1byte = true;</span>
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :     label[1].text_in_resource = true;</span>
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :     gcd[1].gd.mnemonic = 'D';</span>
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :     gcd[1].gd.label = &amp;label[1];</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :     gcd[1].gd.handle_controlevent = DE_Delete;</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :     gcd[1].creator = GButtonCreate;</span>
+<span class="lineNum">     171 </span>            : 
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :     gcd[3].gd.pos.x = 2; gcd[3].gd.pos.y = 2;</span>
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :     gcd[3].gd.pos.width = pos.width-4; gcd[3].gd.pos.height = pos.height-2;</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :     gcd[3].gd.flags = gg_enabled | gg_visible | gg_pos_in_pixels;</span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :     gcd[3].creator = GGroupCreate;</span>
+<span class="lineNum">     176 </span>            : 
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :     GGadgetsCreate(gw,gcd);</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :     GTextInfoListFree(gcd[0].gd.u.list);</span>
+<span class="lineNum">     179 </span>            : 
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :     GWidgetHidePalettes();</span>
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 :     GDrawSetVisible(gw,true);</span>
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :     while ( !done )</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :         GDrawProcessOneEvent(NULL);</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(gw);</span>
+<a name="185"><span class="lineNum">     185 </span>            : }</a>
+<span class="lineNum">     186 </span>            : 
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 : Encoding *MakeEncoding(SplineFont *sf,EncMap *map) {</span>
+<span class="lineNum">     188 </span>            :     char *name;
+<span class="lineNum">     189 </span>            :     int i, gid;
+<span class="lineNum">     190 </span>            :     Encoding *item, *temp;
+<span class="lineNum">     191 </span>            :     SplineChar *sc;
+<span class="lineNum">     192 </span>            : 
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :     if ( map-&gt;enc!=&amp;custom )</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 : return(NULL);</span>
+<span class="lineNum">     195 </span>            : 
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :     name = gwwv_ask_string(_(&quot;Please name this encoding&quot;),NULL,_(&quot;Please name this encoding&quot;));</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :     if ( name==NULL )</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 : return(NULL);</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :     item = calloc(1,sizeof(Encoding));</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :     item-&gt;enc_name = name;</span>
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :     item-&gt;only_1byte = item-&gt;has_1byte = true;</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :     item-&gt;char_cnt = map-&gt;enccount;</span>
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :     item-&gt;unicode = calloc(map-&gt;enccount,sizeof(int32));</span>
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;map-&gt;enccount; ++i ) if ( (gid = map-&gt;map[i])!=-1 &amp;&amp; (sc=sf-&gt;glyphs[gid])!=NULL ) {</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :         if ( sc-&gt;unicodeenc!=-1 )</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :             item-&gt;unicode[i] = sc-&gt;unicodeenc;</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :         else if ( strcmp(sc-&gt;name,&quot;.notdef&quot;)!=0 ) {</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :             if ( item-&gt;psnames==NULL )</span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :                 item-&gt;psnames = calloc(map-&gt;enccount,sizeof(unichar_t *));</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :             item-&gt;psnames[i] = copy(sc-&gt;name);</span>
+<span class="lineNum">     211 </span>            :         }
+<span class="lineNum">     212 </span>            :     }
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :     RemoveMultiples(item);</span>
+<span class="lineNum">     214 </span>            : 
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :     if ( enclist == NULL )</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :         enclist = item;</span>
+<span class="lineNum">     217 </span>            :     else {
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :         for ( temp=enclist; temp-&gt;next!=NULL; temp=temp-&gt;next );</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :         temp-&gt;next = item;</span>
+<span class="lineNum">     220 </span>            :     }
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :     DumpPfaEditEncodings();</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 : return( item );</span>
+<a name="223"><span class="lineNum">     223 </span>            : }</a>
+<span class="lineNum">     224 </span>            : 
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 : void LoadEncodingFile(void) {</span>
+<span class="lineNum">     226 </span>            :     static char filter[] = &quot;*{.ps,.PS,.txt,.TXT,.enc,.ENC,GlyphOrderAndAliasDB}&quot;;
+<span class="lineNum">     227 </span>            :     char *fn;
+<span class="lineNum">     228 </span>            :     char *filename;
+<span class="lineNum">     229 </span>            : 
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :     fn = gwwv_open_filename(_(&quot;Load Encoding&quot;), NULL, filter, NULL);</span>
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :     if ( fn==NULL )</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :     filename = utf82def_copy(fn);</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :     ParseEncodingFile(filename, NULL);</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :     free(fn); free(filename);</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :     DumpPfaEditEncodings();</span>
+<a name="237"><span class="lineNum">     237 </span>            : }</a>
+<span class="lineNum">     238 </span>            : 
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 : void SFFindNearTop(SplineFont *sf) {</span>
+<span class="lineNum">     240 </span>            :     FontView *fv;
+<span class="lineNum">     241 </span>            :     EncMap *map;
+<span class="lineNum">     242 </span>            :     int i,k,gid;
+<span class="lineNum">     243 </span>            : 
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :     if ( sf-&gt;cidmaster!=NULL )</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :         sf = sf-&gt;cidmaster;</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :     if ( sf-&gt;subfontcnt==0 ) {</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :         for ( fv=(FontView *) sf-&gt;fv; fv!=NULL; fv=(FontView *) (fv-&gt;b.nextsame) ) {</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :             map = fv-&gt;b.map;</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :             fv-&gt;sc_near_top = NULL;</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :             for ( i=fv-&gt;rowoff*fv-&gt;colcnt; i&lt;map-&gt;enccount &amp;&amp; i&lt;(fv-&gt;rowoff+fv-&gt;rowcnt)*fv-&gt;colcnt; ++i )</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :                 if ( (gid=map-&gt;map[i])!=-1 &amp;&amp; sf-&gt;glyphs[gid]!=NULL ) {</span>
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :                     fv-&gt;sc_near_top = sf-&gt;glyphs[gid];</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :             break;</span>
+<span class="lineNum">     254 </span>            :                 }
+<span class="lineNum">     255 </span>            :         }
+<span class="lineNum">     256 </span>            :     } else {
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :         for ( fv=(FontView *) sf-&gt;fv; fv!=NULL; fv=(FontView *) (fv-&gt;b.nextsame) ) {</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :             map = fv-&gt;b.map;</span>
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :             fv-&gt;sc_near_top = NULL;</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :             for ( i=fv-&gt;rowoff*fv-&gt;colcnt; i&lt;map-&gt;enccount &amp;&amp; i&lt;(fv-&gt;rowoff+fv-&gt;rowcnt)*fv-&gt;colcnt; ++i ) {</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :                 for ( k=0; k&lt;sf-&gt;subfontcnt; ++k )</span>
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :                     if ( (gid=map-&gt;map[i])!=-1 &amp;&amp;</span>
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :                             gid&lt;sf-&gt;subfonts[k]-&gt;glyphcnt &amp;&amp;</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :                             sf-&gt;subfonts[k]-&gt;glyphs[gid]!=NULL )</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :                         fv-&gt;sc_near_top = sf-&gt;subfonts[k]-&gt;glyphs[gid];</span>
+<span class="lineNum">     266 </span>            :             }
+<span class="lineNum">     267 </span>            :         }
+<span class="lineNum">     268 </span>            :     }
+<a name="269"><span class="lineNum">     269 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     270 </span>            : 
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 : void SFRestoreNearTop(SplineFont *sf) {</span>
+<span class="lineNum">     272 </span>            :     FontView *fv;
+<span class="lineNum">     273 </span>            : 
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :     for ( fv=(FontView *) sf-&gt;fv; fv!=NULL; fv=(FontView *) (fv-&gt;b.nextsame) ) if ( fv-&gt;sc_near_top!=NULL ) {</span>
+<span class="lineNum">     275 </span>            :         /* Note: For CID keyed fonts, we don't care if sc is in the currently */
+<span class="lineNum">     276 </span>            :         /*  displayed font, all we care about is the CID */
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :         int enc = fv-&gt;b.map-&gt;backmap[fv-&gt;sc_near_top-&gt;orig_pos];</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :         if ( enc!=-1 ) {</span>
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 :             fv-&gt;rowoff = enc/fv-&gt;colcnt;</span>
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 :             GScrollBarSetPos(fv-&gt;vsb,fv-&gt;rowoff);</span>
+<span class="lineNum">     281 </span>            :             /* Don't ask for an expose event yet. We'll get one soon enough */
+<span class="lineNum">     282 </span>            :         }
+<span class="lineNum">     283 </span>            :     }
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     285 </span>            : 
+<span class="lineNum">     286 </span>            : struct block {
+<span class="lineNum">     287 </span>            :     int cur, tot;
+<span class="lineNum">     288 </span>            :     char **maps;
+<span class="lineNum">     289 </span>            :     char **dirs;
+<a name="290"><span class="lineNum">     290 </span>            : };</a>
+<span class="lineNum">     291 </span>            : 
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 : static void AddToBlock(struct block *block,char *mapname, char *dir) {</span>
+<span class="lineNum">     293 </span>            :     int i, val, j;
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :     int len = strlen(mapname);</span>
+<span class="lineNum">     295 </span>            : 
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :     if ( mapname[len-7]=='.' ) len -= 7;</span>
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;block-&gt;cur; ++i ) {</span>
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :         if ( (val=strncmp(block-&gt;maps[i],mapname,len))==0 )</span>
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 : return;         /* Duplicate */</span>
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :         else if ( val&gt;0 )</span>
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     302 </span>            :     }
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :     if ( block-&gt;tot==0 ) {</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :         block-&gt;tot = 10;</span>
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 :         block-&gt;maps = malloc(10*sizeof(char *));</span>
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :         block-&gt;dirs = malloc(10*sizeof(char *));</span>
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :     } else if ( block-&gt;cur&gt;=block-&gt;tot ) {</span>
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 :         block-&gt;tot += 10;</span>
+<span class="lineNum">     309 </span><span class="lineNoCov">          0 :         block-&gt;maps = realloc(block-&gt;maps,block-&gt;tot*sizeof(char *));</span>
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 :         block-&gt;dirs = realloc(block-&gt;dirs,block-&gt;tot*sizeof(char *));</span>
+<span class="lineNum">     311 </span>            :     }
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 :     for ( j=block-&gt;cur; j&gt;=i; --j ) {</span>
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :         block-&gt;maps[j+1] = block-&gt;maps[j];</span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :         block-&gt;dirs[j+1] = block-&gt;dirs[j];</span>
+<span class="lineNum">     315 </span>            :     }
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :     block-&gt;maps[i] = copyn(mapname,len);</span>
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :     block-&gt;dirs[i] = dir;</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :     ++block-&gt;cur;</span>
+<a name="319"><span class="lineNum">     319 </span>            : }</a>
+<span class="lineNum">     320 </span>            : 
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 : static void FindMapsInDir(struct block *block,char *dir) {</span>
+<span class="lineNum">     322 </span>            :     struct dirent *ent;
+<span class="lineNum">     323 </span>            :     DIR *d;
+<span class="lineNum">     324 </span>            :     int len;
+<span class="lineNum">     325 </span>            :     char *pt, *pt2;
+<span class="lineNum">     326 </span>            : 
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :     if ( dir==NULL )</span>
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     329 </span>            :     /* format of cidmap filename &quot;?*-?*-[0-9]*.cidmap&quot; */
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 :     d = opendir(dir);</span>
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :     if ( d==NULL )</span>
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     333 </span><span class="lineNoCov">          0 :     while ( (ent = readdir(d))!=NULL ) {</span>
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :         if ( (len = strlen(ent-&gt;d_name))&lt;8 )</span>
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 :     continue;</span>
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :         if ( strcmp(ent-&gt;d_name+len-7,&quot;.cidmap&quot;)!=0 )</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :     continue;</span>
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 :         pt = strchr(ent-&gt;d_name, '-');</span>
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 :         if ( pt==NULL || pt==ent-&gt;d_name )</span>
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :     continue;</span>
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :         pt2 = strchr(pt+1, '-' );</span>
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :         if ( pt2==NULL || pt2==pt+1 || !isdigit(pt2[1]))</span>
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :     continue;</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :         AddToBlock(block,ent-&gt;d_name,dir);</span>
+<span class="lineNum">     345 </span>            :     }
+<span class="lineNum">     346 </span><span class="lineNoCov">          0 :     closedir(d);</span>
+<a name="347"><span class="lineNum">     347 </span>            : }</a>
+<span class="lineNum">     348 </span>            : 
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 : static void FindMapsInNoLibsDir(struct block *block,char *dir) {</span>
+<span class="lineNum">     350 </span>            : 
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :     if ( dir==NULL || strstr(dir,&quot;/.libs&quot;)==NULL )</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     353 </span>            : 
+<span class="lineNum">     354 </span><span class="lineNoCov">          0 :     dir = copy(dir);</span>
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :     *strstr(dir,&quot;/.libs&quot;) = '\0';</span>
+<span class="lineNum">     356 </span>            : 
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :     FindMapsInDir(block,dir);</span>
+<span class="lineNum">     358 </span><span class="lineNoCov">          0 :     free(dir);</span>
+<a name="359"><span class="lineNum">     359 </span>            : }</a>
+<span class="lineNum">     360 </span>            : 
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 : struct cidmap *AskUserForCIDMap(void) {</span>
+<span class="lineNum">     362 </span>            :     struct block block;
+<span class="lineNum">     363 </span><span class="lineNoCov">          0 :     struct cidmap *map = NULL;</span>
+<span class="lineNum">     364 </span>            :     char buffer[200];
+<span class="lineNum">     365 </span>            :     char **choices;
+<span class="lineNum">     366 </span>            :     int i,ret;
+<span class="lineNum">     367 </span><span class="lineNoCov">          0 :     char *filename=NULL;</span>
+<span class="lineNum">     368 </span>            :     char *reg, *ord, *pt;
+<span class="lineNum">     369 </span>            :     int supplement;
+<span class="lineNum">     370 </span>            : 
+<span class="lineNum">     371 </span><span class="lineNoCov">          0 :     memset(&amp;block,'\0',sizeof(block));</span>
+<span class="lineNum">     372 </span><span class="lineNoCov">          0 :     for ( map = cidmaps; map!=NULL; map = map-&gt;next ) {</span>
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 :         sprintf(buffer,&quot;%s-%s-%d&quot;, map-&gt;registry, map-&gt;ordering, map-&gt;supplement);</span>
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 :         AddToBlock(&amp;block,buffer,NULL);</span>
+<span class="lineNum">     375 </span>            :     }
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 :     FindMapsInDir(&amp;block,&quot;.&quot;);</span>
+<span class="lineNum">     377 </span><span class="lineNoCov">          0 :     FindMapsInDir(&amp;block,GResourceProgramDir);</span>
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 :     FindMapsInNoLibsDir(&amp;block,GResourceProgramDir);</span>
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :     FindMapsInDir(&amp;block,getFontForgeShareDir());</span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :     FindMapsInDir(&amp;block,&quot;/usr/share/fontforge&quot;);</span>
+<span class="lineNum">     381 </span>            : 
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :     choices = calloc(block.cur+2,sizeof(unichar_t *));</span>
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :     choices[0] = copy(_(&quot;Browse...&quot;));</span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;block.cur; ++i )</span>
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :         choices[i+1] = copy(block.maps[i]);</span>
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :     ret = gwwv_choose(_(&quot;Find a cidmap file...&quot;),(const char **) choices,i+1,0,_(&quot;Please select a CID ordering&quot;));</span>
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;=block.cur; ++i )</span>
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 :         free( choices[i] );</span>
+<span class="lineNum">     389 </span><span class="lineNoCov">          0 :     free(choices);</span>
+<span class="lineNum">     390 </span><span class="lineNoCov">          0 :     if ( ret==0 ) {</span>
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 :         filename = gwwv_open_filename(_(&quot;Find a cidmap file...&quot;),NULL,</span>
+<span class="lineNum">     392 </span>            :                 &quot;?*-?*-[0-9]*.cidmap&quot;,NULL);
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 :         if ( filename==NULL )</span>
+<span class="lineNum">     394 </span><span class="lineNoCov">          0 :             ret = -1;</span>
+<span class="lineNum">     395 </span>            :     }
+<span class="lineNum">     396 </span><span class="lineNoCov">          0 :     if ( ret!=-1 ) {</span>
+<span class="lineNum">     397 </span><span class="lineNoCov">          0 :         if ( filename!=NULL )</span>
+<span class="lineNum">     398 </span>            :             /* Do nothing for now */;
+<span class="lineNum">     399 </span><span class="lineNoCov">          0 :         else if ( block.dirs[ret-1]!=NULL ) {</span>
+<span class="lineNum">     400 </span><span class="lineNoCov">          0 :             filename = malloc(strlen(block.dirs[ret-1])+strlen(block.maps[ret-1])+3+8);</span>
+<span class="lineNum">     401 </span><span class="lineNoCov">          0 :             strcpy(filename,block.dirs[ret-1]);</span>
+<span class="lineNum">     402 </span><span class="lineNoCov">          0 :             strcat(filename,&quot;/&quot;);</span>
+<span class="lineNum">     403 </span><span class="lineNoCov">          0 :             strcat(filename,block.maps[ret-1]);</span>
+<span class="lineNum">     404 </span><span class="lineNoCov">          0 :             strcat(filename,&quot;.cidmap&quot;);</span>
+<span class="lineNum">     405 </span>            :         }
+<span class="lineNum">     406 </span><span class="lineNoCov">          0 :         if ( ret!=0 )</span>
+<span class="lineNum">     407 </span><span class="lineNoCov">          0 :             reg = block.maps[ret-1];</span>
+<span class="lineNum">     408 </span>            :         else {
+<span class="lineNum">     409 </span><span class="lineNoCov">          0 :             reg = strrchr(filename,'/');</span>
+<span class="lineNum">     410 </span><span class="lineNoCov">          0 :             if ( reg==NULL ) reg = filename;</span>
+<span class="lineNum">     411 </span><span class="lineNoCov">          0 :             else ++reg;</span>
+<span class="lineNum">     412 </span><span class="lineNoCov">          0 :             reg = copy(reg);</span>
+<span class="lineNum">     413 </span>            :         }
+<span class="lineNum">     414 </span><span class="lineNoCov">          0 :         pt = strchr(reg,'-');</span>
+<span class="lineNum">     415 </span><span class="lineNoCov">          0 :         if ( pt==NULL )</span>
+<span class="lineNum">     416 </span><span class="lineNoCov">          0 :             ret = -1;</span>
+<span class="lineNum">     417 </span>            :         else {
+<span class="lineNum">     418 </span><span class="lineNoCov">          0 :             *pt = '\0';</span>
+<span class="lineNum">     419 </span><span class="lineNoCov">          0 :             ord = pt+1;</span>
+<span class="lineNum">     420 </span><span class="lineNoCov">          0 :             pt = strchr(ord,'-');</span>
+<span class="lineNum">     421 </span><span class="lineNoCov">          0 :             if ( pt==NULL )</span>
+<span class="lineNum">     422 </span><span class="lineNoCov">          0 :                 ret = -1;</span>
+<span class="lineNum">     423 </span>            :             else {
+<span class="lineNum">     424 </span><span class="lineNoCov">          0 :                 *pt = '\0';</span>
+<span class="lineNum">     425 </span><span class="lineNoCov">          0 :                 supplement = strtol(pt+1,NULL,10);</span>
+<span class="lineNum">     426 </span>            :             }
+<span class="lineNum">     427 </span>            :         }
+<span class="lineNum">     428 </span><span class="lineNoCov">          0 :         if ( ret == -1 )</span>
+<span class="lineNum">     429 </span>            :             /* No map */;
+<span class="lineNum">     430 </span><span class="lineNoCov">          0 :         else if ( filename==NULL )</span>
+<span class="lineNum">     431 </span><span class="lineNoCov">          0 :             map = FindCidMap(reg,ord,supplement,NULL);</span>
+<span class="lineNum">     432 </span>            :         else {
+<span class="lineNum">     433 </span><span class="lineNoCov">          0 :             map = LoadMapFromFile(filename,reg,ord,supplement);</span>
+<span class="lineNum">     434 </span><span class="lineNoCov">          0 :             free(filename);</span>
+<span class="lineNum">     435 </span>            :         }
+<span class="lineNum">     436 </span><span class="lineNoCov">          0 :         if ( ret!=0 &amp;&amp; reg!=block.maps[ret-1] )</span>
+<span class="lineNum">     437 </span><span class="lineNoCov">          0 :             free(reg);</span>
+<span class="lineNum">     438 </span>            :         /*free(filename);*/     /* Freed by loadmap */
+<span class="lineNum">     439 </span>            :     }
+<span class="lineNum">     440 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;block.cur; ++i )</span>
+<span class="lineNum">     441 </span><span class="lineNoCov">          0 :         free( block.maps[i]);</span>
+<span class="lineNum">     442 </span><span class="lineNoCov">          0 :     free(block.maps);</span>
+<span class="lineNum">     443 </span><span class="lineNoCov">          0 :     free(block.dirs);</span>
+<span class="lineNum">     444 </span><span class="lineNoCov">          0 : return( map );</span>
+<span class="lineNum">     445 </span>            : }
+<span class="lineNum">     446 </span>            : 
+<span class="lineNum">     447 </span>            : GTextInfo encodingtypes[] = {
+<span class="lineNum">     448 </span>            :     { (unichar_t *) N_(&quot;Custom&quot;), NULL, 0, 0, (void *) &quot;Custom&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     449 </span>            :     { (unichar_t *) N_(&quot;Encoding|Glyph Order&quot;), NULL, 0, 0, (void *) &quot;Original&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     450 </span>            :     { NULL, NULL, 0, 0, NULL, NULL, 1, 0, 0, 0, 0, 1, 0, 0, 0, '\0'},   /* Line */
+<span class="lineNum">     451 </span>            :     { (unichar_t *) N_(&quot;ISO 8859-1  (Latin1)&quot;), NULL, 0, 0, (void *) &quot;iso8859-1&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     452 </span>            :     { (unichar_t *) N_(&quot;ISO 8859-15  (Latin0)&quot;), NULL, 0, 0, (void *) &quot;iso8859-15&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     453 </span>            :     { (unichar_t *) N_(&quot;ISO 8859-2  (Latin2)&quot;), NULL, 0, 0, (void *) &quot;iso8859-2&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     454 </span>            :     { (unichar_t *) N_(&quot;ISO 8859-3  (Latin3)&quot;), NULL, 0, 0, (void *) &quot;iso8859-3&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     455 </span>            :     { (unichar_t *) N_(&quot;ISO 8859-4  (Latin4)&quot;), NULL, 0, 0, (void *) &quot;iso8859-4&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     456 </span>            :     { (unichar_t *) N_(&quot;ISO 8859-9  (Latin5)&quot;), NULL, 0, 0, (void *) &quot;iso8859-9&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     457 </span>            :     { (unichar_t *) N_(&quot;ISO 8859-10  (Latin6)&quot;), NULL, 0, 0, (void *) &quot;iso8859-10&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     458 </span>            :     { (unichar_t *) N_(&quot;ISO 8859-13  (Latin7)&quot;), NULL, 0, 0, (void *) &quot;iso8859-13&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     459 </span>            :     { (unichar_t *) N_(&quot;ISO 8859-14  (Latin8)&quot;), NULL, 0, 0, (void *) &quot;iso8859-14&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     460 </span>            :     { (unichar_t *) N_(&quot;ISO 8859-16  (Latin10)&quot;), NULL, 0, 0, (void *) &quot;iso8859-16&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     461 </span>            :     { NULL, NULL, 0, 0, NULL, NULL, 1, 0, 0, 0, 0, 1, 0, 0, 0, '\0'},   /* Line */
+<span class="lineNum">     462 </span>            :     { (unichar_t *) N_(&quot;ISO 8859-5 (Cyrillic)&quot;), NULL, 0, 0, (void *) &quot;iso8859-5&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     463 </span>            :     { (unichar_t *) N_(&quot;KOI8-R (Cyrillic)&quot;), NULL, 0, 0, (void *) &quot;koi8-r&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     464 </span>            :     { (unichar_t *) N_(&quot;ISO 8859-6 (Arabic)&quot;), NULL, 0, 0, (void *) &quot;iso8859-6&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     465 </span>            :     { (unichar_t *) N_(&quot;ISO 8859-7 (Greek)&quot;), NULL, 0, 0, (void *) &quot;iso8859-7&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     466 </span>            :     { (unichar_t *) N_(&quot;ISO 8859-8 (Hebrew)&quot;), NULL, 0, 0, (void *) &quot;iso8859-8&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     467 </span>            :     { (unichar_t *) N_(&quot;ISO 8859-11 (Thai)&quot;), NULL, 0, 0, (void *) &quot;iso8859-11&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     468 </span>            :     { NULL, NULL, 0, 0, NULL, NULL, 1, 0, 0, 0, 0, 1, 0, 0, 0, '\0'},   /* Line */
+<span class="lineNum">     469 </span>            :     { (unichar_t *) N_(&quot;Macintosh Latin&quot;), NULL, 0, 0, (void *) &quot;mac&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     470 </span>            :     { (unichar_t *) N_(&quot;Windows Latin (\&quot;ANSI\&quot;)&quot;), NULL, 0, 0, (void *) &quot;win&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     471 </span>            :     { (unichar_t *) N_(&quot;Adobe Standard&quot;), NULL, 0, 0, (void *) &quot;AdobeStandard&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     472 </span>            :     { (unichar_t *) N_(&quot;Symbol&quot;), NULL, 0, 0, (void *) &quot;Symbol&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     473 </span>            :     { (unichar_t *) NU_(&quot;ΤεΧ Base (8r)&quot;), NULL, 0, 0, (void *) &quot;TeX-Base-Encoding&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     474 </span>            :     { NULL, NULL, 0, 0, NULL, NULL, 1, 0, 0, 0, 0, 1, 0, 0, 0, '\0'},   /* Line */
+<span class="lineNum">     475 </span>            :     { (unichar_t *) N_(&quot;ISO 10646-1 (Unicode, BMP)&quot;), NULL, 0, 0, (void *) &quot;UnicodeBmp&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     476 </span>            :     { (unichar_t *) N_(&quot;ISO 10646-1 (Unicode, Full)&quot;), NULL, 0, 0, (void *) &quot;UnicodeFull&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     477 </span>            :     /*{ (unichar_t *) N_(&quot;ISO 10646-? (by plane) ...&quot;), NULL, 0, 0, (void *) em_unicodeplanes, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' }, */
+<span class="lineNum">     478 </span>            :     { NULL, NULL, 0, 0, NULL, NULL, 1, 0, 0, 0, 0, 1, 0, 0, 0, '\0'},   /* Line */
+<span class="lineNum">     479 </span>            :     { (unichar_t *) N_(&quot;SJIS (Kanji)&quot;), NULL, 0, 0, (void *) &quot;sjis&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     480 </span>            :     { (unichar_t *) N_(&quot;JIS 208 (Kanji)&quot;), NULL, 0, 0, (void *) &quot;jis208&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     481 </span>            :     { (unichar_t *) N_(&quot;JIS 212 (Kanji)&quot;), NULL, 0, 0, (void *) &quot;jis212&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     482 </span>            :     { (unichar_t *) N_(&quot;Wansung (Korean)&quot;), NULL, 0, 0, (void *) &quot;wansung&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     483 </span>            :     { (unichar_t *) N_(&quot;KSC 5601-1987 (Korean)&quot;), NULL, 0, 0, (void *) &quot;ksc5601&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     484 </span>            :     { (unichar_t *) N_(&quot;Johab (Korean)&quot;), NULL, 0, 0, (void *) &quot;johab&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     485 </span>            :     { (unichar_t *) N_(&quot;GB 2312 (Simp. Chinese)&quot;), NULL, 0, 0, (void *) &quot;gb2312&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     486 </span>            :     { (unichar_t *) N_(&quot;EUC GB 2312 (Chinese)&quot;), NULL, 0, 0, (void *) &quot;gb2312pk&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     487 </span>            :     { (unichar_t *) N_(&quot;Big5 (Trad. Chinese)&quot;), NULL, 0, 0, (void *) &quot;big5&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     488 </span>            :     { (unichar_t *) N_(&quot;Big5 HKSCS (Trad. Chinese)&quot;), NULL, 0, 0, (void *) &quot;big5hkscs&quot;, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     489 </span>            :     GTEXTINFO_EMPTY
+<a name="490"><span class="lineNum">     490 </span>            : };</a>
+<span class="lineNum">     491 </span>            : 
+<span class="lineNum">     492 </span><span class="lineNoCov">          0 : static void EncodingInit(void) {</span>
+<span class="lineNum">     493 </span>            :     int i;
+<span class="lineNum">     494 </span>            :     static int done = false;
+<span class="lineNum">     495 </span>            : 
+<span class="lineNum">     496 </span><span class="lineNoCov">          0 :     if ( done )</span>
+<span class="lineNum">     497 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     498 </span><span class="lineNoCov">          0 :     done = true;</span>
+<span class="lineNum">     499 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;sizeof(encodingtypes)/sizeof(encodingtypes[0])-1; ++i ) {</span>
+<span class="lineNum">     500 </span><span class="lineNoCov">          0 :         if ( !encodingtypes[i].line )</span>
+<span class="lineNum">     501 </span><span class="lineNoCov">          0 :             encodingtypes[i].text = (unichar_t *) S_((char *) encodingtypes[i].text);</span>
+<span class="lineNum">     502 </span>            :     }
+<a name="503"><span class="lineNum">     503 </span>            : }</a>
+<span class="lineNum">     504 </span>            : 
+<span class="lineNum">     505 </span><span class="lineNoCov">          0 : GMenuItem *GetEncodingMenu(void (*func)(GWindow,GMenuItem *,GEvent *),</span>
+<span class="lineNum">     506 </span>            :         Encoding *current) {
+<span class="lineNum">     507 </span>            :     GMenuItem *mi;
+<span class="lineNum">     508 </span>            :     int i, cnt;
+<span class="lineNum">     509 </span>            :     Encoding *item;
+<span class="lineNum">     510 </span>            : 
+<span class="lineNum">     511 </span><span class="lineNoCov">          0 :     EncodingInit();</span>
+<span class="lineNum">     512 </span>            : 
+<span class="lineNum">     513 </span><span class="lineNoCov">          0 :     cnt = 0;</span>
+<span class="lineNum">     514 </span><span class="lineNoCov">          0 :     for ( item=enclist; item!=NULL ; item=item-&gt;next )</span>
+<span class="lineNum">     515 </span><span class="lineNoCov">          0 :         if ( !item-&gt;hidden )</span>
+<span class="lineNum">     516 </span><span class="lineNoCov">          0 :             ++cnt;</span>
+<span class="lineNum">     517 </span><span class="lineNoCov">          0 :     i = cnt+1;</span>
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 :     i += sizeof(encodingtypes)/sizeof(encodingtypes[0]);</span>
+<span class="lineNum">     519 </span><span class="lineNoCov">          0 :     mi = calloc(i+1,sizeof(GMenuItem));</span>
+<span class="lineNum">     520 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;sizeof(encodingtypes)/sizeof(encodingtypes[0])-1; ++i ) {</span>
+<span class="lineNum">     521 </span><span class="lineNoCov">          0 :         mi[i].ti = encodingtypes[i];</span>
+<span class="lineNum">     522 </span><span class="lineNoCov">          0 :         if ( !mi[i].ti.line ) {</span>
+<span class="lineNum">     523 </span><span class="lineNoCov">          0 :             mi[i].ti.text = utf82u_copy((char *) (mi[i].ti.text));</span>
+<span class="lineNum">     524 </span><span class="lineNoCov">          0 :             mi[i].ti.checkable = true;</span>
+<span class="lineNum">     525 </span><span class="lineNoCov">          0 :             if ( strmatch(mi[i].ti.userdata,current-&gt;enc_name)==0 ||</span>
+<span class="lineNum">     526 </span><span class="lineNoCov">          0 :                     (current-&gt;iconv_name!=NULL &amp;&amp; strmatch(mi[i].ti.userdata,current-&gt;iconv_name)==0))</span>
+<span class="lineNum">     527 </span><span class="lineNoCov">          0 :                 mi[i].ti.checked = true;</span>
+<span class="lineNum">     528 </span>            :         }
+<span class="lineNum">     529 </span><span class="lineNoCov">          0 :         mi[i].ti.text_is_1byte = false;</span>
+<span class="lineNum">     530 </span><span class="lineNoCov">          0 :         mi[i].ti.fg = mi[i].ti.bg = COLOR_DEFAULT;</span>
+<span class="lineNum">     531 </span><span class="lineNoCov">          0 :         mi[i].invoke = func;</span>
+<span class="lineNum">     532 </span>            :     }
+<span class="lineNum">     533 </span><span class="lineNoCov">          0 :     if ( cnt!=0 ) {</span>
+<span class="lineNum">     534 </span><span class="lineNoCov">          0 :         mi[i].ti.fg = mi[i].ti.bg = COLOR_DEFAULT;</span>
+<span class="lineNum">     535 </span><span class="lineNoCov">          0 :         mi[i++].ti.line = true;</span>
+<span class="lineNum">     536 </span><span class="lineNoCov">          0 :         for ( item=enclist; item!=NULL ; item=item-&gt;next )</span>
+<span class="lineNum">     537 </span><span class="lineNoCov">          0 :             if ( !item-&gt;hidden ) {</span>
+<span class="lineNum">     538 </span><span class="lineNoCov">          0 :                 mi[i].ti.text = utf82u_copy(item-&gt;enc_name);</span>
+<span class="lineNum">     539 </span><span class="lineNoCov">          0 :                 mi[i].ti.userdata = (void *) item-&gt;enc_name;</span>
+<span class="lineNum">     540 </span><span class="lineNoCov">          0 :                 mi[i].ti.fg = mi[i].ti.bg = COLOR_DEFAULT;</span>
+<span class="lineNum">     541 </span><span class="lineNoCov">          0 :                 mi[i].ti.checkable = true;</span>
+<span class="lineNum">     542 </span><span class="lineNoCov">          0 :                 if ( item==current )</span>
+<span class="lineNum">     543 </span><span class="lineNoCov">          0 :                     mi[i].ti.checked = true;</span>
+<span class="lineNum">     544 </span><span class="lineNoCov">          0 :                 mi[i++].invoke = func;</span>
+<span class="lineNum">     545 </span>            :             }
+<span class="lineNum">     546 </span>            :     }
+<span class="lineNum">     547 </span><span class="lineNoCov">          0 : return( mi );</span>
+<a name="548"><span class="lineNum">     548 </span>            : }</a>
+<span class="lineNum">     549 </span>            : 
+<span class="lineNum">     550 </span><span class="lineNoCov">          0 : GTextInfo *GetEncodingTypes(void) {</span>
+<span class="lineNum">     551 </span>            :     GTextInfo *ti;
+<span class="lineNum">     552 </span>            :     int i, cnt;
+<span class="lineNum">     553 </span>            :     Encoding *item;
+<span class="lineNum">     554 </span>            : 
+<span class="lineNum">     555 </span><span class="lineNoCov">          0 :     EncodingInit();</span>
+<span class="lineNum">     556 </span>            : 
+<span class="lineNum">     557 </span><span class="lineNoCov">          0 :     cnt = 0;</span>
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :     for ( item=enclist; item!=NULL ; item=item-&gt;next )</span>
+<span class="lineNum">     559 </span><span class="lineNoCov">          0 :         if ( !item-&gt;hidden )</span>
+<span class="lineNum">     560 </span><span class="lineNoCov">          0 :             ++cnt;</span>
+<span class="lineNum">     561 </span><span class="lineNoCov">          0 :     i = cnt + sizeof(encodingtypes)/sizeof(encodingtypes[0]);</span>
+<span class="lineNum">     562 </span><span class="lineNoCov">          0 :     ti = calloc(i+1,sizeof(GTextInfo));</span>
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 :     memcpy(ti,encodingtypes,sizeof(encodingtypes)-sizeof(encodingtypes[0]));</span>
+<span class="lineNum">     564 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;sizeof(encodingtypes)/sizeof(encodingtypes[0])-1; ++i ) {</span>
+<span class="lineNum">     565 </span><span class="lineNoCov">          0 :         ti[i].text = (unichar_t *) copy((char *) ti[i].text);</span>
+<span class="lineNum">     566 </span>            :     }
+<span class="lineNum">     567 </span><span class="lineNoCov">          0 :     if ( cnt!=0 ) {</span>
+<span class="lineNum">     568 </span><span class="lineNoCov">          0 :         ti[i++].line = true;</span>
+<span class="lineNum">     569 </span><span class="lineNoCov">          0 :         for ( item=enclist; item!=NULL ; item=item-&gt;next )</span>
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 :             if ( !item-&gt;hidden ) {</span>
+<span class="lineNum">     571 </span><span class="lineNoCov">          0 :                 ti[i].text = uc_copy(item-&gt;enc_name);</span>
+<span class="lineNum">     572 </span><span class="lineNoCov">          0 :                 ti[i++].userdata = (void *) item-&gt;enc_name;</span>
+<span class="lineNum">     573 </span>            :             }
+<span class="lineNum">     574 </span>            :     }
+<span class="lineNum">     575 </span><span class="lineNoCov">          0 : return( ti );</span>
+<a name="576"><span class="lineNum">     576 </span>            : }</a>
+<span class="lineNum">     577 </span>            : 
+<span class="lineNum">     578 </span><span class="lineNoCov">          0 : GTextInfo *EncodingTypesFindEnc(GTextInfo *encodingtypes, Encoding *enc) {</span>
+<span class="lineNum">     579 </span>            :     int i;
+<span class="lineNum">     580 </span>            :     char *name;
+<span class="lineNum">     581 </span>            :     Encoding *new_enc;
+<span class="lineNum">     582 </span>            : 
+<span class="lineNum">     583 </span><span class="lineNoCov">          0 :     for ( i=0; encodingtypes[i].text!=NULL || encodingtypes[i].line; ++i ) {</span>
+<span class="lineNum">     584 </span><span class="lineNoCov">          0 :         if ( encodingtypes[i].text==NULL )</span>
+<span class="lineNum">     585 </span><span class="lineNoCov">          0 :     continue;</span>
+<span class="lineNum">     586 </span><span class="lineNoCov">          0 :         name = encodingtypes[i].userdata;</span>
+<span class="lineNum">     587 </span><span class="lineNoCov">          0 :         new_enc = FindOrMakeEncoding(name);</span>
+<span class="lineNum">     588 </span><span class="lineNoCov">          0 :         if ( new_enc==NULL )</span>
+<span class="lineNum">     589 </span><span class="lineNoCov">          0 :     continue;</span>
+<span class="lineNum">     590 </span><span class="lineNoCov">          0 :         if ( enc==new_enc )</span>
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 : return( &amp;encodingtypes[i] );</span>
+<span class="lineNum">     592 </span>            :     }
+<span class="lineNum">     593 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<a name="594"><span class="lineNum">     594 </span>            : }</a>
+<span class="lineNum">     595 </span>            : 
+<span class="lineNum">     596 </span><span class="lineNoCov">          0 : Encoding *ParseEncodingNameFromList(GGadget *listfield) {</span>
+<span class="lineNum">     597 </span><span class="lineNoCov">          0 :     const unichar_t *name = _GGadgetGetTitle(listfield);</span>
+<span class="lineNum">     598 </span>            :     int32 len;
+<span class="lineNum">     599 </span><span class="lineNoCov">          0 :     GTextInfo **ti = GGadgetGetList(listfield,&amp;len);</span>
+<span class="lineNum">     600 </span>            :     int i;
+<span class="lineNum">     601 </span><span class="lineNoCov">          0 :     Encoding *enc = NULL;</span>
+<span class="lineNum">     602 </span>            : 
+<span class="lineNum">     603 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;len; ++i ) if ( ti[i]-&gt;text!=NULL ) {</span>
+<span class="lineNum">     604 </span><span class="lineNoCov">          0 :         if ( u_strcmp(name,ti[i]-&gt;text)==0 ) {</span>
+<span class="lineNum">     605 </span><span class="lineNoCov">          0 :             enc = FindOrMakeEncoding(ti[i]-&gt;userdata);</span>
+<span class="lineNum">     606 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     607 </span>            :         }
+<span class="lineNum">     608 </span>            :     }
+<span class="lineNum">     609 </span>            : 
+<span class="lineNum">     610 </span><span class="lineNoCov">          0 :     if ( enc == NULL ) {</span>
+<span class="lineNum">     611 </span><span class="lineNoCov">          0 :         char *temp = u2utf8_copy(name);</span>
+<span class="lineNum">     612 </span><span class="lineNoCov">          0 :         enc = FindOrMakeEncoding(temp);</span>
+<span class="lineNum">     613 </span><span class="lineNoCov">          0 :         free(temp);</span>
+<span class="lineNum">     614 </span>            :     }
+<span class="lineNum">     615 </span><span class="lineNoCov">          0 :     if ( enc==NULL )</span>
+<span class="lineNum">     616 </span><span class="lineNoCov">          0 :         ff_post_error(_(&quot;Bad Encoding&quot;),_(&quot;Bad Encoding&quot;));</span>
+<span class="lineNum">     617 </span><span class="lineNoCov">          0 : return( enc );</span>
+<span class="lineNum">     618 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

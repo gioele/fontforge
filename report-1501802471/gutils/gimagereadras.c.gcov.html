@@ -1,0 +1,413 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - gutils/gimagereadras.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gutils</a> - gimagereadras.c<span style="font-size: 80%;"> (source / <a href="gimagereadras.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">177</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">10</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /* 2013jan30..feb5, additional fixes and error checks done, Jose Da Silva */
+<span class="lineNum">       3 </span>            : /*
+<span class="lineNum">       4 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       5 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       8 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      11 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      12 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      15 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      18 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      19 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      20 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      21 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      22 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      23 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      24 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      25 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      26 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      27 </span>            :  */
+<span class="lineNum">      28 </span>            : #include &quot;gimage.h&quot;
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            : typedef struct _SunRaster {
+<span class="lineNum">      31 </span>            :   long MagicNumber;     /* Magic (identification) number */
+<span class="lineNum">      32 </span>            :   long Width;           /* Width of image in pixels */
+<span class="lineNum">      33 </span>            :   long Height;          /* Height of image in pixels */
+<span class="lineNum">      34 </span>            :   long Depth;           /* Number of bits per pixel */
+<span class="lineNum">      35 </span>            :   long Length;          /* Size of image data in bytes */
+<span class="lineNum">      36 </span>            :   long Type;            /* Type of raster file */
+<span class="lineNum">      37 </span>            :   long ColorMapType;    /* Type of color map */
+<span class="lineNum">      38 </span>            :   long ColorMapLength;  /* Size of the color map in bytes */
+<span class="lineNum">      39 </span>            : } SUNRASTER;
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span>            : #define SUN_RAS_MAGIC   0x59a66a95
+<span class="lineNum">      42 </span>            : #define LITTLE_ENDIAN_MAGIC     0x956aa659      /* if we read this value, must byte swap */
+<span class="lineNum">      43 </span>            : 
+<span class="lineNum">      44 </span>            : enum types { TypeOld, TypeStandard, TypeByteEncoded, TypeRGB, TypeTIFF, TypeIFF };
+<a name="45"><span class="lineNum">      45 </span>            : enum cluts { ClutNone, ClutRGB, ClutRaw };</a>
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 : static int getlong(FILE *fp, long *value) {</span>
+<span class="lineNum">      48 </span>            : /* Get Big-Endian long (32bit int) value. Return 0 if okay, -1 if error */
+<span class="lineNum">      49 </span>            :     int ch1, ch2, ch3, ch4;
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 :     if ( (ch1=fgetc(fp))&lt;0 || (ch2=fgetc(fp))&lt;0 || \</span>
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 :          (ch3=fgetc(fp))&lt;0 || (ch4=fgetc(fp))&lt;0 ) {</span>
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :         *value=0;</span>
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :         return( -1 );</span>
+<span class="lineNum">      55 </span>            :     }
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :     *value=(long)( (ch1&lt;&lt;24)|(ch2&lt;&lt;16)|(ch3&lt;&lt;8)|ch4 );</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :     return( 0 );</span>
+<a name="58"><span class="lineNum">      58 </span>            : }</a>
+<span class="lineNum">      59 </span>            : 
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 : static int getrasheader(SUNRASTER *head, FILE *fp) {</span>
+<span class="lineNum">      61 </span>            : /* Get Header info. Return 0 if read input file okay, -1 if read error  */
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :     if ( getlong(fp,&amp;head-&gt;MagicNumber)   || \</span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :          (head-&gt;MagicNumber!=SUN_RAS_MAGIC &amp;&amp; head-&gt;MagicNumber!=LITTLE_ENDIAN_MAGIC) || \</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :          getlong(fp,&amp;head-&gt;Width)         || \</span>
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :          getlong(fp,&amp;head-&gt;Height)        || \</span>
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :          getlong(fp,&amp;head-&gt;Depth)         || \</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :          getlong(fp,&amp;head-&gt;Length)        || \</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :          getlong(fp,&amp;head-&gt;Type)  || \</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :          getlong(fp,&amp;head-&gt;ColorMapType) || \</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :          getlong(fp,&amp;head-&gt;ColorMapLength) )</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :         return( -1 );</span>
+<span class="lineNum">      72 </span>            : 
+<span class="lineNum">      73 </span>            :     /* Check if header information okay (only try Big-Endian for now).  */
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :     if ( head-&gt;MagicNumber!=SUN_RAS_MAGIC || \</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :          head-&gt;Type&lt;0 || head-&gt;Type&gt;TypeRGB || \</span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :          (head-&gt;ColorMapType!=ClutNone &amp;&amp; head-&gt;ColorMapType!=ClutRGB) || \</span>
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :          (head-&gt;Depth!=1 &amp;&amp; head-&gt;Depth!=8 &amp;&amp; head-&gt;Depth!=24 &amp;&amp; head-&gt;Depth!=32) || \</span>
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :          (head-&gt;Depth&gt;=24 &amp;&amp; head-&gt;ColorMapType!=ClutNone) || \</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :          head-&gt;ColorMapLength&gt;3*256 )</span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :         return( -1 );</span>
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :     return( 0 );</span>
+<a name="83"><span class="lineNum">      83 </span>            : }</a>
+<span class="lineNum">      84 </span>            : 
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 : static GImage *ReadRasBitmap(GImage *ret,int width, int height, FILE *fp ) {</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :     struct _GImage *base = ret-&gt;u.image;</span>
+<span class="lineNum">      87 </span>            :     int i,j,len;
+<span class="lineNum">      88 </span>            :     unsigned char *pt, *buf;
+<span class="lineNum">      89 </span>            : 
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :     len = ((width+15)/16)*2;    /* pad out to 16 bits */</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :     if ( (buf=(unsigned char *) malloc(len*sizeof(unsigned char)))==NULL ) {</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :         NoMoreMemMessage();</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :         GImageDestroy(ret);</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :         return( NULL );</span>
+<span class="lineNum">      95 </span>            :     }
+<span class="lineNum">      96 </span>            : 
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;height; ++i ) {</span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :         if ( fread(buf,len,1,fp)&lt;1 ) {</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :             free(buf);</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :             GImageDestroy(ret);</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :             return( NULL );</span>
+<span class="lineNum">     102 </span>            :         }
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :         pt = (unsigned char *) (base-&gt;data + i*base-&gt;bytes_per_line);</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :         for ( j=0; j&lt;(width+7)&gt;&gt;3; ++j )</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :             pt[j]=256-buf[j];</span>
+<span class="lineNum">     106 </span>            :     }
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :     free(buf);</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :     return( ret );</span>
+<a name="109"><span class="lineNum">     109 </span>            : }</a>
+<span class="lineNum">     110 </span>            : 
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 : static GImage *ReadRas8Bit(GImage *ret,int width, int height, FILE *fp ) {</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :     struct _GImage *base = ret-&gt;u.image;</span>
+<span class="lineNum">     113 </span>            :     int i;
+<span class="lineNum">     114 </span>            : 
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;height; ++i ) {</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :         if ( fread((base-&gt;data + i*base-&gt;bytes_per_line),width,1,fp)&lt;1 ) {</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :             goto errorReadRas8Bit;</span>
+<span class="lineNum">     118 </span>            :         }
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :         if ( width&amp;1 )              /* pad out to 16 bits */</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :             if ( fgetc(fp)&lt;0 )</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :                 goto errorReadRas8Bit;</span>
+<span class="lineNum">     122 </span>            :     }
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :     return( ret );</span>
+<span class="lineNum">     124 </span>            : 
+<span class="lineNum">     125 </span>            : errorReadRas8Bit:
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :     GImageDestroy(ret);</span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :     return( NULL );</span>
+<a name="128"><span class="lineNum">     128 </span>            : }</a>
+<span class="lineNum">     129 </span>            : 
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 : static GImage *ReadRas24Bit(GImage *ret,int width, int height, FILE *fp ) {</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :     struct _GImage *base = ret-&gt;u.image;</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :     int ch1,ch2,ch3=0;</span>
+<span class="lineNum">     133 </span>            :     int i;
+<span class="lineNum">     134 </span>            :     long *ipt,*end;
+<span class="lineNum">     135 </span>            : 
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;height; ++i ) {</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :         for ( ipt = (long *) (base-&gt;data + i*base-&gt;bytes_per_line), end = ipt+width; ipt&lt;end; ) {</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :             if ( (ch1=fgetc(fp))&lt;0 || (ch2=fgetc(fp))&lt;0 || (ch3=fgetc(fp))&lt;0 )</span>
+<span class="lineNum">     139 </span>            :                 goto errorReadRas24Bit;
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :             *ipt++ = COLOR_CREATE(ch3,ch2,ch1);</span>
+<span class="lineNum">     141 </span>            :         }
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :         if ( width&amp;1 )              /* pad out to 16 bits */</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :             if ( fgetc(fp)&lt;0 )</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :                 goto errorReadRas24Bit;</span>
+<span class="lineNum">     145 </span>            :     }
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :     return( ret );</span>
+<span class="lineNum">     147 </span>            : 
+<span class="lineNum">     148 </span>            : errorReadRas24Bit:
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :     GImageDestroy(ret);</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :     return( NULL );</span>
+<a name="151"><span class="lineNum">     151 </span>            : }</a>
+<span class="lineNum">     152 </span>            : 
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 : static GImage *ReadRas32Bit(GImage *ret,int width, int height, FILE *fp ) {</span>
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :     struct _GImage *base = ret-&gt;u.image;</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :     int ch1,ch2,ch3=0;</span>
+<span class="lineNum">     156 </span>            :     int i;
+<span class="lineNum">     157 </span>            :     long *ipt, *end;
+<span class="lineNum">     158 </span>            : 
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;height; ++i )</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :         for ( ipt = (long *) (base-&gt;data + i*base-&gt;bytes_per_line), end = ipt+width; ipt&lt;end; ) {</span>
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :             fgetc(fp);  /* pad byte */</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :             ch1 = fgetc(fp); ch2 = fgetc(fp); ch3 = fgetc(fp);</span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :             *ipt++ = COLOR_CREATE(ch3,ch2,ch1);</span>
+<span class="lineNum">     164 </span>            :         }
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :     if ( ch3==EOF ) {</span>
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :         GImageDestroy(ret);</span>
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :         ret = NULL;</span>
+<span class="lineNum">     168 </span>            :     }
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 : return ret;</span>
+<a name="170"><span class="lineNum">     170 </span>            : }</a>
+<span class="lineNum">     171 </span>            : 
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 : static GImage *ReadRas24RBit(GImage *ret,int width, int height, FILE *fp ) {</span>
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :     struct _GImage *base = ret-&gt;u.image;</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :     int ch1,ch2,ch3=0;</span>
+<span class="lineNum">     175 </span>            :     int i;
+<span class="lineNum">     176 </span>            :     long *ipt,*end;
+<span class="lineNum">     177 </span>            : 
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;height; ++i ) {</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :         for ( ipt = (long *) (base-&gt;data + i*base-&gt;bytes_per_line), end = ipt+width; ipt&lt;end; ) {</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :             if ( (ch1=fgetc(fp))&lt;0 || (ch2=fgetc(fp))&lt;0 || (ch3=fgetc(fp))&lt;0 )</span>
+<span class="lineNum">     181 </span>            :                 goto errorReadRas24RBit;
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :             *ipt++ = COLOR_CREATE(ch1,ch2,ch3);</span>
+<span class="lineNum">     183 </span>            :         }
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :         if ( width&amp;1 )              /* pad out to 16 bits */</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :             if ( fgetc(fp)&lt;0 )</span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :                 goto errorReadRas24RBit;</span>
+<span class="lineNum">     187 </span>            :     }
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :     return( ret );</span>
+<span class="lineNum">     189 </span>            : 
+<span class="lineNum">     190 </span>            : errorReadRas24RBit:
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :     GImageDestroy(ret);</span>
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :     return( NULL );</span>
+<a name="193"><span class="lineNum">     193 </span>            : }</a>
+<span class="lineNum">     194 </span>            : 
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 : static GImage *ReadRas32RBit(GImage *ret,int width, int height, FILE *fp ) {</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :     struct _GImage *base = ret-&gt;u.image;</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :     int ch1,ch2,ch3=0;</span>
+<span class="lineNum">     198 </span>            :     int i;
+<span class="lineNum">     199 </span>            :     long *ipt, *end;
+<span class="lineNum">     200 </span>            : 
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;height; ++i )</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :         for ( ipt = (long *) (base-&gt;data + i*base-&gt;bytes_per_line), end = ipt+width; ipt&lt;end; ) {</span>
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :             fgetc(fp);  /* pad byte */</span>
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :             ch1 = fgetc(fp); ch2 = fgetc(fp); ch3 = fgetc(fp);</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :             *ipt++ = COLOR_CREATE(ch1,ch2,ch3);</span>
+<span class="lineNum">     206 </span>            :         }
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :     if ( ch3==EOF ) {</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :         GImageDestroy(ret);</span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :         ret = NULL;</span>
+<span class="lineNum">     210 </span>            :     }
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 : return ret;</span>
+<a name="212"><span class="lineNum">     212 </span>            : }</a>
+<span class="lineNum">     213 </span>            : 
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 : static GImage *ReadRle8Bit(GImage *ret,int width, int height, FILE *fp ) {</span>
+<span class="lineNum">     215 </span>            : /* TODO: Make this an input filter that goes in front of other routines */
+<span class="lineNum">     216 </span>            : /* above so that in can be re-used by the different converters above.   */
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :     struct _GImage *base = ret-&gt;u.image;</span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :     int x,y,cnt,val = 0;</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :     unsigned char *pt = NULL;</span>
+<span class="lineNum">     220 </span>            : 
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :     x=0; y=0; cnt=0;</span>
+<span class="lineNum">     222 </span>            :     while ( 1 ) {
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :         while ( cnt &amp;&amp; x ) {</span>
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :             --cnt; if ( --x || (width&amp;1)-1 ) * pt++ = val;</span>
+<span class="lineNum">     225 </span>            :         }
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :         if ( x==0 ) {</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :             pt = (unsigned char *) (base-&gt;data + y*base-&gt;bytes_per_line);</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :             if ( ++y&gt;height )</span>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :                 return( ret );</span>
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :             x=((width+1)&gt;&gt;1)&lt;&lt;1;</span>
+<span class="lineNum">     231 </span>            :         }
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :         if ( cnt==0 ) {</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :             if ( (val=fgetc(fp))&lt;0 ) goto errorReadRle8Bit;</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :             cnt++;</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :             if ( val==0x80 ) {</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :                 if ( (cnt=fgetc(fp))&lt;0 ) goto errorReadRle8Bit;</span>
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :                 if ( cnt++!=0 )</span>
+<span class="lineNum">     238 </span>            :                     /* prepare to go insert 'val', 'cnt' times */
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :                     if ( (val=fgetc(fp))&lt;0 ) goto errorReadRle8Bit;</span>
+<span class="lineNum">     240 </span>            :             }
+<span class="lineNum">     241 </span>            :         }
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     243 </span>            : 
+<span class="lineNum">     244 </span>            : errorReadRle8Bit:
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :     GImageDestroy(ret);</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :     return( NULL );</span>
+<a name="247"><span class="lineNum">     247 </span>            : }</a>
+<span class="lineNum">     248 </span>            : 
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 : GImage *GImageReadRas(char *filename) {</span>
+<span class="lineNum">     250 </span>            : /* Import a *.ras image (or *.im{1,8,24,32}), else return NULL if error */
+<span class="lineNum">     251 </span>            :     FILE *fp;                   /* source file */
+<span class="lineNum">     252 </span>            :     struct _SunRaster header;
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :     GImage *ret = NULL;</span>
+<span class="lineNum">     254 </span>            :     struct _GImage *base;
+<span class="lineNum">     255 </span>            : 
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :     if ( (fp=fopen(filename,&quot;rb&quot;))==NULL ) {</span>
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :         fprintf(stderr,&quot;Can't open \&quot;%s\&quot;\n&quot;, filename);</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :         return( NULL );</span>
+<span class="lineNum">     259 </span>            :     }
+<span class="lineNum">     260 </span>            : 
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :     if ( getrasheader(&amp;header,fp) )</span>
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :         goto errorGImageReadRas;</span>
+<span class="lineNum">     263 </span>            : 
+<span class="lineNum">     264 </span>            :     /* Create memory to hold image, exit with NULL if not enough memory */
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :     if ( (header.Depth==1 &amp;&amp; \</span>
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :           (ret=GImageCreate(it_bitmap,header.Width,header.Height))==NULL) || \</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :           (header.Depth!=1 &amp;&amp; \</span>
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :           (ret=GImageCreate(header.Depth==24?it_true:it_index,header.Width,header.Height))==NULL) ) {</span>
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :         fclose(fp);</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :         return( NULL );</span>
+<span class="lineNum">     271 </span>            :     }
+<span class="lineNum">     272 </span>            : 
+<span class="lineNum">     273 </span>            :     /* Convert *.ras ColorMap to one that FF can use */
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :     base = ret-&gt;u.image;</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :     if ( header.ColorMapLength!=0 &amp;&amp; base-&gt;clut!=NULL ) {</span>
+<span class="lineNum">     276 </span>            :         unsigned char clutb[3*256]; int i,n;
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :         if ( fread(clutb,header.ColorMapLength,1,fp)&lt;1 )</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :             goto errorGImageReadRas;</span>
+<span class="lineNum">     279 </span>            : //      if ( header.ColorMapType==ClutRaw ) {
+<span class="lineNum">     280 </span>            : //          n = header.ColorMapLength;
+<span class="lineNum">     281 </span>            : //          base-&gt;clut-&gt;clut_len = n;
+<span class="lineNum">     282 </span>            : //          for ( i=0; i&lt;n; ++i )
+<span class="lineNum">     283 </span>            : //              base-&gt;clut-&gt;clut[i] = clutb[i];
+<span class="lineNum">     284 </span>            : //      } else {
+<span class="lineNum">     285 </span><span class="lineNoCov">          0 :         n = header.ColorMapLength/3;</span>
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :         base-&gt;clut-&gt;clut_len = n;</span>
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;n; ++i )</span>
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :             base-&gt;clut-&gt;clut[i] = COLOR_CREATE(clutb[i],clutb[i+n],clutb[i+2*n]);</span>
+<span class="lineNum">     289 </span>            : //      }
+<span class="lineNum">     290 </span>            :     }
+<span class="lineNum">     291 </span>            : 
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :     if ( header.Type==TypeOld || header.Type==TypeStandard ) {  /* Synonymous */</span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :             if ( header.Depth==1 )</span>
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :                 ret = ReadRasBitmap(ret,header.Width,header.Height,fp);</span>
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :             else if ( header.Depth==8 )</span>
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :                 ret = ReadRas8Bit(ret,header.Width,header.Height,fp);</span>
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 :             else if ( header.Depth==24 )</span>
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :                 ret = ReadRas24Bit(ret,header.Width,header.Height,fp);</span>
+<span class="lineNum">     299 </span>            :             else
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :                 ret = ReadRas32Bit(ret,header.Width,header.Height,fp);</span>
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :     } else if ( header.Type==TypeRGB ) {</span>
+<span class="lineNum">     302 </span>            :             /* I think this type is the same as standard except rgb not bgr */
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :             if ( header.Depth==1 )</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :                 ret = ReadRasBitmap(ret,header.Width,header.Height,fp);</span>
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 :             else if ( header.Depth==8 )</span>
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :                 ret = ReadRas8Bit(ret,header.Width,header.Height,fp);</span>
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :             else if ( header.Depth==24 )</span>
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 :                 ret = ReadRas24RBit(ret,header.Width,header.Height,fp);</span>
+<span class="lineNum">     309 </span>            :             else
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 :                 ret = ReadRas32RBit(ret,header.Width,header.Height,fp);</span>
+<span class="lineNum">     311 </span><span class="lineNoCov">          0 :     } else if ( header.Type==TypeByteEncoded ) {</span>
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 :             if ( header.Depth==8 )</span>
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :                 ret = ReadRle8Bit(ret,header.Width,header.Height,fp);</span>
+<span class="lineNum">     314 </span>            :             else {
+<span class="lineNum">     315 </span>            :                 /* Don't bother with most rle formats */
+<span class="lineNum">     316 </span>            :                 /* TODO: if someone wants to do this - accept more formats */
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :                 fprintf(stderr,&quot;Unsupported input file type\n&quot;);</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :                 goto errorGImageReadRas;</span>
+<span class="lineNum">     319 </span>            :             }
+<span class="lineNum">     320 </span>            :     } else {
+<span class="lineNum">     321 </span>            :             /* Don't bother with other formats */
+<span class="lineNum">     322 </span>            :             /* TODO: if someone wants to do this - accept more formats */
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :         fprintf(stderr,&quot;Unsupported input file type\n&quot;);</span>
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :             goto errorGImageReadRas;</span>
+<span class="lineNum">     325 </span>            :         }
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :     if ( ret!=NULL ) {</span>
+<span class="lineNum">     327 </span>            :             /* All okay if reached here, return converted image */
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :             fclose(fp);</span>
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :             return( ret );</span>
+<span class="lineNum">     330 </span>            :     }
+<span class="lineNum">     331 </span>            : 
+<span class="lineNum">     332 </span>            : errorGImageReadRas:
+<span class="lineNum">     333 </span><span class="lineNoCov">          0 :     fprintf(stderr,&quot;Bad input file \&quot;%s\&quot;\n&quot;,filename );</span>
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :     GImageDestroy(ret);</span>
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 :     fclose(fp);</span>
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :     return( NULL );</span>
+<span class="lineNum">     337 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

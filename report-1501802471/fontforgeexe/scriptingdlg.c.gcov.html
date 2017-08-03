@@ -1,0 +1,446 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforgeexe/scriptingdlg.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforgeexe</a> - scriptingdlg.c<span style="font-size: 80%;"> (source / <a href="scriptingdlg.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">219</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">10</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2002-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            : #if !defined(_NO_FFSCRIPT) || !defined(_NO_PYTHON)
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            : #include &quot;cvundoes.h&quot;
+<span class="lineNum">      31 </span>            : #include &quot;fontforgeui.h&quot;
+<span class="lineNum">      32 </span>            : #include &lt;gresource.h&gt;
+<span class="lineNum">      33 </span>            : #include &lt;utype.h&gt;
+<span class="lineNum">      34 </span>            : #include &lt;ustring.h&gt;
+<span class="lineNum">      35 </span>            : #include &lt;gkeysym.h&gt;
+<span class="lineNum">      36 </span>            : #include &quot;scripting.h&quot;
+<span class="lineNum">      37 </span>            : #include &quot;scriptfuncs.h&quot;
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            : struct sd_data {
+<span class="lineNum">      40 </span>            :     int done;
+<span class="lineNum">      41 </span>            :     FontView *fv;
+<span class="lineNum">      42 </span>            :     SplineChar *sc;
+<span class="lineNum">      43 </span>            :     int layer;
+<span class="lineNum">      44 </span>            :     GWindow gw;
+<span class="lineNum">      45 </span>            :     int oldh;
+<span class="lineNum">      46 </span>            : };
+<span class="lineNum">      47 </span>            : 
+<span class="lineNum">      48 </span>            : #define SD_Width        250
+<span class="lineNum">      49 </span>            : #define SD_Height       270
+<span class="lineNum">      50 </span>            : #define CID_Script      1001
+<span class="lineNum">      51 </span>            : #define CID_Box         1002
+<span class="lineNum">      52 </span>            : #define CID_OK          1003
+<span class="lineNum">      53 </span>            : #define CID_Call        1004
+<span class="lineNum">      54 </span>            : #define CID_Cancel      1005
+<span class="lineNum">      55 </span>            : #define CID_Python      1006
+<a name="56"><span class="lineNum">      56 </span>            : #define CID_FF          1007</a>
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 : static int SD_Call(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">      60 </span>            :         char *fn;
+<span class="lineNum">      61 </span>            :         unichar_t *insert;
+<span class="lineNum">      62 </span>            :     
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :         fn = gwwv_open_filename(_(&quot;Call Script&quot;), NULL, &quot;*&quot;,NULL);</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :         if ( fn==NULL )</span>
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 : return(true);</span>
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :         insert = malloc((strlen(fn)+10)*sizeof(unichar_t));</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :         *insert = '&quot;';</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :         utf82u_strcpy(insert+1,fn);</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :         uc_strcat(insert,&quot;\&quot;()&quot;);</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :         GTextFieldReplace(GWidgetGetControl(GGadgetGetWindow(g),CID_Script),insert);</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :         free(insert);</span>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :         free(fn);</span>
+<span class="lineNum">      73 </span>            :     }
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">      75 </span>            : }
+<a name="76"><span class="lineNum">      76 </span>            : </a>
+<span class="lineNum">      77 </span>            : #if !defined(_NO_FFSCRIPT)
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 : static void ExecNative(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :     struct sd_data *sd = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">      80 </span>            :     Context c;
+<span class="lineNum">      81 </span>            :     Val args[1];
+<span class="lineNum">      82 </span>            :     Array *dontfree[1];
+<span class="lineNum">      83 </span>            :     jmp_buf env;
+<span class="lineNum">      84 </span>            : 
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :     memset( &amp;c,0,sizeof(c));</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :     memset( args,0,sizeof(args));</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :     memset( dontfree,0,sizeof(dontfree));</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :     running_script = true;</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :     c.a.argc = 1;</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :     c.a.vals = args;</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :     c.dontfree = dontfree;</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :     c.filename = args[0].u.sval = &quot;ScriptDlg&quot;;</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :     args[0].type = v_str;</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :     c.return_val.type = v_void;</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :     c.err_env = &amp;env;</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :     c.curfv = (FontViewBase *) sd-&gt;fv;</span>
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :     if ( setjmp(env)!=0 ) {</span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :         running_script = false;</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 : return;                 /* Error return */</span>
+<span class="lineNum">     100 </span>            :     }
+<span class="lineNum">     101 </span>            : 
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :     c.script = tmpfile();</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :     if ( c.script==NULL )</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :         ScriptError(&amp;c, &quot;Can't create temporary file&quot;);</span>
+<span class="lineNum">     105 </span>            :     else {
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :         const unichar_t *ret = _GGadgetGetTitle(GWidgetGetControl(sd-&gt;gw,CID_Script));</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :         while ( *ret ) {</span>
+<span class="lineNum">     108 </span>            :             /* There's a bug here. Filenames need to be converted to the local charset !!!! */
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :             putc(*ret,c.script);</span>
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :             ++ret;</span>
+<span class="lineNum">     111 </span>            :         }
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :         rewind(c.script);</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :         ff_VerboseCheck();</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :         c.lineno = 1;</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :         while ( !c.returned &amp;&amp; !c.broken &amp;&amp; ff_NextToken(&amp;c)!=tt_eof ) {</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :             ff_backuptok(&amp;c);</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :             ff_statement(&amp;c);</span>
+<span class="lineNum">     118 </span>            :         }
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :         fclose(c.script);</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :         sd-&gt;done = true;</span>
+<span class="lineNum">     121 </span>            :     }
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :     running_script = false;</span>
+<span class="lineNum">     123 </span>            : }
+<span class="lineNum">     124 </span>            : #endif
+<a name="125"><span class="lineNum">     125 </span>            : </a>
+<span class="lineNum">     126 </span>            : #if !defined(_NO_PYTHON)
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 : static void ExecPython(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :     struct sd_data *sd = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">     129 </span>            :     char *str;
+<span class="lineNum">     130 </span>            : 
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :     running_script = true;</span>
+<span class="lineNum">     132 </span>            : 
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :     str = GGadgetGetTitle8(GWidgetGetControl(sd-&gt;gw,CID_Script));</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :     PyFF_ScriptString((FontViewBase *) sd-&gt;fv,sd-&gt;sc,sd-&gt;layer,str);</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :     free(str);</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :     running_script = false;</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     138 </span>            : #endif
+<a name="139"><span class="lineNum">     139 </span>            : </a>
+<span class="lineNum">     140 </span>            : #if !defined(_NO_FFSCRIPT) &amp;&amp; !defined(_NO_PYTHON)
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 : static void _SD_LangChanged(struct sd_data *sd) {</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :     GGadgetSetEnabled(GWidgetGetControl(sd-&gt;gw,CID_Call),</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :             !GGadgetIsChecked(GWidgetGetControl(sd-&gt;gw,CID_Python)));</span>
+<a name="144"><span class="lineNum">     144 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     145 </span>            :     
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 : static int SD_LangChanged(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_radiochanged ) {</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :         struct sd_data *sd = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :         _SD_LangChanged(sd);</span>
+<span class="lineNum">     150 </span>            :     }
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     152 </span>            : }
+<a name="153"><span class="lineNum">     153 </span>            : #endif</a>
+<span class="lineNum">     154 </span>            : 
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 : static int SD_OK(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :         struct sd_data *sd = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">     158 </span>            : #if !defined(_NO_FFSCRIPT) &amp;&amp; !defined(_NO_PYTHON)
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :         if ( GGadgetIsChecked(GWidgetGetControl(GGadgetGetWindow(g),CID_Python)) )</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :             ExecPython(g,e);</span>
+<span class="lineNum">     161 </span>            :         else
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :             ExecNative(g,e);</span>
+<span class="lineNum">     163 </span>            : #elif !defined(_NO_PYTHON)
+<span class="lineNum">     164 </span>            :         ExecPython(g,e);
+<span class="lineNum">     165 </span>            : #elif !defined(_NO_FFSCRIPT)
+<span class="lineNum">     166 </span>            :         ExecNative(g,e);
+<span class="lineNum">     167 </span>            : #endif
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :         sd-&gt;done = true;</span>
+<span class="lineNum">     169 </span>            :     }
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="171"><span class="lineNum">     171 </span>            : }</a>
+<span class="lineNum">     172 </span>            : 
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 : static void SD_DoCancel(struct sd_data *sd) {</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :     sd-&gt;done = true;</span>
+<a name="175"><span class="lineNum">     175 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     176 </span>            : 
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 : static int SD_Cancel(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :         SD_DoCancel( GDrawGetUserData(GGadgetGetWindow(g)));</span>
+<span class="lineNum">     180 </span>            :     }
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="182"><span class="lineNum">     182 </span>            : }</a>
+<span class="lineNum">     183 </span>            : 
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 : static int sd_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :     struct sd_data *sd = GDrawGetUserData(gw);</span>
+<span class="lineNum">     186 </span>            : 
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :     if ( sd==NULL )</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     189 </span>            :     
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :     if ( event-&gt;type==et_close ) {</span>
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :         SD_DoCancel( sd );</span>
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type==et_char ) {</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :         if ( event-&gt;u.chr.keysym == GK_F1 || event-&gt;u.chr.keysym == GK_Help ) {</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :             help(&quot;scripting.html&quot;);</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     196 </span>            :         }
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_map )      /* Above palettes */</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :         GDrawRaise(gw);</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :     else if ( event-&gt;type == et_resize )</span>
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(gw,NULL,false);</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="203"><span class="lineNum">     203 </span>            : }</a>
+<span class="lineNum">     204 </span>            : 
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 : void ScriptDlg(FontView *fv,CharView *cv) {</span>
+<span class="lineNum">     206 </span>            :     GRect pos;
+<span class="lineNum">     207 </span>            :     static GWindow gw;
+<span class="lineNum">     208 </span>            :     GWindowAttrs wattrs;
+<span class="lineNum">     209 </span>            :     GGadgetCreateData gcd[12], boxes[5], *barray[4][8], *hvarray[4][2];
+<span class="lineNum">     210 </span>            : #if !defined(_NO_FFSCRIPT) &amp;&amp; !defined(_NO_PYTHON)
+<span class="lineNum">     211 </span>            :     GGadgetCreateData *rarray[4];
+<span class="lineNum">     212 </span>            : #endif
+<span class="lineNum">     213 </span>            :     GTextInfo label[12];
+<span class="lineNum">     214 </span>            :     struct sd_data sd;
+<span class="lineNum">     215 </span>            :     FontView *list;
+<span class="lineNum">     216 </span>            :     int i,l;
+<span class="lineNum">     217 </span>            : 
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :     memset(&amp;sd,0,sizeof(sd));</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :     sd.fv = fv;</span>
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :     sd.sc = cv==NULL ? NULL : cv-&gt;b.sc;</span>
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :     sd.layer = cv==NULL ? ly_fore : CVLayer((CharViewBase *) cv);</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :     sd.oldh = pos.height = GDrawPointsToPixels(NULL,SD_Height);</span>
+<span class="lineNum">     223 </span>            : 
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :     if ( gw==NULL ) {</span>
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 :         memset(&amp;wattrs,0,sizeof(wattrs));</span>
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :         wattrs.mask = wam_events|wam_cursor|wam_utf8_wtitle|wam_undercursor|wam_restrict|wam_isdlg;</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :         wattrs.event_masks = ~(1&lt;&lt;et_charup);</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :         wattrs.restrict_input_to_me = 1;</span>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :         wattrs.undercursor = 1;</span>
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :         wattrs.cursor = ct_pointer;</span>
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :         wattrs.utf8_window_title = _(&quot;Execute Script&quot;);</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :         wattrs.is_dlg = true;</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :         pos.x = pos.y = 0;</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :         pos.width = GDrawPointsToPixels(NULL,GGadgetScale(SD_Width));</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :         gw = GDrawCreateTopWindow(NULL,&amp;pos,sd_e_h,&amp;sd,&amp;wattrs);</span>
+<span class="lineNum">     236 </span>            : 
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :         memset(&amp;boxes,0,sizeof(boxes));</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :         memset(&amp;gcd,0,sizeof(gcd));</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :         memset(&amp;label,0,sizeof(label));</span>
+<span class="lineNum">     240 </span>            : 
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :         i = l = 0;</span>
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.x = 10; gcd[i].gd.pos.y = 10;</span>
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.width = SD_Width-20; gcd[i].gd.pos.height = SD_Height-54;</span>
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :         gcd[i].gd.flags = gg_visible | gg_enabled | gg_textarea_wrap;</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :         gcd[i].gd.cid = CID_Script;</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :         gcd[i++].creator = GTextAreaCreate;</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :         hvarray[l][0] = &amp;gcd[i-1]; hvarray[l++][1] = NULL;</span>
+<span class="lineNum">     248 </span>            : 
+<span class="lineNum">     249 </span>            : #if !defined(_NO_FFSCRIPT) &amp;&amp; !defined(_NO_PYTHON)
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :         gcd[i-1].gd.pos.height -= 24;</span>
+<span class="lineNum">     251 </span>            : 
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.x = 10; gcd[i].gd.pos.y = gcd[i-1].gd.pos.y+gcd[i-1].gd.pos.height+1;</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :         gcd[i].gd.flags = gg_visible | gg_enabled | gg_cb_on;</span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :         gcd[i].gd.cid = CID_Python;</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :         label[i].text = (unichar_t *) _(&quot;_Python&quot;);</span>
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :         label[i].text_is_1byte = true;</span>
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :         label[i].text_in_resource = true;</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :         gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :         gcd[i].gd.handle_controlevent = SD_LangChanged;</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :         gcd[i++].creator = GRadioCreate;</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :         rarray[0] = &amp;gcd[i-1];</span>
+<span class="lineNum">     262 </span>            : 
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.x = 70; gcd[i].gd.pos.y = gcd[i-1].gd.pos.y;</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :         gcd[i].gd.flags = gg_visible | gg_enabled;      /* disabled if cv!=NULL later */</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :         gcd[i].gd.cid = CID_FF;</span>
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :         label[i].text = (unichar_t *) _(&quot;_FF&quot;);</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :         label[i].text_is_1byte = true;</span>
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :         label[i].text_in_resource = true;</span>
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :         gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :         gcd[i].gd.handle_controlevent = SD_LangChanged;</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :         gcd[i++].creator = GRadioCreate;</span>
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :         rarray[1] = &amp;gcd[i-1]; rarray[2] = GCD_Glue; rarray[3] = NULL;</span>
+<span class="lineNum">     273 </span>            : 
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :         boxes[2].gd.flags = gg_enabled | gg_visible;</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :         boxes[2].gd.u.boxelements = rarray;</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :         boxes[2].creator = GHBoxCreate;</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :         hvarray[l][0] = &amp;boxes[2]; hvarray[l++][1] = NULL;</span>
+<span class="lineNum">     278 </span>            : #endif
+<span class="lineNum">     279 </span>            : 
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 :         barray[0][0] = barray[1][0] = barray[0][6] = barray[1][6] = GCD_Glue;</span>
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :         barray[0][2] = barray[1][2] = barray[0][4] = barray[1][4] = GCD_Glue;</span>
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :         barray[0][1] = barray[0][5] = GCD_RowSpan;</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :         barray[0][7] = barray[1][7] = barray[2][0] = NULL;</span>
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.x = 25-3; gcd[i].gd.pos.y = SD_Height-32-3;</span>
+<span class="lineNum">     285 </span><span class="lineNoCov">          0 :         gcd[i].gd.flags = gg_visible | gg_enabled | gg_but_default;</span>
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :         label[i].text = (unichar_t *) _(&quot;_OK&quot;);</span>
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :         label[i].text_is_1byte = true;</span>
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :         label[i].text_in_resource = true;</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :         gcd[i].gd.mnemonic = 'O';</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :         gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :         gcd[i].gd.handle_controlevent = SD_OK;</span>
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :         gcd[i].gd.cid = CID_OK;</span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :         gcd[i++].creator = GButtonCreate;</span>
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :         barray[1][1] = &amp;gcd[i-1];</span>
+<span class="lineNum">     295 </span>            : 
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.x = -25; gcd[i].gd.pos.y = SD_Height-32;</span>
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 :         gcd[i].gd.flags = gg_visible | gg_enabled | gg_but_cancel;</span>
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :         label[i].text = (unichar_t *) _(&quot;_Cancel&quot;);</span>
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :         label[i].text_is_1byte = true;</span>
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :         label[i].text_in_resource = true;</span>
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :         gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 :         gcd[i].gd.mnemonic = 'C';</span>
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :         gcd[i].gd.handle_controlevent = SD_Cancel;</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :         gcd[i].gd.cid = CID_Cancel;</span>
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 :         gcd[i++].creator = GButtonCreate;</span>
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :         barray[1][5] = &amp;gcd[i-1];</span>
+<span class="lineNum">     307 </span>            : 
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.x = (SD_Width-GIntGetResource(_NUM_Buttonsize)*100/GIntGetResource(_NUM_ScaleFactor))/2; gcd[i].gd.pos.y = SD_Height-40;</span>
+<span class="lineNum">     309 </span><span class="lineNoCov">          0 :         gcd[i].gd.flags = gg_visible | gg_enabled;</span>
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 :         label[i].text = (unichar_t *) _(&quot;C_all...&quot;);</span>
+<span class="lineNum">     311 </span><span class="lineNoCov">          0 :         label[i].text_is_1byte = true;</span>
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 :         label[i].text_in_resource = true;</span>
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :         gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :         gcd[i].gd.mnemonic = 'a';</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :         gcd[i].gd.handle_controlevent = SD_Call;</span>
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :         gcd[i].gd.cid = CID_Call;</span>
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :         gcd[i++].creator = GButtonCreate;</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :         barray[0][3] = &amp;gcd[i-1];</span>
+<span class="lineNum">     319 </span>            : 
+<span class="lineNum">     320 </span>            : #if !defined(_NO_FFSCRIPT)
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.width = gcd[i].gd.pos.height = 5;</span>
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 :         gcd[i].gd.flags = gg_visible | gg_enabled;</span>
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :         gcd[i++].creator = GSpacerCreate;</span>
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :         barray[1][3] = &amp;gcd[i-1];</span>
+<span class="lineNum">     325 </span>            : #else
+<span class="lineNum">     326 </span>            :         barray[1][3] = GCD_RowSpan;
+<span class="lineNum">     327 </span>            : #endif
+<span class="lineNum">     328 </span>            : 
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :         barray[3][0] = NULL;</span>
+<span class="lineNum">     330 </span>            : 
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :         boxes[3].gd.flags = gg_enabled | gg_visible;</span>
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 :         boxes[3].gd.u.boxelements = barray[0];</span>
+<span class="lineNum">     333 </span><span class="lineNoCov">          0 :         boxes[3].creator = GHVBoxCreate;</span>
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :         hvarray[l][0] = &amp;boxes[3]; hvarray[l++][1] = NULL;</span>
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 :         hvarray[l][0] = NULL;</span>
+<span class="lineNum">     336 </span>            : 
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :         boxes[0].gd.pos.x = boxes[0].gd.pos.y = 2;</span>
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 :         boxes[0].gd.flags = gg_enabled | gg_visible;</span>
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 :         boxes[0].gd.u.boxelements = hvarray[0];</span>
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :         boxes[0].creator = GHVGroupCreate;</span>
+<span class="lineNum">     341 </span>            : 
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :         GGadgetsCreate(gw,boxes);</span>
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :         if ( boxes[2].ret!=NULL )</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :             GHVBoxSetExpandableCol(boxes[2].ret,gb_expandglue);</span>
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 :         GHVBoxSetExpandableCol(boxes[3].ret,gb_expandgluesame);</span>
+<span class="lineNum">     346 </span><span class="lineNoCov">          0 :         GHVBoxSetExpandableRow(boxes[0].ret,0);</span>
+<span class="lineNum">     347 </span><span class="lineNoCov">          0 :         GHVBoxFitWindow(boxes[0].ret);</span>
+<span class="lineNum">     348 </span>            :     }
+<span class="lineNum">     349 </span>            : #if !defined(_NO_FFSCRIPT) &amp;&amp; !defined(_NO_PYTHON)
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :     GGadgetSetEnabled(GWidgetGetControl(gw,CID_FF),cv==NULL);</span>
+<span class="lineNum">     351 </span>            : #endif
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :     sd.gw = gw;</span>
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 :     GDrawSetUserData(gw,&amp;sd);</span>
+<span class="lineNum">     354 </span><span class="lineNoCov">          0 :     GWidgetIndicateFocusGadget(GWidgetGetControl(gw,CID_Script));</span>
+<span class="lineNum">     355 </span>            : #if !defined(_NO_FFSCRIPT) &amp;&amp; !defined(_NO_PYTHON)
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :     _SD_LangChanged(&amp;sd);</span>
+<span class="lineNum">     357 </span>            : #endif
+<span class="lineNum">     358 </span><span class="lineNoCov">          0 :     GDrawSetVisible(gw,true);</span>
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 :     while ( !sd.done )</span>
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :         GDrawProcessOneEvent(NULL);</span>
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 :     GDrawSetVisible(gw,false);</span>
+<span class="lineNum">     362 </span>            : 
+<span class="lineNum">     363 </span>            :     /* Selection may be out of date, force a refresh */
+<span class="lineNum">     364 </span><span class="lineNoCov">          0 :     for ( list = fv_list; list!=NULL; list=(FontView *) list-&gt;b.next )</span>
+<span class="lineNum">     365 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(list-&gt;v,NULL,false);</span>
+<span class="lineNum">     366 </span><span class="lineNoCov">          0 :     GDrawSync(NULL);</span>
+<span class="lineNum">     367 </span><span class="lineNoCov">          0 :     GDrawProcessPendingEvents(NULL);</span>
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :     GDrawSetUserData(gw,NULL);</span>
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     370 </span>            : #endif  /* No scripting */
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

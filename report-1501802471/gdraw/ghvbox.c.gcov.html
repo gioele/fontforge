@@ -1,0 +1,794 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - gdraw/ghvbox.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gdraw</a> - ghvbox.c<span style="font-size: 80%;"> (source / <a href="ghvbox.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">433</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">21</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2006-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &quot;gdraw.h&quot;
+<span class="lineNum">      28 </span>            : #include &quot;ggadgetP.h&quot;
+<span class="lineNum">      29 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span>            : /* If the locale is hebrew or arabic should we lay out boxes right to left???*/
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            : #define GG_Glue         ((GGadget *) -1)        /* Special entries */
+<span class="lineNum">      34 </span>            : #define GG_ColSpan      ((GGadget *) -2)        /* for box elements */
+<span class="lineNum">      35 </span>            : #define GG_RowSpan      ((GGadget *) -3)        /* Must match those in ggadget.h */
+<span class="lineNum">      36 </span>            : #define GG_HPad10       ((GGadget *) -4)
+<span class="lineNum">      37 </span>            : 
+<span class="lineNum">      38 </span>            : static GBox hvgroup_box = GBOX_EMPTY; /* Don't initialize here */
+<span class="lineNum">      39 </span>            : static GBox hvbox_box = GBOX_EMPTY; /* Don't initialize here */
+<span class="lineNum">      40 </span>            : static int ghvbox_inited = false;
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            : GResInfo ghvgroupbox_ri = {
+<span class="lineNum">      43 </span>            :     NULL, &amp;ggadget_ri, NULL, NULL,
+<span class="lineNum">      44 </span>            :     &amp;hvgroup_box,
+<span class="lineNum">      45 </span>            :     NULL,
+<span class="lineNum">      46 </span>            :     NULL,
+<span class="lineNum">      47 </span>            :     NULL,
+<span class="lineNum">      48 </span>            :     N_(&quot;HV Group Box&quot;),
+<span class="lineNum">      49 </span>            :     N_(&quot;A box drawn around other gadgets&quot;),
+<span class="lineNum">      50 </span>            :     &quot;GGroup&quot;,
+<span class="lineNum">      51 </span>            :     &quot;Gdraw&quot;,
+<span class="lineNum">      52 </span>            :     false,
+<span class="lineNum">      53 </span>            :     omf_border_type|omf_border_shape|omf_padding|omf_main_background|omf_disabled_background,
+<span class="lineNum">      54 </span>            :     NULL,
+<span class="lineNum">      55 </span>            :     GBOX_EMPTY,
+<span class="lineNum">      56 </span>            :     NULL,
+<span class="lineNum">      57 </span>            :     NULL,
+<span class="lineNum">      58 </span>            :     NULL
+<a name="59"><span class="lineNum">      59 </span>            : };</a>
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 : static void _GHVBox_Init(void) {</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :     if ( ghvbox_inited )</span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :     _GGadgetCopyDefaultBox(&amp;hvgroup_box);</span>
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :     _GGadgetCopyDefaultBox(&amp;hvbox_box);</span>
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :     hvgroup_box.border_type = bt_engraved;</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :     hvbox_box.border_type = bt_none;</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :     hvbox_box.border_width = 0;</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :     hvgroup_box.border_shape = hvbox_box.border_shape = bs_rect;</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :     hvgroup_box.padding = 2;</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :     hvbox_box.padding = 0;</span>
+<span class="lineNum">      72 </span>            :     /*hvgroup_box.flags = hvbox_box.flags = 0;*/
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :     hvgroup_box.main_background = COLOR_TRANSPARENT;</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :     hvgroup_box.disabled_background = COLOR_TRANSPARENT;</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :     _GGadgetInitDefaultBox(&quot;GHVBox.&quot;,&amp;hvbox_box,NULL);</span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :     _GGadgetInitDefaultBox(&quot;GGroup.&quot;,&amp;hvgroup_box,NULL);</span>
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :     ghvbox_inited = true;</span>
+<a name="78"><span class="lineNum">      78 </span>            : }</a>
+<span class="lineNum">      79 </span>            : 
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 : static void GHVBox_destroy(GGadget *g) {</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :     GHVBox *gb = (GHVBox *) g;</span>
+<span class="lineNum">      82 </span>            :     int i;
+<span class="lineNum">      83 </span>            : 
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :     if ( gb-&gt;label != NULL )</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :         GGadgetDestroy( gb-&gt;label );</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;gb-&gt;rows*gb-&gt;cols; ++i )</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :         if ( gb-&gt;children[i]!=GG_Glue &amp;&amp; gb-&gt;children[i]!=GG_ColSpan &amp;&amp;</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :                 gb-&gt;children[i]!=GG_RowSpan &amp;&amp; gb-&gt;children[i]!=GG_HPad10 )</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :             GGadgetDestroy(gb-&gt;children[i]);</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :     free(gb-&gt;children);</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :     _ggadget_destroy(g);</span>
+<a name="92"><span class="lineNum">      92 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      93 </span>            : 
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 : static void GHVBoxMove(GGadget *g, int32 x, int32 y) {</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :     GHVBox *gb = (GHVBox *) g;</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :     int offx = x-g-&gt;r.x, offy = y-g-&gt;r.y;</span>
+<span class="lineNum">      97 </span>            :     int i;
+<span class="lineNum">      98 </span>            : 
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :     if ( gb-&gt;label!=NULL )</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :         GGadgetMove(gb-&gt;label,gb-&gt;label-&gt;inner.x+offx,gb-&gt;label-&gt;inner.y+offy);</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;gb-&gt;rows*gb-&gt;cols; ++i )</span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :         if ( gb-&gt;children[i]!=GG_Glue &amp;&amp; gb-&gt;children[i]!=GG_ColSpan &amp;&amp;</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :                 gb-&gt;children[i]!=GG_RowSpan &amp;&amp; gb-&gt;children[i]!=GG_HPad10 )</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :             GGadgetMove(gb-&gt;children[i],</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :                     gb-&gt;children[i]-&gt;r.x+offx, gb-&gt;children[i]-&gt;r.y+offy);</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :     _ggadget_move(g,x,y);</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     108 </span>            : 
+<span class="lineNum">     109 </span>            : struct sizedata {
+<span class="lineNum">     110 </span>            :     int extra_space;            /* a default button has &quot;extra_space&quot; */
+<span class="lineNum">     111 </span>            :     int min;                    /* This value includes padding */
+<span class="lineNum">     112 </span>            :     int sized;
+<span class="lineNum">     113 </span>            :     int allocated;
+<span class="lineNum">     114 </span>            :     int allglue;
+<span class="lineNum">     115 </span>            : };
+<span class="lineNum">     116 </span>            : 
+<span class="lineNum">     117 </span>            : struct sizeinfo {
+<span class="lineNum">     118 </span>            :     struct sizedata *cols;
+<span class="lineNum">     119 </span>            :     struct sizedata *rows;
+<span class="lineNum">     120 </span>            :     int label_height, label_width;
+<span class="lineNum">     121 </span>            :     int width, height;
+<span class="lineNum">     122 </span>            :     int minwidth, minheight;
+<a name="123"><span class="lineNum">     123 </span>            : };</a>
+<span class="lineNum">     124 </span>            : 
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 : static void GHVBoxGatherSizeInfo(GHVBox *gb,struct sizeinfo *si) {</span>
+<span class="lineNum">     126 </span>            :     int i,c,r,spanc, spanr, totc,totr, max, plus, extra, es;
+<span class="lineNum">     127 </span>            :     GRect outer;
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :     int ten = GDrawPointsToPixels(gb-&gt;g.base,10);</span>
+<span class="lineNum">     129 </span>            : 
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :     memset(si,0,sizeof(*si));</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :     si-&gt;cols = calloc(gb-&gt;cols,sizeof(struct sizedata));</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :     si-&gt;rows = calloc(gb-&gt;rows,sizeof(struct sizedata));</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :     for ( c=0; c&lt;gb-&gt;cols; ++c ) si-&gt;cols[c].allglue = true;</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :     for ( r=0; r&lt;gb-&gt;rows; ++r ) si-&gt;rows[r].allglue = true;</span>
+<span class="lineNum">     135 </span>            : 
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :     for ( r=0; r&lt;gb-&gt;rows; ++r ) {</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :         for ( c=0; c&lt;gb-&gt;cols; ++c ) {</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :             GGadget *g = gb-&gt;children[r*gb-&gt;cols+c];</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :             if ( g==GG_Glue ) {</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :                 if ( c+1!=gb-&gt;cols &amp;&amp; si-&gt;cols[c].min&lt;gb-&gt;hpad ) si-&gt;cols[c].min = gb-&gt;hpad;</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :                 if ( r+1!=gb-&gt;rows &amp;&amp; si-&gt;rows[r].min&lt;gb-&gt;vpad ) si-&gt;rows[r].min = gb-&gt;vpad;</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :             } else if ( g==GG_HPad10 ) {</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :                 if ( c+1!=gb-&gt;cols &amp;&amp; si-&gt;cols[c].min&lt;gb-&gt;hpad+ten ) si-&gt;cols[c].min = gb-&gt;hpad+ten;</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :                 if ( r+1!=gb-&gt;rows &amp;&amp; si-&gt;rows[r].min&lt;gb-&gt;vpad ) si-&gt;rows[r].min = gb-&gt;vpad+ten/2;</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :                 si-&gt;cols[c].allglue = false;</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :             } else if ( g==GG_ColSpan || g==GG_RowSpan )</span>
+<span class="lineNum">     147 </span>            :                 /* Skip it */;
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :             else if ( (r+1&lt;gb-&gt;rows &amp;&amp; gb-&gt;children[(r+1)*gb-&gt;cols+c]==GG_RowSpan) ||</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :                       (c+1&lt;gb-&gt;cols &amp;&amp; gb-&gt;children[r*gb-&gt;cols+c+1]==GG_ColSpan))</span>
+<span class="lineNum">     150 </span>            :                 /* This gadget spans some columns or rows. Come back later */;
+<span class="lineNum">     151 </span>            :             else {
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :                 GGadgetGetDesiredSize(g,&amp;outer,NULL);</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :                 es = GBoxExtraSpace(g);</span>
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :                 if ( c+1!=gb-&gt;cols &amp;&amp; g-&gt;state!=gs_invisible )</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :                     outer.width += gb-&gt;hpad;</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :                 if ( r+1!=gb-&gt;rows &amp;&amp; g-&gt;state!=gs_invisible )</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :                     outer.height += gb-&gt;vpad;</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :                 si-&gt;cols[c].allglue = false;</span>
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :                 if ( si-&gt;cols[c].extra_space&lt;es ) si-&gt;cols[c].extra_space=es;</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :                 if ( si-&gt;cols[c].min&lt;outer.width ) si-&gt;cols[c].min=outer.width;</span>
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :                 si-&gt;rows[r].allglue = false;</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :                 if ( si-&gt;rows[r].min&lt;outer.height ) si-&gt;rows[r].min=outer.height;</span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :                 if ( si-&gt;rows[r].extra_space&lt;es ) si-&gt;rows[r].extra_space=es;</span>
+<span class="lineNum">     164 </span>            :             }
+<span class="lineNum">     165 </span>            :         }
+<span class="lineNum">     166 </span>            :     }
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :     for ( r=0; r&lt;gb-&gt;rows; ++r ) {</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :         for ( c=0; c&lt;gb-&gt;cols; ++c ) {</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :             GGadget *g = gb-&gt;children[r*gb-&gt;cols+c];</span>
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :             if ( g==GG_Glue || g==GG_ColSpan || g==GG_RowSpan || g==GG_HPad10 )</span>
+<span class="lineNum">     172 </span>            :                 /* Skip it */;
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :             else if ( (r+1&lt;gb-&gt;rows &amp;&amp; gb-&gt;children[(r+1)*gb-&gt;cols+c]==GG_RowSpan) ||</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :                       (c+1&lt;gb-&gt;cols &amp;&amp; gb-&gt;children[r*gb-&gt;cols+c+1]==GG_ColSpan)) {</span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :                 si-&gt;rows[r].allglue = false;</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :                 totr = si-&gt;rows[r].min;</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :                 for ( spanr=1; r+spanr&lt;gb-&gt;rows &amp;&amp;</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :                         gb-&gt;children[(r+spanr)*gb-&gt;cols+c]==GG_RowSpan; ++spanr ) {</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :                     si-&gt;rows[r+spanr].allglue = false;</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :                     totr += si-&gt;rows[r+spanr].min;</span>
+<span class="lineNum">     181 </span>            :                 }
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :                 si-&gt;cols[c].allglue = false;</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :                 totc = si-&gt;cols[c].min;</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :                 for ( spanc=1; c+spanc&lt;gb-&gt;cols &amp;&amp;</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :                         gb-&gt;children[r*gb-&gt;cols+c+spanc]==GG_ColSpan; ++spanc ) {</span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :                     si-&gt;cols[c+spanc].allglue = false;</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :                     totc += si-&gt;cols[c+spanc].min;</span>
+<span class="lineNum">     188 </span>            :                 }
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :                 GGadgetGetDesiredSize(g,&amp;outer,NULL);</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :                 es = GBoxExtraSpace(g);</span>
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :                 if ( c+spanc!=gb-&gt;cols &amp;&amp; g-&gt;state!=gs_invisible )</span>
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :                     outer.width += gb-&gt;hpad;</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :                 if ( r+spanr!=gb-&gt;rows &amp;&amp; g-&gt;state!=gs_invisible )</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :                     outer.height += gb-&gt;vpad;</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :                 if ( outer.width&gt;totc ) {</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :                     plus = (outer.width-totc)/spanc;</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :                     extra = (outer.width-totc-spanc*plus);</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :                     for ( i=0; i&lt;spanc; ++i ) {</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :                         si-&gt;cols[c+i].min += plus + (extra&gt;0);</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :                         --extra;</span>
+<span class="lineNum">     201 </span>            :                     }
+<span class="lineNum">     202 </span>            :                 }
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :                 if ( outer.height&gt;totr ) {</span>
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :                     plus = (outer.height-totr)/spanr;</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :                     extra = (outer.height-totr-spanr*plus);</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :                     for ( i=0; i&lt;spanr; ++i ) {</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :                         si-&gt;rows[r+i].min += plus + (extra&gt;0);</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :                         --extra;</span>
+<span class="lineNum">     209 </span>            :                     }
+<span class="lineNum">     210 </span>            :                 }
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :                 if ( es!=0 ) {</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :                     for ( i=0; i&lt;spanc; ++i ) {</span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :                         if ( es&gt;si-&gt;cols[c+i].extra_space )</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :                             si-&gt;cols[c+i].extra_space = es;</span>
+<span class="lineNum">     215 </span>            :                     }
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :                     for ( i=0; i&lt;spanr; ++i ) {</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :                         if ( es&gt;si-&gt;rows[r+i].extra_space )</span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :                             si-&gt;rows[r+i].extra_space = es;</span>
+<span class="lineNum">     219 </span>            :                     }
+<span class="lineNum">     220 </span>            :                 }
+<span class="lineNum">     221 </span>            :             }
+<span class="lineNum">     222 </span>            :         }
+<span class="lineNum">     223 </span>            :     }
+<span class="lineNum">     224 </span>            : 
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 :     if ( gb-&gt;label!=NULL ) {</span>
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :         GGadgetGetDesiredSize(gb-&gt;label,&amp;outer,NULL);</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :         totc = 0;</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :         for ( c=0; c&lt;gb-&gt;cols ; ++c )</span>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :             totc += si-&gt;cols[c].min;</span>
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :         outer.width += 20;              /* Set back on each side */</span>
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :         if ( outer.width&gt;totc ) {</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :             plus = (outer.width-totc)/gb-&gt;cols;</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :             extra = (outer.width-totc-gb-&gt;cols*plus);</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;gb-&gt;cols; ++i ) {</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :                 si-&gt;cols[i].min += plus + (extra&gt;0);</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :                 --extra;</span>
+<span class="lineNum">     237 </span>            :             }
+<span class="lineNum">     238 </span>            :         }
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :         si-&gt;label_height = outer.height;</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :         si-&gt;label_width = outer.width;</span>
+<span class="lineNum">     241 </span>            :     }
+<span class="lineNum">     242 </span>            : 
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :     for ( max=c=0; c&lt;gb-&gt;cols; ++c )</span>
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :         si-&gt;cols[c].sized = si-&gt;cols[c].min;</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :     for ( max=r=0; r&lt;gb-&gt;rows; ++r )</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :         si-&gt;rows[r].sized = si-&gt;rows[r].min;</span>
+<span class="lineNum">     247 </span>            : 
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :     if ( gb-&gt;grow_col==gb_samesize ) {</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :         for ( max=c=0; c&lt;gb-&gt;cols; ++c )</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :             if ( max&lt;si-&gt;cols[c].sized ) max = si-&gt;cols[c].sized;</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :         for ( c=0; c&lt;gb-&gt;cols; ++c )</span>
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :             if ( si-&gt;cols[c].min!=0 || si-&gt;cols[c].allglue )</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :                 si-&gt;cols[c].sized = max;</span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :     } else if ( gb-&gt;grow_col==gb_expandgluesame ) {</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :         for ( max=c=0; c&lt;gb-&gt;cols; ++c )</span>
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :             if ( max&lt;si-&gt;cols[c].sized &amp;&amp; !si-&gt;cols[c].allglue ) max = si-&gt;cols[c].sized;</span>
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :         for ( c=0; c&lt;gb-&gt;cols; ++c )</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :             if ( !si-&gt;cols[c].allglue &amp;&amp; si-&gt;cols[c].min!=0 )     /* Must have at least one visible element */</span>
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :                 si-&gt;cols[c].sized = max;</span>
+<span class="lineNum">     260 </span>            :     }
+<span class="lineNum">     261 </span>            : 
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :     if ( gb-&gt;grow_row==gb_samesize ) {</span>
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :         for ( max=r=0; r&lt;gb-&gt;rows; ++r )</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :             if ( max&lt;si-&gt;rows[r].sized ) max = si-&gt;rows[r].sized;</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :         for ( r=0; r&lt;gb-&gt;rows; ++r )</span>
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :             if ( si-&gt;rows[r].min!=0 || si-&gt;rows[r].allglue )</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :                 si-&gt;rows[r].sized = max;</span>
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :     } else if ( gb-&gt;grow_row==gb_expandgluesame ) {</span>
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :         for ( max=r=0; r&lt;gb-&gt;rows; ++r )</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :             if ( max&lt;si-&gt;rows[r].sized &amp;&amp; !si-&gt;rows[r].allglue ) max = si-&gt;rows[r].sized;</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :         for ( r=0; r&lt;gb-&gt;rows; ++r )</span>
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :             if ( !si-&gt;rows[r].allglue &amp;&amp; si-&gt;rows[r].min&gt;0 )</span>
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :                 si-&gt;rows[r].sized = max;</span>
+<span class="lineNum">     274 </span>            :     }
+<span class="lineNum">     275 </span>            : 
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :     for ( i=si-&gt;width = si-&gt;minwidth = 0; i&lt;gb-&gt;cols; ++i ) {</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :         si-&gt;width += si-&gt;cols[i].sized;</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :         si-&gt;minwidth += si-&gt;cols[i].min;</span>
+<span class="lineNum">     279 </span>            :     }
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 :     for ( i=0, si-&gt;height=si-&gt;minheight = si-&gt;label_height; i&lt;gb-&gt;rows; ++i ) {</span>
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :         si-&gt;height += si-&gt;rows[i].sized;</span>
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :         si-&gt;minheight += si-&gt;rows[i].min;</span>
+<span class="lineNum">     283 </span>            :     }
+<a name="284"><span class="lineNum">     284 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     285 </span>            : 
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 : static void GHVBoxResize(GGadget *g, int32 width, int32 height) {</span>
+<span class="lineNum">     287 </span>            :     struct sizeinfo si;
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :     GHVBox *gb = (GHVBox *) g;</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :     int bp = GBoxBorderWidth(g-&gt;base,g-&gt;box);</span>
+<span class="lineNum">     290 </span>            :     int i,c,r,spanc, spanr, totc,totr, glue_cnt, plus, extra;
+<span class="lineNum">     291 </span>            :     int x,y;
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :     int old_enabled = GDrawEnableExposeRequests(g-&gt;base,false);</span>
+<span class="lineNum">     293 </span>            : 
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :     GHVBoxGatherSizeInfo(gb,&amp;si);</span>
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :     width -= 2*bp; height -= 2*bp;</span>
+<span class="lineNum">     296 </span>            : 
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 :     if(width &lt; si.minwidth) width = si.minwidth;</span>
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :     if(height &lt; si.minheight) height = si.minheight;</span>
+<span class="lineNum">     299 </span>            : 
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :     gb-&gt;g.inner.x = gb-&gt;g.r.x + bp; gb-&gt;g.inner.y = gb-&gt;g.r.y + bp;</span>
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :     if ( gb-&gt;label!=NULL ) {</span>
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 :         gb-&gt;label_height = si.label_height;</span>
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :         g-&gt;inner.y += si.label_height;</span>
+<span class="lineNum">     304 </span>            :     }
+<span class="lineNum">     305 </span>            : 
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :     if ( si.width!=width ) {</span>
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :         int vcols=0;</span>
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;gb-&gt;cols-1; ++i )</span>
+<span class="lineNum">     309 </span><span class="lineNoCov">          0 :             if ( si.cols[i].sized&gt;0 )</span>
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 :                 ++vcols;</span>
+<span class="lineNum">     311 </span><span class="lineNoCov">          0 :         int vcols1 = vcols;</span>
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 :         if(si.cols[gb-&gt;cols-1].sized &gt; 0)</span>
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :             ++ vcols1;</span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :         if ( width&lt;si.width ) {</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;gb-&gt;cols; ++i )</span>
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :                 si.cols[i].sized = si.cols[i].min;</span>
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :             si.width = si.minwidth;</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :             if ( width&lt;si.width &amp;&amp; gb-&gt;hpad&gt;1 &amp;&amp; vcols&gt;0 ) {</span>
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :                 int reduce_pad = (si.width-width)/vcols + 1;</span>
+<span class="lineNum">     320 </span><span class="lineNoCov">          0 :                 if ( reduce_pad&gt;gb-&gt;hpad-1 ) reduce_pad = gb-&gt;hpad-1;</span>
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 :                 for ( i=0; i&lt;gb-&gt;cols-1; ++i )</span>
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 :                     if ( si.cols[i].sized &gt; 0 )</span>
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :                         si.cols[i].sized -= reduce_pad;</span>
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :                 si.width -= vcols*reduce_pad;</span>
+<span class="lineNum">     325 </span>            :             }
+<span class="lineNum">     326 </span>            :         }
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :         if((width &gt; si.width) &amp;&amp; (gb-&gt;grow_col==gb_expandglue || gb-&gt;grow_col==gb_expandgluesame )) {</span>
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :             for ( i=glue_cnt=0; i&lt;gb-&gt;cols; ++i )</span>
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :                 if ( si.cols[i].allglue )</span>
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 :                     ++glue_cnt;</span>
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :             if ( glue_cnt!=0 ) {</span>
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 :                 plus = (width-si.width)/glue_cnt;</span>
+<span class="lineNum">     333 </span><span class="lineNoCov">          0 :                 extra = (width-si.width-glue_cnt*plus);</span>
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :                 for ( i=0; i&lt;gb-&gt;cols; ++i ) if ( si.cols[i].allglue ) {</span>
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 :                     si.cols[i].sized += plus + (extra&gt;0);</span>
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :                     si.width += plus + (extra&gt;0);</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :                     --extra;</span>
+<span class="lineNum">     338 </span>            :                 }
+<span class="lineNum">     339 </span>            :             }
+<span class="lineNum">     340 </span>            :         } 
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :         if ((width != si.width) &amp;&amp; gb-&gt;grow_col&gt;=0 ) {</span>
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :             int * ss = &amp;(si.cols[gb-&gt;grow_col].sized);</span>
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :             int w = si.width - *ss;</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :             *ss += (width-si.width);</span>
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 :             if(*ss &lt; gb-&gt;hpad + 3)</span>
+<span class="lineNum">     346 </span><span class="lineNoCov">          0 :                 *ss = gb-&gt;hpad + 3;</span>
+<span class="lineNum">     347 </span><span class="lineNoCov">          0 :             si.width = w + *ss;</span>
+<span class="lineNum">     348 </span>            :         } 
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :         if ((width &gt; si.width) &amp;&amp; (vcols1!=0)) {</span>
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :             plus = (width-si.width)/vcols1;</span>
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :             extra = (width-si.width-vcols1*plus);</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;gb-&gt;cols; ++i ) {</span>
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 :                 if ( si.cols[i].sized&gt;0 ) {</span>
+<span class="lineNum">     354 </span><span class="lineNoCov">          0 :                     si.cols[i].sized += plus + (extra&gt;0);</span>
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :                     si.width += plus + (extra&gt;0);</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :                     --extra;</span>
+<span class="lineNum">     357 </span>            :                 }
+<span class="lineNum">     358 </span>            :             }
+<span class="lineNum">     359 </span>            :         }
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :         width = si.width;</span>
+<span class="lineNum">     361 </span>            :     }
+<span class="lineNum">     362 </span>            : 
+<span class="lineNum">     363 </span><span class="lineNoCov">          0 :     if ( si.height!=height ) {</span>
+<span class="lineNum">     364 </span><span class="lineNoCov">          0 :         int vrows=0;</span>
+<span class="lineNum">     365 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;gb-&gt;rows-1; ++i )</span>
+<span class="lineNum">     366 </span><span class="lineNoCov">          0 :             if ( si.rows[i].sized&gt;0 )</span>
+<span class="lineNum">     367 </span><span class="lineNoCov">          0 :                 ++vrows;</span>
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :         int vrows1 = vrows;</span>
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 :         if(si.rows[gb-&gt;rows-1].sized &gt; 0)</span>
+<span class="lineNum">     370 </span><span class="lineNoCov">          0 :             ++ vrows1;</span>
+<span class="lineNum">     371 </span><span class="lineNoCov">          0 :         if ( height&lt;si.height ) {</span>
+<span class="lineNum">     372 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;gb-&gt;rows; ++i )</span>
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 :                 si.rows[i].sized = si.rows[i].min;</span>
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 :             si.height = si.minheight;</span>
+<span class="lineNum">     375 </span><span class="lineNoCov">          0 :             if ( height&lt;si.height &amp;&amp; gb-&gt;vpad&gt;1 &amp;&amp; vrows&gt;0 ) {</span>
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 :                 int reduce_pad = (si.height-height)/vrows + 1;</span>
+<span class="lineNum">     377 </span><span class="lineNoCov">          0 :                 if ( reduce_pad&gt;gb-&gt;vpad-1 ) reduce_pad = gb-&gt;vpad-1;</span>
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 :                 for ( i=0; i&lt;gb-&gt;rows-1; ++i )</span>
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :                     if ( si.rows[i].sized &gt; 0 )</span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :                         si.rows[i].sized -= reduce_pad;</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :                 si.height -= vrows*reduce_pad;</span>
+<span class="lineNum">     382 </span>            :             }
+<span class="lineNum">     383 </span>            :         }
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :         if((height &gt; si.height) &amp;&amp; (gb-&gt;grow_row==gb_expandglue || gb-&gt;grow_row==gb_expandgluesame )) {</span>
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :             for ( i=glue_cnt=0; i&lt;gb-&gt;rows; ++i )</span>
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :                 if ( si.rows[i].allglue )</span>
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :                     ++glue_cnt;</span>
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 :             if ( glue_cnt!=0 ){</span>
+<span class="lineNum">     389 </span><span class="lineNoCov">          0 :                 plus = (height-si.height)/glue_cnt;</span>
+<span class="lineNum">     390 </span><span class="lineNoCov">          0 :                 extra = (height-si.height-glue_cnt*plus);</span>
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 :                 for ( i=0; i&lt;gb-&gt;rows; ++i ) if ( si.rows[i].allglue ) {</span>
+<span class="lineNum">     392 </span><span class="lineNoCov">          0 :                     si.rows[i].sized += plus + (extra&gt;0);</span>
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 :                     si.height += plus + (extra&gt;0);</span>
+<span class="lineNum">     394 </span><span class="lineNoCov">          0 :                     --extra;</span>
+<span class="lineNum">     395 </span>            :                 }
+<span class="lineNum">     396 </span>            :             }
+<span class="lineNum">     397 </span>            :         } 
+<span class="lineNum">     398 </span><span class="lineNoCov">          0 :         if ((height != si.height) &amp;&amp; gb-&gt;grow_row&gt;=0 ) {</span>
+<span class="lineNum">     399 </span><span class="lineNoCov">          0 :             int * ss = &amp;(si.rows[gb-&gt;grow_row].sized);</span>
+<span class="lineNum">     400 </span><span class="lineNoCov">          0 :             int h = si.height - *ss;</span>
+<span class="lineNum">     401 </span><span class="lineNoCov">          0 :             *ss += (height-si.height);</span>
+<span class="lineNum">     402 </span><span class="lineNoCov">          0 :             if(*ss &lt; gb-&gt;vpad + 3)</span>
+<span class="lineNum">     403 </span><span class="lineNoCov">          0 :                 *ss = gb-&gt;vpad + 3;</span>
+<span class="lineNum">     404 </span><span class="lineNoCov">          0 :             si.height = h + *ss;</span>
+<span class="lineNum">     405 </span>            :         } 
+<span class="lineNum">     406 </span><span class="lineNoCov">          0 :         if ((height &gt; si.height) &amp;&amp; (vrows1!=0)) {</span>
+<span class="lineNum">     407 </span><span class="lineNoCov">          0 :             plus = (height-si.height)/vrows1;</span>
+<span class="lineNum">     408 </span><span class="lineNoCov">          0 :             extra = (height-si.height-vrows1*plus);</span>
+<span class="lineNum">     409 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;gb-&gt;rows; ++i ) {</span>
+<span class="lineNum">     410 </span><span class="lineNoCov">          0 :                 if ( si.rows[i].sized&gt;0 ) {</span>
+<span class="lineNum">     411 </span><span class="lineNoCov">          0 :                     si.rows[i].sized += plus + (extra&gt;0);</span>
+<span class="lineNum">     412 </span><span class="lineNoCov">          0 :                     si.height += plus + (extra&gt;0);</span>
+<span class="lineNum">     413 </span><span class="lineNoCov">          0 :                     --extra;</span>
+<span class="lineNum">     414 </span>            :                 }
+<span class="lineNum">     415 </span>            :             }
+<span class="lineNum">     416 </span>            :         }
+<span class="lineNum">     417 </span><span class="lineNoCov">          0 :         height = si.height;</span>
+<span class="lineNum">     418 </span>            :     }
+<span class="lineNum">     419 </span>            : 
+<span class="lineNum">     420 </span><span class="lineNoCov">          0 :     y = gb-&gt;g.inner.y;</span>
+<span class="lineNum">     421 </span><span class="lineNoCov">          0 :     if ( gb-&gt;label!=NULL ) {</span>
+<span class="lineNum">     422 </span><span class="lineNoCov">          0 :         if ( gb-&gt;label-&gt;state!=gs_invisible )</span>
+<span class="lineNum">     423 </span><span class="lineNoCov">          0 :             GGadgetResize( gb-&gt;label, si.label_width, si.label_height);</span>
+<span class="lineNum">     424 </span><span class="lineNoCov">          0 :         GGadgetMove( gb-&gt;label, gb-&gt;g.inner.x+10, y-si.label_height-bp/2);</span>
+<span class="lineNum">     425 </span>            :     }
+<span class="lineNum">     426 </span><span class="lineNoCov">          0 :     for ( r=0; r&lt;gb-&gt;rows; ++r ) {</span>
+<span class="lineNum">     427 </span><span class="lineNoCov">          0 :         x = gb-&gt;g.inner.x;</span>
+<span class="lineNum">     428 </span><span class="lineNoCov">          0 :         for ( c=0; c&lt;gb-&gt;cols; ++c ) {</span>
+<span class="lineNum">     429 </span><span class="lineNoCov">          0 :             GGadget *g = gb-&gt;children[r*gb-&gt;cols+c];</span>
+<span class="lineNum">     430 </span><span class="lineNoCov">          0 :             if ( g==GG_Glue || g==GG_ColSpan || g==GG_RowSpan || g==GG_HPad10 )</span>
+<span class="lineNum">     431 </span>            :                 /* Skip it */;
+<span class="lineNum">     432 </span>            :             else {
+<span class="lineNum">     433 </span>            :                 int xes, yes, es;
+<span class="lineNum">     434 </span><span class="lineNoCov">          0 :                 totr = si.rows[r].sized;</span>
+<span class="lineNum">     435 </span><span class="lineNoCov">          0 :                 for ( spanr=1; r+spanr&lt;gb-&gt;rows &amp;&amp;</span>
+<span class="lineNum">     436 </span><span class="lineNoCov">          0 :                         gb-&gt;children[(r+spanr)*gb-&gt;cols+c]==GG_RowSpan; ++spanr )</span>
+<span class="lineNum">     437 </span><span class="lineNoCov">          0 :                     totr += si.rows[r+spanr].sized;</span>
+<span class="lineNum">     438 </span><span class="lineNoCov">          0 :                 totc = si.cols[c].sized;</span>
+<span class="lineNum">     439 </span><span class="lineNoCov">          0 :                 for ( spanc=1; c+spanc&lt;gb-&gt;cols &amp;&amp;</span>
+<span class="lineNum">     440 </span><span class="lineNoCov">          0 :                         gb-&gt;children[r*gb-&gt;cols+c+spanc]==GG_ColSpan; ++spanc )</span>
+<span class="lineNum">     441 </span><span class="lineNoCov">          0 :                     totc += si.cols[c+spanc].sized;</span>
+<span class="lineNum">     442 </span><span class="lineNoCov">          0 :                 if ( r+spanr!=gb-&gt;rows ) totr -= gb-&gt;vpad;</span>
+<span class="lineNum">     443 </span><span class="lineNoCov">          0 :                 if ( c+spanc!=gb-&gt;cols ) totc -= gb-&gt;hpad;</span>
+<span class="lineNum">     444 </span><span class="lineNoCov">          0 :                 es = GBoxExtraSpace(g);</span>
+<span class="lineNum">     445 </span><span class="lineNoCov">          0 :                 xes = si.cols[c].extra_space - es;</span>
+<span class="lineNum">     446 </span><span class="lineNoCov">          0 :                 yes = si.rows[r].extra_space - es;</span>
+<span class="lineNum">     447 </span><span class="lineNoCov">          0 :                 if ( g-&gt;state!=gs_invisible )</span>
+<span class="lineNum">     448 </span><span class="lineNoCov">          0 :                     GGadgetResize(g,totc-2*xes,totr-2*yes);</span>
+<span class="lineNum">     449 </span><span class="lineNoCov">          0 :                 GGadgetMove(g,x+xes,y+yes);</span>
+<span class="lineNum">     450 </span>            :             }
+<span class="lineNum">     451 </span><span class="lineNoCov">          0 :             x += si.cols[c].sized;</span>
+<span class="lineNum">     452 </span>            :         }
+<span class="lineNum">     453 </span><span class="lineNoCov">          0 :         y += si.rows[r].sized;</span>
+<span class="lineNum">     454 </span>            :     }
+<span class="lineNum">     455 </span>            : 
+<span class="lineNum">     456 </span><span class="lineNoCov">          0 :     free(si.cols); free(si.rows);</span>
+<span class="lineNum">     457 </span>            : 
+<span class="lineNum">     458 </span><span class="lineNoCov">          0 :     gb-&gt;g.inner.width = width; gb-&gt;g.inner.height = height;</span>
+<span class="lineNum">     459 </span><span class="lineNoCov">          0 :     gb-&gt;g.r.width = width + 2*bp; gb-&gt;g.r.height = height + 2*bp;</span>
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 :     GDrawEnableExposeRequests(g-&gt;base,old_enabled);</span>
+<span class="lineNum">     461 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(g-&gt;base,&amp;g-&gt;r,false);</span>
+<a name="462"><span class="lineNum">     462 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     463 </span>            : 
+<span class="lineNum">     464 </span><span class="lineNoCov">          0 : static void GHVBoxGetDesiredSize(GGadget *g, GRect *outer, GRect *inner) {</span>
+<span class="lineNum">     465 </span>            :     struct sizeinfo si;
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :     GHVBox *gb = (GHVBox *) g;</span>
+<span class="lineNum">     467 </span><span class="lineNoCov">          0 :     int bp = GBoxBorderWidth(g-&gt;base,g-&gt;box);</span>
+<span class="lineNum">     468 </span>            : 
+<span class="lineNum">     469 </span><span class="lineNoCov">          0 :     GHVBoxGatherSizeInfo(gb,&amp;si);</span>
+<span class="lineNum">     470 </span><span class="lineNoCov">          0 :     if ( g-&gt;desired_width&gt;0 ) si.width = g-&gt;desired_width;</span>
+<span class="lineNum">     471 </span><span class="lineNoCov">          0 :     if ( g-&gt;desired_height&gt;0 ) si.height = g-&gt;desired_height;</span>
+<span class="lineNum">     472 </span>            : 
+<span class="lineNum">     473 </span><span class="lineNoCov">          0 :     if ( inner!=NULL ) {</span>
+<span class="lineNum">     474 </span><span class="lineNoCov">          0 :         inner-&gt;x = inner-&gt;y = 0;</span>
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 :         inner-&gt;width = si.width; inner-&gt;height = si.height;</span>
+<span class="lineNum">     476 </span>            :     }
+<span class="lineNum">     477 </span><span class="lineNoCov">          0 :     if ( outer!=NULL ) {</span>
+<span class="lineNum">     478 </span><span class="lineNoCov">          0 :         outer-&gt;x = outer-&gt;y = 0;</span>
+<span class="lineNum">     479 </span><span class="lineNoCov">          0 :         outer-&gt;width = si.width+2*bp; outer-&gt;height = si.height+2*bp;</span>
+<span class="lineNum">     480 </span>            :     }
+<span class="lineNum">     481 </span><span class="lineNoCov">          0 :     free(si.cols); free(si.rows);</span>
+<a name="482"><span class="lineNum">     482 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     483 </span>            : 
+<span class="lineNum">     484 </span><span class="lineNoCov">          0 : static int GHVBoxFillsWindow(GGadget *g) {</span>
+<span class="lineNum">     485 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="486"><span class="lineNum">     486 </span>            : }</a>
+<span class="lineNum">     487 </span>            : 
+<span class="lineNum">     488 </span><span class="lineNoCov">          0 : static int expose_nothing(GWindow pixmap, GGadget *g, GEvent *event) {</span>
+<span class="lineNum">     489 </span><span class="lineNoCov">          0 :     GHVBox *gb = (GHVBox *) g;</span>
+<span class="lineNum">     490 </span>            :     GRect r;
+<span class="lineNum">     491 </span>            : 
+<span class="lineNum">     492 </span><span class="lineNoCov">          0 :     if ( g-&gt;state==gs_invisible )</span>
+<span class="lineNum">     493 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     494 </span>            : 
+<span class="lineNum">     495 </span><span class="lineNoCov">          0 :     if ( gb-&gt;label==NULL )</span>
+<span class="lineNum">     496 </span><span class="lineNoCov">          0 :         GBoxDrawBorder(pixmap,&amp;g-&gt;r,g-&gt;box,g-&gt;state,false);</span>
+<span class="lineNum">     497 </span>            :     else {
+<span class="lineNum">     498 </span><span class="lineNoCov">          0 :         r = g-&gt;r;</span>
+<span class="lineNum">     499 </span><span class="lineNoCov">          0 :         r.y += gb-&gt;label_height/2;</span>
+<span class="lineNum">     500 </span><span class="lineNoCov">          0 :         r.height -= gb-&gt;label_height/2;</span>
+<span class="lineNum">     501 </span><span class="lineNoCov">          0 :         GBoxDrawBorder(pixmap,&amp;r,g-&gt;box,g-&gt;state,false);</span>
+<span class="lineNum">     502 </span>            :         /* Background is transperant */
+<span class="lineNum">     503 </span><span class="lineNoCov">          0 :         (gb-&gt;label-&gt;funcs-&gt;handle_expose)(pixmap,gb-&gt;label,event);</span>
+<span class="lineNum">     504 </span>            :     }
+<span class="lineNum">     505 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     506 </span>            : }
+<span class="lineNum">     507 </span>            : 
+<span class="lineNum">     508 </span>            : struct gfuncs ghvbox_funcs = {
+<span class="lineNum">     509 </span>            :     0,
+<span class="lineNum">     510 </span>            :     sizeof(struct gfuncs),
+<span class="lineNum">     511 </span>            : 
+<span class="lineNum">     512 </span>            :     expose_nothing,     /* Expose */
+<span class="lineNum">     513 </span>            :     _ggadget_noop,      /* Mouse */
+<span class="lineNum">     514 </span>            :     _ggadget_noop,      /* Key */
+<span class="lineNum">     515 </span>            :     NULL,
+<span class="lineNum">     516 </span>            :     NULL,               /* Focus */
+<span class="lineNum">     517 </span>            :     NULL,
+<span class="lineNum">     518 </span>            :     NULL,
+<span class="lineNum">     519 </span>            : 
+<span class="lineNum">     520 </span>            :     _ggadget_redraw,
+<span class="lineNum">     521 </span>            :     GHVBoxMove,
+<span class="lineNum">     522 </span>            :     GHVBoxResize,
+<span class="lineNum">     523 </span>            :     _ggadget_setvisible,
+<span class="lineNum">     524 </span>            :     _ggadget_setenabled,
+<span class="lineNum">     525 </span>            :     _ggadget_getsize,
+<span class="lineNum">     526 </span>            :     _ggadget_getinnersize,
+<span class="lineNum">     527 </span>            : 
+<span class="lineNum">     528 </span>            :     GHVBox_destroy,
+<span class="lineNum">     529 </span>            : 
+<span class="lineNum">     530 </span>            :     NULL,
+<span class="lineNum">     531 </span>            :     NULL,
+<span class="lineNum">     532 </span>            :     NULL,
+<span class="lineNum">     533 </span>            :     NULL,
+<span class="lineNum">     534 </span>            :     NULL,
+<span class="lineNum">     535 </span>            : 
+<span class="lineNum">     536 </span>            :     NULL,
+<span class="lineNum">     537 </span>            :     NULL,
+<span class="lineNum">     538 </span>            : 
+<span class="lineNum">     539 </span>            :     NULL,
+<span class="lineNum">     540 </span>            :     NULL,
+<span class="lineNum">     541 </span>            :     NULL,
+<span class="lineNum">     542 </span>            :     NULL,
+<span class="lineNum">     543 </span>            :     NULL,
+<span class="lineNum">     544 </span>            :     NULL,
+<span class="lineNum">     545 </span>            :     NULL,
+<span class="lineNum">     546 </span>            :     NULL,
+<span class="lineNum">     547 </span>            :     NULL,
+<span class="lineNum">     548 </span>            :     NULL,
+<span class="lineNum">     549 </span>            :     NULL,
+<span class="lineNum">     550 </span>            : 
+<span class="lineNum">     551 </span>            :     GHVBoxGetDesiredSize,
+<span class="lineNum">     552 </span>            :     _ggadget_setDesiredSize,
+<span class="lineNum">     553 </span>            :     GHVBoxFillsWindow,
+<span class="lineNum">     554 </span>            :     NULL
+<a name="555"><span class="lineNum">     555 </span>            : };</a>
+<span class="lineNum">     556 </span>            : 
+<span class="lineNum">     557 </span><span class="lineNoCov">          0 : void GHVBoxSetExpandableCol(GGadget *g,int col) {</span>
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :     GHVBox *gb = (GHVBox *) g;</span>
+<span class="lineNum">     559 </span><span class="lineNoCov">          0 :     if ( col&lt;gb-&gt;cols )</span>
+<span class="lineNum">     560 </span><span class="lineNoCov">          0 :         gb-&gt;grow_col = col;</span>
+<a name="561"><span class="lineNum">     561 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     562 </span>            : 
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 : void GHVBoxSetExpandableRow(GGadget *g,int row) {</span>
+<span class="lineNum">     564 </span><span class="lineNoCov">          0 :     GHVBox *gb = (GHVBox *) g;</span>
+<span class="lineNum">     565 </span><span class="lineNoCov">          0 :     if ( row &lt; gb-&gt;rows )</span>
+<span class="lineNum">     566 </span><span class="lineNoCov">          0 :         gb-&gt;grow_row = row;</span>
+<a name="567"><span class="lineNum">     567 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     568 </span>            : 
+<span class="lineNum">     569 </span><span class="lineNoCov">          0 : void GHVBoxSetPadding(GGadget *g,int hpad, int vpad) {</span>
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 :     GHVBox *gb = (GHVBox *) g;</span>
+<span class="lineNum">     571 </span><span class="lineNoCov">          0 :     gb-&gt;hpad = hpad;</span>
+<span class="lineNum">     572 </span><span class="lineNoCov">          0 :     gb-&gt;vpad = vpad;</span>
+<a name="573"><span class="lineNum">     573 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     574 </span>            : 
+<span class="lineNum">     575 </span><span class="lineNoCov">          0 : static GHVBox *_GHVBoxCreate(struct gwindow *base, GGadgetData *gd,void *data,</span>
+<span class="lineNum">     576 </span>            :         int hcnt, int vcnt, GBox *def_box) {
+<span class="lineNum">     577 </span><span class="lineNoCov">          0 :     GHVBox *gb = calloc(1,sizeof(GHVBox));</span>
+<span class="lineNum">     578 </span>            :     int i, h, v;
+<span class="lineNum">     579 </span><span class="lineNoCov">          0 :     GGadgetCreateData *label = (GGadgetCreateData *) (gd-&gt;label);</span>
+<span class="lineNum">     580 </span>            : 
+<span class="lineNum">     581 </span><span class="lineNoCov">          0 :     if ( !ghvbox_inited )</span>
+<span class="lineNum">     582 </span><span class="lineNoCov">          0 :         _GHVBox_Init();</span>
+<span class="lineNum">     583 </span>            : 
+<span class="lineNum">     584 </span><span class="lineNoCov">          0 :     gd-&gt;label = NULL;</span>
+<span class="lineNum">     585 </span><span class="lineNoCov">          0 :     gb-&gt;g.funcs = &amp;ghvbox_funcs;</span>
+<span class="lineNum">     586 </span><span class="lineNoCov">          0 :     _GGadget_Create(&amp;gb-&gt;g,base,gd,data,def_box);</span>
+<span class="lineNum">     587 </span><span class="lineNoCov">          0 :     gb-&gt;rows = vcnt; gb-&gt;cols = hcnt;</span>
+<span class="lineNum">     588 </span><span class="lineNoCov">          0 :     gb-&gt;grow_col = gb-&gt;grow_row = gb_expandall;</span>
+<span class="lineNum">     589 </span><span class="lineNoCov">          0 :     gb-&gt;hpad = gb-&gt;vpad = GDrawPointsToPixels(base,2);</span>
+<span class="lineNum">     590 </span>            : 
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 :     gb-&gt;g.takes_input = false; gb-&gt;g.takes_keyboard = false; gb-&gt;g.focusable = false;</span>
+<span class="lineNum">     592 </span>            : 
+<span class="lineNum">     593 </span><span class="lineNoCov">          0 :     if ( label != NULL ) {</span>
+<span class="lineNum">     594 </span><span class="lineNoCov">          0 :         gb-&gt;label = label-&gt;ret =</span>
+<span class="lineNum">     595 </span><span class="lineNoCov">          0 :                 (label-&gt;creator)(base,&amp;label-&gt;gd,label-&gt;data);</span>
+<span class="lineNum">     596 </span><span class="lineNoCov">          0 :         gb-&gt;label-&gt;contained = true;</span>
+<span class="lineNum">     597 </span>            :     }
+<span class="lineNum">     598 </span>            : 
+<span class="lineNum">     599 </span><span class="lineNoCov">          0 :     gb-&gt;children = malloc(vcnt*hcnt*sizeof(GGadget *));</span>
+<span class="lineNum">     600 </span><span class="lineNoCov">          0 :     for ( i=v=0; v&lt;vcnt; ++v ) {</span>
+<span class="lineNum">     601 </span><span class="lineNoCov">          0 :         for ( h=0; h&lt;hcnt &amp;&amp; gd-&gt;u.boxelements[i]!=NULL; ++h, ++i ) {</span>
+<span class="lineNum">     602 </span><span class="lineNoCov">          0 :             GGadgetCreateData *gcd = gd-&gt;u.boxelements[i];</span>
+<span class="lineNum">     603 </span><span class="lineNoCov">          0 :             if ( gcd==GCD_Glue ||</span>
+<span class="lineNum">     604 </span><span class="lineNoCov">          0 :                     gcd==GCD_ColSpan ||</span>
+<span class="lineNum">     605 </span><span class="lineNoCov">          0 :                     gcd==GCD_RowSpan ||</span>
+<span class="lineNum">     606 </span>            :                     gcd==GCD_HPad10 )
+<span class="lineNum">     607 </span><span class="lineNoCov">          0 :                 gb-&gt;children[v*hcnt+h] = (GGadget *) gcd;</span>
+<span class="lineNum">     608 </span>            :             else {
+<span class="lineNum">     609 </span><span class="lineNoCov">          0 :                 gcd-&gt;gd.pos.x = gcd-&gt;gd.pos.y = 1;</span>
+<span class="lineNum">     610 </span><span class="lineNoCov">          0 :                 gb-&gt;children[v*hcnt+h] = gcd-&gt;ret =</span>
+<span class="lineNum">     611 </span><span class="lineNoCov">          0 :                         (gcd-&gt;creator)(base,&amp;gcd-&gt;gd,gcd-&gt;data);</span>
+<span class="lineNum">     612 </span><span class="lineNoCov">          0 :                 gcd-&gt;ret-&gt;contained = true;</span>
+<span class="lineNum">     613 </span>            :             }
+<span class="lineNum">     614 </span>            :         }
+<span class="lineNum">     615 </span><span class="lineNoCov">          0 :         while ( h&lt;hcnt )</span>
+<span class="lineNum">     616 </span><span class="lineNoCov">          0 :             gb-&gt;children[v*hcnt+h++] = GG_Glue;</span>
+<span class="lineNum">     617 </span><span class="lineNoCov">          0 :         if ( gd-&gt;u.boxelements[i]==NULL )</span>
+<span class="lineNum">     618 </span><span class="lineNoCov">          0 :             ++i;</span>
+<span class="lineNum">     619 </span>            :     }
+<span class="lineNum">     620 </span><span class="lineNoCov">          0 : return( gb );</span>
+<a name="621"><span class="lineNum">     621 </span>            : }</a>
+<span class="lineNum">     622 </span>            : 
+<span class="lineNum">     623 </span><span class="lineNoCov">          0 : GGadget *GHBoxCreate(struct gwindow *base, GGadgetData *gd,void *data) {</span>
+<span class="lineNum">     624 </span>            :     GHVBox *gb;
+<span class="lineNum">     625 </span>            :     int hcnt;
+<span class="lineNum">     626 </span>            : 
+<span class="lineNum">     627 </span><span class="lineNoCov">          0 :     for ( hcnt=0; gd-&gt;u.boxelements[hcnt]!=NULL; ++hcnt );</span>
+<span class="lineNum">     628 </span><span class="lineNoCov">          0 :     gb = _GHVBoxCreate(base,gd,data,hcnt,1,&amp;hvbox_box);</span>
+<span class="lineNum">     629 </span>            : 
+<span class="lineNum">     630 </span><span class="lineNoCov">          0 : return( &amp;gb-&gt;g );</span>
+<a name="631"><span class="lineNum">     631 </span>            : }</a>
+<span class="lineNum">     632 </span>            : 
+<span class="lineNum">     633 </span><span class="lineNoCov">          0 : GGadget *GVBoxCreate(struct gwindow *base, GGadgetData *gd,void *data) {</span>
+<span class="lineNum">     634 </span>            :     GHVBox *gb;
+<span class="lineNum">     635 </span>            :     int vcnt;
+<span class="lineNum">     636 </span>            : 
+<span class="lineNum">     637 </span><span class="lineNoCov">          0 :     for ( vcnt=0; gd-&gt;u.boxelements[vcnt]!=NULL; ++vcnt );</span>
+<span class="lineNum">     638 </span><span class="lineNoCov">          0 :     gb = _GHVBoxCreate(base,gd,data,1,vcnt,&amp;hvbox_box);</span>
+<span class="lineNum">     639 </span>            : 
+<span class="lineNum">     640 </span><span class="lineNoCov">          0 : return( &amp;gb-&gt;g );</span>
+<a name="641"><span class="lineNum">     641 </span>            : }</a>
+<span class="lineNum">     642 </span>            : 
+<span class="lineNum">     643 </span><span class="lineNoCov">          0 : GGadget *GHVBoxCreate(struct gwindow *base, GGadgetData *gd,void *data) {</span>
+<span class="lineNum">     644 </span>            :     GHVBox *gb;
+<span class="lineNum">     645 </span>            :     int hcnt, vcnt, i;
+<span class="lineNum">     646 </span>            : 
+<span class="lineNum">     647 </span><span class="lineNoCov">          0 :     for ( hcnt=0; gd-&gt;u.boxelements[hcnt]!=NULL; ++hcnt );</span>
+<span class="lineNum">     648 </span><span class="lineNoCov">          0 :     for ( i=0, vcnt=1; gd-&gt;u.boxelements[i]!=NULL || gd-&gt;u.boxelements[i+1]!=NULL ; ++i )</span>
+<span class="lineNum">     649 </span><span class="lineNoCov">          0 :         if ( gd-&gt;u.boxelements[i]==NULL )</span>
+<span class="lineNum">     650 </span><span class="lineNoCov">          0 :             ++vcnt;</span>
+<span class="lineNum">     651 </span><span class="lineNoCov">          0 :     gb = _GHVBoxCreate(base,gd,data,hcnt,vcnt,&amp;hvbox_box);</span>
+<span class="lineNum">     652 </span>            : 
+<span class="lineNum">     653 </span><span class="lineNoCov">          0 : return( &amp;gb-&gt;g );</span>
+<a name="654"><span class="lineNum">     654 </span>            : }</a>
+<span class="lineNum">     655 </span>            : 
+<span class="lineNum">     656 </span><span class="lineNoCov">          0 : GGadget *GHVGroupCreate(struct gwindow *base, GGadgetData *gd,void *data) {</span>
+<span class="lineNum">     657 </span>            :     GHVBox *gb;
+<span class="lineNum">     658 </span>            :     int hcnt, vcnt, i;
+<span class="lineNum">     659 </span>            : 
+<span class="lineNum">     660 </span><span class="lineNoCov">          0 :     for ( hcnt=0; gd-&gt;u.boxelements[hcnt]!=NULL; ++hcnt );</span>
+<span class="lineNum">     661 </span><span class="lineNoCov">          0 :     for ( i=0, vcnt=1; gd-&gt;u.boxelements[i]!=NULL || gd-&gt;u.boxelements[i+1]!=NULL ; ++i )</span>
+<span class="lineNum">     662 </span><span class="lineNoCov">          0 :         if ( gd-&gt;u.boxelements[i]==NULL )</span>
+<span class="lineNum">     663 </span><span class="lineNoCov">          0 :             ++vcnt;</span>
+<span class="lineNum">     664 </span><span class="lineNoCov">          0 :     gb = _GHVBoxCreate(base,gd,data,hcnt,vcnt,&amp;hvgroup_box);</span>
+<span class="lineNum">     665 </span>            : 
+<span class="lineNum">     666 </span><span class="lineNoCov">          0 : return( &amp;gb-&gt;g );</span>
+<a name="667"><span class="lineNum">     667 </span>            : }</a>
+<span class="lineNum">     668 </span>            : 
+<span class="lineNum">     669 </span><span class="lineNoCov">          0 : static void _GHVBoxFitWindow(GGadget *g, int center) {</span>
+<span class="lineNum">     670 </span>            :     GRect outer, cur, screen;
+<span class="lineNum">     671 </span>            : 
+<span class="lineNum">     672 </span><span class="lineNoCov">          0 :     if ( !GGadgetFillsWindow(g)) {</span>
+<span class="lineNum">     673 </span><span class="lineNoCov">          0 :         fprintf( stderr, &quot;Call to GHVBoxFitWindow in something not an HVBox\n&quot; );</span>
+<span class="lineNum">     674 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     675 </span>            :     }
+<span class="lineNum">     676 </span><span class="lineNoCov">          0 :     GHVBoxGetDesiredSize(g,&amp;outer, NULL );</span>
+<span class="lineNum">     677 </span><span class="lineNoCov">          0 :     GDrawGetSize(GDrawGetRoot(NULL),&amp;screen);</span>
+<span class="lineNum">     678 </span><span class="lineNoCov">          0 :     if ( outer.width &gt; screen.width-20 ) outer.width = screen.width-20;</span>
+<span class="lineNum">     679 </span><span class="lineNoCov">          0 :     if ( outer.height &gt; screen.height-40 ) outer.height = screen.height-40;</span>
+<span class="lineNum">     680 </span><span class="lineNoCov">          0 :     GDrawGetSize(g-&gt;base,&amp;cur);</span>
+<span class="lineNum">     681 </span>            :     /* Make any offset simmetrical */
+<span class="lineNum">     682 </span><span class="lineNoCov">          0 :     outer.width += 2*g-&gt;r.x;</span>
+<span class="lineNum">     683 </span><span class="lineNoCov">          0 :     outer.height += 2*g-&gt;r.y;</span>
+<span class="lineNum">     684 </span><span class="lineNoCov">          0 :     if ( cur.width!=outer.width || cur.height!=outer.height ) {</span>
+<span class="lineNum">     685 </span><span class="lineNoCov">          0 :         GDrawResize(g-&gt;base, outer.width, outer.height );</span>
+<span class="lineNum">     686 </span>            :         /* We want to get the resize before we set the window visible */
+<span class="lineNum">     687 </span>            :         /*  and window managers make synchronizing an issue... */
+<span class="lineNum">     688 </span><span class="lineNoCov">          0 :         GDrawSync(GDrawGetDisplayOfWindow(g-&gt;base));</span>
+<span class="lineNum">     689 </span><span class="lineNoCov">          0 :         GDrawProcessPendingEvents(GDrawGetDisplayOfWindow(g-&gt;base));</span>
+<span class="lineNum">     690 </span><span class="lineNoCov">          0 :         GDrawSync(GDrawGetDisplayOfWindow(g-&gt;base));</span>
+<span class="lineNum">     691 </span><span class="lineNoCov">          0 :         GDrawProcessPendingEvents(GDrawGetDisplayOfWindow(g-&gt;base));</span>
+<span class="lineNum">     692 </span>            :     } else
+<span class="lineNum">     693 </span><span class="lineNoCov">          0 :         GGadgetResize(g, outer.width-2*g-&gt;r.x, outer.height-2*g-&gt;r.y );</span>
+<span class="lineNum">     694 </span><span class="lineNoCov">          0 :     if ( center ) {</span>
+<span class="lineNum">     695 </span><span class="lineNoCov">          0 :         GDrawMove(g-&gt;base,(screen.width-outer.width)/2,(screen.height-outer.height)/2);</span>
+<span class="lineNum">     696 </span>            :         /* I don't think this one matters as much, but try a little */
+<span class="lineNum">     697 </span><span class="lineNoCov">          0 :         GDrawSync(GDrawGetDisplayOfWindow(g-&gt;base));</span>
+<span class="lineNum">     698 </span><span class="lineNoCov">          0 :         GDrawProcessPendingEvents(GDrawGetDisplayOfWindow(g-&gt;base));</span>
+<span class="lineNum">     699 </span>            :     }
+<a name="700"><span class="lineNum">     700 </span>            : }</a>
+<span class="lineNum">     701 </span>            : 
+<span class="lineNum">     702 </span><span class="lineNoCov">          0 : void GHVBoxFitWindow(GGadget *g) {</span>
+<span class="lineNum">     703 </span><span class="lineNoCov">          0 :     _GHVBoxFitWindow(g,false);</span>
+<a name="704"><span class="lineNum">     704 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     705 </span>            : 
+<span class="lineNum">     706 </span><span class="lineNoCov">          0 : void GHVBoxFitWindowCentered(GGadget *g) {</span>
+<span class="lineNum">     707 </span><span class="lineNoCov">          0 :     _GHVBoxFitWindow(g,true);</span>
+<a name="708"><span class="lineNum">     708 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     709 </span>            : 
+<span class="lineNum">     710 </span><span class="lineNoCov">          0 : void GHVBoxReflow(GGadget *g) {</span>
+<span class="lineNum">     711 </span><span class="lineNoCov">          0 :     GHVBoxResize(g, g-&gt;r.width, g-&gt;r.height);</span>
+<a name="712"><span class="lineNum">     712 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     713 </span>            : 
+<span class="lineNum">     714 </span><span class="lineNoCov">          0 : GResInfo *_GHVBoxRIHead(void) {</span>
+<span class="lineNum">     715 </span>            : 
+<span class="lineNum">     716 </span><span class="lineNoCov">          0 :     _GHVBox_Init();</span>
+<span class="lineNum">     717 </span><span class="lineNoCov">          0 : return( &amp;ghvgroupbox_ri );</span>
+<span class="lineNum">     718 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

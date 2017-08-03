@@ -1,0 +1,987 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforgeexe/bdfinfo.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforgeexe</a> - bdfinfo.c<span style="font-size: 80%;"> (source / <a href="bdfinfo.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">584</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">31</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* -*- coding: utf-8 -*- */</a>
+<span class="lineNum">       2 </span>            : /* Copyright (C) 2000-2012 by George Williams */
+<span class="lineNum">       3 </span>            : /*
+<span class="lineNum">       4 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       5 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       8 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      11 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      12 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      15 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      18 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      19 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      20 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      21 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      22 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      23 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      24 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      25 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      26 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      27 </span>            :  */
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            : /* Routines to handle bdf properties, and a dialog to set them */
+<span class="lineNum">      30 </span>            : #include &quot;bitmapchar.h&quot;
+<span class="lineNum">      31 </span>            : #include &quot;fontforgeui.h&quot;
+<span class="lineNum">      32 </span>            : #include &quot;splinefont.h&quot;
+<span class="lineNum">      33 </span>            : #include &quot;splinefill.h&quot;
+<span class="lineNum">      34 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">      35 </span>            : #include &lt;ustring.h&gt;
+<span class="lineNum">      36 </span>            : #include &lt;utype.h&gt;
+<span class="lineNum">      37 </span>            : #include &lt;math.h&gt;
+<span class="lineNum">      38 </span>            : #include &lt;gkeysym.h&gt;
+<span class="lineNum">      39 </span>            : 
+<span class="lineNum">      40 </span>            : extern GBox _ggadget_Default_Box;
+<span class="lineNum">      41 </span>            : #define ACTIVE_BORDER   (_ggadget_Default_Box.active_border)
+<span class="lineNum">      42 </span>            : #define MAIN_FOREGROUND (_ggadget_Default_Box.main_foreground)
+<span class="lineNum">      43 </span>            : 
+<span class="lineNum">      44 </span>            : struct bdf_dlg_font {
+<span class="lineNum">      45 </span>            :     int old_prop_cnt;
+<span class="lineNum">      46 </span>            :     BDFProperties *old_props;
+<span class="lineNum">      47 </span>            :     BDFFont *bdf;
+<span class="lineNum">      48 </span>            :     int top_prop;       /* for the scrollbar */
+<span class="lineNum">      49 </span>            :     int sel_prop;
+<span class="lineNum">      50 </span>            : };
+<span class="lineNum">      51 </span>            : 
+<span class="lineNum">      52 </span>            : struct bdf_dlg {
+<span class="lineNum">      53 </span>            :     int fcnt;
+<span class="lineNum">      54 </span>            :     struct bdf_dlg_font *fonts;
+<span class="lineNum">      55 </span>            :     struct bdf_dlg_font *cur;
+<span class="lineNum">      56 </span>            :     EncMap *map;
+<span class="lineNum">      57 </span>            :     SplineFont *sf;
+<span class="lineNum">      58 </span>            :     GWindow gw, v;
+<span class="lineNum">      59 </span>            :     GGadget *vsb;
+<span class="lineNum">      60 </span>            :     GGadget *tf;
+<span class="lineNum">      61 </span>            :     GFont *font;
+<span class="lineNum">      62 </span>            :     int value_x;
+<span class="lineNum">      63 </span>            :     int vheight;
+<span class="lineNum">      64 </span>            :     int vwidth;
+<span class="lineNum">      65 </span>            :     int height,width;
+<span class="lineNum">      66 </span>            :     int fh, as;
+<span class="lineNum">      67 </span>            :     int done;
+<span class="lineNum">      68 </span>            :     int active;
+<span class="lineNum">      69 </span>            :     int press_pos;
+<span class="lineNum">      70 </span>            : };
+<span class="lineNum">      71 </span>            : 
+<a name="72"><span class="lineNum">      72 </span>            : extern struct std_bdf_props StandardProps[];</a>
+<span class="lineNum">      73 </span>            : 
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 : static int NumericKey(char *key) {</span>
+<span class="lineNum">      75 </span>            :     int i;
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :     for ( i=0; StandardProps[i].name!=NULL; ++i )</span>
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :         if ( strcmp(key,StandardProps[i].name)==0 )</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 : return(( StandardProps[i].type&amp;~prt_property)==prt_uint || ( StandardProps[i].type&amp;~prt_property)==prt_int );</span>
+<span class="lineNum">      80 </span>            : 
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 : return( false );</span>
+<a name="82"><span class="lineNum">      82 </span>            : }</a>
+<span class="lineNum">      83 </span>            : 
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 : static int KnownProp(char *keyword) {   /* We can generate default values for these */</span>
+<span class="lineNum">      85 </span>            :     int i;
+<span class="lineNum">      86 </span>            : 
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :     for ( i=0; StandardProps[i].name!=NULL; ++i )</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :         if ( strcmp(keyword,StandardProps[i].name)==0 )</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 : return( StandardProps[i].defaultable );</span>
+<span class="lineNum">      90 </span>            : 
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 : return( false );</span>
+<a name="92"><span class="lineNum">      92 </span>            : }</a>
+<span class="lineNum">      93 </span>            : 
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 : static int KeyType(char *keyword) {</span>
+<span class="lineNum">      95 </span>            :     int i;
+<span class="lineNum">      96 </span>            : 
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :     for ( i=0; StandardProps[i].name!=NULL; ++i )</span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :         if ( strcmp(keyword,StandardProps[i].name)==0 )</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 : return( StandardProps[i].type );</span>
+<span class="lineNum">     100 </span>            : 
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 : return( -1 );</span>
+<a name="102"><span class="lineNum">     102 </span>            : }</a>
+<span class="lineNum">     103 </span>            : 
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 : static int UnknownKey(char *keyword) {</span>
+<span class="lineNum">     105 </span>            :     int i;
+<span class="lineNum">     106 </span>            : 
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :     for ( i=0; StandardProps[i].name!=NULL; ++i )</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :         if ( strcmp(keyword,StandardProps[i].name)==0 )</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     110 </span>            : 
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     112 </span>            : }
+<span class="lineNum">     113 </span>            : 
+<span class="lineNum">     114 </span>            : /* ************************************************************************** */
+<span class="lineNum">     115 </span>            : /* ************                    Dialog                    **************** */
+<span class="lineNum">     116 </span>            : /* ************************************************************************** */
+<span class="lineNum">     117 </span>            : 
+<span class="lineNum">     118 </span>            : #define CID_Delete      1001
+<span class="lineNum">     119 </span>            : #define CID_DefAll      1002
+<span class="lineNum">     120 </span>            : #define CID_DefCur      1003
+<span class="lineNum">     121 </span>            : #define CID_Up          1004
+<span class="lineNum">     122 </span>            : #define CID_Down        1005
+<span class="lineNum">     123 </span>            : 
+<span class="lineNum">     124 </span>            : #define CID_OK          1010
+<a name="125"><span class="lineNum">     125 </span>            : #define CID_Cancel      1011</a>
+<span class="lineNum">     126 </span>            : 
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 : static void BdfP_RefigureScrollbar(struct bdf_dlg *bd) {</span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :     struct bdf_dlg_font *cur = bd-&gt;cur;</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :     int lines = bd-&gt;vheight/(bd-&gt;fh+1);</span>
+<span class="lineNum">     130 </span>            : 
+<span class="lineNum">     131 </span>            :     /* allow for one extra line which will display &quot;New&quot; */
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :     GScrollBarSetBounds(bd-&gt;vsb,0,cur-&gt;bdf-&gt;prop_cnt+1,lines);</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :     if ( cur-&gt;top_prop+lines&gt;cur-&gt;bdf-&gt;prop_cnt+1 )</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :         cur-&gt;top_prop = cur-&gt;bdf-&gt;prop_cnt+1-lines;</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :     if ( cur-&gt;top_prop &lt; 0 )</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :         cur-&gt;top_prop = 0;</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :     GScrollBarSetPos(bd-&gt;vsb,cur-&gt;top_prop);</span>
+<a name="138"><span class="lineNum">     138 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     139 </span>            : 
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 : static void BdfP_EnableButtons(struct bdf_dlg *bd) {</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :     struct bdf_dlg_font *cur = bd-&gt;cur;</span>
+<span class="lineNum">     142 </span>            : 
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :     if ( cur-&gt;sel_prop&lt;0 || cur-&gt;sel_prop&gt;=cur-&gt;bdf-&gt;prop_cnt ) {</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(bd-&gt;gw,CID_Delete),false);</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(bd-&gt;gw,CID_DefCur),false);</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(bd-&gt;gw,CID_Up),false);</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(bd-&gt;gw,CID_Down),false);</span>
+<span class="lineNum">     148 </span>            :     } else {
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(bd-&gt;gw,CID_Delete),true);</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(bd-&gt;gw,CID_DefCur),KnownProp(cur-&gt;bdf-&gt;props[cur-&gt;sel_prop].name));</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(bd-&gt;gw,CID_Up),cur-&gt;sel_prop&gt;0);</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(bd-&gt;gw,CID_Down),cur-&gt;sel_prop&lt;cur-&gt;bdf-&gt;prop_cnt-1);</span>
+<span class="lineNum">     153 </span>            :     }
+<a name="154"><span class="lineNum">     154 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     155 </span>            : 
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 : static void BdfP_HideTextField(struct bdf_dlg *bd) {</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :     if ( bd-&gt;active ) {</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :         bd-&gt;active = false;</span>
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :         GGadgetSetVisible(bd-&gt;tf,false);</span>
+<span class="lineNum">     160 </span>            :     }
+<a name="161"><span class="lineNum">     161 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 : static int BdfP_FinishTextField(struct bdf_dlg *bd) {</span>
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :     if ( bd-&gt;active ) {</span>
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :         char *text = GGadgetGetTitle8(bd-&gt;tf);</span>
+<span class="lineNum">     166 </span>            :         char *pt, *end;
+<span class="lineNum">     167 </span>            :         int val;
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :         struct bdf_dlg_font *cur = bd-&gt;cur;</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :         BDFFont *bdf = cur-&gt;bdf;</span>
+<span class="lineNum">     170 </span>            : 
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :         for ( pt=text; *pt; ++pt )</span>
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :             if ( *pt&amp;0x80 ) {</span>
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :                 ff_post_error(_(&quot;Not ASCII&quot;),_(&quot;All characters in the value must be in ASCII&quot;));</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :                 free(text);</span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     176 </span>            :             }
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :         val = strtol(text,&amp;end,10);</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :         if ( NumericKey(bdf-&gt;props[cur-&gt;sel_prop].name) ) {</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :             if ( *end!='\0' ) {</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :                 ff_post_error(_(&quot;Bad Number&quot;),_(&quot;Must be a number&quot;));</span>
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 :                 free(text);</span>
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     183 </span>            :             }
+<span class="lineNum">     184 </span>            :         }
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :         if ( (bdf-&gt;props[cur-&gt;sel_prop].type&amp;~prt_property)==prt_string ||</span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :                 (bdf-&gt;props[cur-&gt;sel_prop].type&amp;~prt_property)==prt_atom )</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :             free(bdf-&gt;props[cur-&gt;sel_prop].u.str);</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :         if ( UnknownKey(bdf-&gt;props[cur-&gt;sel_prop].name) ) {</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :             if ( *end!='\0' ) {</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :                 bdf-&gt;props[cur-&gt;sel_prop].type = prt_string | prt_property;</span>
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :                 bdf-&gt;props[cur-&gt;sel_prop].u.str = copy(text);</span>
+<span class="lineNum">     192 </span>            :             } else {
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :                 if ( bdf-&gt;props[cur-&gt;sel_prop].type != (prt_uint | prt_property ))</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :                     bdf-&gt;props[cur-&gt;sel_prop].type = prt_int | prt_property;</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :                 bdf-&gt;props[cur-&gt;sel_prop].u.val = val;</span>
+<span class="lineNum">     196 </span>            :             }
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :         } else if ( NumericKey(bdf-&gt;props[cur-&gt;sel_prop].name) ) {</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :             bdf-&gt;props[cur-&gt;sel_prop].type = KeyType(bdf-&gt;props[cur-&gt;sel_prop].name);</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :             bdf-&gt;props[cur-&gt;sel_prop].u.val = val;</span>
+<span class="lineNum">     200 </span>            :         } else {
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :             bdf-&gt;props[cur-&gt;sel_prop].type = KeyType(bdf-&gt;props[cur-&gt;sel_prop].name);</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :             bdf-&gt;props[cur-&gt;sel_prop].u.str = copy(text);</span>
+<span class="lineNum">     203 </span>            :         }
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :         free(text);         </span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :         bd-&gt;active = false;</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :         GGadgetSetVisible(bd-&gt;tf,false);</span>
+<span class="lineNum">     207 </span>            :     }
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="209"><span class="lineNum">     209 </span>            : }</a>
+<span class="lineNum">     210 </span>            : 
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 : static int BdfP_DefaultAll(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :         struct bdf_dlg *bd = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :         int res = BdfPropHasInt(bd-&gt;cur-&gt;bdf,&quot;RESOLUTION_Y&quot;,-1);</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :         if ( res!=-1 )</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :             bd-&gt;cur-&gt;bdf-&gt;res = res;</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :         BdfP_HideTextField(bd);</span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :         BDFPropsFree(bd-&gt;cur-&gt;bdf);</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :         bd-&gt;cur-&gt;bdf-&gt;prop_cnt = bd-&gt;cur-&gt;bdf-&gt;prop_max = 0;</span>
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :         bd-&gt;cur-&gt;bdf-&gt;props = NULL;</span>
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :         BDFDefaultProps(bd-&gt;cur-&gt;bdf, bd-&gt;map, -1);</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :         bd-&gt;cur-&gt;top_prop = 0; bd-&gt;cur-&gt;sel_prop = -1;</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :         BdfP_RefigureScrollbar(bd);</span>
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :         BdfP_EnableButtons(bd);</span>
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(bd-&gt;v,NULL,false);</span>
+<span class="lineNum">     226 </span>            :     }
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="228"><span class="lineNum">     228 </span>            : }</a>
+<span class="lineNum">     229 </span>            : 
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 : static void _BdfP_DefaultCurrent(struct bdf_dlg *bd) {</span>
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :     struct bdf_dlg_font *cur = bd-&gt;cur;</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :     BDFFont *bdf = cur-&gt;bdf;</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :     if ( cur-&gt;sel_prop&lt;0 || cur-&gt;sel_prop&gt;=bdf-&gt;prop_cnt )</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :     BdfP_HideTextField(bd);</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :     if ( strcmp(bdf-&gt;props[cur-&gt;sel_prop].name,&quot;FONT&quot;)==0 ) {</span>
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :         Default_XLFD(bdf,bd-&gt;map,-1);</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :     } else if ( strcmp(bdf-&gt;props[cur-&gt;sel_prop].name,&quot;COMMENT&quot;)==0 )</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     240 </span>            :     else
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :         Default_Properties(bdf,bd-&gt;map,bdf-&gt;props[cur-&gt;sel_prop].name);</span>
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(bd-&gt;v,NULL,false);</span>
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 : return;</span>
+<a name="244"><span class="lineNum">     244 </span>            : }</a>
+<span class="lineNum">     245 </span>            : 
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 : static int BdfP_DefaultCurrent(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :         struct bdf_dlg *bd = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :         _BdfP_DefaultCurrent(bd);</span>
+<span class="lineNum">     250 </span>            :     }
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="252"><span class="lineNum">     252 </span>            : }</a>
+<span class="lineNum">     253 </span>            : 
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 : static int BdfP_DeleteCurrent(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :         struct bdf_dlg *bd = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :         struct bdf_dlg_font *cur = bd-&gt;cur;</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :         BDFFont *bdf = cur-&gt;bdf;</span>
+<span class="lineNum">     259 </span>            :         int i;
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :         if ( cur-&gt;sel_prop&lt;0 || cur-&gt;sel_prop&gt;=bdf-&gt;prop_cnt )</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :         BdfP_HideTextField(bd);</span>
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :         if ( (bdf-&gt;props[cur-&gt;sel_prop].type&amp;~prt_property)==prt_string ||</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :                 (bdf-&gt;props[cur-&gt;sel_prop].type&amp;~prt_property)==prt_atom )</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :             free(bdf-&gt;props[cur-&gt;sel_prop].u.str);</span>
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :         free(bdf-&gt;props[cur-&gt;sel_prop].name);</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :         --bdf-&gt;prop_cnt;</span>
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :         for ( i=cur-&gt;sel_prop; i&lt;bdf-&gt;prop_cnt; ++i )</span>
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :             bdf-&gt;props[i] = bdf-&gt;props[i+1];</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :         if ( cur-&gt;sel_prop &gt;= bdf-&gt;prop_cnt )</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :             --cur-&gt;sel_prop;</span>
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :         BdfP_RefigureScrollbar(bd);</span>
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :         BdfP_EnableButtons(bd);</span>
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(bd-&gt;v,NULL,false);</span>
+<span class="lineNum">     275 </span>            :     }
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="277"><span class="lineNum">     277 </span>            : }</a>
+<span class="lineNum">     278 </span>            : 
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 : static void _BdfP_Up(struct bdf_dlg *bd) {</span>
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 :     struct bdf_dlg_font *cur = bd-&gt;cur;</span>
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :     BDFFont *bdf = cur-&gt;bdf;</span>
+<span class="lineNum">     282 </span>            :     GRect r;
+<span class="lineNum">     283 </span>            :     BDFProperties prop;
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :     if ( cur-&gt;sel_prop&lt;1 || cur-&gt;sel_prop&gt;=bdf-&gt;prop_cnt )</span>
+<span class="lineNum">     285 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :     prop = bdf-&gt;props[cur-&gt;sel_prop];</span>
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :     bdf-&gt;props[cur-&gt;sel_prop] = bdf-&gt;props[cur-&gt;sel_prop-1];</span>
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :     bdf-&gt;props[cur-&gt;sel_prop-1] = prop;</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :     --cur-&gt;sel_prop;</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :     GGadgetGetSize(bd-&gt;tf,&amp;r);</span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :     GGadgetMove(bd-&gt;tf,r.x,r.y-(bd-&gt;fh+1));</span>
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :     BdfP_EnableButtons(bd);</span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(bd-&gt;v,NULL,false);</span>
+<a name="294"><span class="lineNum">     294 </span>            : }</a>
+<span class="lineNum">     295 </span>            : 
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 : static int BdfP_Up(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :         _BdfP_Up( GDrawGetUserData(GGadgetGetWindow(g)));</span>
+<span class="lineNum">     299 </span>            :     }
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="301"><span class="lineNum">     301 </span>            : }</a>
+<span class="lineNum">     302 </span>            : 
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 : static void _BdfP_Down(struct bdf_dlg *bd) {</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :     struct bdf_dlg_font *cur = bd-&gt;cur;</span>
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 :     BDFFont *bdf = cur-&gt;bdf;</span>
+<span class="lineNum">     306 </span>            :     GRect r;
+<span class="lineNum">     307 </span>            :     BDFProperties prop;
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 :     if ( cur-&gt;sel_prop&lt;0 || cur-&gt;sel_prop&gt;=bdf-&gt;prop_cnt-1 )</span>
+<span class="lineNum">     309 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 :     prop = bdf-&gt;props[cur-&gt;sel_prop];</span>
+<span class="lineNum">     311 </span><span class="lineNoCov">          0 :     bdf-&gt;props[cur-&gt;sel_prop] = bdf-&gt;props[cur-&gt;sel_prop+1];</span>
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 :     bdf-&gt;props[cur-&gt;sel_prop+1] = prop;</span>
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :     ++cur-&gt;sel_prop;</span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :     GGadgetGetSize(bd-&gt;tf,&amp;r);</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :     GGadgetMove(bd-&gt;tf,r.x,r.y+(bd-&gt;fh+1));</span>
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :     BdfP_EnableButtons(bd);</span>
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(bd-&gt;v,NULL,false);</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 : return;</span>
+<a name="319"><span class="lineNum">     319 </span>            : }</a>
+<span class="lineNum">     320 </span>            : 
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 : static int BdfP_Down(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :         _BdfP_Down((struct bdf_dlg *) GDrawGetUserData(GGadgetGetWindow(g)));</span>
+<span class="lineNum">     324 </span>            :     }
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="326"><span class="lineNum">     326 </span>            : }</a>
+<span class="lineNum">     327 </span>            : 
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 : static int BdfP_ChangeBDF(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_listselected ) {</span>
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 :         struct bdf_dlg *bd = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :         int sel = GGadgetGetFirstListSelectedItem(g);</span>
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 :         if ( sel&lt;0 || sel&gt;=bd-&gt;fcnt )</span>
+<span class="lineNum">     333 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :         if ( !BdfP_FinishTextField(bd)) {</span>
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 :             sel = bd-&gt;cur-bd-&gt;fonts;</span>
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :             GGadgetSelectListItem(g,sel,true);</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     338 </span>            :         }
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 :         bd-&gt;cur = &amp;bd-&gt;fonts[sel];</span>
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :         BdfP_RefigureScrollbar(bd);</span>
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :         BdfP_EnableButtons(bd);</span>
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(bd-&gt;v,NULL,false);</span>
+<span class="lineNum">     343 </span>            :     }
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="345"><span class="lineNum">     345 </span>            : }</a>
+<span class="lineNum">     346 </span>            : 
+<span class="lineNum">     347 </span><span class="lineNoCov">          0 : static void BdfP_DoCancel(struct bdf_dlg *bd) {</span>
+<span class="lineNum">     348 </span>            :     int i;
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;bd-&gt;fcnt; ++i ) {</span>
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :         BDFFont *bdf = bd-&gt;fonts[i].bdf;</span>
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :         BDFPropsFree(bdf);</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :         bdf-&gt;props = bd-&gt;fonts[i].old_props;</span>
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 :         bdf-&gt;prop_cnt = bd-&gt;fonts[i].old_prop_cnt;</span>
+<span class="lineNum">     354 </span>            :     }
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :     free(bd-&gt;fonts);</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :     bd-&gt;done = true;</span>
+<a name="357"><span class="lineNum">     357 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     358 </span>            : 
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 : static int BdfP_Cancel(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 :         struct bdf_dlg *bd = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">     362 </span><span class="lineNoCov">          0 :         BdfP_DoCancel(bd);</span>
+<span class="lineNum">     363 </span>            :     }
+<span class="lineNum">     364 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="365"><span class="lineNum">     365 </span>            : }</a>
+<span class="lineNum">     366 </span>            : 
+<span class="lineNum">     367 </span><span class="lineNoCov">          0 : static int BdfP_OK(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 :         struct bdf_dlg *bd = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">     370 </span>            :         int i;
+<span class="lineNum">     371 </span>            :         struct xlfd_components components;
+<span class="lineNum">     372 </span>            :         const char *xlfd;
+<span class="lineNum">     373 </span>            : 
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 :         if ( !BdfP_FinishTextField(bd))</span>
+<span class="lineNum">     375 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;bd-&gt;fcnt; ++i ) {</span>
+<span class="lineNum">     377 </span><span class="lineNoCov">          0 :             BDFFont *bdf = bd-&gt;fonts[i].bdf;</span>
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 :             BDFProperties *temp = bdf-&gt;props;</span>
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :             int pc = bdf-&gt;prop_cnt;</span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :             bdf-&gt;props = bd-&gt;fonts[i].old_props;</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :             bdf-&gt;prop_cnt = bd-&gt;fonts[i].old_prop_cnt;</span>
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :             BDFPropsFree(bdf);</span>
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :             bdf-&gt;props = temp;</span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :             bdf-&gt;prop_cnt = pc;</span>
+<span class="lineNum">     385 </span>            : 
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :             xlfd = BdfPropHasString(bdf,&quot;FONT&quot;,NULL);</span>
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :             if ( xlfd!=NULL )</span>
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 :                 XLFD_GetComponents(xlfd,&amp;components);</span>
+<span class="lineNum">     389 </span>            :             else
+<span class="lineNum">     390 </span><span class="lineNoCov">          0 :                 XLFD_CreateComponents(bdf,bd-&gt;map, -1, &amp;components);</span>
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 :             bdf-&gt;res = components.res_y;</span>
+<span class="lineNum">     392 </span>            :         }
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 :         free(bd-&gt;fonts);</span>
+<span class="lineNum">     394 </span><span class="lineNoCov">          0 :         bd-&gt;sf-&gt;changed = true;</span>
+<span class="lineNum">     395 </span><span class="lineNoCov">          0 :         bd-&gt;done = true;</span>
+<span class="lineNum">     396 </span>            :     }
+<span class="lineNum">     397 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="398"><span class="lineNum">     398 </span>            : }</a>
+<span class="lineNum">     399 </span>            : 
+<span class="lineNum">     400 </span><span class="lineNoCov">          0 : static void BdfP_VScroll(struct bdf_dlg *bd,struct sbevent *sb) {</span>
+<span class="lineNum">     401 </span><span class="lineNoCov">          0 :     int newpos = bd-&gt;cur-&gt;top_prop;</span>
+<span class="lineNum">     402 </span><span class="lineNoCov">          0 :     int page = bd-&gt;vheight/(bd-&gt;fh+1);</span>
+<span class="lineNum">     403 </span>            : 
+<span class="lineNum">     404 </span><span class="lineNoCov">          0 :     switch( sb-&gt;type ) {</span>
+<span class="lineNum">     405 </span>            :       case et_sb_top:
+<span class="lineNum">     406 </span><span class="lineNoCov">          0 :         newpos = 0;</span>
+<span class="lineNum">     407 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     408 </span>            :       case et_sb_uppage:
+<span class="lineNum">     409 </span><span class="lineNoCov">          0 :         newpos -= 9*page/10;</span>
+<span class="lineNum">     410 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     411 </span>            :       case et_sb_up:
+<span class="lineNum">     412 </span><span class="lineNoCov">          0 :         newpos--;</span>
+<span class="lineNum">     413 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     414 </span>            :       case et_sb_down:
+<span class="lineNum">     415 </span><span class="lineNoCov">          0 :         newpos++;</span>
+<span class="lineNum">     416 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     417 </span>            :       case et_sb_downpage:
+<span class="lineNum">     418 </span><span class="lineNoCov">          0 :         newpos += 9*page/10;</span>
+<span class="lineNum">     419 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     420 </span>            :       case et_sb_bottom:
+<span class="lineNum">     421 </span><span class="lineNoCov">          0 :         newpos = bd-&gt;cur-&gt;bdf-&gt;prop_cnt+1;</span>
+<span class="lineNum">     422 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     423 </span>            :       case et_sb_thumb:
+<span class="lineNum">     424 </span>            :       case et_sb_thumbrelease:
+<span class="lineNum">     425 </span><span class="lineNoCov">          0 :         newpos = sb-&gt;pos;</span>
+<span class="lineNum">     426 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     427 </span>            :     }
+<span class="lineNum">     428 </span><span class="lineNoCov">          0 :     if ( newpos + page &gt; bd-&gt;cur-&gt;bdf-&gt;prop_cnt+1 )</span>
+<span class="lineNum">     429 </span><span class="lineNoCov">          0 :         newpos = bd-&gt;cur-&gt;bdf-&gt;prop_cnt+1 - page;</span>
+<span class="lineNum">     430 </span><span class="lineNoCov">          0 :     if ( newpos&lt;0 )</span>
+<span class="lineNum">     431 </span><span class="lineNoCov">          0 :         newpos = 0;</span>
+<span class="lineNum">     432 </span><span class="lineNoCov">          0 :     if ( newpos!=bd-&gt;cur-&gt;top_prop ) {</span>
+<span class="lineNum">     433 </span><span class="lineNoCov">          0 :         int diff = (newpos-bd-&gt;cur-&gt;top_prop)*(bd-&gt;fh+1);</span>
+<span class="lineNum">     434 </span>            :         GRect r;
+<span class="lineNum">     435 </span><span class="lineNoCov">          0 :         bd-&gt;cur-&gt;top_prop = newpos;</span>
+<span class="lineNum">     436 </span><span class="lineNoCov">          0 :         GScrollBarSetPos(bd-&gt;vsb,newpos);</span>
+<span class="lineNum">     437 </span><span class="lineNoCov">          0 :         GGadgetGetSize(bd-&gt;tf,&amp;r);</span>
+<span class="lineNum">     438 </span><span class="lineNoCov">          0 :         GGadgetMove(bd-&gt;tf,r.x,r.y+diff);</span>
+<span class="lineNum">     439 </span><span class="lineNoCov">          0 :         r.x = 0; r.y = 0; r.width = bd-&gt;vwidth; r.height = (bd-&gt;vheight/(bd-&gt;fh+1))*(bd-&gt;fh+1);</span>
+<span class="lineNum">     440 </span><span class="lineNoCov">          0 :         GDrawScroll(bd-&gt;v,&amp;r,0,diff);</span>
+<span class="lineNum">     441 </span>            :     }
+<a name="442"><span class="lineNum">     442 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     443 </span>            : 
+<span class="lineNum">     444 </span><span class="lineNoCov">          0 : static int _BdfP_VScroll(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     445 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_scrollbarchange ) {</span>
+<span class="lineNum">     446 </span><span class="lineNoCov">          0 :         struct bdf_dlg *bd = (struct bdf_dlg *) GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">     447 </span><span class="lineNoCov">          0 :         BdfP_VScroll(bd,&amp;e-&gt;u.control.u.sb);</span>
+<span class="lineNum">     448 </span>            :     }
+<span class="lineNum">     449 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="450"><span class="lineNum">     450 </span>            : }</a>
+<span class="lineNum">     451 </span>            : 
+<span class="lineNum">     452 </span><span class="lineNoCov">          0 : static void BdfP_Resize(struct bdf_dlg *bd) {</span>
+<span class="lineNum">     453 </span>            :     extern int _GScrollBar_Width;
+<span class="lineNum">     454 </span><span class="lineNoCov">          0 :     int sbwidth = GDrawPointsToPixels(bd-&gt;gw,_GScrollBar_Width);</span>
+<span class="lineNum">     455 </span>            :     GRect size, pos;
+<span class="lineNum">     456 </span>            :     static int cids[] = { CID_Delete, CID_DefAll, CID_DefCur, CID_Up,
+<span class="lineNum">     457 </span>            :             CID_Down, CID_OK, CID_Cancel, 0 };
+<span class="lineNum">     458 </span>            :     int i;
+<span class="lineNum">     459 </span>            : 
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 :     GDrawGetSize(bd-&gt;gw,&amp;size);</span>
+<span class="lineNum">     461 </span><span class="lineNoCov">          0 :     GDrawGetSize(bd-&gt;v,&amp;pos);</span>
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 :     if ( size.width!=bd-&gt;width || size.height!=bd-&gt;height ) {</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :         int yoff = size.height-bd-&gt;height;</span>
+<span class="lineNum">     464 </span><span class="lineNoCov">          0 :         int xoff = size.width-bd-&gt;width;</span>
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 :         bd-&gt;width = size.width; bd-&gt;height = size.height;</span>
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :         bd-&gt;vwidth += xoff; bd-&gt;vheight += yoff;</span>
+<span class="lineNum">     467 </span><span class="lineNoCov">          0 :         GDrawResize(bd-&gt;v,bd-&gt;vwidth,bd-&gt;vheight);</span>
+<span class="lineNum">     468 </span>            :         
+<span class="lineNum">     469 </span><span class="lineNoCov">          0 :         GGadgetMove(bd-&gt;vsb,size.width-sbwidth,pos.y-1);</span>
+<span class="lineNum">     470 </span><span class="lineNoCov">          0 :         GGadgetResize(bd-&gt;vsb,sbwidth,bd-&gt;vheight+2);</span>
+<span class="lineNum">     471 </span>            : 
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 :         GGadgetGetSize(bd-&gt;tf,&amp;pos);</span>
+<span class="lineNum">     473 </span><span class="lineNoCov">          0 :         GGadgetResize(bd-&gt;tf,pos.width+xoff,pos.height);</span>
+<span class="lineNum">     474 </span>            : 
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 :         for ( i=0; cids[i]!=0; ++i ) {</span>
+<span class="lineNum">     476 </span><span class="lineNoCov">          0 :             GGadgetGetSize(GWidgetGetControl(bd-&gt;gw,cids[i]),&amp;pos);</span>
+<span class="lineNum">     477 </span><span class="lineNoCov">          0 :             GGadgetMove(GWidgetGetControl(bd-&gt;gw,cids[i]),pos.x,pos.y+yoff);</span>
+<span class="lineNum">     478 </span>            :         }
+<span class="lineNum">     479 </span>            :     }
+<span class="lineNum">     480 </span><span class="lineNoCov">          0 :     BdfP_RefigureScrollbar(bd);</span>
+<span class="lineNum">     481 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(bd-&gt;v,NULL,false);</span>
+<span class="lineNum">     482 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(bd-&gt;gw,NULL,true);</span>
+<a name="483"><span class="lineNum">     483 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     484 </span>            : 
+<span class="lineNum">     485 </span><span class="lineNoCov">          0 : static void BdfP_Expose(struct bdf_dlg *bd, GWindow pixmap) {</span>
+<span class="lineNum">     486 </span><span class="lineNoCov">          0 :     struct bdf_dlg_font *cur = bd-&gt;cur;</span>
+<span class="lineNum">     487 </span><span class="lineNoCov">          0 :     BDFFont *bdf = cur-&gt;bdf;</span>
+<span class="lineNum">     488 </span>            :     int i;
+<span class="lineNum">     489 </span><span class="lineNoCov">          0 :     int page = bd-&gt;vheight/(bd-&gt;fh+1);</span>
+<span class="lineNum">     490 </span>            :     GRect clip, old, r;
+<span class="lineNum">     491 </span>            :     char buffer[40];
+<span class="lineNum">     492 </span>            :     extern GBox _ggadget_Default_Box;
+<span class="lineNum">     493 </span>            : 
+<span class="lineNum">     494 </span><span class="lineNoCov">          0 :     GDrawSetFont(pixmap,bd-&gt;font);</span>
+<span class="lineNum">     495 </span><span class="lineNoCov">          0 :     clip.x = 4; clip.width = bd-&gt;value_x-4-2; clip.height = bd-&gt;fh;</span>
+<span class="lineNum">     496 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;page &amp;&amp; i+cur-&gt;top_prop&lt;bdf-&gt;prop_cnt; ++i ) {</span>
+<span class="lineNum">     497 </span><span class="lineNoCov">          0 :         int sel = i+cur-&gt;top_prop==cur-&gt;sel_prop;</span>
+<span class="lineNum">     498 </span><span class="lineNoCov">          0 :         clip.y = i*(bd-&gt;fh+1);</span>
+<span class="lineNum">     499 </span><span class="lineNoCov">          0 :         if ( sel ) {</span>
+<span class="lineNum">     500 </span><span class="lineNoCov">          0 :             r.x = 0; r.width = bd-&gt;width;</span>
+<span class="lineNum">     501 </span><span class="lineNoCov">          0 :             r.y = clip.y; r.height = clip.height;</span>
+<span class="lineNum">     502 </span><span class="lineNoCov">          0 :             GDrawFillRect(pixmap,&amp;r,ACTIVE_BORDER);</span>
+<span class="lineNum">     503 </span>            :         }
+<span class="lineNum">     504 </span><span class="lineNoCov">          0 :         GDrawPushClip(pixmap,&amp;clip,&amp;old);</span>
+<span class="lineNum">     505 </span><span class="lineNoCov">          0 :         GDrawDrawText8(pixmap,4,i*(bd-&gt;fh+1)+bd-&gt;as,bdf-&gt;props[i+cur-&gt;top_prop].name,-1,MAIN_FOREGROUND);</span>
+<span class="lineNum">     506 </span><span class="lineNoCov">          0 :         GDrawPopClip(pixmap,&amp;old);</span>
+<span class="lineNum">     507 </span><span class="lineNoCov">          0 :         switch ( bdf-&gt;props[i+cur-&gt;top_prop].type&amp;~prt_property ) {</span>
+<span class="lineNum">     508 </span>            :           case prt_string: case prt_atom:
+<span class="lineNum">     509 </span><span class="lineNoCov">          0 :             GDrawDrawText8(pixmap,bd-&gt;value_x+2,i*(bd-&gt;fh+1)+bd-&gt;as,bdf-&gt;props[i+cur-&gt;top_prop].u.str,-1,MAIN_FOREGROUND);</span>
+<span class="lineNum">     510 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">     511 </span>            :           case prt_int:
+<span class="lineNum">     512 </span><span class="lineNoCov">          0 :             sprintf( buffer, &quot;%d&quot;, bdf-&gt;props[i+cur-&gt;top_prop].u.val );</span>
+<span class="lineNum">     513 </span><span class="lineNoCov">          0 :             GDrawDrawText8(pixmap,bd-&gt;value_x+2,i*(bd-&gt;fh+1)+bd-&gt;as,buffer,-1,MAIN_FOREGROUND);</span>
+<span class="lineNum">     514 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">     515 </span>            :           case prt_uint:
+<span class="lineNum">     516 </span><span class="lineNoCov">          0 :             sprintf( buffer, &quot;%u&quot;, (unsigned) bdf-&gt;props[i+cur-&gt;top_prop].u.val );</span>
+<span class="lineNum">     517 </span><span class="lineNoCov">          0 :             GDrawDrawText8(pixmap,bd-&gt;value_x+2,i*(bd-&gt;fh+1)+bd-&gt;as,buffer,-1,MAIN_FOREGROUND);</span>
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">     519 </span>            :         }
+<span class="lineNum">     520 </span><span class="lineNoCov">          0 :         GDrawDrawLine(pixmap,0,i*(bd-&gt;fh+1)+bd-&gt;fh,bd-&gt;vwidth,i*(bd-&gt;fh+1)+bd-&gt;fh,0x808080);</span>
+<span class="lineNum">     521 </span>            :     }
+<span class="lineNum">     522 </span><span class="lineNoCov">          0 :     if ( i&lt;page ) {</span>
+<span class="lineNum">     523 </span>            : /* GT: I am told that the use of &quot;|&quot; to provide contextual information in a */
+<span class="lineNum">     524 </span>            : /* GT: gettext string is non-standard. However it is documented in section */
+<span class="lineNum">     525 </span>            : /* GT: 10.2.6 of http://www.gnu.org/software/gettext/manual/html_mono/gettext.html */
+<span class="lineNum">     526 </span>            : /* GT: */
+<span class="lineNum">     527 </span>            : /* GT: Anyway here the word &quot;Property&quot; is used to provide context for &quot;New...&quot; and */
+<span class="lineNum">     528 </span>            : /* GT: the translator should only translate &quot;New...&quot;. This is necessary because in */
+<span class="lineNum">     529 </span>            : /* GT: French (or any language where adjectives agree in gender/number with their */
+<span class="lineNum">     530 </span>            : /* GT: nouns) there are several different forms of &quot;New&quot; and the one chose depends */
+<span class="lineNum">     531 </span>            : /* GT: on the noun in question. */
+<span class="lineNum">     532 </span>            : /* GT: A french translation might be either msgstr &quot;Nouveau...&quot; or msgstr &quot;Nouvelle...&quot; */
+<span class="lineNum">     533 </span>            : /* GT: */
+<span class="lineNum">     534 </span>            : /* GT: I expect there are more cases where one english word needs to be translated */
+<span class="lineNum">     535 </span>            : /* GT: by several different words in different languages (in Japanese a different */
+<span class="lineNum">     536 </span>            : /* GT: word is used for the latin script and the latin language) and that you, as */
+<span class="lineNum">     537 </span>            : /* GT: a translator may need to ask me to disambiguate more strings. Please do so: */
+<span class="lineNum">     538 </span>            : /* GT:      &lt;pfaedit@users.sourceforge.net&gt; */
+<span class="lineNum">     539 </span><span class="lineNoCov">          0 :         GDrawDrawText8(pixmap,4,i*(bd-&gt;fh+1)+bd-&gt;as,S_(&quot;Property|New...&quot;),-1,0xff0000);</span>
+<span class="lineNum">     540 </span><span class="lineNoCov">          0 :         GDrawDrawLine(pixmap,0,i*(bd-&gt;fh+1)+bd-&gt;fh,bd-&gt;vwidth,i*(bd-&gt;fh+1)+bd-&gt;fh, _ggadget_Default_Box.border_darker);</span>
+<span class="lineNum">     541 </span>            :     }
+<span class="lineNum">     542 </span><span class="lineNoCov">          0 :     GDrawDrawLine(pixmap,bd-&gt;value_x,0,bd-&gt;value_x,bd-&gt;vheight, _ggadget_Default_Box.border_darker);</span>
+<a name="543"><span class="lineNum">     543 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     544 </span>            : 
+<span class="lineNum">     545 </span><span class="lineNoCov">          0 : static void BdfP_Invoked(GWindow v, GMenuItem *mi, GEvent *e) {</span>
+<span class="lineNum">     546 </span><span class="lineNoCov">          0 :     struct bdf_dlg *bd = (struct bdf_dlg *) GDrawGetUserData(v);</span>
+<span class="lineNum">     547 </span><span class="lineNoCov">          0 :     BDFFont *bdf = bd-&gt;cur-&gt;bdf;</span>
+<span class="lineNum">     548 </span><span class="lineNoCov">          0 :     char *prop_name = cu_copy(mi-&gt;ti.text);</span>
+<span class="lineNum">     549 </span><span class="lineNoCov">          0 :     int sel = bd-&gt;cur-&gt;sel_prop;</span>
+<span class="lineNum">     550 </span>            :     int i;
+<span class="lineNum">     551 </span>            : 
+<span class="lineNum">     552 </span><span class="lineNoCov">          0 :     if ( sel&gt;=bdf-&gt;prop_cnt ) {</span>
+<span class="lineNum">     553 </span>            :         /* Create a new one */
+<span class="lineNum">     554 </span><span class="lineNoCov">          0 :         if ( bdf-&gt;prop_cnt&gt;=bdf-&gt;prop_max )</span>
+<span class="lineNum">     555 </span><span class="lineNoCov">          0 :             bdf-&gt;props = realloc(bdf-&gt;props,(bdf-&gt;prop_max+=10)*sizeof(BDFProperties));</span>
+<span class="lineNum">     556 </span><span class="lineNoCov">          0 :         sel = bd-&gt;cur-&gt;sel_prop = bdf-&gt;prop_cnt++;</span>
+<span class="lineNum">     557 </span><span class="lineNoCov">          0 :         bdf-&gt;props[sel].name = prop_name;</span>
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :         for ( i=0; StandardProps[i].name!=NULL; ++i )</span>
+<span class="lineNum">     559 </span><span class="lineNoCov">          0 :             if ( strcmp(prop_name,StandardProps[i].name)==0 )</span>
+<span class="lineNum">     560 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     561 </span><span class="lineNoCov">          0 :         if ( StandardProps[i].name!=NULL ) {</span>
+<span class="lineNum">     562 </span><span class="lineNoCov">          0 :             bdf-&gt;props[sel].type = StandardProps[i].type;</span>
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 :             if ( (bdf-&gt;props[sel].type&amp;~prt_property)==prt_string ||</span>
+<span class="lineNum">     564 </span><span class="lineNoCov">          0 :                     (bdf-&gt;props[sel].type&amp;~prt_property)==prt_atom)</span>
+<span class="lineNum">     565 </span><span class="lineNoCov">          0 :                 bdf-&gt;props[sel].u.str = NULL;</span>
+<span class="lineNum">     566 </span>            :             else
+<span class="lineNum">     567 </span><span class="lineNoCov">          0 :                 bdf-&gt;props[sel].u.val = 0;</span>
+<span class="lineNum">     568 </span><span class="lineNoCov">          0 :             if ( StandardProps[i].defaultable )</span>
+<span class="lineNum">     569 </span><span class="lineNoCov">          0 :                 _BdfP_DefaultCurrent(bd);</span>
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 :             else if ( (bdf-&gt;props[sel].type&amp;~prt_property)==prt_string ||</span>
+<span class="lineNum">     571 </span><span class="lineNoCov">          0 :                     (bdf-&gt;props[sel].type&amp;~prt_property)==prt_atom)</span>
+<span class="lineNum">     572 </span><span class="lineNoCov">          0 :                 bdf-&gt;props[sel].u.str = copy(&quot;&quot;);</span>
+<span class="lineNum">     573 </span>            :         } else {
+<span class="lineNum">     574 </span><span class="lineNoCov">          0 :             bdf-&gt;props[sel].type = prt_property|prt_string;</span>
+<span class="lineNum">     575 </span><span class="lineNoCov">          0 :             bdf-&gt;props[sel].u.str = copy(&quot;&quot;);</span>
+<span class="lineNum">     576 </span>            :         }
+<span class="lineNum">     577 </span>            :     } else {
+<span class="lineNum">     578 </span><span class="lineNoCov">          0 :         free(bdf-&gt;props[sel].name);</span>
+<span class="lineNum">     579 </span><span class="lineNoCov">          0 :         bdf-&gt;props[sel].name = prop_name;</span>
+<span class="lineNum">     580 </span>            :     }
+<span class="lineNum">     581 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(bd-&gt;v,NULL,false);</span>
+<a name="582"><span class="lineNum">     582 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     583 </span>            : 
+<span class="lineNum">     584 </span><span class="lineNoCov">          0 : static void BdfP_PopupMenuProps(struct bdf_dlg *bd, GEvent *e) {</span>
+<span class="lineNum">     585 </span>            :     GMenuItem *mi;
+<span class="lineNum">     586 </span>            :     int i;
+<span class="lineNum">     587 </span>            : 
+<span class="lineNum">     588 </span><span class="lineNoCov">          0 :     for ( i=0 ; StandardProps[i].name!=NULL; ++i );</span>
+<span class="lineNum">     589 </span><span class="lineNoCov">          0 :     mi = calloc(i+3,sizeof(GMenuItem));</span>
+<span class="lineNum">     590 </span><span class="lineNoCov">          0 :     mi[0].ti.text = (unichar_t *) _(&quot;No Change&quot;);</span>
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 :     mi[0].ti.text_is_1byte = true;</span>
+<span class="lineNum">     592 </span><span class="lineNoCov">          0 :     mi[0].ti.fg = COLOR_DEFAULT;</span>
+<span class="lineNum">     593 </span><span class="lineNoCov">          0 :     mi[0].ti.bg = COLOR_DEFAULT;</span>
+<span class="lineNum">     594 </span>            : 
+<span class="lineNum">     595 </span><span class="lineNoCov">          0 :     mi[1].ti.line = true;</span>
+<span class="lineNum">     596 </span><span class="lineNoCov">          0 :     mi[1].ti.fg = COLOR_DEFAULT;</span>
+<span class="lineNum">     597 </span><span class="lineNoCov">          0 :     mi[1].ti.bg = COLOR_DEFAULT;</span>
+<span class="lineNum">     598 </span>            :     
+<span class="lineNum">     599 </span><span class="lineNoCov">          0 :     for ( i=0 ; StandardProps[i].name!=NULL; ++i ) {</span>
+<span class="lineNum">     600 </span><span class="lineNoCov">          0 :         mi[i+2].ti.text = (unichar_t *) StandardProps[i].name;  /* These do not translate!!! */</span>
+<span class="lineNum">     601 </span><span class="lineNoCov">          0 :         mi[i+2].ti.text_is_1byte = true;</span>
+<span class="lineNum">     602 </span><span class="lineNoCov">          0 :         mi[i+2].ti.fg = COLOR_DEFAULT;</span>
+<span class="lineNum">     603 </span><span class="lineNoCov">          0 :         mi[i+2].ti.bg = COLOR_DEFAULT;</span>
+<span class="lineNum">     604 </span><span class="lineNoCov">          0 :         mi[i+2].invoke = BdfP_Invoked;</span>
+<span class="lineNum">     605 </span>            :     }
+<span class="lineNum">     606 </span>            : 
+<span class="lineNum">     607 </span><span class="lineNoCov">          0 :     GMenuCreatePopupMenu(bd-&gt;v,e,mi);</span>
+<span class="lineNum">     608 </span><span class="lineNoCov">          0 :     free(mi);</span>
+<a name="609"><span class="lineNum">     609 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     610 </span>            : 
+<span class="lineNum">     611 </span><span class="lineNoCov">          0 : static void BdfP_Mouse(struct bdf_dlg *bd, GEvent *e) {</span>
+<span class="lineNum">     612 </span><span class="lineNoCov">          0 :     int line = e-&gt;u.mouse.y/(bd-&gt;fh+1) + bd-&gt;cur-&gt;top_prop;</span>
+<span class="lineNum">     613 </span>            : 
+<span class="lineNum">     614 </span><span class="lineNoCov">          0 :     if ( line&lt;0 || line&gt;bd-&gt;cur-&gt;bdf-&gt;prop_cnt )</span>
+<span class="lineNum">     615 </span><span class="lineNoCov">          0 : return;                 /* &quot;New&quot; happens when line==bd-&gt;cur-&gt;bdf-&gt;prop_cnt */</span>
+<span class="lineNum">     616 </span><span class="lineNoCov">          0 :     if ( e-&gt;type == et_mousedown ) {</span>
+<span class="lineNum">     617 </span><span class="lineNoCov">          0 :         if ( !BdfP_FinishTextField(bd) ) {</span>
+<span class="lineNum">     618 </span><span class="lineNoCov">          0 :             bd-&gt;press_pos = -1;</span>
+<span class="lineNum">     619 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     620 </span>            :         }
+<span class="lineNum">     621 </span><span class="lineNoCov">          0 :         if ( e-&gt;u.mouse.x&gt;=4 &amp;&amp; e-&gt;u.mouse.x&lt;= bd-&gt;value_x ) {</span>
+<span class="lineNum">     622 </span><span class="lineNoCov">          0 :             bd-&gt;cur-&gt;sel_prop = line;</span>
+<span class="lineNum">     623 </span><span class="lineNoCov">          0 :             BdfP_PopupMenuProps(bd,e);</span>
+<span class="lineNum">     624 </span><span class="lineNoCov">          0 :             BdfP_EnableButtons(bd);</span>
+<span class="lineNum">     625 </span><span class="lineNoCov">          0 :         } else if ( line&gt;=bd-&gt;cur-&gt;bdf-&gt;prop_cnt )</span>
+<span class="lineNum">     626 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     627 </span>            :         else {
+<span class="lineNum">     628 </span><span class="lineNoCov">          0 :             bd-&gt;press_pos = line;</span>
+<span class="lineNum">     629 </span><span class="lineNoCov">          0 :             bd-&gt;cur-&gt;sel_prop = -1;</span>
+<span class="lineNum">     630 </span><span class="lineNoCov">          0 :             GDrawRequestExpose(bd-&gt;v,NULL,false );</span>
+<span class="lineNum">     631 </span>            :         }
+<span class="lineNum">     632 </span><span class="lineNoCov">          0 :     } else if ( e-&gt;type == et_mouseup ) {</span>
+<span class="lineNum">     633 </span><span class="lineNoCov">          0 :         int pos = bd-&gt;press_pos;</span>
+<span class="lineNum">     634 </span><span class="lineNoCov">          0 :         bd-&gt;press_pos = -1;</span>
+<span class="lineNum">     635 </span><span class="lineNoCov">          0 :         if ( line&gt;=bd-&gt;cur-&gt;bdf-&gt;prop_cnt || line!=pos )</span>
+<span class="lineNum">     636 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     637 </span><span class="lineNoCov">          0 :         if ( bd-&gt;active )            /* Should never happen */</span>
+<span class="lineNum">     638 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     639 </span><span class="lineNoCov">          0 :         bd-&gt;cur-&gt;sel_prop = line;</span>
+<span class="lineNum">     640 </span><span class="lineNoCov">          0 :         if ( e-&gt;u.mouse.x &gt; bd-&gt;value_x ) {</span>
+<span class="lineNum">     641 </span><span class="lineNoCov">          0 :             BDFFont *bdf = bd-&gt;cur-&gt;bdf;</span>
+<span class="lineNum">     642 </span><span class="lineNoCov">          0 :             GGadgetMove(bd-&gt;tf,bd-&gt;value_x+2,(line-bd-&gt;cur-&gt;top_prop)*(bd-&gt;fh+1));</span>
+<span class="lineNum">     643 </span><span class="lineNoCov">          0 :             if ( (bdf-&gt;props[line].type&amp;~prt_property) == prt_int ||</span>
+<span class="lineNum">     644 </span><span class="lineNoCov">          0 :                     (bdf-&gt;props[line].type&amp;~prt_property) == prt_uint ) {</span>
+<span class="lineNum">     645 </span>            :                 char buffer[40];
+<span class="lineNum">     646 </span><span class="lineNoCov">          0 :                 sprintf( buffer,&quot;%d&quot;,bdf-&gt;props[line].u.val );</span>
+<span class="lineNum">     647 </span><span class="lineNoCov">          0 :                 GGadgetSetTitle8(bd-&gt;tf,buffer);</span>
+<span class="lineNum">     648 </span>            :             } else
+<span class="lineNum">     649 </span><span class="lineNoCov">          0 :                 GGadgetSetTitle8(bd-&gt;tf,bdf-&gt;props[line].u.str );</span>
+<span class="lineNum">     650 </span><span class="lineNoCov">          0 :             GGadgetSetVisible(bd-&gt;tf,true);</span>
+<span class="lineNum">     651 </span><span class="lineNoCov">          0 :             bd-&gt;active = true;</span>
+<span class="lineNum">     652 </span>            :         }
+<span class="lineNum">     653 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(bd-&gt;v,NULL,false );</span>
+<span class="lineNum">     654 </span>            :     }
+<a name="655"><span class="lineNum">     655 </span>            : }</a>
+<span class="lineNum">     656 </span>            : 
+<span class="lineNum">     657 </span><span class="lineNoCov">          0 : static int BdfP_Char(struct bdf_dlg *bd, GEvent *e) {</span>
+<span class="lineNum">     658 </span><span class="lineNoCov">          0 :     if ( bd-&gt;active || bd-&gt;cur-&gt;sel_prop==-1 )</span>
+<span class="lineNum">     659 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     660 </span><span class="lineNoCov">          0 :     switch ( e-&gt;u.chr.keysym ) {</span>
+<span class="lineNum">     661 </span>            :       case GK_Up: case GK_KP_Up:
+<span class="lineNum">     662 </span><span class="lineNoCov">          0 :         _BdfP_Up(bd);</span>
+<span class="lineNum">     663 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     664 </span>            :       case GK_Down: case GK_KP_Down:
+<span class="lineNum">     665 </span><span class="lineNoCov">          0 :         _BdfP_Down(bd);</span>
+<span class="lineNum">     666 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     667 </span>            :       default:
+<span class="lineNum">     668 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     669 </span>            :     }
+<a name="670"><span class="lineNum">     670 </span>            : }</a>
+<span class="lineNum">     671 </span>            : 
+<span class="lineNum">     672 </span><span class="lineNoCov">          0 : static int bdfpv_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     673 </span><span class="lineNoCov">          0 :     struct bdf_dlg *bd = GDrawGetUserData(gw);</span>
+<span class="lineNum">     674 </span><span class="lineNoCov">          0 :     if ( event-&gt;type==et_expose ) {</span>
+<span class="lineNum">     675 </span><span class="lineNoCov">          0 :         BdfP_Expose(bd,gw);</span>
+<span class="lineNum">     676 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_char ) {</span>
+<span class="lineNum">     677 </span><span class="lineNoCov">          0 : return( BdfP_Char(bd,event));</span>
+<span class="lineNum">     678 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_mousedown || event-&gt;type == et_mouseup || event-&gt;type==et_mousemove ) {</span>
+<span class="lineNum">     679 </span><span class="lineNoCov">          0 :         BdfP_Mouse(bd,event);</span>
+<span class="lineNum">     680 </span><span class="lineNoCov">          0 :         if ( event-&gt;type == et_mouseup )</span>
+<span class="lineNum">     681 </span><span class="lineNoCov">          0 :             BdfP_EnableButtons(bd);</span>
+<span class="lineNum">     682 </span>            :     }
+<span class="lineNum">     683 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="684"><span class="lineNum">     684 </span>            : }</a>
+<span class="lineNum">     685 </span>            : 
+<span class="lineNum">     686 </span><span class="lineNoCov">          0 : static int bdfp_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     687 </span><span class="lineNoCov">          0 :     struct bdf_dlg *bd = GDrawGetUserData(gw);</span>
+<span class="lineNum">     688 </span><span class="lineNoCov">          0 :     if ( event-&gt;type==et_close ) {</span>
+<span class="lineNum">     689 </span><span class="lineNoCov">          0 :         BdfP_DoCancel(bd);</span>
+<span class="lineNum">     690 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_expose ) {</span>
+<span class="lineNum">     691 </span>            :         GRect r;
+<span class="lineNum">     692 </span><span class="lineNoCov">          0 :         GDrawGetSize(bd-&gt;v,&amp;r);</span>
+<span class="lineNum">     693 </span><span class="lineNoCov">          0 :         GDrawDrawLine(gw,0,r.y-1,bd-&gt;width,r.y-1,0x808080);</span>
+<span class="lineNum">     694 </span><span class="lineNoCov">          0 :         GDrawDrawLine(gw,0,r.y+r.height,bd-&gt;width,r.y+r.height,0x808080);</span>
+<span class="lineNum">     695 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_char ) {</span>
+<span class="lineNum">     696 </span><span class="lineNoCov">          0 : return( BdfP_Char(bd,event));</span>
+<span class="lineNum">     697 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_resize ) {</span>
+<span class="lineNum">     698 </span><span class="lineNoCov">          0 :         BdfP_Resize(bd);</span>
+<span class="lineNum">     699 </span>            :     }
+<span class="lineNum">     700 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="701"><span class="lineNum">     701 </span>            : }</a>
+<span class="lineNum">     702 </span>            : 
+<span class="lineNum">     703 </span><span class="lineNoCov">          0 : void SFBdfProperties(SplineFont *sf, EncMap *map, BDFFont *thisone) {</span>
+<span class="lineNum">     704 </span>            :     struct bdf_dlg bd;
+<span class="lineNum">     705 </span>            :     int i;
+<span class="lineNum">     706 </span>            :     BDFFont *bdf;
+<span class="lineNum">     707 </span>            :     GTextInfo *ti;
+<span class="lineNum">     708 </span>            :     char buffer[40];
+<span class="lineNum">     709 </span>            :     char title[130];
+<span class="lineNum">     710 </span>            :     GRect pos, subpos;
+<span class="lineNum">     711 </span>            :     GWindow gw;
+<span class="lineNum">     712 </span>            :     GWindowAttrs wattrs;
+<span class="lineNum">     713 </span>            :     GGadgetCreateData gcd[10];
+<span class="lineNum">     714 </span>            :     GTextInfo label[9];
+<span class="lineNum">     715 </span>            :     FontRequest rq;
+<span class="lineNum">     716 </span>            :     static GFont *font = NULL;
+<span class="lineNum">     717 </span>            :     extern int _GScrollBar_Width;
+<span class="lineNum">     718 </span>            :     int sbwidth;
+<span class="lineNum">     719 </span>            :     static unichar_t sans[] = { 'h','e','l','v','e','t','i','c','a',',','c','l','e','a','r','l','y','u',',','u','n','i','f','o','n','t',  '\0' };
+<span class="lineNum">     720 </span>            :     static GBox small = GBOX_EMPTY;
+<span class="lineNum">     721 </span>            :     GGadgetData gd;
+<span class="lineNum">     722 </span>            :     /* I don't use a MatrixEdit here because I want to be able to display */
+<span class="lineNum">     723 </span>            :     /*  non-standard properties. And a MatrixEdit can only disply things in */
+<span class="lineNum">     724 </span>            :     /*  its pull-down list */
+<span class="lineNum">     725 </span>            : 
+<span class="lineNum">     726 </span><span class="lineNoCov">          0 :     memset(&amp;bd,0,sizeof(bd));</span>
+<span class="lineNum">     727 </span><span class="lineNoCov">          0 :     bd.map = map;</span>
+<span class="lineNum">     728 </span><span class="lineNoCov">          0 :     bd.sf = sf;</span>
+<span class="lineNum">     729 </span><span class="lineNoCov">          0 :     for ( bdf = sf-&gt;bitmaps, i=0; bdf!=NULL; bdf=bdf-&gt;next, ++i );</span>
+<span class="lineNum">     730 </span><span class="lineNoCov">          0 :     if ( i==0 )</span>
+<span class="lineNum">     731 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     732 </span><span class="lineNoCov">          0 :     bd.fcnt = i;</span>
+<span class="lineNum">     733 </span><span class="lineNoCov">          0 :     bd.fonts = calloc(i,sizeof(struct bdf_dlg_font));</span>
+<span class="lineNum">     734 </span><span class="lineNoCov">          0 :     bd.cur = &amp;bd.fonts[0];</span>
+<span class="lineNum">     735 </span><span class="lineNoCov">          0 :     for ( bdf = sf-&gt;bitmaps, i=0; bdf!=NULL; bdf=bdf-&gt;next, ++i ) {</span>
+<span class="lineNum">     736 </span><span class="lineNoCov">          0 :         bd.fonts[i].bdf = bdf;</span>
+<span class="lineNum">     737 </span><span class="lineNoCov">          0 :         bd.fonts[i].old_prop_cnt = bdf-&gt;prop_cnt;</span>
+<span class="lineNum">     738 </span><span class="lineNoCov">          0 :         bd.fonts[i].old_props = BdfPropsCopy(bdf-&gt;props,bdf-&gt;prop_cnt);</span>
+<span class="lineNum">     739 </span><span class="lineNoCov">          0 :         bd.fonts[i].sel_prop = -1;</span>
+<span class="lineNum">     740 </span><span class="lineNoCov">          0 :         bdf-&gt;prop_max = bdf-&gt;prop_cnt;</span>
+<span class="lineNum">     741 </span><span class="lineNoCov">          0 :         if ( bdf==thisone )</span>
+<span class="lineNum">     742 </span><span class="lineNoCov">          0 :             bd.cur = &amp;bd.fonts[i];</span>
+<span class="lineNum">     743 </span>            :     }
+<span class="lineNum">     744 </span>            : 
+<span class="lineNum">     745 </span><span class="lineNoCov">          0 :     ti = calloc((i+1),sizeof(GTextInfo));</span>
+<span class="lineNum">     746 </span><span class="lineNoCov">          0 :     for ( bdf = sf-&gt;bitmaps, i=0; bdf!=NULL; bdf=bdf-&gt;next, ++i ) {</span>
+<span class="lineNum">     747 </span><span class="lineNoCov">          0 :         if ( bdf-&gt;clut==NULL )</span>
+<span class="lineNum">     748 </span><span class="lineNoCov">          0 :             sprintf( buffer, &quot;%d&quot;, bdf-&gt;pixelsize );</span>
+<span class="lineNum">     749 </span>            :         else
+<span class="lineNum">     750 </span><span class="lineNoCov">          0 :             sprintf( buffer, &quot;%d@%d&quot;, bdf-&gt;pixelsize, BDFDepth(bdf));</span>
+<span class="lineNum">     751 </span><span class="lineNoCov">          0 :         ti[i].text = (unichar_t *) copy(buffer);</span>
+<span class="lineNum">     752 </span><span class="lineNoCov">          0 :         ti[i].text_is_1byte = true;</span>
+<span class="lineNum">     753 </span>            :     }
+<span class="lineNum">     754 </span><span class="lineNoCov">          0 :     ti[bd.cur-bd.fonts].selected = true;</span>
+<span class="lineNum">     755 </span>            : 
+<span class="lineNum">     756 </span><span class="lineNoCov">          0 :     memset(&amp;wattrs,0,sizeof(wattrs));</span>
+<span class="lineNum">     757 </span><span class="lineNoCov">          0 :     wattrs.mask = wam_events|wam_cursor|wam_utf8_wtitle|wam_undercursor|wam_isdlg|wam_restrict;</span>
+<span class="lineNum">     758 </span><span class="lineNoCov">          0 :     wattrs.event_masks = ~(1&lt;&lt;et_charup);</span>
+<span class="lineNum">     759 </span><span class="lineNoCov">          0 :     wattrs.is_dlg = true;</span>
+<span class="lineNum">     760 </span><span class="lineNoCov">          0 :     wattrs.restrict_input_to_me = 1;</span>
+<span class="lineNum">     761 </span><span class="lineNoCov">          0 :     wattrs.undercursor = 1;</span>
+<span class="lineNum">     762 </span><span class="lineNoCov">          0 :     wattrs.cursor = ct_pointer;</span>
+<span class="lineNum">     763 </span><span class="lineNoCov">          0 :     snprintf(title,sizeof(title),_(&quot;Strike Information for %.90s&quot;),</span>
+<span class="lineNum">     764 </span>            :             sf-&gt;fontname);
+<span class="lineNum">     765 </span><span class="lineNoCov">          0 :     wattrs.utf8_window_title = title;</span>
+<span class="lineNum">     766 </span><span class="lineNoCov">          0 :     pos.x = pos.y = 0;</span>
+<span class="lineNum">     767 </span><span class="lineNoCov">          0 :     pos.width = GDrawPointsToPixels(NULL,GGadgetScale(268));</span>
+<span class="lineNum">     768 </span><span class="lineNoCov">          0 :     pos.height = GDrawPointsToPixels(NULL,375);</span>
+<span class="lineNum">     769 </span><span class="lineNoCov">          0 :     bd.gw = gw = GDrawCreateTopWindow(NULL,&amp;pos,bdfp_e_h,&amp;bd,&amp;wattrs);</span>
+<span class="lineNum">     770 </span>            : 
+<span class="lineNum">     771 </span><span class="lineNoCov">          0 :     sbwidth = GDrawPointsToPixels(bd.gw,_GScrollBar_Width);</span>
+<span class="lineNum">     772 </span><span class="lineNoCov">          0 :     subpos.x = 0; subpos.y =  GDrawPointsToPixels(NULL,28);</span>
+<span class="lineNum">     773 </span><span class="lineNoCov">          0 :     subpos.width = pos.width-sbwidth;</span>
+<span class="lineNum">     774 </span><span class="lineNoCov">          0 :     subpos.height = pos.height - subpos.y - GDrawPointsToPixels(NULL,70);</span>
+<span class="lineNum">     775 </span><span class="lineNoCov">          0 :     wattrs.mask = wam_events;</span>
+<span class="lineNum">     776 </span><span class="lineNoCov">          0 :     bd.v = GWidgetCreateSubWindow(gw,&amp;subpos,bdfpv_e_h,&amp;bd,&amp;wattrs);</span>
+<span class="lineNum">     777 </span><span class="lineNoCov">          0 :     bd.vwidth = subpos.width; bd.vheight = subpos.height;</span>
+<span class="lineNum">     778 </span><span class="lineNoCov">          0 :     bd.width = pos.width; bd.height = pos.height;</span>
+<span class="lineNum">     779 </span><span class="lineNoCov">          0 :     bd.value_x = GDrawPointsToPixels(bd.gw,135);</span>
+<span class="lineNum">     780 </span>            : 
+<span class="lineNum">     781 </span><span class="lineNoCov">          0 :     if ( font==NULL ) {</span>
+<span class="lineNum">     782 </span><span class="lineNoCov">          0 :         memset(&amp;rq,0,sizeof(rq));</span>
+<span class="lineNum">     783 </span><span class="lineNoCov">          0 :         rq.family_name = sans;</span>
+<span class="lineNum">     784 </span><span class="lineNoCov">          0 :         rq.point_size = 10;</span>
+<span class="lineNum">     785 </span><span class="lineNoCov">          0 :         rq.weight = 400;</span>
+<span class="lineNum">     786 </span><span class="lineNoCov">          0 :         font = GDrawInstanciateFont(gw,&amp;rq);</span>
+<span class="lineNum">     787 </span><span class="lineNoCov">          0 :         font = GResourceFindFont(&quot;BDFProperties.Font&quot;,font);</span>
+<span class="lineNum">     788 </span>            :     }
+<span class="lineNum">     789 </span><span class="lineNoCov">          0 :     bd.font = font;</span>
+<span class="lineNum">     790 </span>            :     {
+<span class="lineNum">     791 </span>            :         int as, ds, ld;
+<span class="lineNum">     792 </span><span class="lineNoCov">          0 :         GDrawWindowFontMetrics(gw,bd.font,&amp;as,&amp;ds,&amp;ld);</span>
+<span class="lineNum">     793 </span><span class="lineNoCov">          0 :         bd.as = as; bd.fh = as+ds;</span>
+<span class="lineNum">     794 </span>            :     }
+<span class="lineNum">     795 </span>            : 
+<span class="lineNum">     796 </span><span class="lineNoCov">          0 :     memset(gcd,0,sizeof(gcd));</span>
+<span class="lineNum">     797 </span><span class="lineNoCov">          0 :     memset(label,0,sizeof(label));</span>
+<span class="lineNum">     798 </span>            : 
+<span class="lineNum">     799 </span><span class="lineNoCov">          0 :     i=0;</span>
+<span class="lineNum">     800 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.x = 10; gcd[i].gd.pos.y = 3;</span>
+<span class="lineNum">     801 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_visible | gg_enabled;</span>
+<span class="lineNum">     802 </span><span class="lineNoCov">          0 :     gcd[i].gd.u.list = ti;</span>
+<span class="lineNum">     803 </span><span class="lineNoCov">          0 :     gcd[i].gd.handle_controlevent = BdfP_ChangeBDF;</span>
+<span class="lineNum">     804 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GListButtonCreate;</span>
+<span class="lineNum">     805 </span>            : 
+<span class="lineNum">     806 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.x = bd.vwidth; gcd[i].gd.pos.y = subpos.y-1;</span>
+<span class="lineNum">     807 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.width = sbwidth; gcd[i].gd.pos.height = subpos.height+2;</span>
+<span class="lineNum">     808 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_visible | gg_enabled | gg_sb_vert | gg_pos_in_pixels;</span>
+<span class="lineNum">     809 </span><span class="lineNoCov">          0 :     gcd[i].gd.handle_controlevent = _BdfP_VScroll;</span>
+<span class="lineNum">     810 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GScrollBarCreate;</span>
+<span class="lineNum">     811 </span>            : 
+<span class="lineNum">     812 </span><span class="lineNoCov">          0 :     label[i].text = (unichar_t *) _(&quot;Delete&quot;);</span>
+<span class="lineNum">     813 </span><span class="lineNoCov">          0 :     label[i].text_is_1byte = true;</span>
+<span class="lineNum">     814 </span><span class="lineNoCov">          0 :     gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     815 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.x = 4; gcd[i].gd.pos.y = GDrawPixelsToPoints(gw,subpos.y+subpos.height)+6;</span>
+<span class="lineNum">     816 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_visible | gg_enabled ;</span>
+<span class="lineNum">     817 </span><span class="lineNoCov">          0 :     gcd[i].gd.handle_controlevent = BdfP_DeleteCurrent;</span>
+<span class="lineNum">     818 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_Delete;</span>
+<span class="lineNum">     819 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GButtonCreate;</span>
+<span class="lineNum">     820 </span>            : 
+<span class="lineNum">     821 </span><span class="lineNoCov">          0 :     label[i].text = (unichar_t *) _(&quot;Default All&quot;);</span>
+<span class="lineNum">     822 </span><span class="lineNoCov">          0 :     label[i].text_is_1byte = true;</span>
+<span class="lineNum">     823 </span><span class="lineNoCov">          0 :     gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     824 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.x = 80; gcd[i].gd.pos.y = gcd[i-1].gd.pos.y;</span>
+<span class="lineNum">     825 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_visible | gg_enabled ;</span>
+<span class="lineNum">     826 </span><span class="lineNoCov">          0 :     gcd[i].gd.handle_controlevent = BdfP_DefaultAll;</span>
+<span class="lineNum">     827 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_DefAll;</span>
+<span class="lineNum">     828 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GButtonCreate;</span>
+<span class="lineNum">     829 </span>            : 
+<span class="lineNum">     830 </span><span class="lineNoCov">          0 :     label[i].text = (unichar_t *) _(&quot;Default This&quot;);</span>
+<span class="lineNum">     831 </span><span class="lineNoCov">          0 :     label[i].text_is_1byte = true;</span>
+<span class="lineNum">     832 </span><span class="lineNoCov">          0 :     gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     833 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.y = gcd[i-1].gd.pos.y;</span>
+<span class="lineNum">     834 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_visible | gg_enabled ;</span>
+<span class="lineNum">     835 </span><span class="lineNoCov">          0 :     gcd[i].gd.handle_controlevent = BdfP_DefaultCurrent;</span>
+<span class="lineNum">     836 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_DefCur;</span>
+<span class="lineNum">     837 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GButtonCreate;</span>
+<span class="lineNum">     838 </span>            : 
+<span class="lineNum">     839 </span>            : /* I want the 2 pronged arrow, but gdraw can't find a nice one */
+<span class="lineNum">     840 </span>            : /*  label[i].text = (unichar_t *) &quot;⇑&quot;;      *//* Up Arrow */
+<span class="lineNum">     841 </span><span class="lineNoCov">          0 :     label[i].text = (unichar_t *) &quot;↑&quot;;      /* Up Arrow */</span>
+<span class="lineNum">     842 </span><span class="lineNoCov">          0 :     label[i].text_is_1byte = true;</span>
+<span class="lineNum">     843 </span><span class="lineNoCov">          0 :     gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     844 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.y = gcd[i-1].gd.pos.y;</span>
+<span class="lineNum">     845 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_visible | gg_enabled ;</span>
+<span class="lineNum">     846 </span><span class="lineNoCov">          0 :     gcd[i].gd.handle_controlevent = BdfP_Up;</span>
+<span class="lineNum">     847 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_Up;</span>
+<span class="lineNum">     848 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GButtonCreate;</span>
+<span class="lineNum">     849 </span>            : 
+<span class="lineNum">     850 </span>            : /* I want the 2 pronged arrow, but gdraw can't find a nice one */
+<span class="lineNum">     851 </span>            : /*  label[i].text = (unichar_t *) &quot;⇓&quot;;      *//* Down Arrow */
+<span class="lineNum">     852 </span><span class="lineNoCov">          0 :     label[i].text = (unichar_t *) &quot;↓&quot;;      /* Down Arrow */</span>
+<span class="lineNum">     853 </span><span class="lineNoCov">          0 :     label[i].text_is_1byte = true;</span>
+<span class="lineNum">     854 </span><span class="lineNoCov">          0 :     gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     855 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.y = gcd[i-1].gd.pos.y;</span>
+<span class="lineNum">     856 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_visible | gg_enabled ;</span>
+<span class="lineNum">     857 </span><span class="lineNoCov">          0 :     gcd[i].gd.handle_controlevent = BdfP_Down;</span>
+<span class="lineNum">     858 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_Down;</span>
+<span class="lineNum">     859 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GButtonCreate;</span>
+<span class="lineNum">     860 </span>            : 
+<span class="lineNum">     861 </span>            : 
+<span class="lineNum">     862 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.x = 30-3; gcd[i].gd.pos.y = GDrawPixelsToPoints(NULL,pos.height)-32-3;</span>
+<span class="lineNum">     863 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.width = -1; gcd[i].gd.pos.height = 0;</span>
+<span class="lineNum">     864 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_visible | gg_enabled | gg_but_default;</span>
+<span class="lineNum">     865 </span><span class="lineNoCov">          0 :     label[i].text = (unichar_t *) _(&quot;_OK&quot;);</span>
+<span class="lineNum">     866 </span><span class="lineNoCov">          0 :     label[i].text_is_1byte = true;</span>
+<span class="lineNum">     867 </span><span class="lineNoCov">          0 :     label[i].text_in_resource = true;</span>
+<span class="lineNum">     868 </span><span class="lineNoCov">          0 :     gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     869 </span><span class="lineNoCov">          0 :     gcd[i].gd.handle_controlevent = BdfP_OK;</span>
+<span class="lineNum">     870 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_OK;</span>
+<span class="lineNum">     871 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GButtonCreate;</span>
+<span class="lineNum">     872 </span>            : 
+<span class="lineNum">     873 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.x = -30; gcd[i].gd.pos.y = gcd[i-1].gd.pos.y+3;</span>
+<span class="lineNum">     874 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.width = -1; gcd[i].gd.pos.height = 0;</span>
+<span class="lineNum">     875 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_visible | gg_enabled | gg_but_cancel;</span>
+<span class="lineNum">     876 </span><span class="lineNoCov">          0 :     label[i].text = (unichar_t *) _(&quot;_Cancel&quot;);</span>
+<span class="lineNum">     877 </span><span class="lineNoCov">          0 :     label[i].text_is_1byte = true;</span>
+<span class="lineNum">     878 </span><span class="lineNoCov">          0 :     label[i].text_in_resource = true;</span>
+<span class="lineNum">     879 </span><span class="lineNoCov">          0 :     gcd[i].gd.label = &amp;label[i];</span>
+<span class="lineNum">     880 </span><span class="lineNoCov">          0 :     gcd[i].gd.handle_controlevent = BdfP_Cancel;</span>
+<span class="lineNum">     881 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_Cancel;</span>
+<span class="lineNum">     882 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GButtonCreate;</span>
+<span class="lineNum">     883 </span>            :     
+<span class="lineNum">     884 </span><span class="lineNoCov">          0 :     GGadgetsCreate(gw,gcd);</span>
+<span class="lineNum">     885 </span><span class="lineNoCov">          0 :     GTextInfoListFree(gcd[0].gd.u.list);</span>
+<span class="lineNum">     886 </span><span class="lineNoCov">          0 :     bd.vsb = gcd[1].ret;</span>
+<span class="lineNum">     887 </span>            : 
+<span class="lineNum">     888 </span><span class="lineNoCov">          0 :     small.main_background = small.main_foreground = COLOR_DEFAULT;</span>
+<span class="lineNum">     889 </span><span class="lineNoCov">          0 :     small.main_foreground = 0x0000ff;</span>
+<span class="lineNum">     890 </span><span class="lineNoCov">          0 :     memset(&amp;gd,'\0',sizeof(gd));</span>
+<span class="lineNum">     891 </span><span class="lineNoCov">          0 :     memset(&amp;label[0],'\0',sizeof(label[0]));</span>
+<span class="lineNum">     892 </span>            : 
+<span class="lineNum">     893 </span><span class="lineNoCov">          0 :     label[0].text = (unichar_t *) &quot;\0\0\0\0&quot;;</span>
+<span class="lineNum">     894 </span><span class="lineNoCov">          0 :     label[0].font = bd.font;</span>
+<span class="lineNum">     895 </span><span class="lineNoCov">          0 :     gd.pos.height = bd.fh;</span>
+<span class="lineNum">     896 </span><span class="lineNoCov">          0 :     gd.pos.width = bd.vwidth-bd.value_x;</span>
+<span class="lineNum">     897 </span><span class="lineNoCov">          0 :     gd.label = &amp;label[0];</span>
+<span class="lineNum">     898 </span><span class="lineNoCov">          0 :     gd.box = &amp;small;</span>
+<span class="lineNum">     899 </span><span class="lineNoCov">          0 :     gd.flags = gg_enabled | gg_pos_in_pixels | gg_dontcopybox | gg_text_xim;</span>
+<span class="lineNum">     900 </span><span class="lineNoCov">          0 :     bd.tf = GTextFieldCreate(bd.v,&amp;gd,&amp;bd);</span>
+<span class="lineNum">     901 </span>            : 
+<span class="lineNum">     902 </span><span class="lineNoCov">          0 :     bd.press_pos = -1;</span>
+<span class="lineNum">     903 </span><span class="lineNoCov">          0 :     BdfP_EnableButtons(&amp;bd);</span>
+<span class="lineNum">     904 </span><span class="lineNoCov">          0 :     BdfP_RefigureScrollbar(&amp;bd);</span>
+<span class="lineNum">     905 </span>            :     
+<span class="lineNum">     906 </span><span class="lineNoCov">          0 :     GDrawSetVisible(bd.v,true);</span>
+<span class="lineNum">     907 </span><span class="lineNoCov">          0 :     GDrawSetVisible(gw,true);</span>
+<span class="lineNum">     908 </span><span class="lineNoCov">          0 :     while ( !bd.done )</span>
+<span class="lineNum">     909 </span><span class="lineNoCov">          0 :         GDrawProcessOneEvent(NULL);</span>
+<span class="lineNum">     910 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(gw);</span>
+<span class="lineNum">     911 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

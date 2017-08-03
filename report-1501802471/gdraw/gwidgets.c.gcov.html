@@ -1,0 +1,186 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - gdraw/gwidgets.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gdraw</a> - gwidgets.c<span style="font-size: 80%;"> (source / <a href="gwidgets.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">42</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &quot;gwidgetP.h&quot;
+<span class="lineNum">      28 </span>            : #include &quot;../gdraw/gdrawP.h&quot;
+<span class="lineNum">      29 </span>            : #include &lt;ggadget.h&gt;
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span>            : /* Temporarily do all drawing in this widget to a pixmap rather than the window */
+<span class="lineNum">      32 </span>            : /*  if events are orderly then we can share one pixmap for all windows */
+<span class="lineNum">      33 </span>            : static GWindow pixmap, cairo_pixmap;
+<a name="34"><span class="lineNum">      34 </span>            : /*  otherwise we create and destroy pixmaps */</a>
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span><span class="lineNoCov">          0 : GWindow _GWidget_GetPixmap(GWindow gw,GRect *rect) {</span>
+<span class="lineNum">      37 </span>            :     GWindow ours;
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span><span class="lineNoCov">          0 :     if ( gw-&gt;display!=screen_display )</span>
+<span class="lineNum">      40 </span><span class="lineNoCov">          0 : return( gw );</span>
+<span class="lineNum">      41 </span><span class="lineNoCov">          0 :     if ( gw-&gt;is_pixmap )</span>
+<span class="lineNum">      42 </span><span class="lineNoCov">          0 : return( gw );</span>
+<span class="lineNum">      43 </span>            : #ifdef UsingPThreads
+<span class="lineNum">      44 </span>            :     this is a critical section if there are multiple pthreads
+<span class="lineNum">      45 </span>            : #endif
+<span class="lineNum">      46 </span><span class="lineNoCov">          0 :     if ( GDrawHasCairo(gw)&amp;gc_alpha ) {</span>
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 :         if ( cairo_pixmap==NULL || cairo_pixmap-&gt;pos.width&lt;rect-&gt;x+rect-&gt;width ||</span>
+<span class="lineNum">      48 </span><span class="lineNoCov">          0 :                              cairo_pixmap-&gt;pos.height&lt;rect-&gt;y+rect-&gt;height ) {</span>
+<span class="lineNum">      49 </span><span class="lineNoCov">          0 :             if ( cairo_pixmap!=NULL )</span>
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 :                 GDrawDestroyWindow(cairo_pixmap);</span>
+<span class="lineNum">      51 </span>            :             /* The 0x8000 on width is a hack to tell create pixmap to use*/
+<span class="lineNum">      52 </span>            :             /*  cairo convas */
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :             cairo_pixmap = GDrawCreatePixmap(gw-&gt;display,0x8000|gw-&gt;pos.width,gw-&gt;pos.height);</span>
+<span class="lineNum">      54 </span>            :         }
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :         ours = cairo_pixmap;</span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :         cairo_pixmap = NULL;</span>
+<span class="lineNum">      57 </span>            :     } else {
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :         if ( pixmap==NULL || pixmap-&gt;pos.width&lt;rect-&gt;x+rect-&gt;width ||</span>
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :                              pixmap-&gt;pos.height&lt;rect-&gt;y+rect-&gt;height ) {</span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 :             if ( pixmap!=NULL )</span>
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :                 GDrawDestroyWindow(pixmap);</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :             pixmap = GDrawCreatePixmap(gw-&gt;display,gw-&gt;pos.width,gw-&gt;pos.height);</span>
+<span class="lineNum">      63 </span>            :         }
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :         ours = pixmap;</span>
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :         pixmap = NULL;</span>
+<span class="lineNum">      66 </span>            :     }
+<span class="lineNum">      67 </span>            : #ifdef UsingPThreads
+<span class="lineNum">      68 </span>            :     End critical section
+<span class="lineNum">      69 </span>            : #endif
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :     if ( ours==NULL )</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :         ours = gw;</span>
+<span class="lineNum">      72 </span>            :     else {
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :         GWidgetD *gd = (GWidgetD *) (gw-&gt;widget_data);</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :         ours-&gt;widget_data = gd;</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :         gd-&gt;w = ours;</span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :         GDrawFillRect(ours,rect,gw-&gt;ggc-&gt;bg);</span>
+<span class="lineNum">      77 </span>            :     }
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 : return( ours );</span>
+<a name="79"><span class="lineNum">      79 </span>            : }</a>
+<span class="lineNum">      80 </span>            : 
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 : void _GWidget_RestorePixmap(GWindow gw, GWindow ours, GRect *rect) {</span>
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :     GWidgetD *gd = (GWidgetD *) (gw-&gt;widget_data);</span>
+<span class="lineNum">      83 </span>            : 
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :     if ( gw==ours )</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 : return;                         /* it wasn't a pixmap, all drawing was to real window */</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :     GDrawDrawPixmap(gw, ours, rect, rect-&gt;x, rect-&gt;y);</span>
+<span class="lineNum">      87 </span>            :     
+<span class="lineNum">      88 </span>            : #ifdef UsingPThreads
+<span class="lineNum">      89 </span>            :     this is a critical section if there are multiple pthreads
+<span class="lineNum">      90 </span>            : #endif
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :     if ( GDrawHasCairo(gw)&amp;gc_alpha ) {</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :         if ( cairo_pixmap!=NULL )</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :             GDrawDestroyWindow(ours);</span>
+<span class="lineNum">      94 </span>            :         else {
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :             cairo_pixmap = ours;</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :             ours-&gt;widget_data = NULL;</span>
+<span class="lineNum">      97 </span>            :         }
+<span class="lineNum">      98 </span>            :     } else {
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :         if ( pixmap!=NULL )</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :             GDrawDestroyWindow(ours);</span>
+<span class="lineNum">     101 </span>            :         else {
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :             pixmap = ours;</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :             ours-&gt;widget_data = NULL;</span>
+<span class="lineNum">     104 </span>            :         }
+<span class="lineNum">     105 </span>            :     }
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :     gd-&gt;w = gw;</span>
+<span class="lineNum">     107 </span>            : #ifdef UsingPThreads
+<span class="lineNum">     108 </span>            :     End critical section
+<span class="lineNum">     109 </span>            : #endif
+<span class="lineNum">     110 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

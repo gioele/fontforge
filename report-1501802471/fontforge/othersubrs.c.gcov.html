@@ -1,0 +1,619 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforge/othersubrs.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforge</a> - othersubrs.c<span style="font-size: 80%;"> (source / <a href="othersubrs.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">5</td>
+            <td class="headerCovTableEntry">64</td>
+            <td class="headerCovTableEntryLo">7.8 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntryLo">33.3 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #include &quot;othersubrs.h&quot;</a>
+<span class="lineNum">       2 </span>            : 
+<span class="lineNum">       3 </span>            : #include &quot;fontforge.h&quot;                /* For LogError */
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span>            : /* These subroutines are code by Adobe for this exact use (from T1_Spec.pdf) */
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            :         /* 3 0 callothersubr pop pop setcurrentpoint return */
+<span class="lineNum">       8 </span>            : static const uint8 subrs0[] = { 3+139, 0+139, 12, 16, 12, 17, 12, 17, 12, 33, 11 };
+<span class="lineNum">       9 </span>            :         /* 0 1 callothersubr return */
+<span class="lineNum">      10 </span>            : static const uint8 subrs1[] = { 0+139, 1+139, 12, 16, 11 };
+<span class="lineNum">      11 </span>            :         /* 0 2 callothersubr return */
+<span class="lineNum">      12 </span>            : static const uint8 subrs2[] = { 0+139, 2+139, 12, 16, 11 };
+<span class="lineNum">      13 </span>            :         /* return */
+<span class="lineNum">      14 </span>            : static const uint8 subrs3[] = { 11 };
+<span class="lineNum">      15 </span>            :         /* This one I created myself to do hint substitution */
+<span class="lineNum">      16 </span>            :         /* &lt;subr number presumed to be on stack&gt; 1 3 callother pop callsubr */
+<span class="lineNum">      17 </span>            : static const uint8 subrs4[] = { 1+139, 3+139, 12, 16, 12, 17, 10, 11 };
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span>            :         /* These others from adobe for multiple master */
+<span class="lineNum">      20 </span>            :         /* They need some fix up before they are used (the stack count depends on the # instances). */
+<span class="lineNum">      21 </span>            :         /* &lt;n&gt; 14 callothersubr pop return */
+<span class="lineNum">      22 </span>            : static const uint8 subrs5[] = { 139, 14+139, 12, 16, 12, 17, 11 };
+<span class="lineNum">      23 </span>            :         /* 2*&lt;n&gt; 15 callothersubr pop pop return */
+<span class="lineNum">      24 </span>            : static const uint8 subrs6[] = { 139, 15+139, 12, 16, 12, 17, 12, 17, 11 };
+<span class="lineNum">      25 </span>            :         /* 3*&lt;n&gt; 16 callothersubr pop pop pop return */
+<span class="lineNum">      26 </span>            : static const uint8 subrs7[] = { 139, 16+139, 12, 16, 12, 17, 12, 17, 12, 17, 11 };
+<span class="lineNum">      27 </span>            :         /* 4*&lt;n&gt; 17 callothersubr pop pop pop pop return */
+<span class="lineNum">      28 </span>            : static const uint8 subrs8[] = { 139, 17+139, 12, 16, 12, 17, 12, 17, 12, 17, 12, 17, 11 };
+<span class="lineNum">      29 </span>            :         /* 6*&lt;n&gt; 18 callothersubr pop pop pop pop  pop pop return */
+<span class="lineNum">      30 </span>            : static const uint8 subrs9[] = { 139, 18+139, 12, 16, 12, 17, 12, 17, 12, 17, 12, 17, 12, 17, 12, 17, 11 };
+<span class="lineNum">      31 </span>            : 
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            : const uint8 *const subrs[] = { subrs0, subrs1, subrs2, subrs3, subrs4,
+<span class="lineNum">      34 </span>            :         subrs5, subrs6, subrs7, subrs8, subrs9 };
+<span class="lineNum">      35 </span>            : const int subrslens[] = { sizeof(subrs0), sizeof(subrs1), sizeof(subrs2),
+<span class="lineNum">      36 </span>            :         sizeof(subrs3), sizeof(subrs4), sizeof(subrs5), sizeof(subrs6),
+<span class="lineNum">      37 </span>            :         sizeof(subrs7), sizeof(subrs8), sizeof(subrs9) };
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            : static const char *copyright[] = {
+<span class="lineNum">      40 </span>            :         &quot;% Copyright (c) 1987-1990 Adobe Systems Incorporated.&quot;,
+<span class="lineNum">      41 </span>            :         &quot;% All Rights Reserved.&quot;,
+<span class="lineNum">      42 </span>            :         &quot;% This code to be used for Flex and hint replacement.&quot;,
+<span class="lineNum">      43 </span>            :         &quot;% Version 1.1&quot;,
+<span class="lineNum">      44 </span>            :         NULL
+<span class="lineNum">      45 </span>            : };
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span>            : static const char *othersubrs0[] = {
+<span class="lineNum">      48 </span>            :         &quot;systemdict /internaldict known&quot;,
+<span class="lineNum">      49 </span>            :         &quot;{1183615869 systemdict /internaldict get exec&quot;,
+<span class="lineNum">      50 </span>            :         &quot;/FlxProc known {save true} {false} ifelse}&quot;,
+<span class="lineNum">      51 </span>            :         &quot;{userdict /internaldict known not {&quot;,
+<span class="lineNum">      52 </span>            :         &quot;userdict /internaldict&quot;,
+<span class="lineNum">      53 </span>            :         &quot;{count 0 eq&quot;,
+<span class="lineNum">      54 </span>            :         &quot;{/internaldict errordict /invalidaccess get exec} if&quot;,
+<span class="lineNum">      55 </span>            :         &quot;dup type /integertype ne&quot;,
+<span class="lineNum">      56 </span>            :         &quot;{/internaldict errordict /invalidaccess get exec} if&quot;,
+<span class="lineNum">      57 </span>            :         &quot;dup 1183615869 eq&quot;,
+<span class="lineNum">      58 </span>            :         &quot;{pop 0}&quot;,
+<span class="lineNum">      59 </span>            :         &quot;{/internaldict errordict /invalidaccess get exec}&quot;,
+<span class="lineNum">      60 </span>            :         &quot;ifelse&quot;,
+<span class="lineNum">      61 </span>            :         &quot;}&quot;,
+<span class="lineNum">      62 </span>            :         &quot;dup 14 get 1 25 dict put&quot;,
+<span class="lineNum">      63 </span>            :         &quot;bind executeonly put&quot;,
+<span class="lineNum">      64 </span>            :         &quot;} if&quot;,
+<span class="lineNum">      65 </span>            :         &quot;1183615869 userdict /internaldict get exec&quot;,
+<span class="lineNum">      66 </span>            :         &quot;/FlxProc known {save true} {false} ifelse}&quot;,
+<span class="lineNum">      67 </span>            :         &quot;ifelse&quot;,
+<span class="lineNum">      68 </span>            :         &quot;[&quot;,
+<span class="lineNum">      69 </span>            :         &quot;systemdict /internaldict known not&quot;,
+<span class="lineNum">      70 </span>            :         &quot;{100 dict /begin cvx /mtx matrix /def cvx} if&quot;,
+<span class="lineNum">      71 </span>            :         &quot;systemdict /currentpacking known {currentpacking true setpacking} if&quot;,
+<span class="lineNum">      72 </span>            :         &quot;{&quot;,
+<span class="lineNum">      73 </span>            :         &quot;systemdict /internaldict known {&quot;,
+<span class="lineNum">      74 </span>            :         &quot;1183615869 systemdict /internaldict get exec&quot;,
+<span class="lineNum">      75 </span>            :         &quot;dup /$FlxDict known not {&quot;,
+<span class="lineNum">      76 </span>            :         &quot;dup dup length exch maxlength eq&quot;,
+<span class="lineNum">      77 </span>            :         &quot;{pop userdict dup /$FlxDict known not&quot;,
+<span class="lineNum">      78 </span>            :         &quot;{100 dict begin /mtx matrix def&quot;,
+<span class="lineNum">      79 </span>            :         &quot;dup /$FlxDict currentdict put end} if}&quot;,
+<span class="lineNum">      80 </span>            :         &quot;{100 dict begin /mtx matrix def&quot;,
+<span class="lineNum">      81 </span>            :         &quot;dup /$FlxDict currentdict put end}&quot;,
+<span class="lineNum">      82 </span>            :         &quot;ifelse&quot;,
+<span class="lineNum">      83 </span>            :         &quot;} if&quot;,
+<span class="lineNum">      84 </span>            :         &quot;/$FlxDict get begin&quot;,
+<span class="lineNum">      85 </span>            :         &quot;} if&quot;,
+<span class="lineNum">      86 </span>            :         &quot;grestore&quot;,
+<span class="lineNum">      87 </span>            :         &quot;/exdef {exch def} def&quot;,
+<span class="lineNum">      88 </span>            :         &quot;/dmin exch abs 100 div def&quot;,
+<span class="lineNum">      89 </span>            :         &quot;/epX exdef /epY exdef&quot;,
+<span class="lineNum">      90 </span>            :         &quot;/c4y2 exdef /c4x2 exdef /c4y1 exdef /c4x1 exdef /c4y0 exdef /c4x0 exdef&quot;,
+<span class="lineNum">      91 </span>            :         &quot;/c3y2 exdef /c3x2 exdef /c3y1 exdef /c3x1 exdef /c3y0 exdef /c3x0 exdef&quot;,
+<span class="lineNum">      92 </span>            :         &quot;/c1y2 exdef /c1x2 exdef /c2x2 c4x2 def /c2y2 c4y2 def&quot;,
+<span class="lineNum">      93 </span>            :         &quot;/yflag c1y2 c3y2 sub abs c1x2 c3x2 sub abs gt def&quot;,
+<span class="lineNum">      94 </span>            :         &quot;/PickCoords {&quot;,
+<span class="lineNum">      95 </span>            :         &quot;{c1x0 c1y0 c1x1 c1y1 c1x2 c1y2 c2x0 c2y0 c2x1 c2y1 c2x2 c2y2}&quot;,
+<span class="lineNum">      96 </span>            :         &quot;{c3x0 c3y0 c3x1 c3y1 c3x2 c3y2 c4x0 c4y0 c4x1 c4y1 c4x2 c4y2}&quot;,
+<span class="lineNum">      97 </span>            :         &quot;ifelse&quot;,
+<span class="lineNum">      98 </span>            :         &quot;/y5 exdef /x5 exdef /y4 exdef /x4 exdef /y3 exdef /x3 exdef&quot;,
+<span class="lineNum">      99 </span>            :         &quot;/y2 exdef /x2 exdef /y1 exdef /x1 exdef /y0 exdef /x0 exdef&quot;,
+<span class="lineNum">     100 </span>            :         &quot;} def&quot;,
+<span class="lineNum">     101 </span>            :         &quot;mtx currentmatrix pop&quot;,
+<span class="lineNum">     102 </span>            :         &quot;mtx 0 get abs .00001 lt mtx 3 get abs .00001 lt or&quot;,
+<span class="lineNum">     103 </span>            :         &quot;{/flipXY -1 def}&quot;,
+<span class="lineNum">     104 </span>            :         &quot;{mtx 1 get abs .00001 lt mtx 2 get abs .00001 lt or&quot;,
+<span class="lineNum">     105 </span>            :         &quot;{/flipXY 1 def}&quot;,
+<span class="lineNum">     106 </span>            :         &quot;{/flipXY 0 def}&quot;,
+<span class="lineNum">     107 </span>            :         &quot;ifelse}&quot;,
+<span class="lineNum">     108 </span>            :         &quot;ifelse&quot;,
+<span class="lineNum">     109 </span>            :         &quot;/erosion 1 def&quot;,
+<span class="lineNum">     110 </span>            :         &quot;systemdict /internaldict known {&quot;,
+<span class="lineNum">     111 </span>            :         &quot;1183615869 systemdict /internaldict get exec dup&quot;,
+<span class="lineNum">     112 </span>            :         &quot;/erosion known&quot;,
+<span class="lineNum">     113 </span>            :         &quot;{/erosion get /erosion exch def}&quot;,
+<span class="lineNum">     114 </span>            :         &quot;{pop}&quot;,
+<span class="lineNum">     115 </span>            :         &quot;ifelse&quot;,
+<span class="lineNum">     116 </span>            :         &quot;} if&quot;,
+<span class="lineNum">     117 </span>            :         &quot;yflag&quot;,
+<span class="lineNum">     118 </span>            :         &quot;{flipXY 0 eq c3y2 c4y2 eq or&quot;,
+<span class="lineNum">     119 </span>            :         &quot;{false PickCoords}&quot;,
+<span class="lineNum">     120 </span>            :         &quot;{/shrink c3y2 c4y2 eq&quot;,
+<span class="lineNum">     121 </span>            :         &quot;{0}{c1y2 c4y2 sub c3y2 c4y2 sub div abs} ifelse def&quot;,
+<span class="lineNum">     122 </span>            :         &quot;/yshrink {c4y2 sub shrink mul c4y2 add} def&quot;,
+<span class="lineNum">     123 </span>            :         &quot;/c1y0 c3y0 yshrink def /c1y1 c3y1 yshrink def&quot;,
+<span class="lineNum">     124 </span>            :         &quot;/c2y0 c4y0 yshrink def /c2y1 c4y1 yshrink def&quot;,
+<span class="lineNum">     125 </span>            :         &quot;/c1x0 c3x0 def /c1x1 c3x1 def /c2x0 c4x0 def /c2x1 c4x1 def&quot;,
+<span class="lineNum">     126 </span>            :         &quot;/dY 0 c3y2 c1y2 sub round&quot;,
+<span class="lineNum">     127 </span>            :         &quot;dtransform flipXY 1 eq {exch} if pop abs def&quot;,
+<span class="lineNum">     128 </span>            :         &quot;dY dmin lt PickCoords&quot;,
+<span class="lineNum">     129 </span>            :         &quot;y2 c1y2 sub abs 0.001 gt {&quot;,
+<span class="lineNum">     130 </span>            :         &quot;c1x2 c1y2 transform flipXY 1 eq {exch} if&quot;,
+<span class="lineNum">     131 </span>            :         &quot;/cx exch def /cy exch def&quot;,
+<span class="lineNum">     132 </span>            :         &quot;/dY 0 y2 c1y2 sub round dtransform flipXY 1 eq {exch}&quot;,
+<span class="lineNum">     133 </span>            :         &quot;if pop def&quot;,
+<span class="lineNum">     134 </span>            :         &quot;dY round dup 0 ne&quot;,
+<span class="lineNum">     135 </span>            :         &quot;{/dY exdef}&quot;,
+<span class="lineNum">     136 </span>            :         &quot;{pop dY 0 lt {-1}{1} ifelse /dY exdef}&quot;,
+<span class="lineNum">     137 </span>            :         &quot;ifelse&quot;,
+<span class="lineNum">     138 </span>            :         &quot;/erode PaintType 2 ne erosion 0.5 ge and def&quot;,
+<span class="lineNum">     139 </span>            :         &quot;erode {/cy cy 0.5 sub def} if&quot;,
+<span class="lineNum">     140 </span>            :         &quot;/ey cy dY add def&quot;,
+<span class="lineNum">     141 </span>            :         &quot;/ey ey ceiling ey sub ey floor add def&quot;,
+<span class="lineNum">     142 </span>            :         &quot;erode {/ey ey 0.5 add def} if&quot;,
+<span class="lineNum">     143 </span>            :         &quot;ey cx flipXY 1 eq {exch} if itransform exch pop&quot;,
+<span class="lineNum">     144 </span>            :         &quot;y2 sub /eShift exch def&quot;,
+<span class="lineNum">     145 </span>            :         &quot;/y1 y1 eShift add def /y2 y2 eShift add def /y3 y3&quot;,
+<span class="lineNum">     146 </span>            :         &quot;eShift add def&quot;,
+<span class="lineNum">     147 </span>            :         &quot;} if&quot;,
+<span class="lineNum">     148 </span>            :         &quot;} ifelse&quot;,
+<span class="lineNum">     149 </span>            :         &quot;}&quot;,
+<span class="lineNum">     150 </span>            :         &quot;{flipXY 0 eq c3x2 c4x2 eq or&quot;,
+<span class="lineNum">     151 </span>            :         &quot;{false PickCoords}&quot;,
+<span class="lineNum">     152 </span>            :         &quot;{/shrink c3x2 c4x2 eq&quot;,
+<span class="lineNum">     153 </span>            :         &quot;{0}{c1x2 c4x2 sub c3x2 c4x2 sub div abs} ifelse def&quot;,
+<span class="lineNum">     154 </span>            :         &quot;/xshrink {c4x2 sub shrink mul c4x2 add} def&quot;,
+<span class="lineNum">     155 </span>            :         &quot;/c1x0 c3x0 xshrink def /c1x1 c3x1 xshrink def&quot;,
+<span class="lineNum">     156 </span>            :         &quot;/c2x0 c4x0 xshrink def /c2x1 c4x1 xshrink def&quot;,
+<span class="lineNum">     157 </span>            :         &quot;/c1y0 c3y0 def /c1y1 c3y1 def /c2y0 c4y0 def /c2y1 c4y1 def&quot;,
+<span class="lineNum">     158 </span>            :         &quot;/dX c3x2 c1x2 sub round 0 dtransform&quot;,
+<span class="lineNum">     159 </span>            :         &quot;flipXY -1 eq {exch} if pop abs def&quot;,
+<span class="lineNum">     160 </span>            :         &quot;dX dmin lt PickCoords&quot;,
+<span class="lineNum">     161 </span>            :         &quot;x2 c1x2 sub abs 0.001 gt {&quot;,
+<span class="lineNum">     162 </span>            :         &quot;c1x2 c1y2 transform flipXY -1 eq {exch} if&quot;,
+<span class="lineNum">     163 </span>            :         &quot;/cy exch def /cx exch def&quot;,
+<span class="lineNum">     164 </span>            :         &quot;/dX x2 c1x2 sub round 0 dtransform flipXY -1 eq {exch} if pop def&quot;,
+<span class="lineNum">     165 </span>            :         &quot;dX round dup 0 ne&quot;,
+<span class="lineNum">     166 </span>            :         &quot;{/dX exdef}&quot;,
+<span class="lineNum">     167 </span>            :         &quot;{pop dX 0 lt {-1}{1} ifelse /dX exdef}&quot;,
+<span class="lineNum">     168 </span>            :         &quot;ifelse&quot;,
+<span class="lineNum">     169 </span>            :         &quot;/erode PaintType 2 ne erosion .5 ge and def&quot;,
+<span class="lineNum">     170 </span>            :         &quot;erode {/cx cx .5 sub def} if&quot;,
+<span class="lineNum">     171 </span>            :         &quot;/ex cx dX add def&quot;,
+<span class="lineNum">     172 </span>            :         &quot;/ex ex ceiling ex sub ex floor add def&quot;,
+<span class="lineNum">     173 </span>            :         &quot;erode {/ex ex .5 add def} if&quot;,
+<span class="lineNum">     174 </span>            :         &quot;ex cy flipXY -1 eq {exch} if itransform pop&quot;,
+<span class="lineNum">     175 </span>            :         &quot;x2 sub /eShift exch def&quot;,
+<span class="lineNum">     176 </span>            :         &quot;/x1 x1 eShift add def /x2 x2 eShift add def /x3 x3 eShift add def&quot;,
+<span class="lineNum">     177 </span>            :         &quot;} if&quot;,
+<span class="lineNum">     178 </span>            :         &quot;} ifelse&quot;,
+<span class="lineNum">     179 </span>            :         &quot;} ifelse&quot;,
+<span class="lineNum">     180 </span>            :         &quot;x2 x5 eq y2 y5 eq or&quot;,
+<span class="lineNum">     181 </span>            :         &quot;{x5 y5 lineto}&quot;,
+<span class="lineNum">     182 </span>            :         &quot;{x0 y0 x1 y1 x2 y2 curveto&quot;,
+<span class="lineNum">     183 </span>            :         &quot;x3 y3 x4 y4 x5 y5 curveto}&quot;,
+<span class="lineNum">     184 </span>            :         &quot;ifelse&quot;,
+<span class="lineNum">     185 </span>            :         &quot;epY epX&quot;,
+<span class="lineNum">     186 </span>            :         &quot;}&quot;,
+<span class="lineNum">     187 </span>            :         &quot;systemdict /currentpacking known {exch setpacking} if&quot;,
+<span class="lineNum">     188 </span>            :         &quot;/exec cvx /end cvx ] cvx&quot;,
+<span class="lineNum">     189 </span>            :         &quot;executeonly&quot;,
+<span class="lineNum">     190 </span>            :         &quot;exch&quot;,
+<span class="lineNum">     191 </span>            :         &quot;{pop true exch restore}&quot;,
+<span class="lineNum">     192 </span>            :         &quot;{&quot;,
+<span class="lineNum">     193 </span>            :         &quot;systemdict /internaldict known not&quot;,
+<span class="lineNum">     194 </span>            :         &quot;{1183615869 userdict /internaldict get exec&quot;,
+<span class="lineNum">     195 </span>            :         &quot;exch /FlxProc exch put true}&quot;,
+<span class="lineNum">     196 </span>            :         &quot;{1183615869 systemdict /internaldict get exec&quot;,
+<span class="lineNum">     197 </span>            :         &quot;dup length exch maxlength eq&quot;,
+<span class="lineNum">     198 </span>            :         &quot;{false}&quot;,
+<span class="lineNum">     199 </span>            :         &quot;{1183615869 systemdict /internaldict get exec&quot;,
+<span class="lineNum">     200 </span>            :         &quot;exch /FlxProc exch put true}&quot;,
+<span class="lineNum">     201 </span>            :         &quot;ifelse}&quot;,
+<span class="lineNum">     202 </span>            :         &quot;ifelse}&quot;,
+<span class="lineNum">     203 </span>            :         &quot;ifelse&quot;,
+<span class="lineNum">     204 </span>            :         &quot;{systemdict /internaldict known&quot;,
+<span class="lineNum">     205 </span>            :         &quot;{{1183615869 systemdict /internaldict get exec /FlxProc get exec}}&quot;,
+<span class="lineNum">     206 </span>            :         &quot;{{1183615869 userdict /internaldict get exec /FlxProc get exec}}&quot;,
+<span class="lineNum">     207 </span>            :         &quot;ifelse executeonly&quot;,
+<span class="lineNum">     208 </span>            :         &quot;} if&quot;,
+<span class="lineNum">     209 </span>            :         NULL
+<span class="lineNum">     210 </span>            : };
+<span class="lineNum">     211 </span>            : 
+<span class="lineNum">     212 </span>            : static const char *othersubrs1[] = {
+<span class="lineNum">     213 </span>            :         &quot;{gsave currentpoint newpath moveto} executeonly&quot;,
+<span class="lineNum">     214 </span>            :         NULL
+<span class="lineNum">     215 </span>            : };
+<span class="lineNum">     216 </span>            : 
+<span class="lineNum">     217 </span>            : static const char *othersubrs2[] = {
+<span class="lineNum">     218 </span>            :         &quot;{currentpoint grestore gsave currentpoint newpath moveto} executeonly&quot;,
+<span class="lineNum">     219 </span>            :         NULL
+<span class="lineNum">     220 </span>            : };
+<span class="lineNum">     221 </span>            : 
+<span class="lineNum">     222 </span>            : static const char *othersubrs3[] = {
+<span class="lineNum">     223 </span>            :         &quot;{systemdict /internaldict known not&quot;,
+<span class="lineNum">     224 </span>            :         &quot;{pop 3}&quot;,
+<span class="lineNum">     225 </span>            :         &quot;{1183615869 systemdict /internaldict get exec&quot;,
+<span class="lineNum">     226 </span>            :         &quot;dup /startlock known&quot;,
+<span class="lineNum">     227 </span>            :         &quot;{/startlock get exec}&quot;,
+<span class="lineNum">     228 </span>            :         &quot;{dup /strtlck known&quot;,
+<span class="lineNum">     229 </span>            :         &quot;{/strtlck get exec}&quot;,
+<span class="lineNum">     230 </span>            :         &quot;{pop 3}&quot;,
+<span class="lineNum">     231 </span>            :         &quot;ifelse}&quot;,
+<span class="lineNum">     232 </span>            :         &quot;ifelse}&quot;,
+<span class="lineNum">     233 </span>            :         &quot;ifelse&quot;,
+<span class="lineNum">     234 </span>            :         &quot;} executeonly&quot;,
+<span class="lineNum">     235 </span>            :         NULL
+<span class="lineNum">     236 </span>            : };
+<span class="lineNum">     237 </span>            : 
+<span class="lineNum">     238 </span>            : static const char *othersubrs4_12[] = {
+<span class="lineNum">     239 </span>            :         &quot;{}&quot;,
+<span class="lineNum">     240 </span>            :         NULL
+<span class="lineNum">     241 </span>            : };
+<span class="lineNum">     242 </span>            : 
+<span class="lineNum">     243 </span>            : static const char *othersubrs13[] = {
+<span class="lineNum">     244 </span>            :         &quot;{2 {cvi {{pop 0 lt {exit} if} loop} repeat} repeat}&quot;,        /* Other Subr 13 for counter hints */
+<span class="lineNum">     245 </span>            :         NULL
+<span class="lineNum">     246 </span>            : };
+<span class="lineNum">     247 </span>            : 
+<span class="lineNum">     248 </span>            : const char **othersubrs_copyright[] = { copyright };
+<span class="lineNum">     249 </span>            : const char **othersubrs[] = { othersubrs0, othersubrs1, othersubrs2, othersubrs3,
+<span class="lineNum">     250 </span>            :         othersubrs4_12, othersubrs4_12, othersubrs4_12, othersubrs4_12, 
+<span class="lineNum">     251 </span>            :         othersubrs4_12, othersubrs4_12, othersubrs4_12, othersubrs4_12,
+<span class="lineNum">     252 </span>            :         othersubrs4_12, othersubrs13,
+<span class="lineNum">     253 </span>            : /* code for other subrs 14-18 must be done at run time as it depends on */
+<span class="lineNum">     254 </span>            : /*  the number of font instances in the mm set */
+<span class="lineNum">     255 </span>            :         NULL
+<span class="lineNum">     256 </span>            : };
+<span class="lineNum">     257 </span>            : static const char **default_othersubrs[] = { othersubrs0, othersubrs1, othersubrs2, othersubrs3,
+<span class="lineNum">     258 </span>            :         othersubrs4_12, othersubrs4_12, othersubrs4_12, othersubrs4_12, 
+<span class="lineNum">     259 </span>            :         othersubrs4_12, othersubrs4_12, othersubrs4_12, othersubrs4_12,
+<span class="lineNum">     260 </span>            :         othersubrs4_12, othersubrs13,
+<span class="lineNum">     261 </span>            :         NULL
+<span class="lineNum">     262 </span>            : };
+<span class="lineNum">     263 </span>            : 
+<span class="lineNum">     264 </span>            : /* Lives in private dictionary. Commonly used. I have no docs on it */
+<span class="lineNum">     265 </span>            : /* (and Adobe's answer when asked about it was &quot;try it and figure out what it does&quot; */
+<span class="lineNum">     266 </span>            : /*  The first numbers (9.5,72) change in different uses (4.5,34), (4.5,38), (5.5,41), (6.5,50) are other combo */
+<span class="lineNum">     267 </span>            : /* James Cloos notes that the second number is /StdVW, and the first number is */
+<span class="lineNum">     268 </span>            : /*  StdVW 8 idiv .5 add */
+<span class="lineNum">     269 </span>            : /* 
+<span class="lineNum">     270 </span>            : const char *erode[] = {
+<span class="lineNum">     271 </span>            :         &quot;/Erode&quot;,
+<span class="lineNum">     272 </span>            :         &quot;{ 9.5 dup 3 -1 roll 0.1 mul exch 0.5 sub mul cvi sub dup mul&quot;,
+<span class="lineNum">     273 </span>            :         &quot;  72 0 dtransform dup mul exch dup mul add le&quot;,
+<span class="lineNum">     274 </span>            :         &quot;    { pop pop 1.0 1.0 }&quot;,
+<span class="lineNum">     275 </span>            :         &quot;    { pop pop 0.0 1.5 }&quot;,
+<span class="lineNum">     276 </span>            :         &quot;  ifelse&quot;,
+<span class="lineNum">     277 </span>            :         &quot;} bind def&quot;,
+<span class="lineNum">     278 </span>            :         NULL
+<span class="lineNum">     279 </span>            : };
+<span class="lineNum">     280 </span>            : */
+<span class="lineNum">     281 </span>            : 
+<span class="lineNum">     282 </span>            : /* from Adobe Technical Specification #5014, Adobe CMap and CIDFont Files */
+<span class="lineNum">     283 </span>            : /* Specification, Version 1.0. */
+<span class="lineNum">     284 </span>            : const char *cid_othersubrs[] = {
+<span class="lineNum">     285 </span>            :         &quot;[ {} {} {}&quot;,
+<span class="lineNum">     286 </span>            :         &quot;  { systemdict /internaldict known not&quot;,
+<span class="lineNum">     287 </span>            :         &quot;    { pop 3 }&quot;,
+<span class="lineNum">     288 </span>            :         &quot;    { 1183615869 systemdict /internaldict get exec dup&quot;,
+<span class="lineNum">     289 </span>            :         &quot;      /startlock known&quot;,
+<span class="lineNum">     290 </span>            :         &quot;      { /startlock get exec }&quot;,
+<span class="lineNum">     291 </span>            :         &quot;      { dup /strlck known&quot;,
+<span class="lineNum">     292 </span>            :         &quot;        { /strlck get exec }&quot;,
+<span class="lineNum">     293 </span>            :         &quot;        { pop 3 }&quot;,
+<span class="lineNum">     294 </span>            :         &quot;        ifelse&quot;,
+<span class="lineNum">     295 </span>            :         &quot;      }&quot;,
+<span class="lineNum">     296 </span>            :         &quot;      ifelse&quot;,
+<span class="lineNum">     297 </span>            :         &quot;    }&quot;,
+<span class="lineNum">     298 </span>            :         &quot;    ifelse&quot;,
+<span class="lineNum">     299 </span>            :         &quot;  } bind&quot;,
+<span class="lineNum">     300 </span>            :         &quot;  {} {} {} {} {} {} {} {} {}&quot;,
+<span class="lineNum">     301 </span>            :         &quot;  { 2 { cvi { { pop 0 lt { exit } if } loop } repeat }&quot;,
+<span class="lineNum">     302 </span>            :         &quot;       repeat } bind&quot;,
+<span class="lineNum">     303 </span>            :         &quot;]&quot;,
+<span class="lineNum">     304 </span>            :         NULL
+<span class="lineNum">     305 </span>            : };
+<span class="lineNum">     306 </span>            : 
+<span class="lineNum">     307 </span>            : 
+<span class="lineNum">     308 </span>            : const char *makeblendedfont[] = {
+<span class="lineNum">     309 </span>            :         &quot;% Copyright (c) 1990-1994 Adobe Systems Incorporated.&quot;,
+<span class="lineNum">     310 </span>            :         &quot;% All Rights Reserved.&quot;,
+<span class="lineNum">     311 </span>            : /* Adobe has posted a copyright notice in 5015.Type1_Supp.pdf with the */
+<span class="lineNum">     312 </span>            : /*  wrong comment here. I've changed it */
+<span class="lineNum">     313 </span>            :         &quot;% This code to be used for multiple master fonts.&quot;,
+<span class="lineNum">     314 </span>            :         &quot;% Version 11&quot;,
+<span class="lineNum">     315 </span>            :         &quot;/shareddict where&quot;,
+<span class="lineNum">     316 </span>            :         &quot;{ pop currentshared { setshared } true setshared shareddict }&quot;,
+<span class="lineNum">     317 </span>            :         &quot;{ {} userdict } ifelse dup&quot;,
+<span class="lineNum">     318 </span>            :         &quot;/makeblendedfont where {/makeblendedfont get dup type /operatortype eq {&quot;,
+<span class="lineNum">     319 </span>            :         &quot;pop false} { 0 get dup type /integertype ne&quot;,
+<span class="lineNum">     320 </span>            :         &quot;{pop false} {11 lt} ifelse} ifelse } {true}ifelse&quot;,
+<span class="lineNum">     321 </span>            :         &quot;{/makeblendedfont {&quot;,
+<span class="lineNum">     322 </span>            :         &quot;11 pop&quot;,
+<span class="lineNum">     323 </span>            :         &quot;2 copy length exch /WeightVector get length eq&quot;,
+<span class="lineNum">     324 </span>            :         &quot;{ dup 0 exch {add} forall 1 sub abs .001 gt }&quot;,
+<span class="lineNum">     325 </span>            :         &quot;{ true } ifelse&quot;,
+<span class="lineNum">     326 </span>            :         &quot;{ /makeblendedfont cvx errordict /rangecheck get exec } if&quot;,
+<span class="lineNum">     327 </span>            :         &quot;exch dup dup maxlength dict begin {&quot;,
+<span class="lineNum">     328 </span>            :         &quot;false {/FID /UniqueID /XUID } { 3 index eq or } forall&quot;,
+<span class="lineNum">     329 </span>            :         &quot; { pop pop } { def } ifelse&quot;,
+<span class="lineNum">     330 </span>            :         &quot;} forall&quot;,
+<span class="lineNum">     331 </span>            :         &quot;/XUID 2 copy known{&quot;,
+<span class="lineNum">     332 </span>            :         &quot;get dup length 2 index length sub dup 0 gt{&quot;,
+<span class="lineNum">     333 </span>            :         &quot;exch dup length array copy&quot;,
+<span class="lineNum">     334 </span>            :         &quot;exch 2 index{65536 mul cvi 3 copy put pop 1 add}forall pop/XUID exch def&quot;,
+<span class="lineNum">     335 </span>            :         &quot;}{pop pop}ifelse&quot;,
+<span class="lineNum">     336 </span>            :         &quot;}{pop pop}ifelse&quot;,
+<span class="lineNum">     337 </span>            :         &quot;{ /Private /FontInfo } {&quot;,
+<span class="lineNum">     338 </span>            :         &quot;dup load dup maxlength dict begin {&quot;,
+<span class="lineNum">     339 </span>            :         &quot;false { /UniqueID /XUID } { 3 index eq or } forall&quot;,
+<span class="lineNum">     340 </span>            :         &quot;{ pop pop }{ def } ifelse } forall currentdict end def&quot;,
+<span class="lineNum">     341 </span>            :         &quot;} forall&quot;,
+<span class="lineNum">     342 </span>            :         &quot;dup /WeightVector exch def&quot;,
+<span class="lineNum">     343 </span>            :         &quot;dup /$Blend exch [&quot;,
+<span class="lineNum">     344 </span>            :         &quot;exch false exch&quot;,
+<span class="lineNum">     345 </span>            :         &quot;dup length 1 sub -1 1 {&quot;,
+<span class="lineNum">     346 </span>            :         &quot;1 index dup length 3 -1 roll sub get&quot;,
+<span class="lineNum">     347 </span>            :         &quot;dup 0 eq {&quot;,
+<span class="lineNum">     348 </span>            :         &quot;pop 1 index {/exch load 3 1 roll} if&quot;,
+<span class="lineNum">     349 </span>            :         &quot;/pop load 3 1 roll&quot;,
+<span class="lineNum">     350 </span>            :         &quot;} {dup 1 eq {pop}&quot;,
+<span class="lineNum">     351 </span>            :         &quot;{2 index {/exch load 4 1 roll} if&quot;,
+<span class="lineNum">     352 </span>            :         &quot;3 1 roll /mul load 3 1 roll } ifelse&quot;,
+<span class="lineNum">     353 </span>            :         &quot;1 index {/add load 3 1 roll} if&quot;,
+<span class="lineNum">     354 </span>            :         &quot;exch pop true exch} ifelse&quot;,
+<span class="lineNum">     355 </span>            :         &quot;} for&quot;,
+<span class="lineNum">     356 </span>            :         &quot;pop { /add load } if&quot;,
+<span class="lineNum">     357 </span>            :         &quot;] cvx def&quot;,
+<span class="lineNum">     358 </span>            :         &quot;{2 copy length exch length ne {/makeblendedfont cvx errordict /typecheck get exec}if&quot;,
+<span class="lineNum">     359 </span>            :         &quot;0 0 1 3 index length 1 sub {&quot;,
+<span class="lineNum">     360 </span>            :         &quot;dup 4 index exch get exch 3 index exch get mul add&quot;,
+<span class="lineNum">     361 </span>            :         &quot;} for&quot;,
+<span class="lineNum">     362 </span>            :         &quot;exch pop exch pop}&quot;,
+<span class="lineNum">     363 </span>            :         &quot;{{dup type dup dup /arraytype eq exch /packedarraytype eq or {&quot;,
+<span class="lineNum">     364 </span>            :         &quot;  pop 1 index /ForceBold eq {&quot;,
+<span class="lineNum">     365 </span>            :         &quot;  5 index 0 0 1 3 index length 1 sub {&quot;,
+<span class="lineNum">     366 </span>            :         &quot;  dup 4 index exch get {2 index exch get add } {pop} ifelse&quot;,
+<span class="lineNum">     367 </span>            :         &quot;  } for exch pop exch pop&quot;,
+<span class="lineNum">     368 </span>            :         &quot;  2 index /ForceBoldThreshold get gt 3 copy} {&quot;,
+<span class="lineNum">     369 </span>            :         &quot;{length 1 index length ne { pop false } {&quot;,
+<span class="lineNum">     370 </span>            :         &quot;true exch { type dup /integertype eq exch /realtype eq exch or and } forall&quot;,
+<span class="lineNum">     371 </span>            :         &quot;} ifelse }&quot;,
+<span class="lineNum">     372 </span>            :         &quot;2 copy 8 index exch exec {pop 5 index 5 index exec}&quot;,
+<span class="lineNum">     373 </span>            :         &quot;{exch dup length array 1 index xcheck { cvx } if&quot;,
+<span class="lineNum">     374 </span>            :         &quot;dup length 1 sub 0 exch 1 exch {&quot;,
+<span class="lineNum">     375 </span>            :         &quot;dup 3 index exch get dup type dup /arraytype eq exch /packedarraytype eq or {&quot;,
+<span class="lineNum">     376 </span>            :         &quot;dup 10 index 6 index exec {&quot;,
+<span class="lineNum">     377 </span>            :         &quot;9 index exch 9 index exec} if } if 2 index 3 1 roll put&quot;,
+<span class="lineNum">     378 </span>            :         &quot;} for exch pop exch pop&quot;,
+<span class="lineNum">     379 </span>            :         &quot;} ifelse 3 copy&quot;,
+<span class="lineNum">     380 </span>            :         &quot;1 index dup /StemSnapH eq exch /StemSnapV eq or {&quot;,
+<span class="lineNum">     381 </span>            :         &quot;dup length 1 sub {dup 0 le { exit } if&quot;,
+<span class="lineNum">     382 </span>            :         &quot;dup dup 1 sub 3 index exch get exch 3 index exch get 2 copy eq {&quot;,
+<span class="lineNum">     383 </span>            :         &quot;pop 2 index 2 index 0 put 0 } if le {1 sub}&quot;,
+<span class="lineNum">     384 </span>            :         &quot;{dup dup 1 sub 3 index exch get exch 3 index exch get&quot;,
+<span class="lineNum">     385 </span>            :         &quot;3 index exch 3 index 1 sub exch put&quot;,
+<span class="lineNum">     386 </span>            :         &quot;3 copy put pop&quot;,
+<span class="lineNum">     387 </span>            :         &quot;2 copy exch length 1 sub lt {1 add} if} ifelse} loop pop&quot;,
+<span class="lineNum">     388 </span>            :         &quot;dup 0 get 0 le {&quot;,
+<span class="lineNum">     389 </span>            :         &quot;dup 0 exch {0 gt { exit } if 1 add} forall&quot;,
+<span class="lineNum">     390 </span>            :         &quot;dup 2 index length exch sub getinterval} if } if } ifelse put }&quot;,
+<span class="lineNum">     391 </span>            :         &quot;{/dicttype eq {6 copy 3 1 roll get exch 2 index exec}&quot;,
+<span class="lineNum">     392 </span>            :         &quot;{/makeblendedfont cvx errordict /typecheck get exec} ifelse&quot;,
+<span class="lineNum">     393 </span>            :         &quot;} ifelse pop pop } forall pop pop pop pop }&quot;,
+<span class="lineNum">     394 </span>            :         &quot;currentdict Blend 2 index exec&quot;,
+<span class="lineNum">     395 </span>            :         &quot;currentdict end&quot;,
+<span class="lineNum">     396 </span>            :         &quot;} bind put&quot;,
+<span class="lineNum">     397 </span>            :         &quot;/$fbf {FontDirectory counttomark 3 add -1 roll known {&quot;,
+<span class="lineNum">     398 </span>            :         &quot;cleartomark pop findfont}{&quot;,
+<span class="lineNum">     399 </span>            :         &quot;] exch findfont exch makeblendedfont&quot;,
+<span class="lineNum">     400 </span>            :         &quot;dup /Encoding currentfont /Encoding get put definefont&quot;,
+<span class="lineNum">     401 </span>            :         &quot;} ifelse currentfont /ScaleMatrix get makefont setfont&quot;,
+<span class="lineNum">     402 </span>            :         &quot;} bind put } { pop pop } ifelse exec&quot;,
+<span class="lineNum">     403 </span>            :         NULL
+<span class="lineNum">     404 </span>            : };
+<span class="lineNum">     405 </span>            : 
+<span class="lineNum">     406 </span>            : const char *mmfindfont[] = {
+<span class="lineNum">     407 </span>            :         &quot;/$mmff_origfindfont where {&quot;,
+<span class="lineNum">     408 </span>            :         &quot;  pop save { restore } { pop pop }&quot;,
+<span class="lineNum">     409 </span>            :         &quot;} { {} { def } } ifelse&quot;,
+<span class="lineNum">     410 </span>            :         &quot;/setshared where { pop true } { false } ifelse&quot;,
+<span class="lineNum">     411 </span>            :         &quot;/findfont where pop dup systemdict eq {&quot;,
+<span class="lineNum">     412 </span>            :         &quot;pop { currentshared {{}} { true setshared { false setshared } } ifelse shareddict&quot;,
+<span class="lineNum">     413 </span>            :         &quot;} {{} userdict } ifelse begin&quot;,
+<span class="lineNum">     414 </span>            :         &quot;} { begin { currentdict scheck } { false } ifelse {&quot;,
+<span class="lineNum">     415 </span>            :         &quot;currentshared {{}} { true setshared { false setshared } } ifelse&quot;,
+<span class="lineNum">     416 </span>            :         &quot;} { {} } ifelse } ifelse&quot;,
+<span class="lineNum">     417 </span>            :         &quot;/$mmff_origfindfont /findfont load 3 index exec&quot;,
+<span class="lineNum">     418 </span>            :         &quot;/findfont {&quot;,
+<span class="lineNum">     419 </span>            :         &quot;dup FontDirectory exch known&quot;,
+<span class="lineNum">     420 </span>            :         &quot;{ dup FontDirectory exch get /FontType get 3 ne}&quot;,
+<span class="lineNum">     421 </span>            :         &quot;{ dup SharedFontDirectory exch known&quot;,
+<span class="lineNum">     422 </span>            :         &quot;{ dup SharedFontDirectory exch get /FontType get 3 ne}&quot;,
+<span class="lineNum">     423 </span>            :         &quot;{ false} ifelse} ifelse&quot;,
+<span class="lineNum">     424 </span>            :         &quot;{$mmff_origfindfont} { dup dup length string cvs (_) search {&quot;,
+<span class="lineNum">     425 </span>            :         &quot;cvn dup dup FontDirectory exch known exch SharedFontDirectory exch known or {&quot;,
+<span class="lineNum">     426 </span>            :         &quot;true} {dup length 7 add string dup 0 (%font%) putinterval&quot;,
+<span class="lineNum">     427 </span>            :         &quot;dup 2 index 6 exch dup length string cvs putinterval&quot;,
+<span class="lineNum">     428 </span>            :         &quot;{ status } stopped { pop false } if {&quot;,
+<span class="lineNum">     429 </span>            :         &quot;pop pop pop pop true} {false} ifelse} ifelse {&quot;,
+<span class="lineNum">     430 </span>            :         &quot;$mmff_origfindfont begin pop&quot;,
+<span class="lineNum">     431 </span>            :         &quot;[ exch { (_) search  { { cvr } stopped { pop pop } {&quot;,
+<span class="lineNum">     432 </span>            :         &quot;exch pop exch } ifelse&quot;,
+<span class="lineNum">     433 </span>            :         &quot;} { pop exit } ifelse } loop false /FontInfo where {&quot;,
+<span class="lineNum">     434 </span>            :         &quot;pop FontInfo /BlendAxisTypes 2 copy known {&quot;,
+<span class="lineNum">     435 </span>            :         &quot;get length counttomark 2 sub eq exch pop&quot;,
+<span class="lineNum">     436 </span>            :         &quot;} { pop pop } ifelse } if {&quot;,
+<span class="lineNum">     437 </span>            :         &quot;NormalizeDesignVector&quot;,
+<span class="lineNum">     438 </span>            :         &quot;ConvertDesignVector&quot;,
+<span class="lineNum">     439 </span>            :         &quot;] currentdict exch makeblendedfont&quot;,
+<span class="lineNum">     440 </span>            :         &quot;2 copy exch /FontName exch put&quot;,
+<span class="lineNum">     441 </span>            :         &quot;definefont} { cleartomark $mmff_origfindfont } ifelse end&quot;,
+<span class="lineNum">     442 </span>            :         &quot;} { pop pop pop $mmff_origfindfont } ifelse&quot;,
+<span class="lineNum">     443 </span>            :         &quot;} { pop $mmff_origfindfont } ifelse } ifelse&quot;,
+<span class="lineNum">     444 </span>            :         &quot;} bind 3 index exec&quot;,
+<span class="lineNum">     445 </span>            :         &quot;/SharedFontDirectory dup where { pop pop } { 0 dict 3 index exec } ifelse&quot;,
+<span class="lineNum">     446 </span>            :         &quot;end exec pop exec&quot;,
+<span class="lineNum">     447 </span>            : NULL
+<span class="lineNum">     448 </span>            : };
+<span class="lineNum">     449 </span>            : 
+<span class="lineNum">     450 </span>            : #include &quot;splinefont.h&quot;
+<span class="lineNum">     451 </span>            : #include &lt;string.h&gt;
+<a name="452"><span class="lineNum">     452 </span>            : #include &lt;ustring.h&gt;</a>
+<span class="lineNum">     453 </span>            : 
+<span class="lineNum">     454 </span><span class="lineNoCov">          0 : static const char **CopyLines(char **lines, int l,int is_copyright) {</span>
+<span class="lineNum">     455 </span>            :     const char **ret;
+<span class="lineNum">     456 </span>            :     int i;
+<span class="lineNum">     457 </span>            : 
+<span class="lineNum">     458 </span><span class="lineNoCov">          0 :     if ( l==0 &amp;&amp; !is_copyright ) {</span>
+<span class="lineNum">     459 </span><span class="lineNoCov">          0 :         ret = malloc(2*sizeof(char *));</span>
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 :         ret[0] = copy(&quot;{}&quot;);</span>
+<span class="lineNum">     461 </span><span class="lineNoCov">          0 :         ret[1] = NULL;</span>
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 : return( ret );</span>
+<span class="lineNum">     463 </span>            :     }
+<span class="lineNum">     464 </span>            : 
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 :     ret = malloc((l+1)*sizeof(char *));</span>
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;l; ++i )</span>
+<span class="lineNum">     467 </span><span class="lineNoCov">          0 :         ret[i] = lines[i];</span>
+<span class="lineNum">     468 </span><span class="lineNoCov">          0 :     ret[l] = NULL;</span>
+<span class="lineNum">     469 </span><span class="lineNoCov">          0 : return( ret );</span>
+<a name="470"><span class="lineNum">     470 </span>            : }</a>
+<span class="lineNum">     471 </span>            : 
+<span class="lineNum">     472 </span><span class="lineCov">          1 : void DefaultOtherSubrs(void) {</span>
+<span class="lineNum">     473 </span>            :     int i,j;
+<span class="lineNum">     474 </span>            : 
+<span class="lineNum">     475 </span><span class="lineCov">          1 :     if ( othersubrs_copyright[0]!=copyright ) {</span>
+<span class="lineNum">     476 </span><span class="lineNoCov">          0 :         for ( i=0; othersubrs_copyright[0][i]!=NULL; ++i )</span>
+<span class="lineNum">     477 </span><span class="lineNoCov">          0 :             free( (char *) othersubrs_copyright[0][i]);</span>
+<span class="lineNum">     478 </span><span class="lineNoCov">          0 :         free(othersubrs_copyright[0]);</span>
+<span class="lineNum">     479 </span><span class="lineNoCov">          0 :         othersubrs_copyright[0] = copyright;</span>
+<span class="lineNum">     480 </span>            :     }
+<span class="lineNum">     481 </span><span class="lineCov">         15 :     for ( j=0; j&lt;=13; ++j ) {</span>
+<span class="lineNum">     482 </span><span class="lineCov">         14 :         if ( othersubrs[j]!=default_othersubrs[j] ) {</span>
+<span class="lineNum">     483 </span><span class="lineNoCov">          0 :             for ( i=0; othersubrs[j][i]!=NULL; ++i )</span>
+<span class="lineNum">     484 </span><span class="lineNoCov">          0 :                 free( (char *) othersubrs[j][i]);</span>
+<span class="lineNum">     485 </span><span class="lineNoCov">          0 :             free(othersubrs[j]);</span>
+<span class="lineNum">     486 </span><span class="lineNoCov">          0 :            othersubrs[j] = default_othersubrs[j];</span>
+<span class="lineNum">     487 </span>            :         }
+<span class="lineNum">     488 </span>            :     }
+<a name="489"><span class="lineNum">     489 </span><span class="lineCov">          1 : }</span></a>
+<span class="lineNum">     490 </span>            : 
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 : int ReadOtherSubrsFile(char *filename) {</span>
+<span class="lineNum">     492 </span><span class="lineNoCov">          0 :     FILE *os = fopen(filename,&quot;r&quot;);</span>
+<span class="lineNum">     493 </span>            :     char buffer[500];
+<span class="lineNum">     494 </span><span class="lineNoCov">          0 :     char **lines=NULL;</span>
+<span class="lineNum">     495 </span><span class="lineNoCov">          0 :     int l=0, lmax=0;</span>
+<span class="lineNum">     496 </span><span class="lineNoCov">          0 :     int sub_num = -1;</span>
+<span class="lineNum">     497 </span><span class="lineNoCov">          0 :     const char **co=NULL, **osubs[14];</span>
+<span class="lineNum">     498 </span>            :     int i;
+<span class="lineNum">     499 </span>            : 
+<span class="lineNum">     500 </span><span class="lineNoCov">          0 :     if ( os==NULL )</span>
+<span class="lineNum">     501 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     502 </span><span class="lineNoCov">          0 :     while ( fgets(buffer,sizeof(buffer),os)!=NULL ) {</span>
+<span class="lineNum">     503 </span><span class="lineNoCov">          0 :         int len = strlen(buffer);</span>
+<span class="lineNum">     504 </span><span class="lineNoCov">          0 :         if ( len&gt;0 &amp;&amp; (buffer[len-1]=='\r' || buffer[len-1]=='\n')) {</span>
+<span class="lineNum">     505 </span><span class="lineNoCov">          0 :             if ( len&gt;1 &amp;&amp; (buffer[len-2]=='\r' || buffer[len-2]=='\n'))</span>
+<span class="lineNum">     506 </span><span class="lineNoCov">          0 :                 buffer[len-2] = '\0';</span>
+<span class="lineNum">     507 </span>            :             else
+<span class="lineNum">     508 </span><span class="lineNoCov">          0 :                 buffer[len-1] = '\0';</span>
+<span class="lineNum">     509 </span>            :         }
+<span class="lineNum">     510 </span><span class="lineNoCov">          0 :         if ( buffer[0]=='%' &amp;&amp; buffer[1]=='%' &amp;&amp; buffer[2]=='%' &amp;&amp; buffer[3]=='%' ) {</span>
+<span class="lineNum">     511 </span><span class="lineNoCov">          0 :             if ( sub_num == -1 )</span>
+<span class="lineNum">     512 </span><span class="lineNoCov">          0 :                 co = CopyLines(lines,l,true);</span>
+<span class="lineNum">     513 </span><span class="lineNoCov">          0 :             else if ( sub_num&lt;14 )</span>
+<span class="lineNum">     514 </span><span class="lineNoCov">          0 :                 osubs[sub_num] = CopyLines(lines,l,false);</span>
+<span class="lineNum">     515 </span><span class="lineNoCov">          0 :             else if ( sub_num==14 )</span>
+<span class="lineNum">     516 </span><span class="lineNoCov">          0 :                 LogError( _(&quot;Too many subroutines. We can deal with at most 14 (0-13)\n&quot;) );</span>
+<span class="lineNum">     517 </span><span class="lineNoCov">          0 :             ++sub_num;</span>
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 :             l = 0;</span>
+<span class="lineNum">     519 </span>            :         } else {
+<span class="lineNum">     520 </span><span class="lineNoCov">          0 :             if ( l&gt;=lmax ) {</span>
+<span class="lineNum">     521 </span><span class="lineNoCov">          0 :                 lmax += 100;</span>
+<span class="lineNum">     522 </span><span class="lineNoCov">          0 :                 lines = realloc(lines,lmax*sizeof(char *));</span>
+<span class="lineNum">     523 </span>            :             }
+<span class="lineNum">     524 </span><span class="lineNoCov">          0 :             lines[l++] = copy(buffer);</span>
+<span class="lineNum">     525 </span>            :         }
+<span class="lineNum">     526 </span>            :     }
+<span class="lineNum">     527 </span><span class="lineNoCov">          0 :     fclose( os );</span>
+<span class="lineNum">     528 </span>            :     /* we just read a copyright notice? That's no use */
+<span class="lineNum">     529 </span><span class="lineNoCov">          0 :     if ( sub_num&lt;=0 )</span>
+<span class="lineNum">     530 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     531 </span><span class="lineNoCov">          0 :     while ( sub_num&lt;14 ) {</span>
+<span class="lineNum">     532 </span><span class="lineNoCov">          0 :         osubs[sub_num] = calloc(2,sizeof(char *));</span>
+<span class="lineNum">     533 </span><span class="lineNoCov">          0 :         osubs[sub_num][0] = copy(&quot;{}&quot;);</span>
+<span class="lineNum">     534 </span><span class="lineNoCov">          0 :         ++sub_num;</span>
+<span class="lineNum">     535 </span>            :     }
+<span class="lineNum">     536 </span><span class="lineNoCov">          0 :     DefaultOtherSubrs();</span>
+<span class="lineNum">     537 </span><span class="lineNoCov">          0 :     othersubrs_copyright[0] = co;</span>
+<span class="lineNum">     538 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;14; ++i )</span>
+<span class="lineNum">     539 </span><span class="lineNoCov">          0 :         othersubrs[i] = osubs[i];</span>
+<span class="lineNum">     540 </span><span class="lineNoCov">          0 :     free(lines);</span>
+<span class="lineNum">     541 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     542 </span>            : }
+<span class="lineNum">     543 </span>            :         
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

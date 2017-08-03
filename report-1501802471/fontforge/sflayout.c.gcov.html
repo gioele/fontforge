@@ -1,0 +1,1495 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforge/sflayout.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforge</a> - sflayout.c<span style="font-size: 80%;"> (source / <a href="sflayout.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">926</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">38</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* -*- coding: utf-8 -*- */</a>
+<span class="lineNum">       2 </span>            : /* Copyright (C) 2007-2012 by George Williams */
+<span class="lineNum">       3 </span>            : /*
+<span class="lineNum">       4 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       5 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       8 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      11 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      12 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      15 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      18 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      19 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      20 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      21 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      22 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      23 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      24 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      25 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      26 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      27 </span>            :  */
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            : #include &quot;bvedit.h&quot;
+<span class="lineNum">      30 </span>            : #include &quot;encoding.h&quot;
+<span class="lineNum">      31 </span>            : #include &quot;fontforgevw.h&quot;
+<span class="lineNum">      32 </span>            : #include &quot;fvfonts.h&quot;
+<span class="lineNum">      33 </span>            : #include &quot;lookups.h&quot;
+<span class="lineNum">      34 </span>            : #include &quot;splinefill.h&quot;
+<span class="lineNum">      35 </span>            : #include &quot;splineorder2.h&quot;
+<span class="lineNum">      36 </span>            : #include &quot;splineutil.h&quot;
+<span class="lineNum">      37 </span>            : #include &quot;tottfgpos.h&quot;
+<span class="lineNum">      38 </span>            : #include &lt;math.h&gt;
+<span class="lineNum">      39 </span>            : 
+<span class="lineNum">      40 </span>            : #include &quot;sflayoutP.h&quot;
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            : #include &lt;ustring.h&gt;
+<span class="lineNum">      43 </span>            : #include &lt;utype.h&gt;
+<span class="lineNum">      44 </span>            : #include &lt;chardata.h&gt;
+<span class="lineNum">      45 </span>            : #include &lt;ffglib.h&gt;
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span>            : static uint32 simple_stdfeatures[] = { CHR('c','c','m','p'), CHR('l','o','c','a'), CHR('k','e','r','n'), CHR('l','i','g','a'), CHR('c','a','l','t'), CHR('m','a','r','k'), CHR('m','k','m','k'), REQUIRED_FEATURE, 0 };
+<span class="lineNum">      48 </span>            : static uint32 arab_stdfeatures[] = { CHR('c','c','m','p'), CHR('l','o','c','a'), CHR('i','s','o','l'), CHR('i','n','i','t'), CHR('m','e','d','i'),CHR('f','i','n','a'), CHR('r','l','i','g'), CHR('l','i','g','a'), CHR('c','a','l','t'), CHR('k','e','r','n'), CHR('c','u','r','s'), CHR('m','a','r','k'), CHR('m','k','m','k'), REQUIRED_FEATURE, 0 };
+<span class="lineNum">      49 </span>            : static uint32 hebrew_stdfeatures[] = { CHR('c','c','m','p'), CHR('l','o','c','a'), CHR('l','i','g','a'), CHR('c','a','l','t'), CHR('k','e','r','n'), CHR('m','a','r','k'), CHR('m','k','m','k'), REQUIRED_FEATURE, 0 };
+<span class="lineNum">      50 </span>            : static struct { uint32 script, *stdfeatures; } script_2_std[] = {
+<span class="lineNum">      51 </span>            :     { CHR('l','a','t','n'), simple_stdfeatures },
+<span class="lineNum">      52 </span>            :     { CHR('D','F','L','T'), simple_stdfeatures },
+<span class="lineNum">      53 </span>            :     { CHR('c','y','r','l'), simple_stdfeatures },
+<span class="lineNum">      54 </span>            :     { CHR('g','r','e','k'), simple_stdfeatures },
+<span class="lineNum">      55 </span>            :     { CHR('a','r','a','b'), arab_stdfeatures },
+<span class="lineNum">      56 </span>            :     { CHR('h','e','b','r'), hebrew_stdfeatures },
+<span class="lineNum">      57 </span>            :     { 0, NULL }
+<a name="58"><span class="lineNum">      58 </span>            : };</a>
+<span class="lineNum">      59 </span>            : 
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 : uint32 *StdFeaturesOfScript(uint32 script) {</span>
+<span class="lineNum">      61 </span>            :     int i;
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :     for ( i=0; script_2_std[i].script!=0; ++i )</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :         if ( script_2_std[i].script==script )</span>
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 : return( script_2_std[i].stdfeatures );</span>
+<span class="lineNum">      66 </span>            : 
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 : return( simple_stdfeatures );</span>
+<a name="68"><span class="lineNum">      68 </span>            : }</a>
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 : int LI_FDDrawChar(void *data,</span>
+<span class="lineNum">      71 </span>            :         void (*drawImage)(void *,GImage *,GRect *,int x, int y),
+<span class="lineNum">      72 </span>            :         void (*drawRect)(void *,GRect *,Color col),
+<span class="lineNum">      73 </span>            :         struct opentype_str *osc,int x,int y,Color col) {
+<span class="lineNum">      74 </span>            :     BDFChar *bdfc;
+<span class="lineNum">      75 </span>            :     int gid;
+<span class="lineNum">      76 </span>            :     FontData *fd;
+<span class="lineNum">      77 </span>            :     SplineChar *sc;
+<span class="lineNum">      78 </span>            : 
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :     if ( osc==NULL )</span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 : return( x );</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :     sc = osc-&gt;sc;</span>
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :     fd = ((struct fontlist *) (osc-&gt;fl))-&gt;fd;</span>
+<span class="lineNum">      83 </span>            : 
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :     x += osc-&gt;vr.xoff;</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :     y -= osc-&gt;vr.yoff + osc-&gt;bsln_off;</span>
+<span class="lineNum">      86 </span>            : 
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :     gid = sc-&gt;orig_pos;</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :     if ( gid!=-1 &amp;&amp; fd-&gt;bdf-&gt;glyphs[gid]==NULL )</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :         BDFPieceMeal(fd-&gt;bdf,gid);</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :     if ( gid==-1 || fd-&gt;bdf-&gt;glyphs[gid]==NULL ) {</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :         if ( col!=-1 ) {</span>
+<span class="lineNum">      92 </span>            :             GRect r;
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :             r.x = x+1; r.width= osc-&gt;advance_width-2;</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :             r.height = (2*fd-&gt;bdf-&gt;ascent/3); r.y = y-r.height;</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :             (drawRect)(data,&amp;r,col);</span>
+<span class="lineNum">      96 </span>            :         }
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :         x += fd-&gt;bdf-&gt;ascent/2;</span>
+<span class="lineNum">      98 </span>            :     } else {
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :         bdfc = fd-&gt;fonttype==sftf_bitmap ?</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :             BDFGetMergedChar( fd-&gt;bdf-&gt;glyphs[gid] ) : fd-&gt;bdf-&gt;glyphs[gid];</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :         if ( col!=-1 ) {</span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :             if ( !fd-&gt;antialias )</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :                 fd-&gt;clut.clut[1] = col;              /* Only works for bitmaps */</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :             if ( fd-&gt;base.clut!=NULL )</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :                 fd-&gt;base.clut-&gt;trans_index = 0;</span>
+<span class="lineNum">     106 </span>            :             else
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :                 fd-&gt;base.trans = 0;</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :             fd-&gt;base.data = bdfc-&gt;bitmap;</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :             fd-&gt;base.bytes_per_line = bdfc-&gt;bytes_per_line;</span>
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :             fd-&gt;base.width = bdfc-&gt;xmax-bdfc-&gt;xmin+1;</span>
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :             fd-&gt;base.height = bdfc-&gt;ymax-bdfc-&gt;ymin+1;</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :             (drawImage)(data,&amp;fd-&gt;gi,NULL,x+bdfc-&gt;xmin, y-bdfc-&gt;ymax);</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :             fd-&gt;base.clut-&gt;trans_index = -1;</span>
+<span class="lineNum">     114 </span>            :         }
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :         x += bdfc-&gt;width;</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :         if ( fd-&gt;fonttype==sftf_bitmap ) BDFCharFree( bdfc );</span>
+<span class="lineNum">     117 </span>            :     }
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 : return( x );</span>
+<a name="119"><span class="lineNum">     119 </span>            : }</a>
+<span class="lineNum">     120 </span>            : 
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 : uint32 *LI_TagsCopy(uint32 *tags) {</span>
+<span class="lineNum">     122 </span>            :     int i;
+<span class="lineNum">     123 </span>            :     uint32 *ret;
+<span class="lineNum">     124 </span>            : 
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 :     if ( tags==NULL )</span>
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :     for ( i=0; tags[i]!=0; ++i );</span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :     ret = malloc((i+1)*sizeof(uint32));</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :     for ( i=0; tags[i]!=0; ++i )</span>
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :         ret[i] = tags[i];</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :     ret[i] = 0;</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 : return( ret );</span>
+<a name="133"><span class="lineNum">     133 </span>            : }</a>
+<span class="lineNum">     134 </span>            : 
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 : static int TagsSame(uint32 *tags1, uint32 *tags2) {</span>
+<span class="lineNum">     136 </span>            :     int i;
+<span class="lineNum">     137 </span>            : 
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :     if ( tags1==NULL || tags2==NULL )</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 : return( tags1==NULL &amp;&amp; tags2==NULL );</span>
+<span class="lineNum">     140 </span>            : 
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :     for ( i=0; tags1[i]!=0 &amp;&amp; tags1[i]==tags2[i]; ++i );</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 : return( tags1[i]==tags2[i] );</span>
+<span class="lineNum">     143 </span>            : return( false );
+<a name="144"><span class="lineNum">     144 </span>            : }</a>
+<span class="lineNum">     145 </span>            : 
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 : static int _FDMap(FontData *fd,int uenc) {</span>
+<span class="lineNum">     147 </span>            :     /* given a unicode code point, find the encoding in this font */
+<span class="lineNum">     148 </span>            :     int gid;
+<span class="lineNum">     149 </span>            : 
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :     if ( uenc&gt;=fd-&gt;sfmap-&gt;map-&gt;enccount )</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 : return( -1 );</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :     gid = fd-&gt;sfmap-&gt;map-&gt;map[uenc];</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :     if ( gid==-1 || fd-&gt;sf-&gt;glyphs[gid]==NULL )</span>
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 : return( -1 );</span>
+<span class="lineNum">     155 </span>            : 
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 : return( gid );</span>
+<a name="157"><span class="lineNum">     157 </span>            : }</a>
+<span class="lineNum">     158 </span>            : 
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 : static SplineChar *FDMap(FontData *fd,int uenc) {</span>
+<span class="lineNum">     160 </span>            :     /* given a unicode code point, find the encoding in this font */
+<span class="lineNum">     161 </span>            :     /* We've already converted arabic to its forms... but we did that to */
+<span class="lineNum">     162 </span>            :     /*  the deprecated unicode code points. If those don't work see if we */
+<span class="lineNum">     163 </span>            :     /*  can find a substitution lookup. */
+<span class="lineNum">     164 </span>            :     int gid;
+<span class="lineNum">     165 </span>            : 
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :     gid = _FDMap(fd,uenc);</span>
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :     if ( gid!=-1 &amp;&amp; fd-&gt;sf-&gt;glyphs[gid]!=NULL )</span>
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 : return( fd-&gt;sf-&gt;glyphs[gid] );</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :     gid = fd-&gt;sfmap-&gt;notdef_gid;</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :     if ( gid!=-1 &amp;&amp; fd-&gt;sf-&gt;glyphs[gid]!=NULL )</span>
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 : return( fd-&gt;sf-&gt;glyphs[gid] );</span>
+<span class="lineNum">     172 </span>            : 
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 : return( fd-&gt;sfmap-&gt;fake_notdef );</span>
+<a name="174"><span class="lineNum">     174 </span>            : }</a>
+<span class="lineNum">     175 </span>            : 
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 : static int LinesInPara(LayoutInfo *li, struct opentype_str **paratext, int width) {</span>
+<span class="lineNum">     177 </span>            :     int start, end, break_pos, cnt;
+<span class="lineNum">     178 </span>            :     int len, pos;
+<span class="lineNum">     179 </span>            : 
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :     if ( paratext==NULL )</span>
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 : return( 1 );</span>
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :     if ( !li-&gt;wrap ) {</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :         for ( start=0; paratext[start]!=NULL; ++start);</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :         paratext[start-1]-&gt;line_break_after = true;</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 : return( 1 );</span>
+<span class="lineNum">     186 </span>            :     }
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :     cnt = 0;</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :     for ( start=0; paratext[start]!=NULL; ) {</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :         break_pos = start;</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :         len = paratext[start]-&gt;advance_width + paratext[start]-&gt;vr.h_adv_off;</span>
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :         for ( end=start+1 ; paratext[end]!=NULL; ++end ) {</span>
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :             len += paratext[end]-&gt;advance_width + paratext[end]-&gt;vr.h_adv_off;</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :             if ( len&gt;width &amp;&amp; break_pos!=start ) {</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :                 paratext[break_pos]-&gt;line_break_after = true;</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :                 start = break_pos+1;</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     197 </span>            :             }
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :             pos = paratext[end]-&gt;orig_index +</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :                     ((struct fontlist *) (paratext[end]-&gt;fl))-&gt;start;</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :             if ( ((li-&gt;text[pos+1]&lt;0x10000 &amp;&amp; li-&gt;text[pos]&lt;0x10000 &amp;&amp;</span>
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :                         isbreakbetweenok(li-&gt;text[pos],li-&gt;text[pos+1])) ||</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :                     (li-&gt;text[pos]==' ' &amp;&amp; li-&gt;text[pos+1]&gt;=0x10000 )))</span>
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :                 break_pos = end;</span>
+<span class="lineNum">     204 </span>            :         }
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :         if ( paratext[end]==NULL &amp;&amp; end!=0 ) {</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :             paratext[end-1]-&gt;line_break_after = true;</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :             start = end;</span>
+<span class="lineNum">     208 </span>            :         }
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :         ++cnt;</span>
+<span class="lineNum">     210 </span>            :     }
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :     if ( cnt==0 ) cnt=1;</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 : return( cnt );</span>
+<a name="213"><span class="lineNum">     213 </span>            : }</a>
+<span class="lineNum">     214 </span>            : 
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 : static struct opentype_str **LineFromPara(struct opentype_str **str, int *_pos) {</span>
+<span class="lineNum">     216 </span>            :     int len;
+<span class="lineNum">     217 </span>            :     struct opentype_str **ret;
+<span class="lineNum">     218 </span>            : 
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :     for ( len=0; str[len]!=NULL &amp;&amp; !str[len]-&gt;line_break_after ; ++len );</span>
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :     if ( str[len]!=NULL ) ++len;</span>
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :     *_pos += len;</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :     ret = malloc((len+1)*sizeof(struct opentype_str *));</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :     for ( len=0; str[len]!=NULL &amp;&amp; !str[len]-&gt;line_break_after ; ++len )</span>
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :         ret[len] = str[len];</span>
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 :     if ( str[len]!=NULL ) {</span>
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :         ret[len] = str[len];</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :         ++len;</span>
+<span class="lineNum">     228 </span>            :     }
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :     ret[len] = NULL;</span>
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 : return( ret );</span>
+<a name="231"><span class="lineNum">     231 </span>            : }</a>
+<span class="lineNum">     232 </span>            : 
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 : static struct basescript *FindBS(struct Base *base,struct opentype_str *ch,LayoutInfo *li) {</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :     uint32 script = SCScriptFromUnicode(ch-&gt;sc);</span>
+<span class="lineNum">     235 </span>            :     struct basescript *bs;
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :     if ( script == DEFAULT_SCRIPT ) {</span>
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :         struct fontlist *fl = ch-&gt;fl;</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :         SplineChar *sc = fl-&gt;sctext[ch-&gt;orig_index];</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :         script = SCScriptFromUnicode(sc);</span>
+<span class="lineNum">     240 </span>            :     }
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :     for ( bs=base-&gt;scripts; bs!=NULL &amp;&amp; bs-&gt;script!=script; bs=bs-&gt;next );</span>
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 : return( bs );</span>
+<a name="243"><span class="lineNum">     243 </span>            : }</a>
+<span class="lineNum">     244 </span>            : 
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 : static uint32 FigureBaselineTag(struct opentype_str *ch,LayoutInfo *li,</span>
+<span class="lineNum">     246 </span>            :         struct Base *cur_base,struct Base *start_base) {
+<span class="lineNum">     247 </span>            :     struct basescript *bs;
+<span class="lineNum">     248 </span>            : 
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :     bs = FindBS(cur_base,ch,li);</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :     if ( bs!=NULL )</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 : return( cur_base-&gt;baseline_tags[bs-&gt;def_baseline] );</span>
+<span class="lineNum">     252 </span>            : 
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :     bs = FindBS(start_base,ch,li);</span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :     if ( bs!=NULL )</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 : return( start_base-&gt;baseline_tags[bs-&gt;def_baseline] );</span>
+<span class="lineNum">     256 </span>            : 
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 : return( 0 );</span>
+<a name="258"><span class="lineNum">     258 </span>            : }</a>
+<span class="lineNum">     259 </span>            : 
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 : static int BaselineOffset(struct Base *base, struct basescript *bs,uint32 cur_bsln_tag) {</span>
+<span class="lineNum">     261 </span>            :     int i;
+<span class="lineNum">     262 </span>            : 
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;base-&gt;baseline_cnt; ++i )</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :         if ( base-&gt;baseline_tags[i]==cur_bsln_tag )</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :     if ( i==base-&gt;baseline_cnt )     /* No info on this baseline in this font */</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 : return( 0 );</span>
+<span class="lineNum">     268 </span>            : 
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 : return( bs-&gt;baseline_pos[i] );</span>
+<a name="270"><span class="lineNum">     270 </span>            : }</a>
+<span class="lineNum">     271 </span>            : 
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 : static void LIFigureLineHeight(LayoutInfo *li,int l,int p) {</span>
+<span class="lineNum">     273 </span>            :     int i;
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :     struct opentype_str **line = li-&gt;lines[l];</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :     int as=0, ds=0, ld=0;</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :     int width=0;</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :     if ( line[0]!=NULL ) {</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :         FontData *start_fd = ((struct fontlist *) (line[0]-&gt;fl))-&gt;fd;</span>
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 :         struct Base *start_base=start_fd-&gt;sf-&gt;horiz_base;</span>
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 :         struct basescript *start_bs = NULL;</span>
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :         uint32 start_bsln_tag = 0;</span>
+<span class="lineNum">     282 </span>            : 
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :         for ( i=0; line[i]!=NULL; ++i )</span>
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :             line[i]-&gt;bsln_off = 0;</span>
+<span class="lineNum">     285 </span>            : 
+<span class="lineNum">     286 </span>            :         /* Do baseline processing (if we can figure out a baseline for the first */
+<span class="lineNum">     287 </span>            :         /*  glyph on the line, line the rest up with it) */
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :         if ( start_base!=NULL )</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :             start_bs = FindBS(start_base,line[0],li);</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :         if ( start_bs!=NULL )</span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :             start_bsln_tag = FigureBaselineTag(line[0],li,start_base,start_base);</span>
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :         if ( start_bsln_tag!=0 ) {</span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :             double scale = start_fd-&gt;pointsize*li-&gt;dpi/(72.0*(start_fd-&gt;sf-&gt;ascent+start_fd-&gt;sf-&gt;descent));</span>
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :             for ( i=1; line[i]!=NULL; ++i ) {</span>
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :                 FontData *fd = ((struct fontlist *) (line[i]-&gt;fl))-&gt;fd;</span>
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :                 struct Base *base = fd-&gt;sf-&gt;horiz_base;</span>
+<span class="lineNum">     297 </span>            :                 uint32 cur_bsln_tag;
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :                 if ( fd-&gt;sf-&gt;horiz_base==NULL )</span>
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :             continue;</span>
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :                 cur_bsln_tag = FigureBaselineTag(line[i],li,base,start_base);</span>
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :                 if ( cur_bsln_tag==start_bsln_tag )</span>
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 :             continue;           /* Same baseline, offset 0 already set */</span>
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :                 line[i]-&gt;bsln_off = rint(scale*BaselineOffset(start_base,start_bs,cur_bsln_tag));</span>
+<span class="lineNum">     304 </span>            :             }
+<span class="lineNum">     305 </span>            :         }
+<span class="lineNum">     306 </span>            :     }
+<span class="lineNum">     307 </span>            : 
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 :     for ( i=0; line[i]!=NULL; ++i ) {</span>
+<span class="lineNum">     309 </span><span class="lineNoCov">          0 :         FontData *fd = ((struct fontlist *) (line[i]-&gt;fl))-&gt;fd;</span>
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 :         BDFFont *bdf = fd-&gt;bdf;</span>
+<span class="lineNum">     311 </span><span class="lineNoCov">          0 :         int off = line[i]-&gt;bsln_off;</span>
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 :         double scale = fd-&gt;pointsize*li-&gt;dpi/(72.0*(fd-&gt;sf-&gt;ascent+fd-&gt;sf-&gt;descent));</span>
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :         if ( bdf!=NULL ) {</span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :             if ( as&lt;bdf-&gt;ascent+off ) as = bdf-&gt;ascent+off;</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :             if ( ds&lt;bdf-&gt;descent-off ) ds = bdf-&gt;descent-off;</span>
+<span class="lineNum">     316 </span>            :         } else {
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :             if ( as&lt;scale*fd-&gt;sf-&gt;ascent+off ) as = scale*fd-&gt;sf-&gt;ascent+off;</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :             if ( ds&lt;scale*fd-&gt;sf-&gt;descent-off ) ds = scale*fd-&gt;sf-&gt;descent-off;</span>
+<span class="lineNum">     319 </span>            :         }
+<span class="lineNum">     320 </span><span class="lineNoCov">          0 :         if ( fd-&gt;sf-&gt;pfminfo.pfmset &amp;&amp; ld&lt;scale*fd-&gt;sf-&gt;pfminfo.os2_typolinegap )</span>
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 :             ld = scale*fd-&gt;sf-&gt;pfminfo.os2_typolinegap;</span>
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 :         width += line[i]-&gt;advance_width + line[i]-&gt;vr.h_adv_off;</span>
+<span class="lineNum">     323 </span>            :     }
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :     if ( as+ds==0 ) {</span>
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :         struct fontlist *fl, *last = li-&gt;fontlist;</span>
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :         for ( fl=li-&gt;fontlist; fl!=NULL &amp;&amp; li-&gt;paras[p].start_pos&gt;=fl-&gt;start; fl=fl-&gt;next )</span>
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :             last = fl;</span>
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :         if ( last!=NULL ) {</span>
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :             FontData *fd = last-&gt;fd;</span>
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 :             double scale = fd-&gt;pointsize*li-&gt;dpi/(72.0*(fd-&gt;sf-&gt;ascent+fd-&gt;sf-&gt;descent));</span>
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :             if ( as&lt;scale*fd-&gt;sf-&gt;ascent ) as = scale*fd-&gt;sf-&gt;ascent;</span>
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 :             if ( ds&lt;scale*fd-&gt;sf-&gt;descent ) ds = scale*fd-&gt;sf-&gt;descent;</span>
+<span class="lineNum">     333 </span><span class="lineNoCov">          0 :             if ( fd-&gt;sf-&gt;pfminfo.pfmset &amp;&amp; ld&lt;scale*fd-&gt;sf-&gt;pfminfo.os2_typolinegap )</span>
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :                 ld = scale*fd-&gt;sf-&gt;pfminfo.os2_typolinegap;</span>
+<span class="lineNum">     335 </span>            :         }
+<span class="lineNum">     336 </span>            :     }
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :     li-&gt;lineheights[l].fh = as+ds+ld;</span>
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 :     li-&gt;lineheights[l].as = as;</span>
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 :     li-&gt;lineheights[l].linelen = width;</span>
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :     if ( l==0 )</span>
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :         li-&gt;lineheights[l].y = 0;</span>
+<span class="lineNum">     342 </span>            :     else
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :         li-&gt;lineheights[l].y = li-&gt;lineheights[l-1].y+li-&gt;lineheights[l-1].fh;</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :     li-&gt;lineheights[l].p = p;</span>
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 :     if ( line[0]==NULL )                        /* Before bidir text */</span>
+<span class="lineNum">     346 </span><span class="lineNoCov">          0 :         li-&gt;lineheights[l].start_pos = li-&gt;paras[p].start_pos;</span>
+<span class="lineNum">     347 </span>            :     else
+<span class="lineNum">     348 </span><span class="lineNoCov">          0 :         li-&gt;lineheights[l].start_pos = line[0]-&gt;orig_index +</span>
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :                 ((struct fontlist *) (line[0]-&gt;fl))-&gt;start;</span>
+<a name="350"><span class="lineNum">     350 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     351 </span>            : 
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 : static void SFDoBiText(struct opentype_str **line) {</span>
+<span class="lineNum">     353 </span>            :     int i, j, start, end, inr;
+<span class="lineNum">     354 </span>            :     /* I'm going to make a huge simplification. Instead of doing the unicode */
+<span class="lineNum">     355 </span>            :     /*  algorithem to determine whether a glyph should be r2l or l2r, I'm */
+<span class="lineNum">     356 </span>            :     /*  just going to assume that the script tells us that. Each glyph is */
+<span class="lineNum">     357 </span>            :     /*  tagged with a script because each fontlist is. So things are easy */
+<span class="lineNum">     358 </span>            : 
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 :     inr = 0;</span>
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :     for ( i=0; line[i]!=NULL; ++i ) {</span>
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 :         if ( ScriptIsRightToLeft( ((struct fontlist *) (line[i]-&gt;fl))-&gt;script )) {</span>
+<span class="lineNum">     362 </span><span class="lineNoCov">          0 :             if ( !inr ) {</span>
+<span class="lineNum">     363 </span><span class="lineNoCov">          0 :                 start = i;</span>
+<span class="lineNum">     364 </span><span class="lineNoCov">          0 :                 inr = true;</span>
+<span class="lineNum">     365 </span>            :             }
+<span class="lineNum">     366 </span>            :         } else {
+<span class="lineNum">     367 </span><span class="lineNoCov">          0 :             if ( inr ) {</span>
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :                 end = i;</span>
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 :                 inr = false;</span>
+<span class="lineNum">     370 </span><span class="lineNoCov">          0 :                 for ( j=(end-start)/2; j&gt;0; --j ) {</span>
+<span class="lineNum">     371 </span><span class="lineNoCov">          0 :                     struct opentype_str *chr = line[start+j-1];</span>
+<span class="lineNum">     372 </span><span class="lineNoCov">          0 :                     line[start+j-1] = line[end-j];</span>
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 :                     line[end-j] = chr;</span>
+<span class="lineNum">     374 </span>            :                 }
+<span class="lineNum">     375 </span><span class="lineNoCov">          0 :                 for ( j=start; j&lt;end; ++j ) line[j]-&gt;r2l = true;</span>
+<span class="lineNum">     376 </span>            :             }
+<span class="lineNum">     377 </span>            :         }
+<span class="lineNum">     378 </span>            :     }
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :     if ( inr ) {</span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :         end = i;</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :         inr = false;</span>
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :         for ( j=(end-start)/2; j&gt;0; --j ) {</span>
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :             struct opentype_str *chr = line[start+j-1];</span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :             line[start+j-1] = line[end-j];</span>
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :             line[end-j] = chr;</span>
+<span class="lineNum">     386 </span>            :         }
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :         for ( j=start; j&lt;end; ++j ) line[j]-&gt;r2l = true;</span>
+<span class="lineNum">     388 </span>            :     }
+<a name="389"><span class="lineNum">     389 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     390 </span>            : 
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 : static int ot_strlen(struct opentype_str *str) {</span>
+<span class="lineNum">     392 </span>            :     int i;
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 :     for ( i=0; str[i].sc!=NULL; ++i );</span>
+<span class="lineNum">     394 </span><span class="lineNoCov">          0 : return( i );</span>
+<a name="395"><span class="lineNum">     395 </span>            : }</a>
+<span class="lineNum">     396 </span>            : 
+<span class="lineNum">     397 </span><span class="lineNoCov">          0 : void LayoutInfoRefigureLines(LayoutInfo *li, int start_of_change,</span>
+<span class="lineNum">     398 </span>            :         int end_of_change, int width) {
+<span class="lineNum">     399 </span>            :     int i,j, p,ps,pe, l,ls,le, pdiff, ldiff;
+<span class="lineNum">     400 </span>            :     int len, start, pcnt, lcnt;
+<span class="lineNum">     401 </span>            :     struct fontlist *fl, *oldstart, *oldend, *curp;
+<span class="lineNum">     402 </span>            :     double scale;
+<span class="lineNum">     403 </span>            : 
+<span class="lineNum">     404 </span><span class="lineNoCov">          0 :     if ( li-&gt;lines==NULL ) {</span>
+<span class="lineNum">     405 </span><span class="lineNoCov">          0 :         li-&gt;lines = malloc(10*sizeof(struct opentype_str *));</span>
+<span class="lineNum">     406 </span><span class="lineNoCov">          0 :         li-&gt;lineheights = malloc(10*sizeof(struct lineheights));</span>
+<span class="lineNum">     407 </span><span class="lineNoCov">          0 :         li-&gt;lines[0] = NULL;</span>
+<span class="lineNum">     408 </span><span class="lineNoCov">          0 :         li-&gt;lmax = 10;</span>
+<span class="lineNum">     409 </span><span class="lineNoCov">          0 :         li-&gt;lcnt = 0;</span>
+<span class="lineNum">     410 </span>            :     }
+<span class="lineNum">     411 </span>            : 
+<span class="lineNum">     412 </span><span class="lineNoCov">          0 :     if ( end_of_change==-1 )</span>
+<span class="lineNum">     413 </span><span class="lineNoCov">          0 :         end_of_change = start_of_change + u_strlen(li-&gt;text+start_of_change);</span>
+<span class="lineNum">     414 </span><span class="lineNoCov">          0 :     if ( li-&gt;ps==-1 ) {</span>
+<span class="lineNum">     415 </span><span class="lineNoCov">          0 :         ps = 0; pe = li-&gt;pcnt;</span>
+<span class="lineNum">     416 </span><span class="lineNoCov">          0 :         ls = 0; le = li-&gt;lcnt;</span>
+<span class="lineNum">     417 </span><span class="lineNoCov">          0 :         oldstart = li-&gt;fontlist;</span>
+<span class="lineNum">     418 </span><span class="lineNoCov">          0 :         oldend = NULL;</span>
+<span class="lineNum">     419 </span>            :     } else {
+<span class="lineNum">     420 </span><span class="lineNoCov">          0 :         ps = li-&gt;ps; pe = li-&gt;pe;</span>
+<span class="lineNum">     421 </span><span class="lineNoCov">          0 :         ls = li-&gt;ls; le = li-&gt;le;</span>
+<span class="lineNum">     422 </span><span class="lineNoCov">          0 :         oldstart = li-&gt;oldstart;</span>
+<span class="lineNum">     423 </span><span class="lineNoCov">          0 :         oldend = li-&gt;oldend;</span>
+<span class="lineNum">     424 </span>            :     }
+<span class="lineNum">     425 </span>            : 
+<span class="lineNum">     426 </span>            :     /* Do transformations dictated by features on the changed region */
+<span class="lineNum">     427 </span>            :     /* while we're at it find the beginning of the changed paragraph, the */
+<span class="lineNum">     428 </span>            :     /* number of paragraphs (newlines) within the change, and the last paragraph */
+<span class="lineNum">     429 </span>            :     /*  of the change */
+<span class="lineNum">     430 </span><span class="lineNoCov">          0 :     pcnt = 0;</span>
+<span class="lineNum">     431 </span><span class="lineNoCov">          0 :     if ( oldstart!=NULL ) {</span>
+<span class="lineNum">     432 </span><span class="lineNoCov">          0 :         for ( fl=oldstart, start = start_of_change-fl-&gt;start;</span>
+<span class="lineNum">     433 </span><span class="lineNoCov">          0 :                 fl!=NULL &amp;&amp; fl!=oldend;</span>
+<span class="lineNum">     434 </span><span class="lineNoCov">          0 :                 fl=fl-&gt;next, start = 0 ) {</span>
+<span class="lineNum">     435 </span><span class="lineNoCov">          0 :             if ( start&lt;0 ) start = 0;</span>
+<span class="lineNum">     436 </span><span class="lineNoCov">          0 :             if ( fl-&gt;end - fl-&gt;start &gt;= fl-&gt;scmax )</span>
+<span class="lineNum">     437 </span><span class="lineNoCov">          0 :                 fl-&gt;sctext = realloc(fl-&gt;sctext,((fl-&gt;scmax = fl-&gt;end-fl-&gt;start+4)+1)*sizeof(SplineChar *));</span>
+<span class="lineNum">     438 </span><span class="lineNoCov">          0 :             for ( i=j=0; i&lt;fl-&gt;end-fl-&gt;start; ++i ) {</span>
+<span class="lineNum">     439 </span><span class="lineNoCov">          0 :                 SplineChar *sc = FDMap(fl-&gt;fd,li-&gt;text[fl-&gt;start+i]);</span>
+<span class="lineNum">     440 </span><span class="lineNoCov">          0 :                 if ( sc!=NULL &amp;&amp; sc!=(SplineChar *) -1 )</span>
+<span class="lineNum">     441 </span><span class="lineNoCov">          0 :                     fl-&gt;sctext[j++] = sc;</span>
+<span class="lineNum">     442 </span>            :             }
+<span class="lineNum">     443 </span><span class="lineNoCov">          0 :             fl-&gt;sctext[j] = NULL;</span>
+<span class="lineNum">     444 </span>            : 
+<span class="lineNum">     445 </span><span class="lineNoCov">          0 :             free( fl-&gt;ottext );</span>
+<span class="lineNum">     446 </span><span class="lineNoCov">          0 :             fl-&gt;ottext = ApplyTickedFeatures(fl-&gt;fd-&gt;sf,fl-&gt;feats,</span>
+<span class="lineNum">     447 </span>            :                     fl-&gt;script, fl-&gt;lang,
+<span class="lineNum">     448 </span><span class="lineNoCov">          0 :                     rint( (fl-&gt;fd-&gt;pointsize*li-&gt;dpi)/72 ),</span>
+<span class="lineNum">     449 </span>            :                     fl-&gt;sctext);
+<span class="lineNum">     450 </span><span class="lineNoCov">          0 :             scale = fl-&gt;fd-&gt;pointsize*li-&gt;dpi / (72.0*(fl-&gt;fd-&gt;sf-&gt;ascent+fl-&gt;fd-&gt;sf-&gt;descent));</span>
+<span class="lineNum">     451 </span><span class="lineNoCov">          0 :             for ( i=0; fl-&gt;ottext[i].sc!=NULL; ++i ) {</span>
+<span class="lineNum">     452 </span><span class="lineNoCov">          0 :                 fl-&gt;ottext[i].fl = fl;</span>
+<span class="lineNum">     453 </span><span class="lineNoCov">          0 :                 if ( fl-&gt;fd-&gt;bdf!=NULL &amp;&amp; fl-&gt;ottext[i].sc-&gt;orig_pos!=-1 ) {</span>
+<span class="lineNum">     454 </span>            :                     /* tt instructions might change the advance width fromt he expected value */
+<span class="lineNum">     455 </span><span class="lineNoCov">          0 :                     fl-&gt;ottext[i].advance_width = BDFPieceMealCheck(fl-&gt;fd-&gt;bdf,fl-&gt;ottext[i].sc-&gt;orig_pos )-&gt;width;</span>
+<span class="lineNum">     456 </span>            :                 } else
+<span class="lineNum">     457 </span><span class="lineNoCov">          0 :                     fl-&gt;ottext[i].advance_width = rint( fl-&gt;ottext[i].sc-&gt;width * scale );</span>
+<span class="lineNum">     458 </span>            :             }
+<span class="lineNum">     459 </span><span class="lineNoCov">          0 :             if ( (fl-&gt;next==NULL || fl-&gt;next-&gt;end!=fl-&gt;end) &amp;&amp; ( li-&gt;text[fl-&gt;end]=='\n' || li-&gt;text[fl-&gt;end]=='\0' ))</span>
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 :                 ++pcnt;</span>
+<span class="lineNum">     461 </span>            :         }
+<span class="lineNum">     462 </span>            :     }
+<span class="lineNum">     463 </span>            : 
+<span class="lineNum">     464 </span><span class="lineNoCov">          0 :     if ( li-&gt;pmax &lt;= li-&gt;pcnt+pcnt - (pe-ps+1) )</span>
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 :         li-&gt;paras = realloc(li-&gt;paras,(li-&gt;pmax = li-&gt;pcnt+30+pcnt-(pe-ps+1))*sizeof(struct paras));</span>
+<span class="lineNum">     466 </span>            :     /* move any old paragraphs around */
+<span class="lineNum">     467 </span><span class="lineNoCov">          0 :     pdiff = pcnt-(pe-ps);</span>
+<span class="lineNum">     468 </span><span class="lineNoCov">          0 :     for ( p=ps; p&lt;pe; ++p )</span>
+<span class="lineNum">     469 </span><span class="lineNoCov">          0 :         free(li-&gt;paras[p].para);</span>
+<span class="lineNum">     470 </span><span class="lineNoCov">          0 :     if ( pdiff&lt;0 ) {</span>
+<span class="lineNum">     471 </span><span class="lineNoCov">          0 :         for ( p=pe; p&lt;li-&gt;pcnt; ++p )</span>
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 :             li-&gt;paras[p+pdiff] = li-&gt;paras[p];</span>
+<span class="lineNum">     473 </span><span class="lineNoCov">          0 :     } else if ( pdiff&gt;0 ) {</span>
+<span class="lineNum">     474 </span><span class="lineNoCov">          0 :         for ( p=li-&gt;pcnt-1; p&gt;=pe; --p )</span>
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 :             li-&gt;paras[p+pdiff] = li-&gt;paras[p];</span>
+<span class="lineNum">     476 </span>            :     }
+<span class="lineNum">     477 </span>            :     /* Figure out the changed paragraphs */
+<span class="lineNum">     478 </span>            :     /* And the number of lines in each */
+<span class="lineNum">     479 </span><span class="lineNoCov">          0 :     lcnt = 0;</span>
+<span class="lineNum">     480 </span><span class="lineNoCov">          0 :     for ( p=ps, curp=oldstart; p&lt;ps+pcnt &amp;&amp; curp!=NULL; ++p ) {</span>
+<span class="lineNum">     481 </span><span class="lineNoCov">          0 :         len = 0;</span>
+<span class="lineNum">     482 </span>            :         /* Each para may be composed of several font segments */
+<span class="lineNum">     483 </span><span class="lineNoCov">          0 :         for ( fl=curp; fl!=NULL; fl=fl-&gt;next ) {</span>
+<span class="lineNum">     484 </span><span class="lineNoCov">          0 :             len += ot_strlen( fl-&gt;ottext );</span>
+<span class="lineNum">     485 </span><span class="lineNoCov">          0 :             if ( (fl-&gt;next==NULL || fl-&gt;next-&gt;end!=fl-&gt;end) &amp;&amp; li-&gt;text[fl-&gt;end]=='\n' )</span>
+<span class="lineNum">     486 </span><span class="lineNoCov">          0 :         break;          /* End of paragraph */</span>
+<span class="lineNum">     487 </span>            :         }
+<span class="lineNum">     488 </span><span class="lineNoCov">          0 :         li-&gt;paras[p].para = malloc((len+1)*sizeof( struct paras));</span>
+<span class="lineNum">     489 </span><span class="lineNoCov">          0 :         li-&gt;paras[p].start_pos = curp-&gt;start;</span>
+<span class="lineNum">     490 </span><span class="lineNoCov">          0 :         len = 0;</span>
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 :         for ( fl=curp; fl!=NULL; fl=fl-&gt;next ) {</span>
+<span class="lineNum">     492 </span><span class="lineNoCov">          0 :             for ( i=0; fl-&gt;ottext[i].sc!=NULL; ++i )</span>
+<span class="lineNum">     493 </span><span class="lineNoCov">          0 :                 li-&gt;paras[p].para[len+i] = &amp;fl-&gt;ottext[i];</span>
+<span class="lineNum">     494 </span><span class="lineNoCov">          0 :             len += i;</span>
+<span class="lineNum">     495 </span><span class="lineNoCov">          0 :             if ( (fl-&gt;next==NULL || fl-&gt;next-&gt;end!=fl-&gt;end) &amp;&amp; li-&gt;text[fl-&gt;end]=='\n' ) {</span>
+<span class="lineNum">     496 </span><span class="lineNoCov">          0 :                 fl = fl-&gt;next;</span>
+<span class="lineNum">     497 </span><span class="lineNoCov">          0 :         break;          /* End of paragraph */</span>
+<span class="lineNum">     498 </span>            :             }
+<span class="lineNum">     499 </span>            :         }
+<span class="lineNum">     500 </span><span class="lineNoCov">          0 :         li-&gt;paras[p].para[len] = NULL;</span>
+<span class="lineNum">     501 </span><span class="lineNoCov">          0 :         lcnt += LinesInPara(li,li-&gt;paras[p].para,width);</span>
+<span class="lineNum">     502 </span><span class="lineNoCov">          0 :         curp = fl;</span>
+<span class="lineNum">     503 </span>            :     }
+<span class="lineNum">     504 </span><span class="lineNoCov">          0 :     li-&gt;pcnt += pdiff;</span>
+<span class="lineNum">     505 </span>            : 
+<span class="lineNum">     506 </span><span class="lineNoCov">          0 :     if ( li-&gt;lmax &lt;= li-&gt;lcnt+lcnt - (le-ls) + 1 ) {</span>
+<span class="lineNum">     507 </span><span class="lineNoCov">          0 :         li-&gt;lines = realloc(li-&gt;lines,(li-&gt;lmax = li-&gt;lcnt+30+lcnt-(le-ls+1))*sizeof(struct openfont_str **));</span>
+<span class="lineNum">     508 </span><span class="lineNoCov">          0 :         li-&gt;lineheights = realloc(li-&gt;lineheights,li-&gt;lmax*sizeof(struct lineheights));</span>
+<span class="lineNum">     509 </span>            :     }
+<span class="lineNum">     510 </span>            :     /* move any old lines around */
+<span class="lineNum">     511 </span><span class="lineNoCov">          0 :     ldiff = lcnt-(le-ls);</span>
+<span class="lineNum">     512 </span><span class="lineNoCov">          0 :     for ( l=ls; l&lt;le; ++l )</span>
+<span class="lineNum">     513 </span><span class="lineNoCov">          0 :         free(li-&gt;lines[l]);</span>
+<span class="lineNum">     514 </span><span class="lineNoCov">          0 :     if ( ldiff&lt;0 ) {</span>
+<span class="lineNum">     515 </span><span class="lineNoCov">          0 :         for ( l=le; l&lt;=li-&gt;lcnt; ++l ) {</span>
+<span class="lineNum">     516 </span><span class="lineNoCov">          0 :             li-&gt;lines[l+ldiff] = li-&gt;lines[l];</span>
+<span class="lineNum">     517 </span><span class="lineNoCov">          0 :             li-&gt;lineheights[l+ldiff] = li-&gt;lineheights[l];</span>
+<span class="lineNum">     518 </span>            :         }
+<span class="lineNum">     519 </span><span class="lineNoCov">          0 :     } else if ( ldiff&gt;0 ) {</span>
+<span class="lineNum">     520 </span><span class="lineNoCov">          0 :         for ( l=li-&gt;lcnt-1; l&gt;=le; --l ) {</span>
+<span class="lineNum">     521 </span><span class="lineNoCov">          0 :             li-&gt;lines[l+ldiff] = li-&gt;lines[l];</span>
+<span class="lineNum">     522 </span><span class="lineNoCov">          0 :             li-&gt;lineheights[l+ldiff] = li-&gt;lineheights[l];</span>
+<span class="lineNum">     523 </span>            :         }
+<span class="lineNum">     524 </span>            :     }
+<span class="lineNum">     525 </span><span class="lineNoCov">          0 :     for ( l=ls, p=ps; l&lt;ls+lcnt ; ++p ) {</span>
+<span class="lineNum">     526 </span><span class="lineNoCov">          0 :         int eol=0;</span>
+<span class="lineNum">     527 </span>            :         do {
+<span class="lineNum">     528 </span><span class="lineNoCov">          0 :             li-&gt;lines[l] = LineFromPara(&amp;li-&gt;paras[p].para[eol],&amp;eol);</span>
+<span class="lineNum">     529 </span><span class="lineNoCov">          0 :             LIFigureLineHeight(li,l,p); /* Must preceed BiText */</span>
+<span class="lineNum">     530 </span><span class="lineNoCov">          0 :             SFDoBiText(li-&gt;lines[l++]);</span>
+<span class="lineNum">     531 </span><span class="lineNoCov">          0 :         } while ( li-&gt;paras[p].para[eol]!=NULL );</span>
+<span class="lineNum">     532 </span>            :     }
+<span class="lineNum">     533 </span><span class="lineNoCov">          0 :     li-&gt;lcnt += ldiff;</span>
+<span class="lineNum">     534 </span>            : 
+<span class="lineNum">     535 </span><span class="lineNoCov">          0 :     li-&gt;xmax = 0;</span>
+<span class="lineNum">     536 </span><span class="lineNoCov">          0 :     for ( l=0; l&lt;li-&gt;lcnt; ++l ) {</span>
+<span class="lineNum">     537 </span><span class="lineNoCov">          0 :         if ( li-&gt;lineheights[l].linelen&gt;li-&gt;xmax )</span>
+<span class="lineNum">     538 </span><span class="lineNoCov">          0 :             li-&gt;xmax = li-&gt;lineheights[l].linelen;</span>
+<span class="lineNum">     539 </span>            :     }
+<span class="lineNum">     540 </span><span class="lineNoCov">          0 :     if ( ls+lcnt==0 )</span>
+<span class="lineNum">     541 </span><span class="lineNoCov">          0 :         lcnt = 1;       /* line 0 always starts at 0 */</span>
+<span class="lineNum">     542 </span><span class="lineNoCov">          0 :     for ( l=ls+lcnt; l&lt;li-&gt;lcnt; ++l )</span>
+<span class="lineNum">     543 </span><span class="lineNoCov">          0 :         li-&gt;lineheights[l].y = li-&gt;lineheights[l-1].y + li-&gt;lineheights[l-1].fh;</span>
+<span class="lineNum">     544 </span><span class="lineNoCov">          0 :     li-&gt;ps = -1;</span>
+<a name="545"><span class="lineNum">     545 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     546 </span>            : 
+<span class="lineNum">     547 </span><span class="lineNoCov">          0 : static void fontlistfree(struct fontlist *fl ) {</span>
+<span class="lineNum">     548 </span>            :     struct fontlist *nfl;
+<span class="lineNum">     549 </span>            : 
+<span class="lineNum">     550 </span><span class="lineNoCov">          0 :     for ( ; fl!=NULL; fl=nfl ) {</span>
+<span class="lineNum">     551 </span><span class="lineNoCov">          0 :         nfl = fl-&gt;next;</span>
+<span class="lineNum">     552 </span><span class="lineNoCov">          0 :         free(fl-&gt;feats);</span>
+<span class="lineNum">     553 </span><span class="lineNoCov">          0 :         free(fl-&gt;sctext);</span>
+<span class="lineNum">     554 </span><span class="lineNoCov">          0 :         free(fl-&gt;ottext);</span>
+<span class="lineNum">     555 </span><span class="lineNoCov">          0 :         chunkfree(fl,sizeof(struct fontlist));</span>
+<span class="lineNum">     556 </span>            :     }
+<a name="557"><span class="lineNum">     557 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     558 </span>            : 
+<span class="lineNum">     559 </span><span class="lineNoCov">          0 : struct fontlist *LI_fontlistcopy(struct fontlist *fl ) {</span>
+<span class="lineNum">     560 </span><span class="lineNoCov">          0 :     struct fontlist *nfl, *nhead=NULL, *last=NULL;</span>
+<span class="lineNum">     561 </span>            : 
+<span class="lineNum">     562 </span><span class="lineNoCov">          0 :     for ( ; fl!=NULL; fl=fl-&gt;next ) {</span>
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 :         nfl = chunkalloc(sizeof(struct fontlist));</span>
+<span class="lineNum">     564 </span><span class="lineNoCov">          0 :         *nfl = *fl;</span>
+<span class="lineNum">     565 </span><span class="lineNoCov">          0 :         nfl-&gt;feats = LI_TagsCopy(fl-&gt;feats);</span>
+<span class="lineNum">     566 </span><span class="lineNoCov">          0 :         nfl-&gt;scmax = 0; nfl-&gt;sctext = NULL; nfl-&gt;ottext = NULL;</span>
+<span class="lineNum">     567 </span><span class="lineNoCov">          0 :         if ( nhead == NULL )</span>
+<span class="lineNum">     568 </span><span class="lineNoCov">          0 :             nhead = nfl;</span>
+<span class="lineNum">     569 </span>            :         else
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 :             last-&gt;next = nfl;</span>
+<span class="lineNum">     571 </span><span class="lineNoCov">          0 :         last = nfl;</span>
+<span class="lineNum">     572 </span>            :     }
+<span class="lineNum">     573 </span><span class="lineNoCov">          0 : return( nhead );</span>
+<a name="574"><span class="lineNum">     574 </span>            : }</a>
+<span class="lineNum">     575 </span>            : 
+<span class="lineNum">     576 </span><span class="lineNoCov">          0 : static void fontlistcheck(LayoutInfo *li) {</span>
+<span class="lineNum">     577 </span>            :     struct fontlist *fl, *next;
+<span class="lineNum">     578 </span>            : 
+<span class="lineNum">     579 </span><span class="lineNoCov">          0 :     if ( li-&gt;fontlist==NULL )</span>
+<span class="lineNum">     580 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     581 </span><span class="lineNoCov">          0 :     for ( fl = li-&gt;fontlist; fl!=NULL; fl=next ) {</span>
+<span class="lineNum">     582 </span><span class="lineNoCov">          0 :         next = fl-&gt;next;</span>
+<span class="lineNum">     583 </span><span class="lineNoCov">          0 :         if ( next==NULL )</span>
+<span class="lineNum">     584 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     585 </span>            :         /* fontlists should either be consecutive or allow for a line break to */
+<span class="lineNum">     586 </span>            :         /*  be between entries */
+<span class="lineNum">     587 </span><span class="lineNoCov">          0 :         if ( fl-&gt;start&gt;fl-&gt;end || (fl-&gt;end!=next-&gt;start &amp;&amp; fl-&gt;end!=next-&gt;start-1) ||</span>
+<span class="lineNum">     588 </span><span class="lineNoCov">          0 :                 next==fl || next-&gt;next==fl ) {</span>
+<span class="lineNum">     589 </span><span class="lineNoCov">          0 :             IError(&quot;FontList is corrupted&quot; );</span>
+<span class="lineNum">     590 </span><span class="lineNoCov">          0 :             fl-&gt;next = NULL;</span>
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     592 </span>            :         }
+<span class="lineNum">     593 </span>            :     }
+<a name="594"><span class="lineNum">     594 </span>            : }</a>
+<span class="lineNum">     595 </span>            : 
+<span class="lineNum">     596 </span><span class="lineNoCov">          0 : void LI_fontlistmergecheck(LayoutInfo *li) {</span>
+<span class="lineNum">     597 </span>            :     struct fontlist *fl, *next;
+<span class="lineNum">     598 </span>            :     unichar_t *pt;
+<span class="lineNum">     599 </span>            : 
+<span class="lineNum">     600 </span><span class="lineNoCov">          0 :     if ( li-&gt;fontlist==NULL )</span>
+<span class="lineNum">     601 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     602 </span><span class="lineNoCov">          0 :     fontlistcheck(li);</span>
+<span class="lineNum">     603 </span>            :     /* Make sure there is a new fontlist for each paragraph -- omit the newline */
+<span class="lineNum">     604 </span>            :     /*  char from the set of glyphs to be displayed */
+<span class="lineNum">     605 </span><span class="lineNoCov">          0 :     for ( pt=li-&gt;text, fl = li-&gt;fontlist; *pt; ++pt ) {</span>
+<span class="lineNum">     606 </span><span class="lineNoCov">          0 :         if ( *pt=='\n' ) {</span>
+<span class="lineNum">     607 </span><span class="lineNoCov">          0 :             while ( fl!=NULL &amp;&amp; fl-&gt;end&lt;=pt-li-&gt;text ) fl=fl-&gt;next;</span>
+<span class="lineNum">     608 </span><span class="lineNoCov">          0 :             if ( fl==NULL )</span>
+<span class="lineNum">     609 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     610 </span><span class="lineNoCov">          0 :             if ( fl-&gt;start&lt;=pt-li-&gt;text ) {</span>
+<span class="lineNum">     611 </span><span class="lineNoCov">          0 :                 if ( fl-&gt;next!=NULL &amp;&amp; fl-&gt;next-&gt;start == pt+1-li-&gt;text )</span>
+<span class="lineNum">     612 </span><span class="lineNoCov">          0 :                     fl-&gt;end = pt-li-&gt;text;</span>
+<span class="lineNum">     613 </span>            :                 else {
+<span class="lineNum">     614 </span><span class="lineNoCov">          0 :                     next = chunkalloc(sizeof(struct fontlist));</span>
+<span class="lineNum">     615 </span><span class="lineNoCov">          0 :                     *next = *fl;</span>
+<span class="lineNum">     616 </span><span class="lineNoCov">          0 :                     fl-&gt;next = next;</span>
+<span class="lineNum">     617 </span><span class="lineNoCov">          0 :                     fl-&gt;end = pt-li-&gt;text;</span>
+<span class="lineNum">     618 </span><span class="lineNoCov">          0 :                     next-&gt;scmax = 0; next-&gt;sctext = NULL; next-&gt;ottext = NULL;</span>
+<span class="lineNum">     619 </span><span class="lineNoCov">          0 :                     next-&gt;feats = LI_TagsCopy(fl-&gt;feats);</span>
+<span class="lineNum">     620 </span><span class="lineNoCov">          0 :                     next-&gt;start = pt+1-li-&gt;text;</span>
+<span class="lineNum">     621 </span>            :                 }
+<span class="lineNum">     622 </span>            :             }
+<span class="lineNum">     623 </span>            :         }
+<span class="lineNum">     624 </span>            :     }
+<span class="lineNum">     625 </span><span class="lineNoCov">          0 :     fontlistcheck(li);</span>
+<span class="lineNum">     626 </span>            :     /* Now join adjacent fontlists with the same properties (except don't merge*/
+<span class="lineNum">     627 </span>            :     /*  over line breaks */
+<span class="lineNum">     628 </span><span class="lineNoCov">          0 :     for ( fl = li-&gt;fontlist; fl!=NULL; fl=next ) {</span>
+<span class="lineNum">     629 </span><span class="lineNoCov">          0 :         for ( next=fl-&gt;next; next!=NULL &amp;&amp; (</span>
+<span class="lineNum">     630 </span><span class="lineNoCov">          0 :                  (next-&gt;fd==fl-&gt;fd &amp;&amp;</span>
+<span class="lineNum">     631 </span><span class="lineNoCov">          0 :                   li-&gt;text[fl-&gt;end]!='\n' &amp;&amp;</span>
+<span class="lineNum">     632 </span><span class="lineNoCov">          0 :                   next-&gt;lang==fl-&gt;lang &amp;&amp; next-&gt;script==fl-&gt;script &amp;&amp;</span>
+<span class="lineNum">     633 </span><span class="lineNoCov">          0 :                   TagsSame(next-&gt;feats,fl-&gt;feats)) ||</span>
+<span class="lineNum">     634 </span><span class="lineNoCov">          0 :                  fl-&gt;start==next-&gt;end);</span>
+<span class="lineNum">     635 </span><span class="lineNoCov">          0 :                 next = fl-&gt;next ) {</span>
+<span class="lineNum">     636 </span><span class="lineNoCov">          0 :             if ( li-&gt;oldstart==next )</span>
+<span class="lineNum">     637 </span><span class="lineNoCov">          0 :                 li-&gt;oldstart = fl;</span>
+<span class="lineNum">     638 </span><span class="lineNoCov">          0 :             if ( li-&gt;oldend == next )</span>
+<span class="lineNum">     639 </span><span class="lineNoCov">          0 :                 li-&gt;oldend = next-&gt;next;</span>
+<span class="lineNum">     640 </span><span class="lineNoCov">          0 :             fl-&gt;next = next-&gt;next;</span>
+<span class="lineNum">     641 </span><span class="lineNoCov">          0 :             fl-&gt;end = next-&gt;end;</span>
+<span class="lineNum">     642 </span><span class="lineNoCov">          0 :             free(next-&gt;feats);</span>
+<span class="lineNum">     643 </span><span class="lineNoCov">          0 :             free(next-&gt;ottext); free(next-&gt;sctext);</span>
+<span class="lineNum">     644 </span><span class="lineNoCov">          0 :             chunkfree(next,sizeof(struct fontlist));</span>
+<span class="lineNum">     645 </span>            :         }
+<span class="lineNum">     646 </span>            :     }
+<span class="lineNum">     647 </span><span class="lineNoCov">          0 :     fontlistcheck(li);</span>
+<a name="648"><span class="lineNum">     648 </span>            : }</a>
+<span class="lineNum">     649 </span>            : 
+<span class="lineNum">     650 </span><span class="lineNoCov">          0 : static void LayoutInfoChangeFontList(LayoutInfo *li,int rpllen,</span>
+<span class="lineNum">     651 </span>            :         int sel_start, int sel_end) {
+<span class="lineNum">     652 </span>            :     /* we are removing a chunk starting at sel_start going to sel_end */
+<span class="lineNum">     653 </span>            :     /*  and replacing it with a chunk that is rpllen long */
+<span class="lineNum">     654 </span>            :     /* So we remove any chunks wholy within sel_start,sel_end and extend the */
+<span class="lineNum">     655 </span>            :     /*  chunk at sel_start by rpllen */
+<span class="lineNum">     656 </span>            :     struct fontlist *fl, *next, *test;
+<span class="lineNum">     657 </span>            :     int diff;
+<span class="lineNum">     658 </span>            :     int ps,pe,ls,le, p,l;
+<span class="lineNum">     659 </span>            :     struct fontlist *oldstart, *oldend;
+<span class="lineNum">     660 </span>            : 
+<span class="lineNum">     661 </span><span class="lineNoCov">          0 :     fontlistfree(li-&gt;oldfontlist);</span>
+<span class="lineNum">     662 </span><span class="lineNoCov">          0 :     li-&gt;oldfontlist = LI_fontlistcopy(li-&gt;fontlist);</span>
+<span class="lineNum">     663 </span>            : 
+<span class="lineNum">     664 </span><span class="lineNoCov">          0 :     diff = rpllen - (sel_end-sel_start);</span>
+<span class="lineNum">     665 </span>            : 
+<span class="lineNum">     666 </span><span class="lineNoCov">          0 :     ps = 0; pe = li-&gt;pcnt;</span>
+<span class="lineNum">     667 </span><span class="lineNoCov">          0 :     ls = 0; le = li-&gt;lcnt;</span>
+<span class="lineNum">     668 </span><span class="lineNoCov">          0 :     p = l = 0;</span>
+<span class="lineNum">     669 </span><span class="lineNoCov">          0 :     oldstart = li-&gt;fontlist;</span>
+<span class="lineNum">     670 </span><span class="lineNoCov">          0 :     for ( fl = li-&gt;fontlist; fl!=NULL &amp;&amp; fl-&gt;start&lt;=sel_start; fl=fl-&gt;next ) {</span>
+<span class="lineNum">     671 </span><span class="lineNoCov">          0 :         if ( fl-&gt;next!=NULL &amp;&amp; fl-&gt;end!=fl-&gt;next-&gt;start &amp;&amp; fl-&gt;next-&gt;start&lt;=sel_start ) {</span>
+<span class="lineNum">     672 </span><span class="lineNoCov">          0 :             oldstart = fl-&gt;next;</span>
+<span class="lineNum">     673 </span>            :         }
+<span class="lineNum">     674 </span>            :     }
+<span class="lineNum">     675 </span><span class="lineNoCov">          0 :     if ( li-&gt;paras!=NULL &amp;&amp; oldstart!=NULL ) {</span>
+<span class="lineNum">     676 </span><span class="lineNoCov">          0 :         while ( p&lt;li-&gt;pcnt &amp;&amp; li-&gt;paras[p].start_pos!=oldstart-&gt;start )</span>
+<span class="lineNum">     677 </span><span class="lineNoCov">          0 :             ++p;</span>
+<span class="lineNum">     678 </span><span class="lineNoCov">          0 :         if ( p&lt;li-&gt;pcnt ) {</span>
+<span class="lineNum">     679 </span><span class="lineNoCov">          0 :             ps = p;</span>
+<span class="lineNum">     680 </span><span class="lineNoCov">          0 :             while ( l&lt;li-&gt;lcnt &amp;&amp; li-&gt;lineheights[l].start_pos != oldstart-&gt;start )</span>
+<span class="lineNum">     681 </span><span class="lineNoCov">          0 :                 ++l;</span>
+<span class="lineNum">     682 </span><span class="lineNoCov">          0 :             if ( l&lt;li-&gt;lcnt )</span>
+<span class="lineNum">     683 </span><span class="lineNoCov">          0 :                 ls = l;</span>
+<span class="lineNum">     684 </span>            :         }
+<span class="lineNum">     685 </span>            :     }
+<span class="lineNum">     686 </span>            : 
+<span class="lineNum">     687 </span><span class="lineNoCov">          0 :     for ( fl = oldstart; fl!=NULL &amp;&amp; sel_end&gt;=fl-&gt;start ; fl=fl-&gt;next );</span>
+<span class="lineNum">     688 </span><span class="lineNoCov">          0 :     oldend = fl;</span>
+<span class="lineNum">     689 </span><span class="lineNoCov">          0 :     while ( oldend!=NULL &amp;&amp; li-&gt;text[oldend-&gt;start-1]!='\n' )</span>
+<span class="lineNum">     690 </span><span class="lineNoCov">          0 :         oldend = oldend-&gt;next;</span>
+<span class="lineNum">     691 </span><span class="lineNoCov">          0 :     if ( oldend!=NULL &amp;&amp; li-&gt;paras!=NULL ) {</span>
+<span class="lineNum">     692 </span><span class="lineNoCov">          0 :         while ( p&lt;li-&gt;pcnt &amp;&amp; li-&gt;paras[p].start_pos!=oldend-&gt;start )</span>
+<span class="lineNum">     693 </span><span class="lineNoCov">          0 :             ++p;</span>
+<span class="lineNum">     694 </span><span class="lineNoCov">          0 :         if ( p&lt;li-&gt;pcnt ) {</span>
+<span class="lineNum">     695 </span><span class="lineNoCov">          0 :             pe = p;</span>
+<span class="lineNum">     696 </span><span class="lineNoCov">          0 :             while ( l&lt;li-&gt;lcnt &amp;&amp; li-&gt;lineheights[l].start_pos != oldend-&gt;start )</span>
+<span class="lineNum">     697 </span><span class="lineNoCov">          0 :                 ++l;</span>
+<span class="lineNum">     698 </span><span class="lineNoCov">          0 :             if ( l&lt;li-&gt;lcnt )</span>
+<span class="lineNum">     699 </span><span class="lineNoCov">          0 :                 le = l;</span>
+<span class="lineNum">     700 </span><span class="lineNoCov">          0 :             for ( ; p&lt;li-&gt;pcnt; ++p )</span>
+<span class="lineNum">     701 </span><span class="lineNoCov">          0 :                 li-&gt;paras[p].start_pos += diff;</span>
+<span class="lineNum">     702 </span><span class="lineNoCov">          0 :             for ( ; l&lt;li-&gt;lcnt; ++l )</span>
+<span class="lineNum">     703 </span><span class="lineNoCov">          0 :                 li-&gt;lineheights[l].start_pos += diff;</span>
+<span class="lineNum">     704 </span>            :         }
+<span class="lineNum">     705 </span>            :     }
+<span class="lineNum">     706 </span><span class="lineNoCov">          0 :     li-&gt;ps = ps; li-&gt;pe = pe;</span>
+<span class="lineNum">     707 </span><span class="lineNoCov">          0 :     li-&gt;ls = ls; li-&gt;le = le;</span>
+<span class="lineNum">     708 </span><span class="lineNoCov">          0 :     li-&gt;oldstart = oldstart;</span>
+<span class="lineNum">     709 </span><span class="lineNoCov">          0 :     li-&gt;oldend = oldend;</span>
+<span class="lineNum">     710 </span>            : 
+<span class="lineNum">     711 </span><span class="lineNoCov">          0 :     for ( fl=li-&gt;fontlist; fl!=NULL &amp;&amp; sel_start&gt;fl-&gt;end; fl=fl-&gt;next );</span>
+<span class="lineNum">     712 </span><span class="lineNoCov">          0 :     if ( fl==NULL )</span>
+<span class="lineNum">     713 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     714 </span><span class="lineNoCov">          0 :     if ( fl-&gt;next!=NULL &amp;&amp; fl-&gt;end==fl-&gt;next-&gt;end )</span>
+<span class="lineNum">     715 </span><span class="lineNoCov">          0 :         fl = fl-&gt;next;</span>
+<span class="lineNum">     716 </span><span class="lineNoCov">          0 :     if ( fl-&gt;end&gt;=sel_end ) {</span>
+<span class="lineNum">     717 </span><span class="lineNoCov">          0 :         fl-&gt;end += diff;</span>
+<span class="lineNum">     718 </span><span class="lineNoCov">          0 :         fl = fl-&gt;next;</span>
+<span class="lineNum">     719 </span>            :     } else {
+<span class="lineNum">     720 </span><span class="lineNoCov">          0 :         fl-&gt;end = sel_start + rpllen;</span>
+<span class="lineNum">     721 </span><span class="lineNoCov">          0 :         for ( test=fl-&gt;next; test!=NULL &amp;&amp; sel_end&gt;=test-&gt;end; test=next ) {</span>
+<span class="lineNum">     722 </span><span class="lineNoCov">          0 :             next = test-&gt;next;</span>
+<span class="lineNum">     723 </span><span class="lineNoCov">          0 :             free(test-&gt;feats);</span>
+<span class="lineNum">     724 </span><span class="lineNoCov">          0 :             free(test-&gt;sctext); free(test-&gt;ottext);</span>
+<span class="lineNum">     725 </span><span class="lineNoCov">          0 :             chunkfree(test,sizeof(struct fontlist));</span>
+<span class="lineNum">     726 </span>            :         }
+<span class="lineNum">     727 </span><span class="lineNoCov">          0 :         fl-&gt;next = test;</span>
+<span class="lineNum">     728 </span><span class="lineNoCov">          0 :         if ( test!=NULL ) {</span>
+<span class="lineNum">     729 </span><span class="lineNoCov">          0 :             if ( li-&gt;text[fl-&gt;end]=='\n' )</span>
+<span class="lineNum">     730 </span><span class="lineNoCov">          0 :                 test-&gt;start = fl-&gt;end+1;</span>
+<span class="lineNum">     731 </span>            :             else
+<span class="lineNum">     732 </span><span class="lineNoCov">          0 :                 test-&gt;start = fl-&gt;end;</span>
+<span class="lineNum">     733 </span><span class="lineNoCov">          0 :             test-&gt;end += diff;</span>
+<span class="lineNum">     734 </span><span class="lineNoCov">          0 :             fl = test-&gt;next;</span>
+<span class="lineNum">     735 </span>            :         } else
+<span class="lineNum">     736 </span><span class="lineNoCov">          0 :             fl = NULL;</span>
+<span class="lineNum">     737 </span>            :     }
+<span class="lineNum">     738 </span><span class="lineNoCov">          0 :     while ( fl!=NULL ) {</span>
+<span class="lineNum">     739 </span><span class="lineNoCov">          0 :         fl-&gt;start += diff;</span>
+<span class="lineNum">     740 </span><span class="lineNoCov">          0 :         fl-&gt;end += diff;</span>
+<span class="lineNum">     741 </span><span class="lineNoCov">          0 :         fl = fl-&gt;next;</span>
+<span class="lineNum">     742 </span>            :     }
+<a name="743"><span class="lineNum">     743 </span>            : }</a>
+<span class="lineNum">     744 </span>            : 
+<span class="lineNum">     745 </span><span class="lineNoCov">          0 : int LayoutInfoReplace(LayoutInfo *li, const unichar_t *str,</span>
+<span class="lineNum">     746 </span>            :         int sel_start, int sel_end, int width) {
+<span class="lineNum">     747 </span><span class="lineNoCov">          0 :     unichar_t *old = li-&gt;oldtext;</span>
+<span class="lineNum">     748 </span><span class="lineNoCov">          0 :     int rpllen = u_strlen(str);</span>
+<span class="lineNum">     749 </span><span class="lineNoCov">          0 :     unichar_t *new = malloc((u_strlen(li-&gt;text)-(sel_end-sel_start) + rpllen+1)*sizeof(unichar_t));</span>
+<span class="lineNum">     750 </span>            : 
+<span class="lineNum">     751 </span><span class="lineNoCov">          0 :     li-&gt;oldtext = li-&gt;text;</span>
+<span class="lineNum">     752 </span><span class="lineNoCov">          0 :     LayoutInfoChangeFontList(li,rpllen,sel_start,sel_end);</span>
+<span class="lineNum">     753 </span>            : 
+<span class="lineNum">     754 </span><span class="lineNoCov">          0 :     u_strncpy(new,li-&gt;text,sel_start);</span>
+<span class="lineNum">     755 </span><span class="lineNoCov">          0 :     u_strcpy(new+sel_start,str);</span>
+<span class="lineNum">     756 </span><span class="lineNoCov">          0 :     u_strcpy(new+sel_start+rpllen,li-&gt;text+sel_end);</span>
+<span class="lineNum">     757 </span><span class="lineNoCov">          0 :     li-&gt;text = new;</span>
+<span class="lineNum">     758 </span><span class="lineNoCov">          0 :     free(old);</span>
+<span class="lineNum">     759 </span>            : 
+<span class="lineNum">     760 </span><span class="lineNoCov">          0 :     LI_fontlistmergecheck(li);</span>
+<span class="lineNum">     761 </span><span class="lineNoCov">          0 :     LayoutInfoRefigureLines(li,sel_start,sel_start+rpllen,width);</span>
+<span class="lineNum">     762 </span><span class="lineNoCov">          0 : return( rpllen );</span>
+<a name="763"><span class="lineNum">     763 </span>            : }</a>
+<span class="lineNum">     764 </span>            : 
+<span class="lineNum">     765 </span><span class="lineNoCov">          0 : void LayoutInfo_Destroy(LayoutInfo *li) {</span>
+<span class="lineNum">     766 </span>            :     struct sfmaps *m, *n;
+<span class="lineNum">     767 </span>            :     FontData *fd, *nfd;
+<span class="lineNum">     768 </span>            : 
+<span class="lineNum">     769 </span><span class="lineNoCov">          0 :     free(li-&gt;paras);</span>
+<span class="lineNum">     770 </span><span class="lineNoCov">          0 :     free(li-&gt;lines);</span>
+<span class="lineNum">     771 </span><span class="lineNoCov">          0 :     fontlistfree(li-&gt;fontlist);</span>
+<span class="lineNum">     772 </span><span class="lineNoCov">          0 :     fontlistfree(li-&gt;oldfontlist);</span>
+<span class="lineNum">     773 </span><span class="lineNoCov">          0 :     for ( m=li-&gt;sfmaps; m!=NULL; m=n ) {</span>
+<span class="lineNum">     774 </span><span class="lineNoCov">          0 :         n = m-&gt;next;</span>
+<span class="lineNum">     775 </span><span class="lineNoCov">          0 :         SplineCharFree(m-&gt;fake_notdef);</span>
+<span class="lineNum">     776 </span><span class="lineNoCov">          0 :         EncMapFree(m-&gt;map);</span>
+<span class="lineNum">     777 </span><span class="lineNoCov">          0 :         chunkfree(m,sizeof(struct sfmaps));</span>
+<span class="lineNum">     778 </span>            :     }
+<span class="lineNum">     779 </span><span class="lineNoCov">          0 :     for ( fd=li-&gt;generated ; fd!=NULL; fd = nfd ) {</span>
+<span class="lineNum">     780 </span><span class="lineNoCov">          0 :         nfd = fd-&gt;next;</span>
+<span class="lineNum">     781 </span><span class="lineNoCov">          0 :         if ( fd-&gt;depends_on )</span>
+<span class="lineNum">     782 </span><span class="lineNoCov">          0 :             fd-&gt;bdf-&gt;freetype_context = NULL;</span>
+<span class="lineNum">     783 </span><span class="lineNoCov">          0 :         if ( fd-&gt;fonttype!=sftf_bitmap )     /* If it's a bitmap font, we didn't create it (lives in sf) so we can't destroy it */</span>
+<span class="lineNum">     784 </span><span class="lineNoCov">          0 :             BDFFontFree(fd-&gt;bdf);</span>
+<span class="lineNum">     785 </span><span class="lineNoCov">          0 :         free(fd);</span>
+<span class="lineNum">     786 </span>            :     }
+<span class="lineNum">     787 </span><span class="lineNoCov">          0 :     free(li-&gt;oldtext);</span>
+<span class="lineNum">     788 </span><span class="lineNoCov">          0 :     free(li-&gt;text);</span>
+<a name="789"><span class="lineNum">     789 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     790 </span>            : 
+<span class="lineNum">     791 </span><span class="lineNoCov">          0 : void SFMapFill(struct sfmaps *sfmaps,SplineFont *sf) {</span>
+<span class="lineNum">     792 </span><span class="lineNoCov">          0 :     sfmaps-&gt;map = EncMapFromEncoding(sf,FindOrMakeEncoding(&quot;UnicodeFull&quot;));</span>
+<span class="lineNum">     793 </span><span class="lineNoCov">          0 :     sfmaps-&gt;notdef_gid = SFFindGID(sf,-1,&quot;.notdef&quot;);</span>
+<span class="lineNum">     794 </span><span class="lineNoCov">          0 :     if ( sfmaps-&gt;notdef_gid==-1 ) {</span>
+<span class="lineNum">     795 </span><span class="lineNoCov">          0 :         SplineChar *notdef = SFSplineCharCreate(sf);</span>
+<span class="lineNum">     796 </span><span class="lineNoCov">          0 :         sfmaps-&gt;fake_notdef = notdef;</span>
+<span class="lineNum">     797 </span><span class="lineNoCov">          0 :         notdef-&gt;name = copy(&quot;.notdef&quot;);</span>
+<span class="lineNum">     798 </span><span class="lineNoCov">          0 :         notdef-&gt;parent = sf;</span>
+<span class="lineNum">     799 </span><span class="lineNoCov">          0 :         notdef-&gt;width = (sf-&gt;ascent+sf-&gt;descent);</span>
+<span class="lineNum">     800 </span><span class="lineNoCov">          0 :         if ( sf-&gt;cidmaster==NULL )</span>
+<span class="lineNum">     801 </span><span class="lineNoCov">          0 :             notdef-&gt;width = 6*notdef-&gt;width/10;</span>
+<span class="lineNum">     802 </span><span class="lineNoCov">          0 :         notdef-&gt;searcherdummy = true;</span>
+<span class="lineNum">     803 </span><span class="lineNoCov">          0 :         notdef-&gt;orig_pos = -1;</span>
+<span class="lineNum">     804 </span>            :     }
+<a name="805"><span class="lineNum">     805 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     806 </span>            : 
+<span class="lineNum">     807 </span><span class="lineNoCov">          0 : struct sfmaps *SFMapOfSF(LayoutInfo *li,SplineFont *sf) {</span>
+<span class="lineNum">     808 </span>            :     struct sfmaps *sfmaps;
+<span class="lineNum">     809 </span>            : 
+<span class="lineNum">     810 </span><span class="lineNoCov">          0 :     for ( sfmaps=li-&gt;sfmaps; sfmaps!=NULL; sfmaps=sfmaps-&gt;next )</span>
+<span class="lineNum">     811 </span><span class="lineNoCov">          0 :         if ( sfmaps-&gt;sf==sf )</span>
+<span class="lineNum">     812 </span><span class="lineNoCov">          0 : return( sfmaps );</span>
+<span class="lineNum">     813 </span>            : 
+<span class="lineNum">     814 </span><span class="lineNoCov">          0 :     sfmaps = chunkalloc(sizeof(struct sfmaps));</span>
+<span class="lineNum">     815 </span><span class="lineNoCov">          0 :     sfmaps-&gt;sf = sf;</span>
+<span class="lineNum">     816 </span><span class="lineNoCov">          0 :     sfmaps-&gt;next = li-&gt;sfmaps;</span>
+<span class="lineNum">     817 </span><span class="lineNoCov">          0 :     li-&gt;sfmaps = sfmaps;</span>
+<span class="lineNum">     818 </span><span class="lineNoCov">          0 :     SFMapFill(sfmaps,sf);</span>
+<span class="lineNum">     819 </span><span class="lineNoCov">          0 : return( sfmaps );</span>
+<a name="820"><span class="lineNum">     820 </span>            : }</a>
+<span class="lineNum">     821 </span>            : 
+<span class="lineNum">     822 </span><span class="lineNoCov">          0 : FontData *LI_RegenFontData(LayoutInfo *li, FontData *ret) {</span>
+<span class="lineNum">     823 </span>            :     FontData *test;
+<span class="lineNum">     824 </span>            :     BDFFont *bdf, *ok, *old;
+<span class="lineNum">     825 </span>            :     void *ftc;
+<span class="lineNum">     826 </span>            :     int pixelsize;
+<span class="lineNum">     827 </span><span class="lineNoCov">          0 :     int freeold = ret-&gt;fonttype != sftf_bitmap, depends_on = ret-&gt;depends_on!=NULL;</span>
+<span class="lineNum">     828 </span>            :     extern Color default_background;
+<span class="lineNum">     829 </span>            : 
+<span class="lineNum">     830 </span><span class="lineNoCov">          0 :     pixelsize = rint((ret-&gt;pointsize * li-&gt;dpi)/72.0 );</span>
+<span class="lineNum">     831 </span><span class="lineNoCov">          0 :     old = ret-&gt;bdf;</span>
+<span class="lineNum">     832 </span><span class="lineNoCov">          0 :     ret-&gt;bdf = NULL;</span>
+<span class="lineNum">     833 </span>            : 
+<span class="lineNum">     834 </span><span class="lineNoCov">          0 :     if ( ret-&gt;fonttype==sftf_bitmap ) {</span>
+<span class="lineNum">     835 </span><span class="lineNoCov">          0 :         ok = NULL;</span>
+<span class="lineNum">     836 </span><span class="lineNoCov">          0 :         for ( bdf= ret-&gt;sf-&gt;bitmaps; bdf!=NULL; bdf=bdf-&gt;next ) {</span>
+<span class="lineNum">     837 </span><span class="lineNoCov">          0 :             if ( bdf-&gt;pixelsize==pixelsize ) {</span>
+<span class="lineNum">     838 </span><span class="lineNoCov">          0 :                 if (( !ret-&gt;antialias &amp;&amp; bdf-&gt;clut==NULL ) ||</span>
+<span class="lineNum">     839 </span><span class="lineNoCov">          0 :                         (ret-&gt;antialias &amp;&amp; bdf-&gt;clut!=NULL &amp;&amp; bdf-&gt;clut-&gt;clut_len==256) ) {</span>
+<span class="lineNum">     840 </span><span class="lineNoCov">          0 :                     ok = bdf;</span>
+<span class="lineNum">     841 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     842 </span>            :                 }
+<span class="lineNum">     843 </span><span class="lineNoCov">          0 :                 if ( ret-&gt;antialias &amp;&amp; bdf-&gt;clut!=NULL &amp;&amp;</span>
+<span class="lineNum">     844 </span><span class="lineNoCov">          0 :                         (ok==NULL || bdf-&gt;clut-&gt;clut_len&gt;ok-&gt;clut-&gt;clut_len))</span>
+<span class="lineNum">     845 </span><span class="lineNoCov">          0 :                     ok = bdf;</span>
+<span class="lineNum">     846 </span>            :             }
+<span class="lineNum">     847 </span>            :         }
+<span class="lineNum">     848 </span><span class="lineNoCov">          0 :         if ( ok==NULL )</span>
+<span class="lineNum">     849 </span><span class="lineNoCov">          0 :             ret-&gt;fonttype = sftf_pfaedit;</span>
+<span class="lineNum">     850 </span>            :         else
+<span class="lineNum">     851 </span><span class="lineNoCov">          0 :             ret-&gt;bdf = ok;</span>
+<span class="lineNum">     852 </span><span class="lineNoCov">          0 :     } else if ( !hasFreeType() &amp;&amp; ret-&gt;fonttype!=sftf_pfaedit )</span>
+<span class="lineNum">     853 </span><span class="lineNoCov">          0 :         ret-&gt;fonttype = sftf_pfaedit;</span>
+<span class="lineNum">     854 </span><span class="lineNoCov">          0 :     else if (( ret-&gt;sf-&gt;multilayer || ret-&gt;sf-&gt;strokedfont ) &amp;&amp; ret-&gt;fonttype!=sftf_nohints )</span>
+<span class="lineNum">     855 </span><span class="lineNoCov">          0 :         ret-&gt;fonttype = sftf_pfaedit;</span>
+<span class="lineNum">     856 </span>            : 
+<span class="lineNum">     857 </span><span class="lineNoCov">          0 :     if ( ret-&gt;bdf!=NULL )</span>
+<span class="lineNum">     858 </span>            :         /* Already done */;
+<span class="lineNum">     859 </span><span class="lineNoCov">          0 :     else if ( ret-&gt;fonttype==sftf_pfaedit )</span>
+<span class="lineNum">     860 </span><span class="lineNoCov">          0 :         ret-&gt;bdf = SplineFontPieceMeal(ret-&gt;sf,ret-&gt;layer,ret-&gt;pointsize,li-&gt;dpi,ret-&gt;antialias?pf_antialias:0,NULL);</span>
+<span class="lineNum">     861 </span><span class="lineNoCov">          0 :     else if ( ret-&gt;fonttype==sftf_nohints )</span>
+<span class="lineNum">     862 </span><span class="lineNoCov">          0 :         ret-&gt;bdf = SplineFontPieceMeal(ret-&gt;sf,ret-&gt;layer,ret-&gt;pointsize,li-&gt;dpi,</span>
+<span class="lineNum">     863 </span><span class="lineNoCov">          0 :                 (ret-&gt;antialias?pf_antialias:0)|pf_ft_nohints,NULL);</span>
+<span class="lineNum">     864 </span>            :     else {
+<span class="lineNum">     865 </span><span class="lineNoCov">          0 :         for ( test=li-&gt;generated; test!=NULL; test=test-&gt;next )</span>
+<span class="lineNum">     866 </span><span class="lineNoCov">          0 :             if ( test!=ret &amp;&amp; test-&gt;bdf!=NULL &amp;&amp; test-&gt;sf == ret-&gt;sf &amp;&amp;</span>
+<span class="lineNum">     867 </span><span class="lineNoCov">          0 :                     test-&gt;fonttype == ret-&gt;fonttype )</span>
+<span class="lineNum">     868 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     869 </span><span class="lineNoCov">          0 :         ret-&gt;depends_on = test;</span>
+<span class="lineNum">     870 </span><span class="lineNoCov">          0 :         ftc = NULL;</span>
+<span class="lineNum">     871 </span><span class="lineNoCov">          0 :         if ( test &amp;&amp; test-&gt;bdf ) {</span>
+<span class="lineNum">     872 </span><span class="lineNoCov">          0 :             ftc = test-&gt;bdf-&gt;freetype_context;</span>
+<span class="lineNum">     873 </span><span class="lineNoCov">          0 :             depends_on = true;</span>
+<span class="lineNum">     874 </span>            :         }
+<span class="lineNum">     875 </span><span class="lineNoCov">          0 :         if ( ftc==NULL ) {</span>
+<span class="lineNum">     876 </span><span class="lineNoCov">          0 :             int flags = 0;</span>
+<span class="lineNum">     877 </span><span class="lineNoCov">          0 :             int ff = ret-&gt;fonttype==sftf_pfb ? ff_pfb :</span>
+<span class="lineNum">     878 </span><span class="lineNoCov">          0 :                      ret-&gt;fonttype==sftf_ttf ? ff_ttf :</span>
+<span class="lineNum">     879 </span>            :                      ff_otf;
+<span class="lineNum">     880 </span><span class="lineNoCov">          0 :             ftc = _FreeTypeFontContext(ret-&gt;sf,NULL,NULL,ret-&gt;layer,ff,flags,NULL);</span>
+<span class="lineNum">     881 </span>            :         }
+<span class="lineNum">     882 </span><span class="lineNoCov">          0 :         if ( ftc==NULL ) {</span>
+<span class="lineNum">     883 </span><span class="lineNoCov">          0 :             if ( old!=NULL )</span>
+<span class="lineNum">     884 </span><span class="lineNoCov">          0 :                 ret-&gt;bdf = old;</span>
+<span class="lineNum">     885 </span>            :             else {
+<span class="lineNum">     886 </span><span class="lineNoCov">          0 :                 free(ret);</span>
+<span class="lineNum">     887 </span><span class="lineNoCov">          0 :                 ret = NULL;</span>
+<span class="lineNum">     888 </span>            :             }
+<span class="lineNum">     889 </span><span class="lineNoCov">          0 : return( ret );</span>
+<span class="lineNum">     890 </span>            :         }
+<span class="lineNum">     891 </span><span class="lineNoCov">          0 :         ret-&gt;bdf = SplineFontPieceMeal(ret-&gt;sf,ret-&gt;layer,ret-&gt;pointsize,li-&gt;dpi,ret-&gt;antialias,ftc);</span>
+<span class="lineNum">     892 </span>            :     }
+<span class="lineNum">     893 </span><span class="lineNoCov">          0 :     if ( freeold ) {</span>
+<span class="lineNum">     894 </span><span class="lineNoCov">          0 :         if ( depends_on &amp;&amp; old!=NULL )</span>
+<span class="lineNum">     895 </span><span class="lineNoCov">          0 :             old-&gt;freetype_context = NULL;</span>
+<span class="lineNum">     896 </span><span class="lineNoCov">          0 :         BDFFontFree(old);</span>
+<span class="lineNum">     897 </span>            :     }
+<span class="lineNum">     898 </span>            : 
+<span class="lineNum">     899 </span><span class="lineNoCov">          0 :     if ( ret-&gt;bdf-&gt;clut ) {</span>
+<span class="lineNum">     900 </span><span class="lineNoCov">          0 :         ret-&gt;gi.u.image = &amp;ret-&gt;base;</span>
+<span class="lineNum">     901 </span><span class="lineNoCov">          0 :         ret-&gt;base.image_type = it_index;</span>
+<span class="lineNum">     902 </span><span class="lineNoCov">          0 :         ret-&gt;base.clut = ret-&gt;bdf-&gt;clut;</span>
+<span class="lineNum">     903 </span><span class="lineNoCov">          0 :         ret-&gt;base.trans = 0;</span>
+<span class="lineNum">     904 </span>            :     } else {
+<span class="lineNum">     905 </span><span class="lineNoCov">          0 :         memset(&amp;ret-&gt;clut,'\0',sizeof(ret-&gt;clut));</span>
+<span class="lineNum">     906 </span><span class="lineNoCov">          0 :         ret-&gt;gi.u.image = &amp;ret-&gt;base;</span>
+<span class="lineNum">     907 </span><span class="lineNoCov">          0 :         ret-&gt;base.image_type = it_mono;</span>
+<span class="lineNum">     908 </span><span class="lineNoCov">          0 :         ret-&gt;base.clut = &amp;ret-&gt;clut;</span>
+<span class="lineNum">     909 </span><span class="lineNoCov">          0 :         ret-&gt;clut.clut_len = 2;</span>
+<span class="lineNum">     910 </span><span class="lineNoCov">          0 :         ret-&gt;clut.clut[0] = default_background;</span>
+<span class="lineNum">     911 </span><span class="lineNoCov">          0 :         ret-&gt;base.trans = 0;</span>
+<span class="lineNum">     912 </span>            :     }
+<span class="lineNum">     913 </span><span class="lineNoCov">          0 : return( ret );</span>
+<a name="914"><span class="lineNum">     914 </span>            : }</a>
+<span class="lineNum">     915 </span>            : 
+<span class="lineNum">     916 </span><span class="lineNoCov">          0 : FontData *LI_FindFontData(LayoutInfo *li, SplineFont *sf,</span>
+<span class="lineNum">     917 </span>            :         int layer, enum sftf_fonttype fonttype, int size, int antialias) {
+<span class="lineNum">     918 </span>            :     FontData *test, *ret;
+<span class="lineNum">     919 </span>            : 
+<span class="lineNum">     920 </span><span class="lineNoCov">          0 :     for ( test=li-&gt;generated; test!=NULL; test=test-&gt;next )</span>
+<span class="lineNum">     921 </span><span class="lineNoCov">          0 :         if ( test-&gt;sf == sf &amp;&amp; test-&gt;fonttype == fonttype &amp;&amp;</span>
+<span class="lineNum">     922 </span><span class="lineNoCov">          0 :                 test-&gt;pointsize==size &amp;&amp; test-&gt;antialias==antialias &amp;&amp;</span>
+<span class="lineNum">     923 </span><span class="lineNoCov">          0 :                 test-&gt;layer==layer )</span>
+<span class="lineNum">     924 </span><span class="lineNoCov">          0 : return( test );</span>
+<span class="lineNum">     925 </span>            : 
+<span class="lineNum">     926 </span><span class="lineNoCov">          0 :     ret = calloc(1,sizeof(FontData));</span>
+<span class="lineNum">     927 </span><span class="lineNoCov">          0 :     ret-&gt;sf = sf;</span>
+<span class="lineNum">     928 </span><span class="lineNoCov">          0 :     ret-&gt;fonttype = fonttype;</span>
+<span class="lineNum">     929 </span><span class="lineNoCov">          0 :     ret-&gt;pointsize = size;</span>
+<span class="lineNum">     930 </span><span class="lineNoCov">          0 :     ret-&gt;antialias = antialias;</span>
+<span class="lineNum">     931 </span><span class="lineNoCov">          0 :     ret-&gt;layer = layer;</span>
+<span class="lineNum">     932 </span><span class="lineNoCov">          0 :     ret = LI_RegenFontData(li,ret);</span>
+<span class="lineNum">     933 </span><span class="lineNoCov">          0 :     if ( ret==NULL )</span>
+<span class="lineNum">     934 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     935 </span>            : 
+<span class="lineNum">     936 </span><span class="lineNoCov">          0 :     ret-&gt;sfmap = SFMapOfSF(li,sf);</span>
+<span class="lineNum">     937 </span><span class="lineNoCov">          0 :     ret-&gt;next = li-&gt;generated;</span>
+<span class="lineNum">     938 </span><span class="lineNoCov">          0 :     li-&gt;generated = ret;</span>
+<span class="lineNum">     939 </span><span class="lineNoCov">          0 : return( ret );</span>
+<a name="940"><span class="lineNum">     940 </span>            : }</a>
+<span class="lineNum">     941 </span>            : 
+<span class="lineNum">     942 </span><span class="lineNoCov">          0 : static FontData *FontDataCopyNoBDF(LayoutInfo *print_li, FontData *source) {</span>
+<span class="lineNum">     943 </span><span class="lineNoCov">          0 :     FontData *head=NULL, *last=NULL, *cur;</span>
+<span class="lineNum">     944 </span>            : 
+<span class="lineNum">     945 </span><span class="lineNoCov">          0 :     while ( source ) {</span>
+<span class="lineNum">     946 </span><span class="lineNoCov">          0 :         cur = calloc(1,sizeof(FontData));</span>
+<span class="lineNum">     947 </span><span class="lineNoCov">          0 :         cur-&gt;sf = source-&gt;sf;</span>
+<span class="lineNum">     948 </span><span class="lineNoCov">          0 :         cur-&gt;fonttype = source-&gt;fonttype;</span>
+<span class="lineNum">     949 </span><span class="lineNoCov">          0 :         cur-&gt;pointsize = source-&gt;pointsize;</span>
+<span class="lineNum">     950 </span><span class="lineNoCov">          0 :         cur-&gt;layer = source-&gt;layer;</span>
+<span class="lineNum">     951 </span>            : 
+<span class="lineNum">     952 </span><span class="lineNoCov">          0 :         cur-&gt;sfmap = SFMapOfSF(print_li,source-&gt;sf);</span>
+<span class="lineNum">     953 </span><span class="lineNoCov">          0 :         if ( head==NULL )</span>
+<span class="lineNum">     954 </span><span class="lineNoCov">          0 :             head = cur;</span>
+<span class="lineNum">     955 </span>            :         else
+<span class="lineNum">     956 </span><span class="lineNoCov">          0 :             last-&gt;next = cur;</span>
+<span class="lineNum">     957 </span><span class="lineNoCov">          0 :         last = cur;</span>
+<span class="lineNum">     958 </span><span class="lineNoCov">          0 :         source = source-&gt;next;</span>
+<span class="lineNum">     959 </span>            :     }
+<span class="lineNum">     960 </span><span class="lineNoCov">          0 : return( head );</span>
+<a name="961"><span class="lineNum">     961 </span>            : }</a>
+<span class="lineNum">     962 </span>            : 
+<span class="lineNum">     963 </span><span class="lineNoCov">          0 : void LayoutInfoInitLangSys(LayoutInfo *li, int end, uint32 script, uint32 lang) {</span>
+<span class="lineNum">     964 </span>            :     struct fontlist *prev, *next;
+<span class="lineNum">     965 </span>            : 
+<span class="lineNum">     966 </span><span class="lineNoCov">          0 :     if ( (li-&gt;text!=NULL &amp;&amp; li-&gt;text[0]!='\0') || li-&gt;fontlist==NULL ) {</span>
+<span class="lineNum">     967 </span><span class="lineNoCov">          0 :         IError( &quot;SFTFInitLangSys can only be called during initialization&quot; );</span>
+<span class="lineNum">     968 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     969 </span>            :     }
+<span class="lineNum">     970 </span><span class="lineNoCov">          0 :     if ( li-&gt;fontlist!=NULL &amp;&amp; li-&gt;fontlist-&gt;script==0 ) {</span>
+<span class="lineNum">     971 </span><span class="lineNoCov">          0 :         next = li-&gt;fontlist;</span>
+<span class="lineNum">     972 </span>            :     } else {
+<span class="lineNum">     973 </span><span class="lineNoCov">          0 :         for ( prev = li-&gt;fontlist; prev-&gt;next!=NULL; prev=prev-&gt;next );</span>
+<span class="lineNum">     974 </span><span class="lineNoCov">          0 :         next = chunkalloc(sizeof(struct fontlist));</span>
+<span class="lineNum">     975 </span><span class="lineNoCov">          0 :         *next = *prev;</span>
+<span class="lineNum">     976 </span><span class="lineNoCov">          0 :         next-&gt;scmax = 0; next-&gt;sctext = NULL; next-&gt;ottext = NULL;</span>
+<span class="lineNum">     977 </span><span class="lineNoCov">          0 :         next-&gt;feats = LI_TagsCopy(prev-&gt;feats);</span>
+<span class="lineNum">     978 </span><span class="lineNoCov">          0 :         prev-&gt;next = next;</span>
+<span class="lineNum">     979 </span><span class="lineNoCov">          0 :         next-&gt;start = prev-&gt;end;</span>
+<span class="lineNum">     980 </span>            :     }
+<span class="lineNum">     981 </span><span class="lineNoCov">          0 :     next-&gt;script = script;</span>
+<span class="lineNum">     982 </span><span class="lineNoCov">          0 :     next-&gt;lang = lang;</span>
+<span class="lineNum">     983 </span><span class="lineNoCov">          0 :     next-&gt;end = end;</span>
+<span class="lineNum">     984 </span><span class="lineNoCov">          0 :     next-&gt;feats = LI_TagsCopy(StdFeaturesOfScript(script));</span>
+<a name="985"><span class="lineNum">     985 </span>            : }</a>
+<span class="lineNum">     986 </span>            : 
+<span class="lineNum">     987 </span><span class="lineNoCov">          0 : LayoutInfo *LIConvertToPrint(LayoutInfo *li, int width, int height, int dpi) {</span>
+<span class="lineNum">     988 </span><span class="lineNoCov">          0 :     LayoutInfo *print = calloc(1,sizeof(LayoutInfo));</span>
+<span class="lineNum">     989 </span>            :     struct fontlist *fl;
+<span class="lineNum">     990 </span>            :     struct fontdata *fd1, *fd2;
+<span class="lineNum">     991 </span>            : 
+<span class="lineNum">     992 </span><span class="lineNoCov">          0 :     print-&gt;wrap = true;</span>
+<span class="lineNum">     993 </span><span class="lineNoCov">          0 :     print-&gt;dpi = dpi;</span>
+<span class="lineNum">     994 </span>            : 
+<span class="lineNum">     995 </span><span class="lineNoCov">          0 :     print-&gt;text = u_copy(li-&gt;text);</span>
+<span class="lineNum">     996 </span><span class="lineNoCov">          0 :     print-&gt;generated = FontDataCopyNoBDF(print,li-&gt;generated);</span>
+<span class="lineNum">     997 </span><span class="lineNoCov">          0 :     print-&gt;fontlist = LI_fontlistcopy(li-&gt;fontlist);</span>
+<span class="lineNum">     998 </span><span class="lineNoCov">          0 :     for ( fl = print-&gt;fontlist; fl!=NULL; fl=fl-&gt;next ) {</span>
+<span class="lineNum">     999 </span><span class="lineNoCov">          0 :         for ( fd1=li-&gt;generated, fd2=print-&gt;generated; fd1!=NULL &amp;&amp; fd1!=fl-&gt;fd;</span>
+<span class="lineNum">    1000 </span><span class="lineNoCov">          0 :                 fd1=fd1-&gt;next, fd2=fd2-&gt;next );</span>
+<span class="lineNum">    1001 </span><span class="lineNoCov">          0 :         fl-&gt;fd = fd2;</span>
+<span class="lineNum">    1002 </span>            :     }
+<span class="lineNum">    1003 </span><span class="lineNoCov">          0 :     print-&gt;ps = -1;</span>
+<span class="lineNum">    1004 </span><span class="lineNoCov">          0 :     LayoutInfoRefigureLines(print,0,-1,width);</span>
+<span class="lineNum">    1005 </span><span class="lineNoCov">          0 : return( print );</span>
+<a name="1006"><span class="lineNum">    1006 </span>            : }</a>
+<span class="lineNum">    1007 </span>            : 
+<span class="lineNum">    1008 </span><span class="lineNoCov">          0 : SplineSet *LIConvertToSplines(LayoutInfo *li,double dpi,int order2) {</span>
+<span class="lineNum">    1009 </span><span class="lineNoCov">          0 :     SplineSet *ss, *base, *head=NULL, *last=NULL;</span>
+<span class="lineNum">    1010 </span><span class="lineNoCov">          0 :     double y = 0, x;</span>
+<span class="lineNum">    1011 </span>            :     int l, i;
+<span class="lineNum">    1012 </span>            :     real transform[6];
+<span class="lineNum">    1013 </span>            : 
+<span class="lineNum">    1014 </span><span class="lineNoCov">          0 :     transform[1] = transform[2] = 0;</span>
+<span class="lineNum">    1015 </span>            : 
+<span class="lineNum">    1016 </span><span class="lineNoCov">          0 :     for ( l=0; l&lt;li-&gt;lcnt; ++l ) {</span>
+<span class="lineNum">    1017 </span><span class="lineNoCov">          0 :         struct opentype_str **line = li-&gt;lines[l];</span>
+<span class="lineNum">    1018 </span><span class="lineNoCov">          0 :         y = li-&gt;lineheights[l].y;</span>
+<span class="lineNum">    1019 </span><span class="lineNoCov">          0 :         x = 0;</span>
+<span class="lineNum">    1020 </span>            : 
+<span class="lineNum">    1021 </span><span class="lineNoCov">          0 :         for ( i=0; line[i]!=NULL; ++i ) {</span>
+<span class="lineNum">    1022 </span><span class="lineNoCov">          0 :             SplineChar *sc = line[i]-&gt;sc;</span>
+<span class="lineNum">    1023 </span><span class="lineNoCov">          0 :             FontData *fd = ((struct fontlist *) (line[i]-&gt;fl))-&gt;fd;</span>
+<span class="lineNum">    1024 </span><span class="lineNoCov">          0 :             base = LayerAllSplines(&amp;sc-&gt;layers[ly_fore]);</span>
+<span class="lineNum">    1025 </span><span class="lineNoCov">          0 :             ss = SplinePointListCopy(base);</span>
+<span class="lineNum">    1026 </span><span class="lineNoCov">          0 :             LayerUnAllSplines(&amp;sc-&gt;layers[ly_fore]);</span>
+<span class="lineNum">    1027 </span><span class="lineNoCov">          0 :             if ( sc-&gt;layers[ly_fore].order2!=order2 )</span>
+<span class="lineNum">    1028 </span><span class="lineNoCov">          0 :                 ss = SplineSetsConvertOrder(ss,order2);</span>
+<span class="lineNum">    1029 </span>            : 
+<span class="lineNum">    1030 </span><span class="lineNoCov">          0 :             transform[0] = transform[3] = fd-&gt;pointsize*dpi/72.0/(fd-&gt;sf-&gt;ascent+fd-&gt;sf-&gt;descent);</span>
+<span class="lineNum">    1031 </span><span class="lineNoCov">          0 :             transform[4] =  x + line[i]-&gt;vr.xoff;</span>
+<span class="lineNum">    1032 </span><span class="lineNoCov">          0 :             transform[5] = -y + (line[i]-&gt;vr.yoff + line[i]-&gt;bsln_off);</span>
+<span class="lineNum">    1033 </span><span class="lineNoCov">          0 :             ss = SplinePointListTransform(ss,transform,tpt_AllPoints);</span>
+<span class="lineNum">    1034 </span><span class="lineNoCov">          0 :             if ( head==NULL )</span>
+<span class="lineNum">    1035 </span><span class="lineNoCov">          0 :                 head = ss;</span>
+<span class="lineNum">    1036 </span>            :             else
+<span class="lineNum">    1037 </span><span class="lineNoCov">          0 :                 last-&gt;next = ss;</span>
+<span class="lineNum">    1038 </span><span class="lineNoCov">          0 :             if ( ss!=NULL ) {</span>
+<span class="lineNum">    1039 </span><span class="lineNoCov">          0 :                 for ( last=ss ; last-&gt;next!=NULL; last=last-&gt;next );</span>
+<span class="lineNum">    1040 </span><span class="lineNoCov">          0 :                 last-&gt;ticked = true;         /* Mark end of glyph */</span>
+<span class="lineNum">    1041 </span>            :             }
+<span class="lineNum">    1042 </span><span class="lineNoCov">          0 :             x += line[i]-&gt;advance_width + line[i]-&gt;vr.h_adv_off;</span>
+<span class="lineNum">    1043 </span>            :         }
+<span class="lineNum">    1044 </span>            :     }
+<span class="lineNum">    1045 </span><span class="lineNoCov">          0 : return( head );</span>
+<span class="lineNum">    1046 </span>            : }
+<a name="1047"><span class="lineNum">    1047 </span>            : </a>
+<span class="lineNum">    1048 </span>            : #include &quot;scripting.h&quot;
+<span class="lineNum">    1049 </span><span class="lineNoCov">          0 : static Array *SFDefaultScriptsLines(Array *arr,SplineFont *sf) {</span>
+<span class="lineNum">    1050 </span><span class="lineNoCov">          0 :     int pixelsize=24;</span>
+<span class="lineNum">    1051 </span>            :     uint32 scripts[200], script;
+<span class="lineNum">    1052 </span>            :     char *lines[209];
+<span class="lineNum">    1053 </span>            :     int i, scnt, lcnt, gid;
+<span class="lineNum">    1054 </span>            :     /* If the font has more than 200 scripts we can't give a good sample image */
+<span class="lineNum">    1055 </span>            :     SplineChar *sc;
+<span class="lineNum">    1056 </span>            :     char buffer[51*4+1], *pt;
+<span class="lineNum">    1057 </span>            :     Array *ret;
+<span class="lineNum">    1058 </span>            :     char *str;
+<span class="lineNum">    1059 </span><span class="lineNoCov">          0 :     int start, end, anyscript = 0, anyhere;</span>
+<span class="lineNum">    1060 </span>            : 
+<span class="lineNum">    1061 </span><span class="lineNoCov">          0 :     if ( arr!=NULL &amp;&amp; arr-&gt;argc==1 )</span>
+<span class="lineNum">    1062 </span><span class="lineNoCov">          0 :         pixelsize = arr-&gt;vals[0].u.ival;</span>
+<span class="lineNum">    1063 </span>            : 
+<span class="lineNum">    1064 </span><span class="lineNoCov">          0 :     scnt = 0;</span>
+<span class="lineNum">    1065 </span><span class="lineNoCov">          0 :     lines[0] = copy(sf-&gt;fullname!=NULL ? sf-&gt;fullname : sf-&gt;fontname);</span>
+<span class="lineNum">    1066 </span><span class="lineNoCov">          0 :     lcnt = 1;</span>
+<span class="lineNum">    1067 </span><span class="lineNoCov">          0 :     for ( gid=0; gid&lt;sf-&gt;glyphcnt; ++gid ) if ( (sc=sf-&gt;glyphs[gid])!=NULL ) {</span>
+<span class="lineNum">    1068 </span><span class="lineNoCov">          0 :         int uni = sc-&gt;unicodeenc;</span>
+<span class="lineNum">    1069 </span>            : 
+<span class="lineNum">    1070 </span><span class="lineNoCov">          0 :         if ( uni==-1 )</span>
+<span class="lineNum">    1071 </span><span class="lineNoCov">          0 :     continue;</span>
+<span class="lineNum">    1072 </span><span class="lineNoCov">          0 :         script = SCScriptFromUnicode(sc);</span>
+<span class="lineNum">    1073 </span><span class="lineNoCov">          0 :         for ( i=scnt-1; i&gt;=0; --i )</span>
+<span class="lineNum">    1074 </span><span class="lineNoCov">          0 :             if ( scripts[i]==script )</span>
+<span class="lineNum">    1075 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">    1076 </span><span class="lineNoCov">          0 :         if ( i&gt;=0 )</span>
+<span class="lineNum">    1077 </span><span class="lineNoCov">          0 :     continue;</span>
+<span class="lineNum">    1078 </span><span class="lineNoCov">          0 :         switch ( script ) {</span>
+<span class="lineNum">    1079 </span>            :           /* Some standard cases */
+<span class="lineNum">    1080 </span>            :           case DEFAULT_SCRIPT:
+<span class="lineNum">    1081 </span><span class="lineNoCov">          0 :             str = &quot;0123456789!?(){}[]&amp;&quot;;</span>
+<span class="lineNum">    1082 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">    1083 </span>            :           case CHR('l','a','t','n'):
+<span class="lineNum">    1084 </span><span class="lineNoCov">          0 :             str = &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz&quot;;</span>
+<span class="lineNum">    1085 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">    1086 </span>            :           case CHR('g','r','e','k'):
+<span class="lineNum">    1087 </span><span class="lineNoCov">          0 :             str = &quot;ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ αβγδεζηθικλμνξοπρστυφχψω&quot;;</span>
+<span class="lineNum">    1088 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">    1089 </span>            :           case CHR('c','y','r','l'):
+<span class="lineNum">    1090 </span><span class="lineNoCov">          0 :             str = &quot;АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ абвгдежзийклмнопрстуфхцчшщъыьэюя&quot;;</span>
+<span class="lineNum">    1091 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">    1092 </span>            :           case CHR('h','e','b','r'):
+<span class="lineNum">    1093 </span><span class="lineNoCov">          0 :             str = &quot;אבגדהוזחטיךכלםמןנסעףפץצקרשת&quot;;</span>
+<span class="lineNum">    1094 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">    1095 </span>            :           case CHR('a','r','a','b'):  /* Contains ZWNJ between glyphs */
+<span class="lineNum">    1096 </span><span class="lineNoCov">          0 :             str = &quot;‌س‌ز‌ر‌ذ‌ت‌ء‌ا‌ب‌ث‌ج‌ح‌خ‌د‌ش‌ص‌ض‌ط‌ظ‌ع‌غ‌ف‌ق‌ك‌ل‌م‌ن‌ه‌و‌ي&quot;;</span>
+<span class="lineNum">    1097 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">    1098 </span>            :           case CHR('d','e','v','a'):
+<span class="lineNum">    1099 </span><span class="lineNoCov">          0 :             str = &quot;अ‌आ‌इ‌ई‌उ‌ऊ‌ऋ‌ऌ‌ऍ‌ऎ‌ए‌ऐ‌ऑ‌ऒ‌ओ‌औ‌क‌ख‌ग‌घ‌ङ‌च‌छ‌ज‌झ‌ञ‌ट‌ठ‌ड‌ढ‌ण‌त‌थ‌द‌ध‌न‌ऩ‌प‌फ‌ब‌म‌य‌ऱ‌ल‌ळ‌ऴ‌व‌श‌ष‌स‌ह‌र‌भ&quot;;</span>
+<span class="lineNum">    1100 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">    1101 </span>            :           case CHR('h','a','n','i'):
+<span class="lineNum">    1102 </span>            :             /* Chinese Tranditional */
+<span class="lineNum">    1103 </span><span class="lineNoCov">          0 :             lines[lcnt++] = copy(&quot;道可道非常道，名可名非常名。&quot;);</span>
+<span class="lineNum">    1104 </span>            :             /* Japanese */
+<span class="lineNum">    1105 </span><span class="lineNoCov">          0 :         str = &quot;吾輩は猫である（夏目漱石）：吾輩は猫である&quot;;</span>
+<span class="lineNum">    1106 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">    1107 </span>            :           case CHR('k','a','n','a'):
+<span class="lineNum">    1108 </span>            :               /* Hiragana */
+<span class="lineNum">    1109 </span><span class="lineNoCov">          0 :             lines[lcnt++] = copy(&quot;あいうえおかがきぎくぐけこさざしじすせそただちぢつてとなにぬねのはばぱひふへほまみむ&quot;);</span>
+<span class="lineNum">    1110 </span>            :               /* Katakana */
+<span class="lineNum">    1111 </span><span class="lineNoCov">          0 :             str = &quot;アイウエオカガキギクケコサザシジスセソタダチヂツテトナニヌネノハバパヒフヘホマミムメモ&quot;;</span>
+<span class="lineNum">    1112 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">    1113 </span>            :           case CHR('h','a','n','g'):
+<span class="lineNum">    1114 </span><span class="lineNoCov">          0 :             str = &quot;어버이 살아신 제 섬길 일란 다 하여라&quot;;</span>
+<span class="lineNum">    1115 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">    1116 </span>            :           default:
+<span class="lineNum">    1117 </span><span class="lineNoCov">          0 :             ScriptMainRange(script,&amp;start,&amp;end);</span>
+<span class="lineNum">    1118 </span><span class="lineNoCov">          0 :             if ( end-start&gt;50 ) end = start+50;</span>
+<span class="lineNum">    1119 </span><span class="lineNoCov">          0 :             pt = buffer;</span>
+<span class="lineNum">    1120 </span><span class="lineNoCov">          0 :             for ( i=start; i&lt;=end; ++i )</span>
+<span class="lineNum">    1121 </span><span class="lineNoCov">          0 :                 pt = utf8_idpb(pt,i,0);</span>
+<span class="lineNum">    1122 </span><span class="lineNoCov">          0 :             *pt = '\0';</span>
+<span class="lineNum">    1123 </span><span class="lineNoCov">          0 :             str = buffer;</span>
+<span class="lineNum">    1124 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">    1125 </span>            :           }
+<span class="lineNum">    1126 </span><span class="lineNoCov">          0 :           anyhere = false;</span>
+<span class="lineNum">    1127 </span><span class="lineNoCov">          0 :           for ( pt=str; *pt; ) {</span>
+<span class="lineNum">    1128 </span><span class="lineNoCov">          0 :               int ch = utf8_ildb((const char **) &amp;pt);</span>
+<span class="lineNum">    1129 </span><span class="lineNoCov">          0 :               if ( ch==' ' )</span>
+<span class="lineNum">    1130 </span><span class="lineNoCov">          0 :           continue;</span>
+<span class="lineNum">    1131 </span><span class="lineNoCov">          0 :               if ( SFGetChar(sf,ch,NULL)!=NULL ) {</span>
+<span class="lineNum">    1132 </span><span class="lineNoCov">          0 :                   anyhere = true;</span>
+<span class="lineNum">    1133 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">    1134 </span>            :               }
+<span class="lineNum">    1135 </span>            :           }
+<span class="lineNum">    1136 </span><span class="lineNoCov">          0 :           if ( anyhere ) {</span>
+<span class="lineNum">    1137 </span><span class="lineNoCov">          0 :               lines[lcnt++] = copy(str);</span>
+<span class="lineNum">    1138 </span><span class="lineNoCov">          0 :               scripts[scnt++] = script;</span>
+<span class="lineNum">    1139 </span><span class="lineNoCov">          0 :               anyscript = true;</span>
+<span class="lineNum">    1140 </span>            :           }
+<span class="lineNum">    1141 </span><span class="lineNoCov">          0 :           if ( scnt==200 )</span>
+<span class="lineNum">    1142 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">    1143 </span>            :       }
+<span class="lineNum">    1144 </span>            : 
+<span class="lineNum">    1145 </span><span class="lineNoCov">          0 :       if ( !anyscript ) {</span>
+<span class="lineNum">    1146 </span>            :           /* For example, Apostolos's Phaistos Disk font. There is no OT script*/
+<span class="lineNum">    1147 </span>            :           /*  code assigned for those unicode points */
+<span class="lineNum">    1148 </span><span class="lineNoCov">          0 :           pt = buffer;</span>
+<span class="lineNum">    1149 </span><span class="lineNoCov">          0 :           for ( gid=i=0; gid&lt;sf-&gt;glyphcnt &amp;&amp; pt&lt;buffer+sizeof(buffer)-4 &amp;&amp; i&lt;50; ++gid ) {</span>
+<span class="lineNum">    1150 </span><span class="lineNoCov">          0 :               if ( (sc=sf-&gt;glyphs[gid])!=NULL &amp;&amp; sc-&gt;unicodeenc!=-1 ) {</span>
+<span class="lineNum">    1151 </span><span class="lineNoCov">          0 :                   pt = utf8_idpb(pt,sc-&gt;unicodeenc,0);</span>
+<span class="lineNum">    1152 </span><span class="lineNoCov">          0 :                   ++i;</span>
+<span class="lineNum">    1153 </span>            :               }
+<span class="lineNum">    1154 </span>            :           }
+<span class="lineNum">    1155 </span><span class="lineNoCov">          0 :           *pt = '\0';</span>
+<span class="lineNum">    1156 </span><span class="lineNoCov">          0 :           if ( i&gt;0 ) {</span>
+<span class="lineNum">    1157 </span><span class="lineNoCov">          0 :               lines[lcnt++] = copy(buffer);</span>
+<span class="lineNum">    1158 </span><span class="lineNoCov">          0 :               scripts[scnt++] = DEFAULT_SCRIPT;</span>
+<span class="lineNum">    1159 </span>            :           }
+<span class="lineNum">    1160 </span>            :       }
+<span class="lineNum">    1161 </span>            : 
+<span class="lineNum">    1162 </span><span class="lineNoCov">          0 :       ret = calloc(1,sizeof(Array));</span>
+<span class="lineNum">    1163 </span><span class="lineNoCov">          0 :       ret-&gt;argc = 2*lcnt;</span>
+<span class="lineNum">    1164 </span><span class="lineNoCov">          0 :       ret-&gt;vals = calloc(2*lcnt,sizeof(Val));</span>
+<span class="lineNum">    1165 </span><span class="lineNoCov">          0 :       for ( i=0; i&lt;lcnt; ++i ) {</span>
+<span class="lineNum">    1166 </span><span class="lineNoCov">          0 :           ret-&gt;vals[2*i+0].type = v_int;</span>
+<span class="lineNum">    1167 </span><span class="lineNoCov">          0 :           ret-&gt;vals[2*i+0].u.ival = pixelsize;</span>
+<span class="lineNum">    1168 </span><span class="lineNoCov">          0 :           ret-&gt;vals[2*i+1].type = v_str;</span>
+<span class="lineNum">    1169 </span><span class="lineNoCov">          0 :           ret-&gt;vals[2*i+1].u.sval = lines[i];</span>
+<span class="lineNum">    1170 </span>            :       }
+<span class="lineNum">    1171 </span><span class="lineNoCov">          0 :       ret-&gt;vals[0].u.ival = 3*pixelsize/2;   /* Use as a title, make bigger */</span>
+<span class="lineNum">    1172 </span><span class="lineNoCov">          0 : return( ret );</span>
+<a name="1173"><span class="lineNum">    1173 </span>            : }</a>
+<span class="lineNum">    1174 </span>            : 
+<span class="lineNum">    1175 </span><span class="lineNoCov">          0 : void FontImage(SplineFont *sf,char *filename,Array *arr,int width,int height) {</span>
+<span class="lineNum">    1176 </span><span class="lineNoCov">          0 :     LayoutInfo *li = calloc(1,sizeof(LayoutInfo));</span>
+<span class="lineNum">    1177 </span>            :     int cnt, len, i,j, ret, p, x;
+<span class="lineNum">    1178 </span>            :     struct fontlist *last;
+<span class="lineNum">    1179 </span><span class="lineNoCov">          0 :     enum sftf_fonttype type = sf-&gt;layers[ly_fore].order2 ? sftf_ttf : sftf_otf;</span>
+<span class="lineNum">    1180 </span>            :     GImage *image;
+<span class="lineNum">    1181 </span>            :     struct _GImage *base;
+<span class="lineNum">    1182 </span>            :     unichar_t *upt;
+<span class="lineNum">    1183 </span>            :     uint32 script;
+<span class="lineNum">    1184 </span>            :     struct opentype_str **line;
+<span class="lineNum">    1185 </span><span class="lineNoCov">          0 :     int ybase=0;</span>
+<span class="lineNum">    1186 </span><span class="lineNoCov">          0 :     Array *freeme=NULL;</span>
+<span class="lineNum">    1187 </span>            : 
+<span class="lineNum">    1188 </span><span class="lineNoCov">          0 :     if ( !hasFreeType())</span>
+<span class="lineNum">    1189 </span><span class="lineNoCov">          0 :         type = sftf_pfaedit;</span>
+<span class="lineNum">    1190 </span><span class="lineNoCov">          0 :     if ( sf-&gt;onlybitmaps &amp;&amp; sf-&gt;bitmaps!=NULL )</span>
+<span class="lineNum">    1191 </span><span class="lineNoCov">          0 :         type = sftf_bitmap;</span>
+<span class="lineNum">    1192 </span>            : 
+<span class="lineNum">    1193 </span><span class="lineNoCov">          0 :     li-&gt;wrap = true;</span>
+<span class="lineNum">    1194 </span><span class="lineNoCov">          0 :     li-&gt;dpi = 72;</span>
+<span class="lineNum">    1195 </span><span class="lineNoCov">          0 :     li-&gt;ps = -1;</span>
+<span class="lineNum">    1196 </span><span class="lineNoCov">          0 :     SFMapOfSF(li,sf);</span>
+<span class="lineNum">    1197 </span>            : 
+<span class="lineNum">    1198 </span><span class="lineNoCov">          0 :     if ( arr==NULL || arr-&gt;argc&lt;2 )</span>
+<span class="lineNum">    1199 </span><span class="lineNoCov">          0 :         arr = freeme = SFDefaultScriptsLines(arr,sf);</span>
+<span class="lineNum">    1200 </span>            : 
+<span class="lineNum">    1201 </span><span class="lineNoCov">          0 :     cnt = arr-&gt;argc/2;</span>
+<span class="lineNum">    1202 </span><span class="lineNoCov">          0 :     len = 1;</span>
+<span class="lineNum">    1203 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;cnt; ++i )</span>
+<span class="lineNum">    1204 </span><span class="lineNoCov">          0 :         len += g_utf8_strlen( arr-&gt;vals[2*i+1].u.sval, -1 )+1;</span>
+<span class="lineNum">    1205 </span>            : 
+<span class="lineNum">    1206 </span><span class="lineNoCov">          0 :     li-&gt;text = malloc(len*sizeof(unichar_t));</span>
+<span class="lineNum">    1207 </span><span class="lineNoCov">          0 :     len = 0;</span>
+<span class="lineNum">    1208 </span><span class="lineNoCov">          0 :     last = NULL;</span>
+<span class="lineNum">    1209 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;cnt; ++i ) {</span>
+<span class="lineNum">    1210 </span><span class="lineNoCov">          0 :         if ( last==NULL )</span>
+<span class="lineNum">    1211 </span><span class="lineNoCov">          0 :             last = li-&gt;fontlist = chunkalloc(sizeof(struct fontlist));</span>
+<span class="lineNum">    1212 </span>            :         else {
+<span class="lineNum">    1213 </span><span class="lineNoCov">          0 :             last-&gt;next = chunkalloc(sizeof(struct fontlist));</span>
+<span class="lineNum">    1214 </span><span class="lineNoCov">          0 :             last = last-&gt;next;</span>
+<span class="lineNum">    1215 </span>            :         }
+<span class="lineNum">    1216 </span><span class="lineNoCov">          0 :         last-&gt;fd = LI_FindFontData(li,sf,ly_fore,type,arr-&gt;vals[2*i].u.ival,true);</span>
+<span class="lineNum">    1217 </span><span class="lineNoCov">          0 :         last-&gt;start = len;</span>
+<span class="lineNum">    1218 </span>            : 
+<span class="lineNum">    1219 </span><span class="lineNoCov">          0 :         utf82u_strcpy(li-&gt;text+len,arr-&gt;vals[2*i+1].u.sval);</span>
+<span class="lineNum">    1220 </span><span class="lineNoCov">          0 :         script = DEFAULT_SCRIPT;</span>
+<span class="lineNum">    1221 </span><span class="lineNoCov">          0 :         for ( upt = li-&gt;text+len; *upt &amp;&amp; script==DEFAULT_SCRIPT; ++upt )</span>
+<span class="lineNum">    1222 </span><span class="lineNoCov">          0 :             script = ScriptFromUnicode(*upt,NULL);</span>
+<span class="lineNum">    1223 </span><span class="lineNoCov">          0 :         len += g_utf8_strlen( arr-&gt;vals[2*i+1].u.sval, -1 );</span>
+<span class="lineNum">    1224 </span><span class="lineNoCov">          0 :         li-&gt;text[len++] = '\n';</span>
+<span class="lineNum">    1225 </span>            : 
+<span class="lineNum">    1226 </span><span class="lineNoCov">          0 :         last-&gt;end = len-1;</span>
+<span class="lineNum">    1227 </span>            : 
+<span class="lineNum">    1228 </span><span class="lineNoCov">          0 :         last-&gt;script = script; last-&gt;lang = DEFAULT_LANG;</span>
+<span class="lineNum">    1229 </span><span class="lineNoCov">          0 :         last-&gt;feats = LI_TagsCopy(StdFeaturesOfScript(script));</span>
+<span class="lineNum">    1230 </span>            :     }
+<span class="lineNum">    1231 </span><span class="lineNoCov">          0 :     li-&gt;text[len++] = '\0';</span>
+<span class="lineNum">    1232 </span>            : 
+<span class="lineNum">    1233 </span><span class="lineNoCov">          0 :     LayoutInfoRefigureLines(li,0,-1,width==-1 ? 0xff00 : width);</span>
+<span class="lineNum">    1234 </span><span class="lineNoCov">          0 :     if ( width==-1 )</span>
+<span class="lineNum">    1235 </span><span class="lineNoCov">          0 :         width = li-&gt;xmax+2;</span>
+<span class="lineNum">    1236 </span><span class="lineNoCov">          0 :     if ( li-&gt;lcnt!= 0 )</span>
+<span class="lineNum">    1237 </span><span class="lineNoCov">          0 :         ybase = li-&gt;lineheights[0].as;</span>
+<span class="lineNum">    1238 </span><span class="lineNoCov">          0 :     if ( height==-1 &amp;&amp; li-&gt;lcnt!=0 )</span>
+<span class="lineNum">    1239 </span><span class="lineNoCov">          0 :         height = li-&gt;lineheights[li-&gt;lcnt-1].y + li-&gt;lineheights[li-&gt;lcnt-1].fh + 2 + ybase;</span>
+<span class="lineNum">    1240 </span>            : 
+<span class="lineNum">    1241 </span><span class="lineNoCov">          0 :     image = GImageCreate(it_index,width,height);</span>
+<span class="lineNum">    1242 </span><span class="lineNoCov">          0 :     base = image-&gt;u.image;</span>
+<span class="lineNum">    1243 </span><span class="lineNoCov">          0 :     memset(base-&gt;data,0,base-&gt;bytes_per_line*base-&gt;height);</span>
+<span class="lineNum">    1244 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;256; ++i )</span>
+<span class="lineNum">    1245 </span><span class="lineNoCov">          0 :         base-&gt;clut-&gt;clut[i] = (255-i)*0x010101;</span>
+<span class="lineNum">    1246 </span><span class="lineNoCov">          0 :     base-&gt;clut-&gt;is_grey = true;</span>
+<span class="lineNum">    1247 </span><span class="lineNoCov">          0 :     base-&gt;clut-&gt;clut_len = 256;</span>
+<span class="lineNum">    1248 </span>            : 
+<span class="lineNum">    1249 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;li-&gt;lcnt; ++i ) {</span>
+<span class="lineNum">    1250 </span>            :         /* Does this para start out r2l or l2r? */
+<span class="lineNum">    1251 </span><span class="lineNoCov">          0 :         p = li-&gt;lineheights[i].p;</span>
+<span class="lineNum">    1252 </span><span class="lineNoCov">          0 :         if ( li-&gt;paras[p].para[0]!=NULL &amp;&amp;</span>
+<span class="lineNum">    1253 </span><span class="lineNoCov">          0 :                 ScriptIsRightToLeft( ((struct fontlist *) (li-&gt;paras[p].para[0]-&gt;fl))-&gt;script ))</span>
+<span class="lineNum">    1254 </span><span class="lineNoCov">          0 :             x = li-&gt;xmax - li-&gt;lineheights[i].linelen;</span>
+<span class="lineNum">    1255 </span>            :         else
+<span class="lineNum">    1256 </span><span class="lineNoCov">          0 :             x = 0;</span>
+<span class="lineNum">    1257 </span><span class="lineNoCov">          0 :         line = li-&gt;lines[i];</span>
+<span class="lineNum">    1258 </span><span class="lineNoCov">          0 :         for ( j=0; line[j]!=NULL; ++j ) {</span>
+<span class="lineNum">    1259 </span><span class="lineNoCov">          0 :             LI_FDDrawChar(image,</span>
+<span class="lineNum">    1260 </span>            :                     (void (*)(void *,GImage *,GRect *,int, int)) GImageDrawImage,
+<span class="lineNum">    1261 </span>            :                     (void (*)(void *,GRect *,Color)) GImageDrawRect,
+<span class="lineNum">    1262 </span><span class="lineNoCov">          0 :                     line[j],x,li-&gt;lineheights[i].y+ybase,0x000000);</span>
+<span class="lineNum">    1263 </span><span class="lineNoCov">          0 :             x += line[j]-&gt;advance_width + line[j]-&gt;vr.h_adv_off;</span>
+<span class="lineNum">    1264 </span>            :         }
+<span class="lineNum">    1265 </span>            :     }
+<span class="lineNum">    1266 </span>            : #ifndef _NO_LIBPNG
+<span class="lineNum">    1267 </span><span class="lineNoCov">          0 :     if ( strstrmatch(filename,&quot;.png&quot;)!=NULL )</span>
+<span class="lineNum">    1268 </span><span class="lineNoCov">          0 :         ret = GImageWritePng(image,filename,false);</span>
+<span class="lineNum">    1269 </span>            :     else
+<span class="lineNum">    1270 </span>            : #endif
+<span class="lineNum">    1271 </span><span class="lineNoCov">          0 :     if ( strstrmatch(filename,&quot;.bmp&quot;)!=NULL )</span>
+<span class="lineNum">    1272 </span><span class="lineNoCov">          0 :         ret = GImageWriteBmp(image,filename);</span>
+<span class="lineNum">    1273 </span>            :     else
+<span class="lineNum">    1274 </span><span class="lineNoCov">          0 :         ff_post_error(_(&quot;Unsupported image format&quot;),</span>
+<span class="lineNum">    1275 </span>            : #ifndef _NO_LIBPNG
+<span class="lineNum">    1276 </span><span class="lineNoCov">          0 :                 _(&quot;Unsupported image format must be bmp or png&quot;)</span>
+<span class="lineNum">    1277 </span>            : #else
+<span class="lineNum">    1278 </span>            :                 _(&quot;Unsupported image format must be bmp&quot;)
+<span class="lineNum">    1279 </span>            : #endif
+<span class="lineNum">    1280 </span>            :             );
+<span class="lineNum">    1281 </span><span class="lineNoCov">          0 :     if ( !ret )</span>
+<span class="lineNum">    1282 </span><span class="lineNoCov">          0 :         ff_post_error(_(&quot;Could not write&quot;),_(&quot;Could not write %.100s&quot;),filename);</span>
+<span class="lineNum">    1283 </span><span class="lineNoCov">          0 :     GImageDestroy(image);</span>
+<span class="lineNum">    1284 </span>            : 
+<span class="lineNum">    1285 </span><span class="lineNoCov">          0 :     LayoutInfo_Destroy(li);</span>
+<span class="lineNum">    1286 </span><span class="lineNoCov">          0 :     if ( freeme!=NULL )</span>
+<span class="lineNum">    1287 </span><span class="lineNoCov">          0 :         arrayfree(freeme);</span>
+<span class="lineNum">    1288 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">    1289 </span>            : 
+<a name="1290"><span class="lineNum">    1290 </span>            : #include &lt;stdlib.h&gt;</a>
+<span class="lineNum">    1291 </span>            : #include &lt;unistd.h&gt;
+<span class="lineNum">    1292 </span><span class="lineNoCov">          0 : char *SFDefaultImage(SplineFont *sf,char *filename) {</span>
+<span class="lineNum">    1293 </span>            : 
+<span class="lineNum">    1294 </span><span class="lineNoCov">          0 :     if ( filename==NULL ) {</span>
+<span class="lineNum">    1295 </span>            :         static int cnt=0;
+<span class="lineNum">    1296 </span><span class="lineNoCov">          0 :         char *dir = getenv(&quot;TMPDIR&quot;);</span>
+<span class="lineNum">    1297 </span><span class="lineNoCov">          0 :         if ( dir==NULL ) dir = P_tmpdir;</span>
+<span class="lineNum">    1298 </span><span class="lineNoCov">          0 :         filename = malloc(strlen(dir)+strlen(sf-&gt;fontname)+100);</span>
+<span class="lineNum">    1299 </span>            : #ifdef _NO_LIBPNG
+<span class="lineNum">    1300 </span>            :         sprintf( filename, &quot;%s/ff-preview-%s-%d-%d.bmp&quot;, dir, sf-&gt;fontname, getpid(), ++cnt );
+<span class="lineNum">    1301 </span>            : #else
+<span class="lineNum">    1302 </span><span class="lineNoCov">          0 :         sprintf( filename, &quot;%s/ff-preview-%s-%d-%d.png&quot;, dir, sf-&gt;fontname, getpid(), ++cnt );</span>
+<span class="lineNum">    1303 </span>            : #endif
+<span class="lineNum">    1304 </span>            :     }
+<span class="lineNum">    1305 </span><span class="lineNoCov">          0 :     FontImage(sf,filename,NULL,-1,-1);</span>
+<span class="lineNum">    1306 </span><span class="lineNoCov">          0 : return( filename );</span>
+<a name="1307"><span class="lineNum">    1307 </span>            : }</a>
+<span class="lineNum">    1308 </span>            : 
+<span class="lineNum">    1309 </span><span class="lineNoCov">          0 : void LayoutInfoSetTitle(LayoutInfo *li,const unichar_t *tit,int width) {</span>
+<span class="lineNum">    1310 </span><span class="lineNoCov">          0 :     unichar_t *old = li-&gt;oldtext;</span>
+<span class="lineNum">    1311 </span><span class="lineNoCov">          0 :     if ( u_strcmp(tit,li-&gt;text)==0 ) /* If it doesn't change anything, then don't trash undoes or selection */</span>
+<span class="lineNum">    1312 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">    1313 </span><span class="lineNoCov">          0 :     li-&gt;oldtext = li-&gt;text;</span>
+<span class="lineNum">    1314 </span><span class="lineNoCov">          0 :     li-&gt;text = u_copy(tit);          /* tit might be oldtext, so must copy before freeing */</span>
+<span class="lineNum">    1315 </span><span class="lineNoCov">          0 :     free(old);</span>
+<span class="lineNum">    1316 </span><span class="lineNoCov">          0 :     LI_fontlistmergecheck(li);</span>
+<span class="lineNum">    1317 </span><span class="lineNoCov">          0 :     LayoutInfoRefigureLines(li,0,-1,width);</span>
+<a name="1318"><span class="lineNum">    1318 </span>            : }</a>
+<span class="lineNum">    1319 </span>            : 
+<span class="lineNum">    1320 </span><span class="lineNoCov">          0 : static int LI_NormalizeStartEnd(LayoutInfo *li, int start, int *_end) {</span>
+<span class="lineNum">    1321 </span><span class="lineNoCov">          0 :     int end = *_end;</span>
+<span class="lineNum">    1322 </span><span class="lineNoCov">          0 :     int len = u_strlen(li-&gt;text);</span>
+<span class="lineNum">    1323 </span>            : 
+<span class="lineNum">    1324 </span><span class="lineNoCov">          0 :     if ( li-&gt;generated==NULL ) {</span>
+<span class="lineNum">    1325 </span><span class="lineNoCov">          0 :         start = 0;</span>
+<span class="lineNum">    1326 </span><span class="lineNoCov">          0 :         end = len;</span>
+<span class="lineNum">    1327 </span><span class="lineNoCov">          0 :     } else if ( end==-1 )</span>
+<span class="lineNum">    1328 </span><span class="lineNoCov">          0 :         end = len;</span>
+<span class="lineNum">    1329 </span><span class="lineNoCov">          0 :     if ( end&gt;len ) end = len;</span>
+<span class="lineNum">    1330 </span><span class="lineNoCov">          0 :     if ( start&lt;0 ) start = 0;</span>
+<span class="lineNum">    1331 </span><span class="lineNoCov">          0 :     if ( start&gt;end ) start = end;</span>
+<span class="lineNum">    1332 </span><span class="lineNoCov">          0 :     *_end = end;</span>
+<span class="lineNum">    1333 </span><span class="lineNoCov">          0 : return( start );</span>
+<a name="1334"><span class="lineNum">    1334 </span>            : }</a>
+<span class="lineNum">    1335 </span>            : 
+<span class="lineNum">    1336 </span><span class="lineNoCov">          0 : struct fontlist *LI_BreakFontList(LayoutInfo *li,int start,int end) {</span>
+<span class="lineNum">    1337 </span>            :     /* We are going to change some item in the fontlist between start and end */
+<span class="lineNum">    1338 </span>            :     /* Make sure that after this call there will be an entry which starts at */
+<span class="lineNum">    1339 </span>            :     /*  start and (perhaps) another which ends at end */
+<span class="lineNum">    1340 </span>            :     struct fontlist *new, *fl, *prev, *next, *first;
+<span class="lineNum">    1341 </span>            : 
+<span class="lineNum">    1342 </span><span class="lineNoCov">          0 :     if ( li-&gt;fontlist==NULL ) {</span>
+<span class="lineNum">    1343 </span><span class="lineNoCov">          0 :         new = chunkalloc(sizeof(struct fontlist));</span>
+<span class="lineNum">    1344 </span><span class="lineNoCov">          0 :         new-&gt;start = start;</span>
+<span class="lineNum">    1345 </span><span class="lineNoCov">          0 :         new-&gt;end = end;</span>
+<span class="lineNum">    1346 </span><span class="lineNoCov">          0 :         li-&gt;fontlist = new;</span>
+<span class="lineNum">    1347 </span><span class="lineNoCov">          0 : return( new );</span>
+<span class="lineNum">    1348 </span>            :     }
+<span class="lineNum">    1349 </span>            : 
+<span class="lineNum">    1350 </span><span class="lineNoCov">          0 :     prev = next = NULL;</span>
+<span class="lineNum">    1351 </span><span class="lineNoCov">          0 :     for ( fl=li-&gt;fontlist; fl!=NULL &amp;&amp; fl-&gt;end&lt;start; fl=fl-&gt;next )</span>
+<span class="lineNum">    1352 </span><span class="lineNoCov">          0 :         prev = fl;</span>
+<span class="lineNum">    1353 </span><span class="lineNoCov">          0 :     if ( fl==NULL ) {</span>
+<span class="lineNum">    1354 </span><span class="lineNoCov">          0 :         fl = chunkalloc(sizeof(struct fontlist));</span>
+<span class="lineNum">    1355 </span><span class="lineNoCov">          0 :         *fl = *prev;</span>
+<span class="lineNum">    1356 </span><span class="lineNoCov">          0 :         fl-&gt;feats = LI_TagsCopy(prev-&gt;feats);</span>
+<span class="lineNum">    1357 </span><span class="lineNoCov">          0 :         fl-&gt;start = prev-&gt;end;</span>
+<span class="lineNum">    1358 </span><span class="lineNoCov">          0 :         fl-&gt;end = end;</span>
+<span class="lineNum">    1359 </span><span class="lineNoCov">          0 :         fl-&gt;scmax = 0; fl-&gt;sctext = NULL; fl-&gt;ottext = NULL;</span>
+<span class="lineNum">    1360 </span>            :     }
+<span class="lineNum">    1361 </span><span class="lineNoCov">          0 :     if ( fl-&gt;start == start )</span>
+<span class="lineNum">    1362 </span><span class="lineNoCov">          0 :         first = fl;</span>
+<span class="lineNum">    1363 </span>            :     else {
+<span class="lineNum">    1364 </span><span class="lineNoCov">          0 :         new = chunkalloc(sizeof(struct fontlist));</span>
+<span class="lineNum">    1365 </span><span class="lineNoCov">          0 :         *new = *fl;</span>
+<span class="lineNum">    1366 </span><span class="lineNoCov">          0 :         new-&gt;feats = LI_TagsCopy(fl-&gt;feats);</span>
+<span class="lineNum">    1367 </span><span class="lineNoCov">          0 :         new-&gt;start = start;</span>
+<span class="lineNum">    1368 </span><span class="lineNoCov">          0 :         fl-&gt;end = start;</span>
+<span class="lineNum">    1369 </span><span class="lineNoCov">          0 :         fl-&gt;next = new;</span>
+<span class="lineNum">    1370 </span><span class="lineNoCov">          0 :         new-&gt;scmax = 0; new-&gt;sctext = NULL; new-&gt;ottext = NULL;</span>
+<span class="lineNum">    1371 </span><span class="lineNoCov">          0 :         first = new;</span>
+<span class="lineNum">    1372 </span>            :     }
+<span class="lineNum">    1373 </span><span class="lineNoCov">          0 :     prev = first;</span>
+<span class="lineNum">    1374 </span><span class="lineNoCov">          0 :     for ( fl=first; fl!=NULL &amp;&amp; fl-&gt;start&lt;end ; fl=fl-&gt;next )</span>
+<span class="lineNum">    1375 </span><span class="lineNoCov">          0 :         prev = fl;</span>
+<span class="lineNum">    1376 </span><span class="lineNoCov">          0 :     if ( fl==NULL &amp;&amp; prev-&gt;end&lt;end )</span>
+<span class="lineNum">    1377 </span><span class="lineNoCov">          0 :         prev-&gt;end = end;</span>
+<span class="lineNum">    1378 </span><span class="lineNoCov">          0 :     if ( prev-&gt;end&gt;end ) {</span>
+<span class="lineNum">    1379 </span><span class="lineNoCov">          0 :         new = chunkalloc(sizeof(struct fontlist));</span>
+<span class="lineNum">    1380 </span><span class="lineNoCov">          0 :         *new = *prev;</span>
+<span class="lineNum">    1381 </span><span class="lineNoCov">          0 :         new-&gt;feats = LI_TagsCopy(prev-&gt;feats);</span>
+<span class="lineNum">    1382 </span><span class="lineNoCov">          0 :         new-&gt;start = end;</span>
+<span class="lineNum">    1383 </span><span class="lineNoCov">          0 :         new-&gt;scmax = 0; new-&gt;sctext = NULL; new-&gt;ottext = NULL;</span>
+<span class="lineNum">    1384 </span><span class="lineNoCov">          0 :         prev-&gt;end = end;</span>
+<span class="lineNum">    1385 </span><span class="lineNoCov">          0 :         prev-&gt;next = new;</span>
+<span class="lineNum">    1386 </span>            :     }
+<span class="lineNum">    1387 </span><span class="lineNoCov">          0 : return( first );</span>
+<a name="1388"><span class="lineNum">    1388 </span>            : }</a>
+<span class="lineNum">    1389 </span>            : 
+<span class="lineNum">    1390 </span><span class="lineNoCov">          0 : static void LI_MetaChangeCleanup(LayoutInfo *li,int start, int end,int width) {</span>
+<span class="lineNum">    1391 </span><span class="lineNoCov">          0 :     LI_fontlistmergecheck(li);</span>
+<span class="lineNum">    1392 </span><span class="lineNoCov">          0 :     LayoutInfoRefigureLines(li, start,end,width);</span>
+<a name="1393"><span class="lineNum">    1393 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1394 </span>            : 
+<span class="lineNum">    1395 </span><span class="lineNoCov">          0 : int LI_SetFontData(LayoutInfo *li, int start, int end, SplineFont *sf,</span>
+<span class="lineNum">    1396 </span>            :         int layer, enum sftf_fonttype fonttype, int size, int antialias,int width) {
+<span class="lineNum">    1397 </span>            :     /* Sets the font for the region between start and end. If start==-1 it */
+<span class="lineNum">    1398 </span>            :     /*  means use the current selection (and ignore end). If end==-1 it means */
+<span class="lineNum">    1399 </span>            :     /*  strlen(g-&gt;text) */
+<span class="lineNum">    1400 </span>            :     /* I'm not going to mess with making this undoable. Nor am I going to clear*/
+<span class="lineNum">    1401 </span>            :     /*  out the undoes. So if someone does an undo after this it will undo */
+<span class="lineNum">    1402 </span>            :     /*  two things. Tough. */
+<span class="lineNum">    1403 </span>            :     FontData *cur;
+<span class="lineNum">    1404 </span>            :     struct fontlist *fl;
+<span class="lineNum">    1405 </span>            : 
+<span class="lineNum">    1406 </span><span class="lineNoCov">          0 :     cur = LI_FindFontData(li, sf, layer, fonttype, size, antialias);</span>
+<span class="lineNum">    1407 </span><span class="lineNoCov">          0 :     if ( cur==NULL )</span>
+<span class="lineNum">    1408 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">    1409 </span>            : 
+<span class="lineNum">    1410 </span><span class="lineNoCov">          0 :     start = LI_NormalizeStartEnd(li, start, &amp;end);</span>
+<span class="lineNum">    1411 </span><span class="lineNoCov">          0 :     fl = LI_BreakFontList(li,start,end);</span>
+<span class="lineNum">    1412 </span><span class="lineNoCov">          0 :     while ( fl!=NULL &amp;&amp; fl-&gt;end&lt;=end ) {</span>
+<span class="lineNum">    1413 </span><span class="lineNoCov">          0 :         fl-&gt;fd = cur;</span>
+<span class="lineNum">    1414 </span><span class="lineNoCov">          0 :         fl = fl-&gt;next;</span>
+<span class="lineNum">    1415 </span>            :     }
+<span class="lineNum">    1416 </span>            : 
+<span class="lineNum">    1417 </span><span class="lineNoCov">          0 :     LI_MetaChangeCleanup(li,start,end,width);</span>
+<span class="lineNum">    1418 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">    1419 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - gdraw/gdrawerror.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gdraw</a> - gdrawerror.c<span style="font-size: 80%;"> (source / <a href="gdrawerror.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">11</td>
+            <td class="headerCovTableEntry">136</td>
+            <td class="headerCovTableEntryLo">8.1 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">8</td>
+            <td class="headerCovTableEntryLo">12.5 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            : #define _GNU_SOURCE
+<span class="lineNum">      29 </span>            : // GNU stdio does not enable vasprintf if we fail to define this.
+<span class="lineNum">      30 </span>            : #include &lt;stdio.h&gt;
+<span class="lineNum">      31 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">      32 </span>            : #include &lt;stdarg.h&gt;
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span>            : #include &quot;gdrawP.h&quot;
+<span class="lineNum">      35 </span>            : #include &quot;ustring.h&quot;
+<span class="lineNum">      36 </span>            : 
+<span class="lineNum">      37 </span>            : /* Preallocate an error dialog so that we can pop it up if things go really bad*/
+<span class="lineNum">      38 </span>            : /*  ie. if memory gets munched somehow */
+<span class="lineNum">      39 </span>            : 
+<span class="lineNum">      40 </span>            : #define ERR_LINE_MAX    20
+<span class="lineNum">      41 </span>            : static GWindow error;
+<span class="lineNum">      42 </span>            : enum err_type { et_info, et_warn, et_error, et_fatal };
+<span class="lineNum">      43 </span>            : static struct errinfo {
+<span class="lineNum">      44 </span>            :     unichar_t *lines[ERR_LINE_MAX];
+<span class="lineNum">      45 </span>            :     unsigned int dismissed: 1;
+<span class="lineNum">      46 </span>            :     int width;
+<span class="lineNum">      47 </span>            :     enum err_type err_type;
+<a name="48"><span class="lineNum">      48 </span>            : } errinfo;</a>
+<span class="lineNum">      49 </span>            : 
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 : static int e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">      51 </span>            :     int line;
+<span class="lineNum">      52 </span>            :     int x,len, max_len;
+<span class="lineNum">      53 </span>            :     GRect r;
+<span class="lineNum">      54 </span>            :     static unichar_t ok[] = { 'O', 'K', '\0' };
+<span class="lineNum">      55 </span>            : 
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :     if ( event-&gt;type == et_expose ) {</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :         max_len = 0;</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :         for ( line = 0; line&lt;ERR_LINE_MAX &amp;&amp; errinfo.lines[line]!=NULL; ++line ) {</span>
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :             len = GDrawGetTextWidth(gw,errinfo.lines[line],-1);</span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 :             if ( len&gt;max_len ) max_len = len;</span>
+<span class="lineNum">      61 </span>            :         }
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :         x = (errinfo.width-max_len)/2;</span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :         for ( line = 0; line&lt;ERR_LINE_MAX &amp;&amp; errinfo.lines[line]!=NULL; ++line )</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :             GDrawDrawText(gw,x, 10+10+15*line, errinfo.lines[line],-1,0x000000);</span>
+<span class="lineNum">      65 </span>            : 
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :         x = (errinfo.width-(len = GDrawGetTextWidth(gw,ok,2)))/2;</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :         r.x = x-10; r.y = 25+15*line; r.width = len+20; r.height = 18;</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :         GDrawFillRect(gw,&amp;r,0xffffff);</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :         GDrawDrawRect(gw,&amp;r,0x000000);</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :         GDrawDrawText(gw,x,r.y+13,ok,2,0x000000);</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type==et_char ) {</span>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :         if ( event-&gt;u.chr.chars[0]=='\r' || event-&gt;u.chr.chars[0]=='\33' )</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :             errinfo.dismissed = true;</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type==et_mouseup ) {</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :         errinfo.dismissed = true;</span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type==et_close ) {</span>
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :         errinfo.dismissed = true;</span>
+<span class="lineNum">      78 </span>            :     }
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 : return( 1 );</span>
+<a name="80"><span class="lineNum">      80 </span>            : }</a>
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 : static void RunError() {</span>
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :     errinfo.dismissed = false;</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :     GDrawSetVisible(error,true);</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :     while ( !errinfo.dismissed )</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :         GDrawProcessOneEvent(NULL);</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :     GDrawSetVisible(error,false);</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :     GDrawSync(NULL);</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :     GDrawProcessPendingEvents(NULL);</span>
+<a name="90"><span class="lineNum">      90 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      91 </span>            : 
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 : static void ProcessText(unichar_t *ubuf,char *buf, enum err_type et) {</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :     int max_len = 60, len;</span>
+<span class="lineNum">      94 </span>            :     char *pt, *ept, *last_space;
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :     unichar_t *ue = ubuf;</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :     int line=0;</span>
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :     pt = buf;</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :     for ( line=0; line&lt;ERR_LINE_MAX &amp;&amp; *pt; ++line ) {</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :         last_space = NULL;</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :         for ( ept = pt; *ept!='\n' &amp;&amp; *ept!='\0' &amp;&amp; ept-pt&lt;max_len; ++ept )</span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :             if ( *ept==' ' )</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :                 last_space = ept;</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :         if ( *ept!='\n' &amp;&amp; *ept!='\0' &amp;&amp; last_space!=NULL )</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :             ept = last_space;</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :         errinfo.lines[line] = def2u_strncpy(ue,pt,ept-pt);</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :         ue[ept-pt] = '\0'; ue += (ept+1-pt);</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :         if ( *ept=='\n' || *ept==' ' ) ++ept;</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :         pt = ept;</span>
+<span class="lineNum">     110 </span>            :     }
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :     for ( ; line&lt;ERR_LINE_MAX ; ++line )</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :         errinfo.lines[line] = NULL;</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :     errinfo.err_type = et;</span>
+<span class="lineNum">     114 </span>            : 
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :     max_len = 0;</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :     for ( line = 0; line&lt;ERR_LINE_MAX &amp;&amp; errinfo.lines[line]!=NULL; ++line ) {</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :         len = GDrawGetTextWidth(error,errinfo.lines[line],-1);</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :         if ( len&gt;max_len ) max_len = len;</span>
+<span class="lineNum">     119 </span>            :     }
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :     errinfo.width = max_len+30;</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :     GDrawResize(error,max_len+30,15*line+50);</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     123 </span>            : 
+<a name="124"><span class="lineNum">     124 </span>            : GDisplay *global_gd;</a>
+<span class="lineNum">     125 </span>            : 
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 : void _GDraw_InitError(GDisplay *gd) {</span>
+<span class="lineNum">     127 </span>            :     GRect screen, pos;
+<span class="lineNum">     128 </span>            :     static unichar_t title[]= { 'E', 'r', 'r', 'o', 'r', '\0' };
+<span class="lineNum">     129 </span>            :     static unichar_t courier[] = { 'c', 'o', 'u', 'r', 'i', 'e', 'r', '\0' };
+<span class="lineNum">     130 </span>            :     static GDisplay *static_gd;
+<span class="lineNum">     131 </span>            :     GWindowAttrs wattrs;
+<span class="lineNum">     132 </span>            :     FontRequest rq;
+<span class="lineNum">     133 </span>            : 
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :     if ( gd!=NULL )</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :         static_gd = gd;</span>
+<span class="lineNum">     136 </span>            :     else
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :         screen_display = gd = static_gd;</span>
+<span class="lineNum">     138 </span>            : 
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :     global_gd = static_gd;</span>
+<span class="lineNum">     140 </span>            : 
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :     if ( gd==NULL )</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     143 </span>            : 
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :     if ( error != NULL )</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :     GDrawGetSize(GDrawGetRoot(gd),&amp;screen);</span>
+<span class="lineNum">     147 </span>            : 
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :     memset(&amp;wattrs,0,sizeof(wattrs));</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :     wattrs.mask = wam_events|wam_positioned|wam_cursor|wam_wtitle|wam_backcol|</span>
+<span class="lineNum">     150 </span>            :             wam_restrict|wam_redirect|wam_isdlg;
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :     wattrs.event_masks = -1;</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :     wattrs.positioned = 1;</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :     wattrs.cursor = ct_pointer;</span>
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :     wattrs.window_title = title;</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :     wattrs.background_color = 0xbbbbbb;</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :     wattrs.restrict_input_to_me = true;</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :     wattrs.redirect_chars_to_me = true;</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :     wattrs.is_dlg = true;</span>
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :     pos.width = 300; pos.height = 180;</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :     pos.x = (screen.width-pos.width)/2;</span>
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :     pos.y = (screen.width-pos.width)/3;</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :     errinfo.width = pos.width;</span>
+<span class="lineNum">     163 </span>            : 
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :     error = GDrawCreateTopWindow(gd,&amp;pos,e_h,NULL,&amp;wattrs);</span>
+<span class="lineNum">     165 </span>            : 
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :     memset(&amp;rq,0,sizeof(rq));</span>
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :     rq.family_name = courier;</span>
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :     rq.point_size = -12;</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :     rq.weight = 400;</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :     rq.style = 0;</span>
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :     GDrawAttachFont(error,&amp;rq);</span>
+<a name="172"><span class="lineNum">     172 </span>            : }</a>
+<span class="lineNum">     173 </span>            : 
+<span class="lineNum">     174 </span><span class="lineCov">          1 : void GDrawIError(const char *fmt,...) {</span>
+<span class="lineNum">     175 </span>            :   // GDrawIErrorRun was the previous version of this function.
+<span class="lineNum">     176 </span>            :   // This new function intercepts the calls and stashes them for future processing.
+<span class="lineNum">     177 </span>            :   // This avoids stack overflows in certain cases.
+<span class="lineNum">     178 </span><span class="lineCov">          1 :   GDisplay * gd = global_gd;</span>
+<span class="lineNum">     179 </span><span class="lineCov">          1 :   char * buffer = NULL;</span>
+<span class="lineNum">     180 </span>            :   va_list ap;
+<span class="lineNum">     181 </span><span class="lineCov">          1 :   va_start(ap, fmt);</span>
+<span class="lineNum">     182 </span><span class="lineCov">          1 :   int preret = vasprintf(&amp;buffer, fmt, ap);</span>
+<span class="lineNum">     183 </span><span class="lineCov">          1 :   va_end(ap);</span>
+<span class="lineNum">     184 </span><span class="lineCov">          2 :   if (preret &lt; 0 ) return;</span>
+<span class="lineNum">     185 </span><span class="lineCov">          1 :   if (buffer != NULL ) {</span>
+<span class="lineNum">     186 </span><span class="lineCov">          1 :     if ( gd==NULL ) {</span>
+<span class="lineNum">     187 </span><span class="lineCov">          1 :       fprintf(stderr, &quot;%s&quot;, buffer); // If there is no display, we write to stderr.</span>
+<span class="lineNum">     188 </span>            :     } else {
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :       if ((gd-&gt;err_flag) &amp;&amp; (gd-&gt;err_report != NULL)) {</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :         if (strlen(gd-&gt;err_report) + strlen(buffer) + 1 &lt; 2048) {</span>
+<span class="lineNum">     191 </span>            :           // If there is an existing error message, we concatenate if there is space.
+<span class="lineNum">     192 </span>            :           char * tmp;
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :           asprintf(&amp;tmp, &quot;%s%s\n&quot;, gd-&gt;err_report, buffer);</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :           free(gd-&gt;err_report); gd-&gt;err_report = tmp;</span>
+<span class="lineNum">     195 </span>            :         }
+<span class="lineNum">     196 </span>            :       } else {
+<span class="lineNum">     197 </span>            :         // If there is no existing error message, we copy to the right spot.
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :         asprintf(&amp;gd-&gt;err_report, &quot;%s\n&quot;, buffer);</span>
+<span class="lineNum">     199 </span>            :       }
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :       gd-&gt;err_flag |= 1;</span>
+<span class="lineNum">     201 </span>            :     }
+<span class="lineNum">     202 </span>            :   }
+<span class="lineNum">     203 </span><span class="lineCov">          1 :   free(buffer); buffer = NULL;</span>
+<a name="204"><span class="lineNum">     204 </span>            : }</a>
+<span class="lineNum">     205 </span>            : 
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 : void GDrawIErrorRun(const char *fmt,...) {</span>
+<span class="lineNum">     207 </span>            :     char buf[1025]; unichar_t ubuf[1025];
+<span class="lineNum">     208 </span>            :     va_list ap;
+<span class="lineNum">     209 </span>            : 
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :     strcpy(buf,&quot;Internal Error:\n&quot;);</span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :     va_start(ap, fmt);</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :     vsnprintf(buf+strlen(buf), sizeof(buf)-strlen(buf), fmt, ap);</span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :     va_end(ap);</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :     fprintf( stderr, &quot;%s\n&quot;, buf );</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :     _GDraw_InitError(NULL);</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :     if ( error!=NULL ) {</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :         ProcessText(ubuf,buf,et_error);</span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :         RunError();</span>
+<span class="lineNum">     219 </span>            :     }
+<a name="220"><span class="lineNum">     220 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     221 </span>            : 
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 : void GDrawError(const char *fmt,...) {</span>
+<span class="lineNum">     223 </span>            :     char buf[1025]; unichar_t ubuf[1025];
+<span class="lineNum">     224 </span>            :     va_list ap;
+<span class="lineNum">     225 </span>            : 
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :     va_start(ap, fmt);</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :     vsprintf(buf, fmt, ap);</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :     va_end(ap);</span>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :     _GDraw_InitError(NULL);</span>
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :     if ( error==NULL )</span>
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :         fprintf( stderr, &quot;%s\n&quot;, buf );</span>
+<span class="lineNum">     232 </span>            :     else {
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :         ProcessText(ubuf,buf,et_error);</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :         RunError();</span>
+<span class="lineNum">     235 </span>            :     }
+<a name="236"><span class="lineNum">     236 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     237 </span>            : 
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 : void GDrawFatalError(const char *fmt,...) {</span>
+<span class="lineNum">     239 </span>            :     char buf[1025]; unichar_t ubuf[1025];
+<span class="lineNum">     240 </span>            :     va_list ap;
+<span class="lineNum">     241 </span>            : 
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :     strcpy(buf,&quot;Fatal Error:\n&quot;);</span>
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :     va_start(ap, fmt);</span>
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :     vsprintf(buf+strlen(buf), fmt, ap);</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :     va_end(ap);</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :         fprintf( stderr, &quot;%s\n&quot;, buf );</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :     if ( error!=NULL ) {</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :         ProcessText(ubuf,buf,et_fatal);</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :         RunError();</span>
+<span class="lineNum">     250 </span>            :     }
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :     exit(1);</span>
+<span class="lineNum">     252 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

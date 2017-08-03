@@ -1,0 +1,907 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforgeexe/cvfreehand.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforgeexe</a> - cvfreehand.c<span style="font-size: 80%;"> (source / <a href="cvfreehand.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">487</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">15</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &quot;cvundoes.h&quot;
+<span class="lineNum">      28 </span>            : #include &quot;fontforgeui.h&quot;
+<span class="lineNum">      29 </span>            : #include &quot;splineorder2.h&quot;
+<span class="lineNum">      30 </span>            : #include &quot;splinestroke.h&quot;
+<span class="lineNum">      31 </span>            : #include &quot;splineutil.h&quot;
+<span class="lineNum">      32 </span>            : #include &quot;splineutil2.h&quot;
+<span class="lineNum">      33 </span>            : #include &lt;math.h&gt;
+<span class="lineNum">      34 </span>            : 
+<span class="lineNum">      35 </span>            : #undef DEBUG_FREEHAND
+<span class="lineNum">      36 </span>            : 
+<span class="lineNum">      37 </span>            : const int min_line_cnt = 10;            /* line segments must be at least this many datapoints to be distinguished */
+<span class="lineNum">      38 </span>            : const int min_line_len = 20;            /* line segments must be at least this many pixels to be distinguished */
+<span class="lineNum">      39 </span>            : const double line_wobble = 1.0;         /* data must not stray more than this many pixels from the true line */
+<span class="lineNum">      40 </span>            : const int extremum_locale = 7;          /* for something to be an extremum in x it must be an extremum for at least this many y pixels. Or vice versa */
+<span class="lineNum">      41 </span>            : const int extremum_cnt = 4;             /* for something to be an extremum in x it must be an extremum for at least this data samples. Or for y */
+<span class="lineNum">      42 </span>            : 
+<span class="lineNum">      43 </span>            : enum extreme { e_none=0, e_xmin, e_xmax, e_xflat, e_ymin, e_ymax, e_yflat };
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span>            : typedef struct tracedata {
+<span class="lineNum">      46 </span>            :   /* First the data */
+<span class="lineNum">      47 </span>            :     int x,y;
+<span class="lineNum">      48 </span>            :     BasePoint here;
+<span class="lineNum">      49 </span>            :     uint32 time;
+<span class="lineNum">      50 </span>            :     int32 pressure, xtilt, ytilt, separation;
+<span class="lineNum">      51 </span>            : 
+<span class="lineNum">      52 </span>            :   /* Then overhead */
+<span class="lineNum">      53 </span>            :     struct tracedata *next, *prev;
+<span class="lineNum">      54 </span>            : 
+<span class="lineNum">      55 </span>            :     unsigned int extremum: 3;
+<span class="lineNum">      56 </span>            :     unsigned int use_as_pt: 1;
+<span class="lineNum">      57 </span>            :     unsigned int online: 1;
+<span class="lineNum">      58 </span>            :     unsigned int wasconstrained: 1;
+<span class="lineNum">      59 </span>            :     unsigned int constrained_corner: 1;
+<span class="lineNum">      60 </span>            :     uint16 num;
+<a name="61"><span class="lineNum">      61 </span>            : } TraceData;</a>
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 : static void TraceDataFree(TraceData *td) {</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :     TraceData *next, *first=td;</span>
+<span class="lineNum">      65 </span>            : 
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :     while ( td!=NULL ) {</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :         next = td-&gt;next;</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :         chunkfree(td,sizeof(TraceData));</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :         td = next;</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :         if ( td==first )</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">      72 </span>            :     }
+<a name="73"><span class="lineNum">      73 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      74 </span>            : 
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 : static void TraceDataFromEvent(CharView *cv, GEvent *event) {</span>
+<span class="lineNum">      76 </span>            :     TraceData *new;
+<span class="lineNum">      77 </span>            :     int skiplast;
+<span class="lineNum">      78 </span>            : 
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :     if ( cv-&gt;freehand.head!=NULL &amp;&amp;</span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :             cv-&gt;freehand.last-&gt;here.x==(event-&gt;u.mouse.x-cv-&gt;xoff)/cv-&gt;scale &amp;&amp;</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :             cv-&gt;freehand.last-&gt;here.y==(cv-&gt;height-event-&gt;u.mouse.y-cv-&gt;yoff)/cv-&gt;scale ) {</span>
+<span class="lineNum">      82 </span>            :         /* Has not moved */
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :         int constrained = (event-&gt;u.mouse.state&amp;ksm_shift)?1:0;</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :         if ( constrained != cv-&gt;freehand.last-&gt;wasconstrained )</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :             cv-&gt;freehand.last-&gt;constrained_corner = true;</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">      87 </span>            :     }
+<span class="lineNum">      88 </span>            : 
+<span class="lineNum">      89 </span>            :     /* I sometimes seem to get events out of order on the wacom */
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :     skiplast = false;</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :     if ( cv-&gt;freehand.last!=NULL &amp;&amp; cv-&gt;freehand.last-&gt;prev!=NULL ) {</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :         int x = (event-&gt;u.mouse.x-cv-&gt;xoff)/cv-&gt;scale;</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :         int y = (cv-&gt;height-event-&gt;u.mouse.y-cv-&gt;yoff)/cv-&gt;scale;</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :         TraceData *bad = cv-&gt;freehand.last, *base = bad-&gt;prev;</span>
+<span class="lineNum">      95 </span>            : 
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :         if ( ((bad-&gt;here.x &lt; x-15 &amp;&amp; bad-&gt;here.x &lt; base-&gt;here.x-15) ||</span>
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :                 (bad-&gt;here.x &gt; x+15 &amp;&amp; bad-&gt;here.x &gt; base-&gt;here.x+15)) &amp;&amp;</span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :              ((bad-&gt;here.y &lt; y-15 &amp;&amp; bad-&gt;here.y &lt; base-&gt;here.y-15) ||</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :                 (bad-&gt;here.y &gt; y+15 &amp;&amp; bad-&gt;here.y &gt; base-&gt;here.y+15)) )</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :             skiplast = true;</span>
+<span class="lineNum">     101 </span>            :     }
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :     if ( skiplast )</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :         new = cv-&gt;freehand.last;</span>
+<span class="lineNum">     105 </span>            :     else {
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :         new = chunkalloc(sizeof(TraceData));</span>
+<span class="lineNum">     107 </span>            : 
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :         if ( cv-&gt;freehand.head==NULL )</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :             cv-&gt;freehand.head = cv-&gt;freehand.last = new;</span>
+<span class="lineNum">     110 </span>            :         else {
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :             cv-&gt;freehand.last-&gt;next = new;</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :             new-&gt;prev = cv-&gt;freehand.last;</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :             cv-&gt;freehand.last = new;</span>
+<span class="lineNum">     114 </span>            :         }
+<span class="lineNum">     115 </span>            :     }
+<span class="lineNum">     116 </span>            : 
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :     new-&gt;here.x = (event-&gt;u.mouse.x-cv-&gt;xoff)/cv-&gt;scale;</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :     new-&gt;here.y = (cv-&gt;height-event-&gt;u.mouse.y-cv-&gt;yoff)/cv-&gt;scale;</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :     new-&gt;time = event-&gt;u.mouse.time;</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :     new-&gt;pressure = event-&gt;u.mouse.pressure;</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :     new-&gt;xtilt = event-&gt;u.mouse.xtilt;</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :     new-&gt;ytilt = event-&gt;u.mouse.ytilt;</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :     new-&gt;wasconstrained = (event-&gt;u.mouse.state&amp;ksm_shift)?1:0;</span>
+<span class="lineNum">     124 </span>            : #ifdef DEBUG_FREEHAND
+<span class="lineNum">     125 </span>            :  printf( &quot;(%d,%d) (%g,%g) %d %d\n&quot;, event-&gt;u.mouse.x, event-&gt;u.mouse.y,
+<span class="lineNum">     126 </span>            :   new-&gt;here.x, new-&gt;here.y, new-&gt;pressure, new-&gt;time );
+<span class="lineNum">     127 </span>            :  if ( new-&gt;prev!=NULL &amp;&amp; new-&gt;time&lt;new-&gt;prev-&gt;time )
+<span class="lineNum">     128 </span>            :    printf( &quot;\tAh ha!\n&quot; );
+<span class="lineNum">     129 </span>            : #endif
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :     if ( new-&gt;wasconstrained &amp;&amp;</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :             ( new-&gt;prev==NULL || !new-&gt;prev-&gt;wasconstrained))</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :         new-&gt;constrained_corner = true;</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :     else if ( new-&gt;prev!=NULL &amp;&amp; !new-&gt;wasconstrained &amp;&amp; new-&gt;prev-&gt;wasconstrained )</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :         new-&gt;prev-&gt;constrained_corner = true;</span>
+<a name="135"><span class="lineNum">     135 </span>            : }</a>
+<span class="lineNum">     136 </span>            : 
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 : static int TraceGoodLine(TraceData *base,TraceData *end) {</span>
+<span class="lineNum">     138 </span>            :     /* Make sure that we don't stray more than line_wobble pixels */
+<span class="lineNum">     139 </span>            :     int dx, dy;
+<span class="lineNum">     140 </span>            :     double diff;
+<span class="lineNum">     141 </span>            :     TraceData *pt;
+<span class="lineNum">     142 </span>            : 
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :     if (( dx = end-&gt;x-base-&gt;x )&lt;0 ) dx = -dx;</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :     if (( dy = end-&gt;y-base-&gt;y )&lt;0 ) dy = -dy;</span>
+<span class="lineNum">     145 </span>            : 
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :     if ( dy&gt;dx ) {</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :         dx = end-&gt;x-base-&gt;x; dy = end-&gt;y-base-&gt;y;</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :         for ( pt=base-&gt;next; pt!=end; pt=pt-&gt;next ) {</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :             diff = (pt-&gt;y-base-&gt;y)*dx/(double) dy + base-&gt;x - pt-&gt;x;</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :             if ( diff&gt;line_wobble || diff&lt;-line_wobble )</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     152 </span>            :         }
+<span class="lineNum">     153 </span>            :     } else {
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :         dx = end-&gt;x-base-&gt;x; dy = end-&gt;y-base-&gt;y;</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :         for ( pt=base-&gt;next; pt!=end; pt=pt-&gt;next ) {</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :             diff = (pt-&gt;x-base-&gt;x)*dy/(double) dx + base-&gt;y - pt-&gt;y;</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :             if ( diff&gt;line_wobble || diff&lt;-line_wobble )</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     159 </span>            :         }
+<span class="lineNum">     160 </span>            :     }
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="162"><span class="lineNum">     162 </span>            : }</a>
+<span class="lineNum">     163 </span>            : 
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 : static TraceData *TraceLineCheck(TraceData *base) {</span>
+<span class="lineNum">     165 </span>            :     /* Look for a line. To be a line it must be at least min_line_len pixels */
+<span class="lineNum">     166 </span>            :     /*  long (or reach the end of data with no real bends) */
+<span class="lineNum">     167 </span>            :     /*  and we can't have strayed more than line_wobble pixels from the center */
+<span class="lineNum">     168 </span>            :     /*  of the line */
+<span class="lineNum">     169 </span>            :     TraceData *pt, *end, *last_good;
+<span class="lineNum">     170 </span>            :     int cnt;
+<span class="lineNum">     171 </span>            : 
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :     if ( base-&gt;next==NULL || base-&gt;next-&gt;next==NULL || base-&gt;next-&gt;next-&gt;next==NULL ||</span>
+<span class="lineNum">     173 </span>            :             base-&gt;wasconstrained )
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 : return( base );</span>
+<span class="lineNum">     175 </span>            : 
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :     for ( end=base-&gt;next, cnt=0; end-&gt;next!=NULL; end=end-&gt;next, ++cnt ) {</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :         if ( (end-&gt;x-base-&gt;x)*(end-&gt;x-base-&gt;x) + (end-&gt;y-base-&gt;y)*(end-&gt;y-base-&gt;y)&gt;=</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :                 min_line_len*min_line_len  &amp;&amp;</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :                 cnt&gt;=min_line_cnt )</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 :         if ( end-&gt;wasconstrained )</span>
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 : return( base );</span>
+<span class="lineNum">     183 </span>            :     }
+<span class="lineNum">     184 </span>            : 
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :     last_good = NULL;</span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :     while ( TraceGoodLine(base,end) ) {</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :         last_good = end;</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :         if ( end-&gt;wasconstrained )</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :         end = end-&gt;next;</span>
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :         if ( end==NULL )</span>
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     193 </span>            :     }
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :     if ( last_good==NULL )</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 : return( base );                 /* No good line */</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :     base-&gt;use_as_pt = last_good-&gt;use_as_pt = true;</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :     for ( pt = base; pt!=last_good; pt=pt-&gt;next )</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :         pt-&gt;online = true;</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :     last_good-&gt;online = true;</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 : return( last_good );</span>
+<a name="201"><span class="lineNum">     201 </span>            : }</a>
+<span class="lineNum">     202 </span>            : 
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 : static enum extreme TraceIsExtremum(TraceData *base) {</span>
+<span class="lineNum">     204 </span>            :     TraceData *pt;
+<span class="lineNum">     205 </span>            :     enum extreme type;
+<span class="lineNum">     206 </span>            :     int i;
+<span class="lineNum">     207 </span>            : 
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :     if ( base-&gt;online || base-&gt;use_as_pt )</span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 : return( e_none );</span>
+<span class="lineNum">     210 </span>            : 
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :     type = e_xflat;</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :     for ( pt = base-&gt;next, i=0; pt!=NULL &amp;&amp; type!=e_none; pt=pt-&gt;next, ++i ) {</span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :         if ( i&gt;=extremum_cnt &amp;&amp; ( pt-&gt;y-base-&gt;y &gt; extremum_locale || pt-&gt;y-base-&gt;y &lt; -extremum_locale ))</span>
+<span class="lineNum">     214 </span>            :     break;
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :         if ( pt-&gt;x&gt;base-&gt;x ) {</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :             if ( type==e_xmax )</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :                 type = e_none;</span>
+<span class="lineNum">     218 </span>            :             else
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :                 type = e_xmin;</span>
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :         } else if ( pt-&gt;x&lt;base-&gt;x ) {</span>
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :             if ( type==e_xmin )</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :                 type = e_none;</span>
+<span class="lineNum">     223 </span>            :             else
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :                 type = e_xmax;</span>
+<span class="lineNum">     225 </span>            :         }
+<span class="lineNum">     226 </span>            :     }
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :     for ( pt = base-&gt;prev, i=0; pt!=NULL &amp;&amp; type!=e_none; pt=pt-&gt;prev, ++i ) {</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :         if ( i&gt;=extremum_cnt &amp;&amp; ( pt-&gt;y-base-&gt;y &gt; extremum_locale || pt-&gt;y-base-&gt;y &lt; -extremum_locale ))</span>
+<span class="lineNum">     229 </span>            :     break;
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :         if ( pt-&gt;x&gt;base-&gt;x ) {</span>
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :             if ( type==e_xmax )</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :                 type = e_none;</span>
+<span class="lineNum">     233 </span>            :             else
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :                 type = e_xmin;</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :         } else if ( pt-&gt;x&lt;base-&gt;x ) {</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :             if ( type==e_xmin )</span>
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :                 type = e_none;</span>
+<span class="lineNum">     238 </span>            :             else
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :                 type = e_xmax;</span>
+<span class="lineNum">     240 </span>            :         }
+<span class="lineNum">     241 </span>            :     }
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :     if ( type!=e_none )</span>
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 : return( type );</span>
+<span class="lineNum">     244 </span>            : 
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :     type = e_yflat;</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :     for ( pt = base-&gt;next, i=0; pt!=NULL &amp;&amp; type!=e_none; pt=pt-&gt;next, ++i ) {</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :         if ( i&gt;=extremum_cnt &amp;&amp; ( pt-&gt;x-base-&gt;x &gt; extremum_locale || pt-&gt;x-base-&gt;x &lt; -extremum_locale ))</span>
+<span class="lineNum">     248 </span>            :     break;
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :         if ( pt-&gt;y&gt;base-&gt;y ) {</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :             if ( type==e_ymax )</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :                 type = e_none;</span>
+<span class="lineNum">     252 </span>            :             else
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :                 type = e_ymin;</span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :         } else if ( pt-&gt;y&lt;base-&gt;y ) {</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :             if ( type==e_ymin )</span>
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :                 type = e_none;</span>
+<span class="lineNum">     257 </span>            :             else
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :                 type = e_ymax;</span>
+<span class="lineNum">     259 </span>            :         }
+<span class="lineNum">     260 </span>            :     }
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :     for ( pt = base-&gt;prev, i=0; pt!=NULL &amp;&amp; type!=e_none; pt=pt-&gt;prev, ++i ) {</span>
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :         if ( i&gt;=extremum_cnt &amp;&amp; ( pt-&gt;x-base-&gt;x &gt; extremum_locale || pt-&gt;x-base-&gt;x &lt; -extremum_locale ))</span>
+<span class="lineNum">     263 </span>            :     break;
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :         if ( pt-&gt;y&gt;base-&gt;y ) {</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :             if ( type==e_ymax )</span>
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :                 type = e_none;</span>
+<span class="lineNum">     267 </span>            :             else
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :                 type = e_ymin;</span>
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :         } else if ( pt-&gt;y&lt;base-&gt;y ) {</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :             if ( type==e_ymin )</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :                 type = e_none;</span>
+<span class="lineNum">     272 </span>            :             else
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :                 type = e_ymax;</span>
+<span class="lineNum">     274 </span>            :         }
+<span class="lineNum">     275 </span>            :     }
+<span class="lineNum">     276 </span>            : 
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 : return( type );</span>
+<a name="278"><span class="lineNum">     278 </span>            : }</a>
+<span class="lineNum">     279 </span>            : 
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 : static TraceData *TraceNextPoint(TraceData *pt) {</span>
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :     if ( pt==NULL )</span>
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :     for ( pt=pt-&gt;next; pt!=NULL &amp;&amp; !pt-&gt;use_as_pt ; pt=pt-&gt;next );</span>
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 : return( pt );</span>
+<a name="285"><span class="lineNum">     285 </span>            : }</a>
+<span class="lineNum">     286 </span>            : 
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 : static void TraceMassage(TraceData *head, TraceData *end) {</span>
+<span class="lineNum">     288 </span>            :     TraceData *pt, *npt, *last, *nnpt;
+<span class="lineNum">     289 </span>            :     double nangle, pangle;
+<span class="lineNum">     290 </span>            :     /* Look for corners that are too close together */
+<span class="lineNum">     291 </span>            :     /* Paired tangents that might better be a single curve */
+<span class="lineNum">     292 </span>            :     /* tangent corner tangent that might better be a single curve */
+<span class="lineNum">     293 </span>            : 
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :     for ( pt=head ; pt!=NULL ; pt=npt ) {</span>
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :         npt = TraceNextPoint(pt);</span>
+<span class="lineNum">     296 </span>            :         for (;;) {
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 :             nnpt = TraceNextPoint(npt);</span>
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :             if ( nnpt!=NULL &amp;&amp;</span>
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :                     ((pt-&gt;x==npt-&gt;x &amp;&amp; npt-&gt;x==nnpt-&gt;x) ||</span>
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :                      (pt-&gt;y==npt-&gt;y &amp;&amp; npt-&gt;y==nnpt-&gt;y)) &amp;&amp;</span>
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :                     (pt-&gt;next == npt || pt-&gt;next-&gt;online) ) {</span>
+<span class="lineNum">     302 </span>            :                 /*npt-&gt;online = true;*/
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :                 npt-&gt;use_as_pt = false;</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :             } else if ( nnpt==NULL &amp;&amp; npt!=NULL &amp;&amp; (pt-&gt;x==npt-&gt;x || pt-&gt;y==npt-&gt;y) &amp;&amp;</span>
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 :                     (pt-&gt;next == npt || pt-&gt;next-&gt;online) ) {</span>
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :                 pt-&gt;use_as_pt = false;</span>
+<span class="lineNum">     307 </span>            :             } else
+<span class="lineNum">     308 </span>            :         break;
+<span class="lineNum">     309 </span><span class="lineNoCov">          0 :             npt = nnpt;</span>
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     311 </span>            :     }
+<span class="lineNum">     312 </span>            : 
+<span class="lineNum">     313 </span>            :     /* Remove very short segments */
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :     if ( head &amp;&amp; head-&gt;next ) {</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :         for ( pt=head-&gt;next; pt!=NULL &amp;&amp; pt-&gt;use_as_pt &amp;&amp; !pt-&gt;constrained_corner; pt = pt-&gt;next )</span>
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :             pt-&gt;use_as_pt = false;</span>
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :         for ( pt=head-&gt;next ; pt-&gt;next!=NULL ; pt=pt-&gt;next ) {</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :             if ( pt-&gt;use_as_pt &amp;&amp; pt-&gt;next-&gt;use_as_pt &amp;&amp; !pt-&gt;constrained_corner )</span>
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :                 pt-&gt;use_as_pt = false;</span>
+<span class="lineNum">     320 </span>            :         }
+<span class="lineNum">     321 </span>            :     }
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 :     for ( pt=head ; pt!=NULL ; pt=npt ) {</span>
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :         npt = pt;</span>
+<span class="lineNum">     324 </span>            :         for (;;) {
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :             npt = TraceNextPoint(pt);</span>
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :             if ( npt == NULL || npt-&gt;constrained_corner )</span>
+<span class="lineNum">     327 </span>            :         break;
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :             if ( (npt-&gt;x-pt-&gt;x)*(npt-&gt;x-pt-&gt;x) + (npt-&gt;y-pt-&gt;y)*(npt-&gt;y-pt-&gt;y)&lt;4 )</span>
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :                 npt-&gt;use_as_pt = false;</span>
+<span class="lineNum">     330 </span>            :             else
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     333 </span>            :     }
+<span class="lineNum">     334 </span>            : 
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 :     last = NULL;</span>
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :     for ( pt=head ; pt!=NULL ; pt=pt-&gt;next ) {</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :         if ( pt-&gt;use_as_pt &amp;&amp; pt-&gt;next!=NULL &amp;&amp; pt-&gt;next-&gt;online &amp;&amp; !pt-&gt;next-&gt;wasconstrained &amp;&amp;</span>
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 :                 pt-&gt;prev!=NULL &amp;&amp; !pt-&gt;prev-&gt;online ) {</span>
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 :             npt = TraceNextPoint(pt);</span>
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :             if ( npt==NULL )</span>
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :             if ( npt-&gt;wasconstrained )</span>
+<span class="lineNum">     343 </span>            :                 /* Leave it */;
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :             else if ( npt-&gt;next!=NULL &amp;&amp; !npt-&gt;next-&gt;online ) {</span>
+<span class="lineNum">     345 </span>            :                 /* We've got two adjacent tangents */
+<span class="lineNum">     346 </span><span class="lineNoCov">          0 :                 nnpt = TraceNextPoint(npt);</span>
+<span class="lineNum">     347 </span><span class="lineNoCov">          0 :                 if ( last!=NULL &amp;&amp; nnpt!=NULL ) {</span>
+<span class="lineNum">     348 </span><span class="lineNoCov">          0 :                     int lencur = (npt-&gt;x-pt-&gt;x)*(npt-&gt;x-pt-&gt;x) + (npt-&gt;y-pt-&gt;y)*(npt-&gt;y-pt-&gt;y);</span>
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :                     int lennext = (nnpt-&gt;x-npt-&gt;x)*(nnpt-&gt;x-npt-&gt;x) + (nnpt-&gt;y-npt-&gt;y)*(nnpt-&gt;y-npt-&gt;y);</span>
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :                     int lenprev = (npt-&gt;x-pt-&gt;x)*(npt-&gt;x-pt-&gt;x) + (npt-&gt;y-pt-&gt;y)*(npt-&gt;y-pt-&gt;y);</span>
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :                     if ( lencur&lt;16*lennext || lencur&lt;16*lenprev ) {</span>
+<span class="lineNum">     352 </span>            :                         /* Probably better done as one point */
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 :                         int which = (pt-&gt;num+npt-&gt;num)/2;</span>
+<span class="lineNum">     354 </span>            :                         for (;;) {
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :                             pt-&gt;online = pt-&gt;use_as_pt = false;</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :                             if ( pt-&gt;num==which )</span>
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :                                 pt-&gt;use_as_pt = true;</span>
+<span class="lineNum">     358 </span><span class="lineNoCov">          0 :                             if ( pt==npt )</span>
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 :                         break;</span>
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :                             pt = pt-&gt;next;</span>
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 :                         }</span>
+<span class="lineNum">     362 </span>            :                     }
+<span class="lineNum">     363 </span>            :                 }
+<span class="lineNum">     364 </span><span class="lineNoCov">          0 :             } else if ( (nnpt = TraceNextPoint(npt))!=NULL &amp;&amp;</span>
+<span class="lineNum">     365 </span><span class="lineNoCov">          0 :                     nnpt-&gt;next &amp;&amp; !nnpt-&gt;next-&gt;online ) {</span>
+<span class="lineNum">     366 </span>            :                 /* We've got tangent corner tangent */
+<span class="lineNum">     367 </span><span class="lineNoCov">          0 :                 pangle = atan2(npt-&gt;y-pt-&gt;y,npt-&gt;x-pt-&gt;x);</span>
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :                 nangle = atan2(nnpt-&gt;y-npt-&gt;y,nnpt-&gt;x-npt-&gt;x);</span>
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 :                 if ( pangle&lt;0 &amp;&amp; nangle&gt;0 &amp;&amp; nangle-pangle&gt;=3.1415926 )</span>
+<span class="lineNum">     370 </span><span class="lineNoCov">          0 :                     pangle += 2*3.1415926535897932;</span>
+<span class="lineNum">     371 </span><span class="lineNoCov">          0 :                 else if ( pangle&gt;0 &amp;&amp; nangle&lt;0 &amp;&amp; pangle-nangle&gt;=3.1415926 )</span>
+<span class="lineNum">     372 </span><span class="lineNoCov">          0 :                     nangle += 2*3.1415926535897932;</span>
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 :                 if ( nangle-pangle&lt;1 &amp;&amp; nangle-pangle&gt;-1 ) {</span>
+<span class="lineNum">     374 </span>            :                     for (;;) {
+<span class="lineNum">     375 </span><span class="lineNoCov">          0 :                         pt-&gt;online = pt-&gt;use_as_pt = false;</span>
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 :                         if ( pt==nnpt )</span>
+<span class="lineNum">     377 </span><span class="lineNoCov">          0 :                     break;</span>
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 :                         pt = pt-&gt;next;</span>
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :                     }</span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :                     pt = npt;</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :                     pt-&gt;use_as_pt = true;</span>
+<span class="lineNum">     382 </span>            :                 }
+<span class="lineNum">     383 </span>            :             }
+<span class="lineNum">     384 </span>            :         }
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :         if ( pt-&gt;use_as_pt )</span>
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :             last = pt;</span>
+<span class="lineNum">     387 </span>            :     }
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 :     head-&gt;use_as_pt = end-&gt;use_as_pt = true;</span>
+<a name="389"><span class="lineNum">     389 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     390 </span>            : 
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 : static bigreal Trace_Factor(void *_cv,Spline *spline, real t) {</span>
+<span class="lineNum">     392 </span><span class="lineNoCov">          0 :     CharView *cv = (CharView *) _cv;</span>
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 :     TraceData *head = cv-&gt;freehand.head, *pt, *from=NULL, *to=NULL;</span>
+<span class="lineNum">     394 </span><span class="lineNoCov">          0 :     int fromnum = spline-&gt;from-&gt;ptindex, tonum = spline-&gt;to-&gt;ptindex;</span>
+<span class="lineNum">     395 </span><span class="lineNoCov">          0 :     StrokeInfo *si = CVFreeHandInfo();</span>
+<span class="lineNum">     396 </span>            :     int p;
+<span class="lineNum">     397 </span>            : 
+<span class="lineNum">     398 </span><span class="lineNoCov">          0 :     if ( si-&gt;radius&lt;=0 || si-&gt;pressure1==si-&gt;pressure2 )</span>
+<span class="lineNum">     399 </span><span class="lineNoCov">          0 : return( 1.0 );</span>
+<span class="lineNum">     400 </span>            : 
+<span class="lineNum">     401 </span><span class="lineNoCov">          0 :     for ( pt = head; pt!=NULL; pt=pt-&gt;next ) {</span>
+<span class="lineNum">     402 </span><span class="lineNoCov">          0 :         if ( fromnum == pt-&gt;num ) {</span>
+<span class="lineNum">     403 </span><span class="lineNoCov">          0 :             from = pt;</span>
+<span class="lineNum">     404 </span><span class="lineNoCov">          0 :             if ( to!=NULL )</span>
+<span class="lineNum">     405 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     406 </span>            :         }
+<span class="lineNum">     407 </span><span class="lineNoCov">          0 :         if ( tonum == pt-&gt;num ) {</span>
+<span class="lineNum">     408 </span><span class="lineNoCov">          0 :             to = pt;</span>
+<span class="lineNum">     409 </span><span class="lineNoCov">          0 :             if ( from!=NULL )</span>
+<span class="lineNum">     410 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     411 </span>            :         }
+<span class="lineNum">     412 </span>            :     }
+<span class="lineNum">     413 </span><span class="lineNoCov">          0 :     if ( from==NULL || to==NULL ) {</span>
+<span class="lineNum">     414 </span><span class="lineNoCov">          0 :         fprintf( stderr, &quot;Not found\n&quot; );</span>
+<span class="lineNum">     415 </span><span class="lineNoCov">          0 : return( 1.0 );</span>
+<span class="lineNum">     416 </span>            :     }
+<span class="lineNum">     417 </span><span class="lineNoCov">          0 :     p = from-&gt;pressure*t + to-&gt;pressure*(1-t);</span>
+<span class="lineNum">     418 </span>            :     
+<span class="lineNum">     419 </span><span class="lineNoCov">          0 :     if ( p&lt;=si-&gt;pressure1 &amp;&amp; p&lt;=si-&gt;pressure2 ) {</span>
+<span class="lineNum">     420 </span><span class="lineNoCov">          0 :         if ( si-&gt;pressure1&lt;si-&gt;pressure2 )</span>
+<span class="lineNum">     421 </span><span class="lineNoCov">          0 : return( 1.0 );</span>
+<span class="lineNum">     422 </span>            :         else
+<span class="lineNum">     423 </span><span class="lineNoCov">          0 : return( si-&gt;radius2/si-&gt;radius );</span>
+<span class="lineNum">     424 </span><span class="lineNoCov">          0 :     } else if ( p&gt;=si-&gt;pressure1 &amp;&amp; p&gt;=si-&gt;pressure2 ) {</span>
+<span class="lineNum">     425 </span><span class="lineNoCov">          0 :         if ( si-&gt;pressure1&lt;si-&gt;pressure2 )</span>
+<span class="lineNum">     426 </span><span class="lineNoCov">          0 : return( si-&gt;radius2/si-&gt;radius );</span>
+<span class="lineNum">     427 </span>            :         else
+<span class="lineNum">     428 </span><span class="lineNoCov">          0 : return( 1.0 );</span>
+<span class="lineNum">     429 </span>            :     } else
+<span class="lineNum">     430 </span><span class="lineNoCov">          0 : return( ((p-si-&gt;pressure1)*si-&gt;radius2 + (si-&gt;pressure2-p)*si-&gt;radius)/</span>
+<span class="lineNum">     431 </span><span class="lineNoCov">          0 :                 (si-&gt;radius*(si-&gt;pressure2-si-&gt;pressure1)) );</span>
+<a name="432"><span class="lineNum">     432 </span>            : }</a>
+<span class="lineNum">     433 </span>            : 
+<span class="lineNum">     434 </span><span class="lineNoCov">          0 : static void TraceFigureCPs(SplinePoint *last,SplinePoint *cur,TraceData *tlast,TraceData *tcur) {</span>
+<span class="lineNum">     435 </span>            :     TraceData *pt;
+<span class="lineNum">     436 </span>            : 
+<span class="lineNum">     437 </span><span class="lineNoCov">          0 :     last-&gt;nonextcp = false; cur-&gt;noprevcp=false;</span>
+<span class="lineNum">     438 </span>            : 
+<span class="lineNum">     439 </span><span class="lineNoCov">          0 :     for ( pt=tlast; !pt-&gt;use_as_pt ; pt=pt-&gt;prev );</span>
+<span class="lineNum">     440 </span><span class="lineNoCov">          0 :     if ( pt-&gt;online ) {</span>
+<span class="lineNum">     441 </span><span class="lineNoCov">          0 :         last-&gt;nextcp.x = last-&gt;me.x + ( tlast-&gt;x-pt-&gt;x );</span>
+<span class="lineNum">     442 </span><span class="lineNoCov">          0 :         last-&gt;nextcp.y = last-&gt;me.y + ( tlast-&gt;y-pt-&gt;y );</span>
+<span class="lineNum">     443 </span><span class="lineNoCov">          0 :     } else if ( tlast-&gt;extremum==e_xmin || tlast-&gt;extremum==e_xmax || tlast-&gt;extremum==e_xflat ) {</span>
+<span class="lineNum">     444 </span><span class="lineNoCov">          0 :         last-&gt;nextcp.x = last-&gt;me.x;</span>
+<span class="lineNum">     445 </span><span class="lineNoCov">          0 :         last-&gt;nextcp.y = cur-&gt;me.y&gt;last-&gt;me.y ? last-&gt;me.y+1 : last-&gt;me.y-1;</span>
+<span class="lineNum">     446 </span><span class="lineNoCov">          0 :     } else if ( tlast-&gt;extremum==e_ymin || tlast-&gt;extremum==e_ymax || tlast-&gt;extremum==e_yflat ) {</span>
+<span class="lineNum">     447 </span><span class="lineNoCov">          0 :         last-&gt;nextcp.y = last-&gt;me.y;</span>
+<span class="lineNum">     448 </span><span class="lineNoCov">          0 :         last-&gt;nextcp.x = cur-&gt;me.x&gt;last-&gt;me.x ? last-&gt;me.x+1 : last-&gt;me.x-1;</span>
+<span class="lineNum">     449 </span><span class="lineNoCov">          0 :     } else if ( !last-&gt;noprevcp &amp;&amp; !tlast-&gt;constrained_corner ) {</span>
+<span class="lineNum">     450 </span><span class="lineNoCov">          0 :         last-&gt;nextcp.x = last-&gt;me.x + (last-&gt;me.x - last-&gt;prevcp.x);</span>
+<span class="lineNum">     451 </span><span class="lineNoCov">          0 :         last-&gt;nextcp.y = last-&gt;me.y + (last-&gt;me.y - last-&gt;prevcp.y);</span>
+<span class="lineNum">     452 </span>            :     } else
+<span class="lineNum">     453 </span><span class="lineNoCov">          0 :         last-&gt;nonextcp = true;</span>
+<span class="lineNum">     454 </span>            : 
+<span class="lineNum">     455 </span><span class="lineNoCov">          0 :     if ( tcur-&gt;online ) {</span>
+<span class="lineNum">     456 </span><span class="lineNoCov">          0 :         for ( pt=tcur; !pt-&gt;use_as_pt ; pt=pt-&gt;next );</span>
+<span class="lineNum">     457 </span><span class="lineNoCov">          0 :         cur-&gt;prevcp.x = cur-&gt;me.x + ( tcur-&gt;x-pt-&gt;x );</span>
+<span class="lineNum">     458 </span><span class="lineNoCov">          0 :         cur-&gt;prevcp.y = cur-&gt;me.y + ( tcur-&gt;y-pt-&gt;y );</span>
+<span class="lineNum">     459 </span><span class="lineNoCov">          0 :     } else if ( tcur-&gt;extremum==e_xmin || tcur-&gt;extremum==e_xmax || tcur-&gt;extremum==e_xflat ) {</span>
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 :         cur-&gt;prevcp.x = cur-&gt;me.x;</span>
+<span class="lineNum">     461 </span><span class="lineNoCov">          0 :         cur-&gt;prevcp.y = last-&gt;me.y&gt;cur-&gt;me.y ? cur-&gt;me.y+1 : cur-&gt;me.y-1;</span>
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 :     } else if ( tcur-&gt;extremum==e_ymin || tcur-&gt;extremum==e_ymax || tcur-&gt;extremum==e_yflat ) {</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :         cur-&gt;prevcp.y = cur-&gt;me.y;</span>
+<span class="lineNum">     464 </span><span class="lineNoCov">          0 :         cur-&gt;prevcp.x = last-&gt;me.x&gt;cur-&gt;me.x ? cur-&gt;me.x+1 : cur-&gt;me.x-1;</span>
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 :     } else if ( !cur-&gt;nonextcp &amp;&amp; !tcur-&gt;constrained_corner ) {   /* Only happens at end of a closed contour */</span>
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :         cur-&gt;prevcp.x = cur-&gt;me.x + (cur-&gt;me.x - cur-&gt;nextcp.x);</span>
+<span class="lineNum">     467 </span><span class="lineNoCov">          0 :         cur-&gt;prevcp.y = cur-&gt;me.y + (cur-&gt;me.y - cur-&gt;nextcp.y);</span>
+<span class="lineNum">     468 </span>            :     } else
+<span class="lineNum">     469 </span><span class="lineNoCov">          0 :         cur-&gt;noprevcp = true;</span>
+<a name="470"><span class="lineNum">     470 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     471 </span>            : 
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 : static SplineSet *TraceCurve(CharView *cv) {</span>
+<span class="lineNum">     473 </span><span class="lineNoCov">          0 :     TraceData *head = cv-&gt;freehand.head, *pt, *base, *e;</span>
+<span class="lineNum">     474 </span>            :     SplineSet *spl;
+<span class="lineNum">     475 </span>            :     SplinePoint *last, *cur;
+<span class="lineNum">     476 </span>            :     int cnt, i, tot;
+<span class="lineNum">     477 </span>            :     TPoint *mids;
+<span class="lineNum">     478 </span>            :     double len,sofar;
+<span class="lineNum">     479 </span>            :     StrokeInfo *si;
+<span class="lineNum">     480 </span>            : 
+<span class="lineNum">     481 </span>            :     /* First we look for straight lines in the data. We will put SplinePoints */
+<span class="lineNum">     482 </span>            :     /*  at their endpoints */
+<span class="lineNum">     483 </span>            :     /* Then we find places that are local extrema, or just flat in x,y */
+<span class="lineNum">     484 </span>            :     /*  SplinePoints here too. */
+<span class="lineNum">     485 </span>            :     /* Then approximate splines between */
+<span class="lineNum">     486 </span>            : 
+<span class="lineNum">     487 </span><span class="lineNoCov">          0 :     cnt = 0;</span>
+<span class="lineNum">     488 </span><span class="lineNoCov">          0 :     for ( pt=head; pt!=NULL; pt = pt-&gt;next ) {</span>
+<span class="lineNum">     489 </span><span class="lineNoCov">          0 :         pt-&gt;extremum = e_none;</span>
+<span class="lineNum">     490 </span><span class="lineNoCov">          0 :         pt-&gt;online = pt-&gt;wasconstrained;</span>
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 :         pt-&gt;use_as_pt = pt-&gt;constrained_corner;</span>
+<span class="lineNum">     492 </span>            :         /* We recalculate x,y because we might have autoscrolled the window */
+<span class="lineNum">     493 </span><span class="lineNoCov">          0 :         pt-&gt;x =  cv-&gt;xoff + rint(pt-&gt;here.x*cv-&gt;scale);</span>
+<span class="lineNum">     494 </span><span class="lineNoCov">          0 :         pt-&gt;y = -cv-&gt;yoff + cv-&gt;height - rint(pt-&gt;here.y*cv-&gt;scale);</span>
+<span class="lineNum">     495 </span><span class="lineNoCov">          0 :         pt-&gt;num = cnt++;</span>
+<span class="lineNum">     496 </span>            :     }
+<span class="lineNum">     497 </span><span class="lineNoCov">          0 :     head-&gt;use_as_pt = cv-&gt;freehand.last-&gt;use_as_pt = true;</span>
+<span class="lineNum">     498 </span>            : 
+<span class="lineNum">     499 </span>            :     /* Look for lines */
+<span class="lineNum">     500 </span><span class="lineNoCov">          0 :     for ( pt=head-&gt;next ; pt!=NULL; pt=pt-&gt;next )</span>
+<span class="lineNum">     501 </span><span class="lineNoCov">          0 :         pt = TraceLineCheck(pt);</span>
+<span class="lineNum">     502 </span>            : 
+<span class="lineNum">     503 </span>            :     /* Look for extremum */
+<span class="lineNum">     504 </span><span class="lineNoCov">          0 :     for ( pt=head-&gt;next ; pt!=NULL; pt=pt-&gt;next )</span>
+<span class="lineNum">     505 </span><span class="lineNoCov">          0 :         pt-&gt;extremum = TraceIsExtremum(pt);</span>
+<span class="lineNum">     506 </span>            :     /* Find the middle of a range of extremum points, that'll be the one we want */
+<span class="lineNum">     507 </span><span class="lineNoCov">          0 :     for ( base=head-&gt;next; base!=NULL; base = base-&gt;next ) {</span>
+<span class="lineNum">     508 </span><span class="lineNoCov">          0 :         if ( base-&gt;extremum&gt;=e_xmin ) {</span>
+<span class="lineNum">     509 </span><span class="lineNoCov">          0 :             tot = 1;</span>
+<span class="lineNum">     510 </span><span class="lineNoCov">          0 :             if ( base-&gt;extremum&gt;=e_ymin ) {</span>
+<span class="lineNum">     511 </span><span class="lineNoCov">          0 :                 for ( pt=base-&gt;next ; pt-&gt;extremum&gt;=e_ymin ; pt = pt-&gt;next ) ++tot;</span>
+<span class="lineNum">     512 </span>            :             } else {
+<span class="lineNum">     513 </span><span class="lineNoCov">          0 :                 for ( pt=base-&gt;next ; pt-&gt;extremum&gt;=e_xmin &amp;&amp; pt-&gt;extremum&lt;e_ymin ; pt = pt-&gt;next ) ++tot;</span>
+<span class="lineNum">     514 </span>            :             }
+<span class="lineNum">     515 </span><span class="lineNoCov">          0 :             tot /= 2;</span>
+<span class="lineNum">     516 </span><span class="lineNoCov">          0 :             e = pt;</span>
+<span class="lineNum">     517 </span><span class="lineNoCov">          0 :             for ( pt=base, i=0 ; i&lt;tot ; pt = pt-&gt;next, ++i );</span>
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 :             pt-&gt;use_as_pt = true;</span>
+<span class="lineNum">     519 </span><span class="lineNoCov">          0 :             base = e;</span>
+<span class="lineNum">     520 </span>            :         }
+<span class="lineNum">     521 </span>            :     }
+<span class="lineNum">     522 </span>            : 
+<span class="lineNum">     523 </span><span class="lineNoCov">          0 :     TraceMassage(head,cv-&gt;freehand.last);</span>
+<span class="lineNum">     524 </span>            : 
+<span class="lineNum">     525 </span>            :     /* Calculate the mids array */
+<span class="lineNum">     526 </span><span class="lineNoCov">          0 :     mids = malloc(cnt*sizeof(TPoint));</span>
+<span class="lineNum">     527 </span><span class="lineNoCov">          0 :     for ( base=head; base!=NULL &amp;&amp; base-&gt;next!=NULL; base = pt ) {</span>
+<span class="lineNum">     528 </span><span class="lineNoCov">          0 :         mids[base-&gt;num].x = base-&gt;here.x;</span>
+<span class="lineNum">     529 </span><span class="lineNoCov">          0 :         mids[base-&gt;num].y = base-&gt;here.y;</span>
+<span class="lineNum">     530 </span><span class="lineNoCov">          0 :         mids[base-&gt;num].t = 0;</span>
+<span class="lineNum">     531 </span><span class="lineNoCov">          0 :         len = 0;</span>
+<span class="lineNum">     532 </span><span class="lineNoCov">          0 :         if ( base-&gt;next-&gt;online ) {</span>
+<span class="lineNum">     533 </span><span class="lineNoCov">          0 :             pt = base-&gt;next; /* Don't bother to calculate the length, we won't use the data */</span>
+<span class="lineNum">     534 </span><span class="lineNoCov">          0 :     continue;</span>
+<span class="lineNum">     535 </span>            :         }
+<span class="lineNum">     536 </span><span class="lineNoCov">          0 :         for ( pt=base-&gt;next; ; pt=pt-&gt;next ) {</span>
+<span class="lineNum">     537 </span><span class="lineNoCov">          0 :             len += sqrt((double) (</span>
+<span class="lineNum">     538 </span><span class="lineNoCov">          0 :                     (pt-&gt;x-pt-&gt;prev-&gt;x)*(pt-&gt;x-pt-&gt;prev-&gt;x) +</span>
+<span class="lineNum">     539 </span><span class="lineNoCov">          0 :                     (pt-&gt;y-pt-&gt;prev-&gt;y)*(pt-&gt;y-pt-&gt;prev-&gt;y) ));</span>
+<span class="lineNum">     540 </span><span class="lineNoCov">          0 :             if ( pt-&gt;use_as_pt )</span>
+<span class="lineNum">     541 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     542 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     543 </span><span class="lineNoCov">          0 :         sofar = 0;</span>
+<span class="lineNum">     544 </span><span class="lineNoCov">          0 :         for ( pt=base-&gt;next; ; pt=pt-&gt;next ) {</span>
+<span class="lineNum">     545 </span><span class="lineNoCov">          0 :             sofar += sqrt((double) (</span>
+<span class="lineNum">     546 </span><span class="lineNoCov">          0 :                     (pt-&gt;x-pt-&gt;prev-&gt;x)*(pt-&gt;x-pt-&gt;prev-&gt;x) +</span>
+<span class="lineNum">     547 </span><span class="lineNoCov">          0 :                     (pt-&gt;y-pt-&gt;prev-&gt;y)*(pt-&gt;y-pt-&gt;prev-&gt;y) ));</span>
+<span class="lineNum">     548 </span><span class="lineNoCov">          0 :             mids[pt-&gt;num].x = pt-&gt;here.x;</span>
+<span class="lineNum">     549 </span><span class="lineNoCov">          0 :             mids[pt-&gt;num].y = pt-&gt;here.y;</span>
+<span class="lineNum">     550 </span><span class="lineNoCov">          0 :             mids[pt-&gt;num].t = sofar/len;</span>
+<span class="lineNum">     551 </span><span class="lineNoCov">          0 :             if ( pt-&gt;use_as_pt )</span>
+<span class="lineNum">     552 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     553 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     554 </span>            :     }
+<span class="lineNum">     555 </span>            : 
+<span class="lineNum">     556 </span>            :     /* Splice things together */
+<span class="lineNum">     557 </span><span class="lineNoCov">          0 :     spl = chunkalloc(sizeof(SplineSet));</span>
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :     spl-&gt;first = last = SplinePointCreate(rint(head-&gt;here.x),rint(head-&gt;here.y));</span>
+<span class="lineNum">     559 </span><span class="lineNoCov">          0 :     last-&gt;ptindex = 0;</span>
+<span class="lineNum">     560 </span>            : 
+<span class="lineNum">     561 </span><span class="lineNoCov">          0 :     for ( base=head; base!=NULL &amp;&amp; base-&gt;next!=NULL; base = pt ) {</span>
+<span class="lineNum">     562 </span><span class="lineNoCov">          0 :         for ( pt=base-&gt;next; !pt-&gt;use_as_pt ; pt=pt-&gt;next );</span>
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 :         cur = SplinePointCreate(rint(pt-&gt;here.x),rint(pt-&gt;here.y));</span>
+<span class="lineNum">     564 </span><span class="lineNoCov">          0 :         cur-&gt;ptindex = pt-&gt;num;</span>
+<span class="lineNum">     565 </span>            :         /* even if we are order2, do everything in order3, and then convert */
+<span class="lineNum">     566 </span>            :         /*  when they raise the pen */
+<span class="lineNum">     567 </span><span class="lineNoCov">          0 :         if ( base-&gt;next-&gt;online || base-&gt;next==pt )</span>
+<span class="lineNum">     568 </span><span class="lineNoCov">          0 :             SplineMake(last,cur,false);</span>
+<span class="lineNum">     569 </span>            :         else {
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 :             TraceFigureCPs(last,cur,base,pt);</span>
+<span class="lineNum">     571 </span><span class="lineNoCov">          0 :             if ( !last-&gt;nonextcp &amp;&amp; !cur-&gt;noprevcp )</span>
+<span class="lineNum">     572 </span><span class="lineNoCov">          0 :                 ApproximateSplineFromPointsSlopes(last,cur,mids+base-&gt;num+1,pt-&gt;num-base-&gt;num-1,false);</span>
+<span class="lineNum">     573 </span>            :             else {
+<span class="lineNum">     574 </span><span class="lineNoCov">          0 :                 last-&gt;nonextcp = false; cur-&gt;noprevcp=false;</span>
+<span class="lineNum">     575 </span><span class="lineNoCov">          0 :                 ApproximateSplineFromPoints(last,cur,mids+base-&gt;num+1,pt-&gt;num-base-&gt;num-1,false);</span>
+<span class="lineNum">     576 </span>            :             }
+<span class="lineNum">     577 </span>            :         }
+<span class="lineNum">     578 </span><span class="lineNoCov">          0 :         last = cur;</span>
+<span class="lineNum">     579 </span>            :     }
+<span class="lineNum">     580 </span><span class="lineNoCov">          0 :     spl-&gt;last = last;</span>
+<span class="lineNum">     581 </span>            : 
+<span class="lineNum">     582 </span>            :     /* Now we've got a rough approximation to the contour, but the joins are */
+<span class="lineNum">     583 </span>            :     /*  probably not smooth. Clean things up a bit... */
+<span class="lineNum">     584 </span><span class="lineNoCov">          0 :     if ( spl-&gt;first-&gt;nonextcp )</span>
+<span class="lineNum">     585 </span><span class="lineNoCov">          0 :         spl-&gt;first-&gt;pointtype = pt_corner;</span>
+<span class="lineNum">     586 </span>            :     else
+<span class="lineNum">     587 </span><span class="lineNoCov">          0 :         spl-&gt;first-&gt;pointtype = pt_curve;</span>
+<span class="lineNum">     588 </span><span class="lineNoCov">          0 :     if ( spl-&gt;last-&gt;noprevcp )</span>
+<span class="lineNum">     589 </span><span class="lineNoCov">          0 :         spl-&gt;last-&gt;pointtype = pt_corner;</span>
+<span class="lineNum">     590 </span>            :     else
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 :         spl-&gt;last-&gt;pointtype = pt_curve;</span>
+<span class="lineNum">     592 </span>            : 
+<span class="lineNum">     593 </span><span class="lineNoCov">          0 :     free(mids);</span>
+<span class="lineNum">     594 </span>            : 
+<span class="lineNum">     595 </span><span class="lineNoCov">          0 :     si = CVFreeHandInfo();</span>
+<span class="lineNum">     596 </span><span class="lineNoCov">          0 :     if ( si-&gt;stroke_type!=si_centerline ) {</span>
+<span class="lineNum">     597 </span><span class="lineNoCov">          0 :         si-&gt;factor = ( si-&gt;pressure1==si-&gt;pressure2 ) ? NULL : Trace_Factor;</span>
+<span class="lineNum">     598 </span><span class="lineNoCov">          0 :         si-&gt;data = cv;</span>
+<span class="lineNum">     599 </span><span class="lineNoCov">          0 :         spl-&gt;next = SplineSetStroke(spl,si,false);</span>
+<span class="lineNum">     600 </span>            :     }
+<span class="lineNum">     601 </span><span class="lineNoCov">          0 : return( spl );</span>
+<a name="602"><span class="lineNum">     602 </span>            : }</a>
+<span class="lineNum">     603 </span>            : 
+<span class="lineNum">     604 </span><span class="lineNoCov">          0 : static void TraceDataClose(CharView *cv,GEvent *event) {</span>
+<span class="lineNum">     605 </span>            :     TraceData *new;
+<span class="lineNum">     606 </span>            :     SplineSet *trace;
+<span class="lineNum">     607 </span>            :     double langle, hangle, llen, hlen;
+<span class="lineNum">     608 </span>            :     double dx,dy;
+<span class="lineNum">     609 </span>            :     BasePoint oldp, oldn;
+<span class="lineNum">     610 </span>            : 
+<span class="lineNum">     611 </span><span class="lineNoCov">          0 :     if ( cv-&gt;freehand.head==NULL )</span>
+<span class="lineNum">     612 </span><span class="lineNoCov">          0 : return; /* Eh? No points? How did that happen? */</span>
+<span class="lineNum">     613 </span><span class="lineNoCov">          0 :     if ( cv-&gt;freehand.head-&gt;here.x!=cv-&gt;freehand.last-&gt;here.x ||</span>
+<span class="lineNum">     614 </span><span class="lineNoCov">          0 :              cv-&gt;freehand.head-&gt;here.y!=cv-&gt;freehand.last-&gt;here.y ) {</span>
+<span class="lineNum">     615 </span><span class="lineNoCov">          0 :         new = chunkalloc(sizeof(TraceData));</span>
+<span class="lineNum">     616 </span><span class="lineNoCov">          0 :         *new = *cv-&gt;freehand.head;</span>
+<span class="lineNum">     617 </span><span class="lineNoCov">          0 :         new-&gt;time = event-&gt;u.mouse.time;</span>
+<span class="lineNum">     618 </span><span class="lineNoCov">          0 :         new-&gt;wasconstrained = (event-&gt;u.mouse.state&amp;ksm_shift)?1:0;</span>
+<span class="lineNum">     619 </span>            : 
+<span class="lineNum">     620 </span><span class="lineNoCov">          0 :         new-&gt;prev = cv-&gt;freehand.last;</span>
+<span class="lineNum">     621 </span><span class="lineNoCov">          0 :         new-&gt;next = NULL;</span>
+<span class="lineNum">     622 </span><span class="lineNoCov">          0 :         cv-&gt;freehand.last-&gt;next = new;</span>
+<span class="lineNum">     623 </span><span class="lineNoCov">          0 :         cv-&gt;freehand.last = new;</span>
+<span class="lineNum">     624 </span><span class="lineNoCov">          0 :         SplinePointListsFree(cv-&gt;freehand.current_trace);</span>
+<span class="lineNum">     625 </span><span class="lineNoCov">          0 :         cv-&gt;freehand.current_trace = TraceCurve(cv);</span>
+<span class="lineNum">     626 </span><span class="lineNoCov">          0 :     } else if ( cv-&gt;freehand.head == cv-&gt;freehand.last )</span>
+<span class="lineNum">     627 </span><span class="lineNoCov">          0 : return;                 /* Only one point, no good way to close it */</span>
+<span class="lineNum">     628 </span>            : 
+<span class="lineNum">     629 </span>            :     /* Now the first and last points are at the same location. We need to: */
+<span class="lineNum">     630 </span>            :     /*  average their control points (so that they form a smooth curve) */
+<span class="lineNum">     631 </span>            :     /*  merge the two SplinePoints into one */
+<span class="lineNum">     632 </span>            : 
+<span class="lineNum">     633 </span><span class="lineNoCov">          0 :     trace = cv-&gt;freehand.current_trace;</span>
+<span class="lineNum">     634 </span><span class="lineNoCov">          0 :     trace-&gt;first-&gt;prevcp = trace-&gt;last-&gt;prevcp;</span>
+<span class="lineNum">     635 </span><span class="lineNoCov">          0 :     trace-&gt;first-&gt;noprevcp = trace-&gt;last-&gt;noprevcp;</span>
+<span class="lineNum">     636 </span><span class="lineNoCov">          0 :     trace-&gt;first-&gt;prevcpdef = trace-&gt;last-&gt;prevcpdef;</span>
+<span class="lineNum">     637 </span><span class="lineNoCov">          0 :     trace-&gt;first-&gt;prev = trace-&gt;last-&gt;prev;</span>
+<span class="lineNum">     638 </span><span class="lineNoCov">          0 :     trace-&gt;first-&gt;prev-&gt;to = trace-&gt;first;</span>
+<span class="lineNum">     639 </span><span class="lineNoCov">          0 :     SplinePointFree(trace-&gt;last);</span>
+<span class="lineNum">     640 </span><span class="lineNoCov">          0 :     trace-&gt;last = trace-&gt;first;</span>
+<span class="lineNum">     641 </span>            :     
+<span class="lineNum">     642 </span><span class="lineNoCov">          0 :     if ( cv-&gt;freehand.head-&gt;wasconstrained  || cv-&gt;freehand.last-&gt;wasconstrained )</span>
+<span class="lineNum">     643 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     644 </span>            : 
+<span class="lineNum">     645 </span><span class="lineNoCov">          0 :     trace-&gt;first-&gt;pointtype = pt_curve;</span>
+<span class="lineNum">     646 </span>            : 
+<span class="lineNum">     647 </span><span class="lineNoCov">          0 :     if ( trace-&gt;first-&gt;nonextcp &amp;&amp; trace-&gt;first-&gt;noprevcp ) {</span>
+<span class="lineNum">     648 </span><span class="lineNoCov">          0 :         SplineCharDefaultPrevCP(trace-&gt;first);</span>
+<span class="lineNum">     649 </span><span class="lineNoCov">          0 :         SplineCharDefaultNextCP(trace-&gt;first);</span>
+<span class="lineNum">     650 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     651 </span>            :     }
+<span class="lineNum">     652 </span>            : 
+<span class="lineNum">     653 </span><span class="lineNoCov">          0 :     dx = trace-&gt;first-&gt;nextcp.x-trace-&gt;first-&gt;me.x;</span>
+<span class="lineNum">     654 </span><span class="lineNoCov">          0 :     dy = trace-&gt;first-&gt;nextcp.y-trace-&gt;first-&gt;me.y;</span>
+<span class="lineNum">     655 </span><span class="lineNoCov">          0 :     hlen = sqrt(dx*dx+dy*dy);</span>
+<span class="lineNum">     656 </span><span class="lineNoCov">          0 :     hangle = atan2(dy,dx);</span>
+<span class="lineNum">     657 </span><span class="lineNoCov">          0 :     oldn = trace-&gt;first-&gt;nextcp;</span>
+<span class="lineNum">     658 </span><span class="lineNoCov">          0 :     dx = trace-&gt;first-&gt;me.x-trace-&gt;first-&gt;prevcp.x;</span>
+<span class="lineNum">     659 </span><span class="lineNoCov">          0 :     dy = trace-&gt;first-&gt;me.y-trace-&gt;first-&gt;prevcp.y;</span>
+<span class="lineNum">     660 </span><span class="lineNoCov">          0 :     llen = sqrt(dx*dx+dy*dy);</span>
+<span class="lineNum">     661 </span><span class="lineNoCov">          0 :     langle = atan2(dy,dx);</span>
+<span class="lineNum">     662 </span><span class="lineNoCov">          0 :     oldp = trace-&gt;first-&gt;prevcp;</span>
+<span class="lineNum">     663 </span>            : 
+<span class="lineNum">     664 </span><span class="lineNoCov">          0 :     if ( trace-&gt;first-&gt;nonextcp ) {</span>
+<span class="lineNum">     665 </span><span class="lineNoCov">          0 :         SplineCharDefaultPrevCP(trace-&gt;first);</span>
+<span class="lineNum">     666 </span><span class="lineNoCov">          0 :         dx = trace-&gt;first-&gt;me.x-trace-&gt;first-&gt;prevcp.x;</span>
+<span class="lineNum">     667 </span><span class="lineNoCov">          0 :         dy = trace-&gt;first-&gt;me.y-trace-&gt;first-&gt;prevcp.y;</span>
+<span class="lineNum">     668 </span><span class="lineNoCov">          0 :         llen = sqrt(dx*dx+dy*dy);</span>
+<span class="lineNum">     669 </span><span class="lineNoCov">          0 :         trace-&gt;first-&gt;prevcp.x = trace-&gt;first-&gt;me.x -</span>
+<span class="lineNum">     670 </span><span class="lineNoCov">          0 :                 cos(hangle)*llen;</span>
+<span class="lineNum">     671 </span><span class="lineNoCov">          0 :         trace-&gt;first-&gt;prevcp.y = trace-&gt;first-&gt;me.y -</span>
+<span class="lineNum">     672 </span><span class="lineNoCov">          0 :                 sin(hangle)*llen;</span>
+<span class="lineNum">     673 </span><span class="lineNoCov">          0 :         trace-&gt;first-&gt;nextcp = oldn;</span>
+<span class="lineNum">     674 </span><span class="lineNoCov">          0 :     } else if ( trace-&gt;first-&gt;noprevcp ) {</span>
+<span class="lineNum">     675 </span><span class="lineNoCov">          0 :         SplineCharDefaultPrevCP(trace-&gt;first);</span>
+<span class="lineNum">     676 </span><span class="lineNoCov">          0 :         dx = trace-&gt;first-&gt;me.x-trace-&gt;first-&gt;nextcp.x;</span>
+<span class="lineNum">     677 </span><span class="lineNoCov">          0 :         dy = trace-&gt;first-&gt;me.y-trace-&gt;first-&gt;nextcp.y;</span>
+<span class="lineNum">     678 </span><span class="lineNoCov">          0 :         hlen = sqrt(dx*dx+dy*dy);</span>
+<span class="lineNum">     679 </span><span class="lineNoCov">          0 :         trace-&gt;first-&gt;nextcp.x = trace-&gt;first-&gt;me.x +</span>
+<span class="lineNum">     680 </span><span class="lineNoCov">          0 :                 cos(langle)*hlen;</span>
+<span class="lineNum">     681 </span><span class="lineNoCov">          0 :         trace-&gt;first-&gt;nextcp.y = trace-&gt;first-&gt;me.y +</span>
+<span class="lineNum">     682 </span><span class="lineNoCov">          0 :                 sin(langle)*hlen;</span>
+<span class="lineNum">     683 </span><span class="lineNoCov">          0 :         trace-&gt;first-&gt;prevcp = oldp;</span>
+<span class="lineNum">     684 </span>            :     } else {
+<span class="lineNum">     685 </span><span class="lineNoCov">          0 :         if ( hangle&gt;3.1415926535897932/2 &amp;&amp; langle&lt;-3.1415926535897932/2 )</span>
+<span class="lineNum">     686 </span><span class="lineNoCov">          0 :             langle += 2*3.1415926535897932;</span>
+<span class="lineNum">     687 </span><span class="lineNoCov">          0 :         if ( hangle&lt;-3.1415926535897932/2 &amp;&amp; langle&gt;3.1415926535897932/2 )</span>
+<span class="lineNum">     688 </span><span class="lineNoCov">          0 :             hangle += 2*3.1415926535897932;</span>
+<span class="lineNum">     689 </span><span class="lineNoCov">          0 :         hangle = (hangle+langle)/2;</span>
+<span class="lineNum">     690 </span><span class="lineNoCov">          0 :         dx = cos(hangle);</span>
+<span class="lineNum">     691 </span><span class="lineNoCov">          0 :         dy = sin(hangle);</span>
+<span class="lineNum">     692 </span><span class="lineNoCov">          0 :         trace-&gt;first-&gt;prevcp.x = trace-&gt;first-&gt;me.x - dx*llen;</span>
+<span class="lineNum">     693 </span><span class="lineNoCov">          0 :         trace-&gt;first-&gt;prevcp.y = trace-&gt;first-&gt;me.y - dy*llen;</span>
+<span class="lineNum">     694 </span><span class="lineNoCov">          0 :         trace-&gt;first-&gt;nextcp.x = trace-&gt;first-&gt;me.x + dx*hlen;</span>
+<span class="lineNum">     695 </span><span class="lineNoCov">          0 :         trace-&gt;first-&gt;nextcp.y = trace-&gt;first-&gt;me.y + dy*hlen;</span>
+<span class="lineNum">     696 </span>            :     }
+<span class="lineNum">     697 </span><span class="lineNoCov">          0 :     SplineRefigure(trace-&gt;first-&gt;next);</span>
+<span class="lineNum">     698 </span><span class="lineNoCov">          0 :     SplineRefigure(trace-&gt;first-&gt;prev);</span>
+<a name="699"><span class="lineNum">     699 </span>            : }</a>
+<span class="lineNum">     700 </span>            : 
+<span class="lineNum">     701 </span><span class="lineNoCov">          0 : static int TraceDataCleanup(CharView *cv) {</span>
+<span class="lineNum">     702 </span>            :     TraceData *mid, *next;
+<span class="lineNum">     703 </span><span class="lineNoCov">          0 :     int cnt=0;</span>
+<span class="lineNum">     704 </span>            : 
+<span class="lineNum">     705 </span><span class="lineNoCov">          0 :     for ( mid = cv-&gt;freehand.head; mid!=NULL; mid=next ) {</span>
+<span class="lineNum">     706 </span><span class="lineNoCov">          0 :         ++cnt;</span>
+<span class="lineNum">     707 </span><span class="lineNoCov">          0 :         next = mid-&gt;next;</span>
+<span class="lineNum">     708 </span>            :     }
+<span class="lineNum">     709 </span><span class="lineNoCov">          0 : return( cnt );</span>
+<a name="710"><span class="lineNum">     710 </span>            : }</a>
+<span class="lineNum">     711 </span>            : 
+<span class="lineNum">     712 </span><span class="lineNoCov">          0 : void CVMouseDownFreeHand(CharView *cv, GEvent *event) {</span>
+<span class="lineNum">     713 </span>            : 
+<span class="lineNum">     714 </span><span class="lineNoCov">          0 :     TraceDataFree(cv-&gt;freehand.head);</span>
+<span class="lineNum">     715 </span><span class="lineNoCov">          0 :     cv-&gt;freehand.head = cv-&gt;freehand.last = NULL;</span>
+<span class="lineNum">     716 </span><span class="lineNoCov">          0 :     cv-&gt;freehand.current_trace = NULL;</span>
+<span class="lineNum">     717 </span><span class="lineNoCov">          0 :     TraceDataFromEvent(cv,event);</span>
+<span class="lineNum">     718 </span>            : 
+<span class="lineNum">     719 </span><span class="lineNoCov">          0 :     cv-&gt;freehand.current_trace = chunkalloc(sizeof(SplinePointList));</span>
+<span class="lineNum">     720 </span><span class="lineNoCov">          0 :     cv-&gt;freehand.current_trace-&gt;first = cv-&gt;freehand.current_trace-&gt;last =</span>
+<span class="lineNum">     721 </span><span class="lineNoCov">          0 :             SplinePointCreate(rint(cv-&gt;freehand.head-&gt;here.x),rint(cv-&gt;freehand.head-&gt;here.y));</span>
+<a name="722"><span class="lineNum">     722 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     723 </span>            : 
+<span class="lineNum">     724 </span><span class="lineNoCov">          0 : void CVMouseMoveFreeHand(CharView *cv, GEvent *event) {</span>
+<span class="lineNum">     725 </span>            :     double dx, dy;
+<span class="lineNum">     726 </span>            :     SplinePoint *last;
+<span class="lineNum">     727 </span>            :     BasePoint *here;
+<span class="lineNum">     728 </span>            : 
+<span class="lineNum">     729 </span><span class="lineNoCov">          0 :     TraceDataFromEvent(cv,event);</span>
+<span class="lineNum">     730 </span>            :     /* I used to do the full processing here to get a path. But that took */
+<span class="lineNum">     731 </span>            :     /*  too long to process them and we appeared to get events out of order */
+<span class="lineNum">     732 </span>            :     /*  from the wacom tablet */
+<span class="lineNum">     733 </span><span class="lineNoCov">          0 :     last = cv-&gt;freehand.current_trace-&gt;last;</span>
+<span class="lineNum">     734 </span><span class="lineNoCov">          0 :     here = &amp;cv-&gt;freehand.last-&gt;here;</span>
+<span class="lineNum">     735 </span><span class="lineNoCov">          0 :     if ( (dx=here-&gt;x-last-&gt;me.x)&lt;0 ) dx = -dx;</span>
+<span class="lineNum">     736 </span><span class="lineNoCov">          0 :     if ( (dy=here-&gt;y-last-&gt;me.y)&lt;0 ) dy = -dy;</span>
+<span class="lineNum">     737 </span><span class="lineNoCov">          0 :     if ( (dx+dy)*cv-&gt;scale &gt; 4 ) {</span>
+<span class="lineNum">     738 </span><span class="lineNoCov">          0 :         SplineMake3(last,SplinePointCreate(rint(here-&gt;x),rint(here-&gt;y)));</span>
+<span class="lineNum">     739 </span><span class="lineNoCov">          0 :         cv-&gt;freehand.current_trace-&gt;last = last-&gt;next-&gt;to;</span>
+<span class="lineNum">     740 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(cv-&gt;v,NULL,false);</span>
+<span class="lineNum">     741 </span>            :     }
+<span class="lineNum">     742 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     743 </span>            : 
+<span class="lineNum">     744 </span>            : #ifdef DEBUG_FREEHAND
+<span class="lineNum">     745 </span>            : static void RepeatFromFile(CharView *cv) {
+<span class="lineNum">     746 </span>            :     FILE *foo = fopen(&quot;mousemove&quot;,&quot;r&quot;);
+<span class="lineNum">     747 </span>            :     /*char buffer[100];*/
+<span class="lineNum">     748 </span>            :     GEvent e;
+<span class="lineNum">     749 </span>            :     int x,y,p,t;
+<span class="lineNum">     750 </span>            : 
+<span class="lineNum">     751 </span>            :     if ( foo==NULL )
+<span class="lineNum">     752 </span>            : return;
+<span class="lineNum">     753 </span>            : 
+<span class="lineNum">     754 </span>            :     memset(&amp;e,0,sizeof(e));
+<span class="lineNum">     755 </span>            : 
+<span class="lineNum">     756 </span>            :     e.w = cv-&gt;v;
+<span class="lineNum">     757 </span>            :     e.type = et_mousedown;
+<span class="lineNum">     758 </span>            :     fscanf(foo,&quot;(%d,%d) (%*g,%*g) %d %d\n&quot;, &amp;x, &amp;y, &amp;p, &amp;t);
+<span class="lineNum">     759 </span>            :     e.u.mouse.x = x; e.u.mouse.y = y; e.u.mouse.pressure = p; e.u.mouse.time = t;
+<span class="lineNum">     760 </span>            :     CVMouseDownFreeHand(cv,&amp;e);
+<span class="lineNum">     761 </span>            : 
+<span class="lineNum">     762 </span>            :     e.type = et_mousemove;
+<span class="lineNum">     763 </span>            :     while ( fscanf(foo,&quot;(%d,%d) (%*g,%*g) %d %d\n&quot;, &amp;x, &amp;y, &amp;p, &amp;t)==4 ) {
+<span class="lineNum">     764 </span>            :         e.u.mouse.x = x; e.u.mouse.y = y; e.u.mouse.pressure = p; e.u.mouse.time = t;
+<span class="lineNum">     765 </span>            :         CVMouseMoveFreeHand(cv,&amp;e);
+<span class="lineNum">     766 </span>            :     }
+<span class="lineNum">     767 </span>            : 
+<span class="lineNum">     768 </span>            :     e.type = et_mouseup;
+<span class="lineNum">     769 </span>            :     CVMouseUpFreeHand(cv,&amp;e);
+<span class="lineNum">     770 </span>            :     fclose(foo);
+<span class="lineNum">     771 </span>            : }
+<a name="772"><span class="lineNum">     772 </span>            : #endif</a>
+<span class="lineNum">     773 </span>            : 
+<span class="lineNum">     774 </span><span class="lineNoCov">          0 : void CVMouseUpFreeHand(CharView *cv, GEvent *event) {</span>
+<span class="lineNum">     775 </span><span class="lineNoCov">          0 :     TraceData *head = cv-&gt;freehand.head;</span>
+<span class="lineNum">     776 </span>            :     TraceData *last;
+<span class="lineNum">     777 </span>            :     double dx, dy;
+<span class="lineNum">     778 </span>            : 
+<span class="lineNum">     779 </span>            : #ifdef DEBUG_FREEHAND
+<span class="lineNum">     780 </span>            :     if ( event-&gt;u.mouse.clicks&gt;1 ) {
+<span class="lineNum">     781 </span>            :         TraceDataFree(cv-&gt;freehand.head);
+<span class="lineNum">     782 </span>            :         cv-&gt;freehand.head = cv-&gt;freehand.last = NULL;
+<span class="lineNum">     783 </span>            :         RepeatFromFile(cv);
+<span class="lineNum">     784 </span>            : return;
+<span class="lineNum">     785 </span>            :     }
+<span class="lineNum">     786 </span>            : #endif
+<span class="lineNum">     787 </span><span class="lineNoCov">          0 :     if ( head==NULL )</span>
+<span class="lineNum">     788 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     789 </span>            : 
+<span class="lineNum">     790 </span><span class="lineNoCov">          0 :     if ( TraceDataCleanup(cv)&gt;=4 ) {</span>
+<span class="lineNum">     791 </span>            :         /* If there are fewer than 4 points then assume they made a mistake */
+<span class="lineNum">     792 </span>            :         /*  (or intended a double click) and just ignore the path */
+<span class="lineNum">     793 </span><span class="lineNoCov">          0 :         last = cv-&gt;freehand.last;</span>
+<span class="lineNum">     794 </span><span class="lineNoCov">          0 :         if ( (dx=head-&gt;x-last-&gt;x)&lt;0 ) dx = -dx;</span>
+<span class="lineNum">     795 </span><span class="lineNoCov">          0 :         if ( (dy=head-&gt;y-last-&gt;y)&lt;0 ) dy = -dy;</span>
+<span class="lineNum">     796 </span>            : 
+<span class="lineNum">     797 </span><span class="lineNoCov">          0 :         if (( event-&gt;u.chr.state&amp;ksm_meta ) || (dx+dy)*cv-&gt;scale &gt; 4 )</span>
+<span class="lineNum">     798 </span><span class="lineNoCov">          0 :             TraceDataClose(cv,event);</span>
+<span class="lineNum">     799 </span>            :         else {
+<span class="lineNum">     800 </span><span class="lineNoCov">          0 :             SplinePointListsFree(cv-&gt;freehand.current_trace);</span>
+<span class="lineNum">     801 </span><span class="lineNoCov">          0 :             cv-&gt;freehand.current_trace = TraceCurve(cv);</span>
+<span class="lineNum">     802 </span>            :         }
+<span class="lineNum">     803 </span><span class="lineNoCov">          0 :         if ( cv-&gt;freehand.current_trace!=NULL ) {</span>
+<span class="lineNum">     804 </span><span class="lineNoCov">          0 :             CVPreserveState((CharViewBase *) cv);</span>
+<span class="lineNum">     805 </span><span class="lineNoCov">          0 :             if ( cv-&gt;b.layerheads[cv-&gt;b.drawmode]-&gt;order2 )</span>
+<span class="lineNum">     806 </span><span class="lineNoCov">          0 :                 cv-&gt;freehand.current_trace = SplineSetsTTFApprox(cv-&gt;freehand.current_trace);</span>
+<span class="lineNum">     807 </span><span class="lineNoCov">          0 :             if ( CVFreeHandInfo()-&gt;stroke_type==si_centerline ) {</span>
+<span class="lineNum">     808 </span><span class="lineNoCov">          0 :                 cv-&gt;freehand.current_trace-&gt;next = cv-&gt;b.layerheads[cv-&gt;b.drawmode]-&gt;splines;</span>
+<span class="lineNum">     809 </span><span class="lineNoCov">          0 :                 cv-&gt;b.layerheads[cv-&gt;b.drawmode]-&gt;splines = cv-&gt;freehand.current_trace;</span>
+<span class="lineNum">     810 </span>            :             } else {
+<span class="lineNum">     811 </span><span class="lineNoCov">          0 :                 SplineSet *ss = cv-&gt;freehand.current_trace;</span>
+<span class="lineNum">     812 </span><span class="lineNoCov">          0 :                 while ( ss-&gt;next!=NULL )</span>
+<span class="lineNum">     813 </span><span class="lineNoCov">          0 :                     ss = ss-&gt;next;</span>
+<span class="lineNum">     814 </span><span class="lineNoCov">          0 :                 ss-&gt;next = cv-&gt;b.layerheads[cv-&gt;b.drawmode]-&gt;splines;</span>
+<span class="lineNum">     815 </span><span class="lineNoCov">          0 :                 cv-&gt;b.layerheads[cv-&gt;b.drawmode]-&gt;splines = cv-&gt;freehand.current_trace-&gt;next;</span>
+<span class="lineNum">     816 </span><span class="lineNoCov">          0 :                 cv-&gt;freehand.current_trace-&gt;next = NULL;</span>
+<span class="lineNum">     817 </span>            :                 /*SplinePointListsFree(cv-&gt;freehand.current_trace);*/
+<span class="lineNum">     818 </span>            :             }
+<span class="lineNum">     819 </span><span class="lineNoCov">          0 :             cv-&gt;freehand.current_trace = NULL;</span>
+<span class="lineNum">     820 </span>            :         }
+<span class="lineNum">     821 </span>            :     } else {
+<span class="lineNum">     822 </span><span class="lineNoCov">          0 :         SplinePointListsFree(cv-&gt;freehand.current_trace);</span>
+<span class="lineNum">     823 </span><span class="lineNoCov">          0 :         cv-&gt;freehand.current_trace = NULL;</span>
+<span class="lineNum">     824 </span>            :     }
+<span class="lineNum">     825 </span><span class="lineNoCov">          0 :     TraceDataFree(cv-&gt;freehand.head);</span>
+<span class="lineNum">     826 </span><span class="lineNoCov">          0 :     cv-&gt;freehand.head = cv-&gt;freehand.last = NULL;</span>
+<span class="lineNum">     827 </span><span class="lineNoCov">          0 :     CVCharChangedUpdate(&amp;cv-&gt;b);</span>
+<span class="lineNum">     828 </span>            : #ifdef DEBUG_FREEHAND
+<span class="lineNum">     829 </span>            :     fflush( stdout );
+<span class="lineNum">     830 </span>            : #endif
+<span class="lineNum">     831 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

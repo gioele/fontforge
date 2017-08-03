@@ -1,0 +1,1735 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforge/fvfonts.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforge</a> - fvfonts.c<span style="font-size: 80%;"> (source / <a href="fvfonts.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">328</td>
+            <td class="headerCovTableEntry">1084</td>
+            <td class="headerCovTableEntryLo">30.3 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">31</td>
+            <td class="headerCovTableEntry">56</td>
+            <td class="headerCovTableEntryLo">55.4 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            : #include &quot;fvfonts.h&quot;
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            : #include &quot;encoding.h&quot;
+<span class="lineNum">      31 </span>            : #include &quot;fontforgevw.h&quot;
+<span class="lineNum">      32 </span>            : #include &quot;lookups.h&quot;
+<span class="lineNum">      33 </span>            : #include &quot;namelist.h&quot;
+<span class="lineNum">      34 </span>            : #include &quot;splinefill.h&quot;
+<span class="lineNum">      35 </span>            : #include &quot;splineorder2.h&quot;
+<span class="lineNum">      36 </span>            : #include &quot;splinesaveafm.h&quot;
+<span class="lineNum">      37 </span>            : #include &quot;splineutil.h&quot;
+<span class="lineNum">      38 </span>            : #include &quot;splineutil2.h&quot;
+<span class="lineNum">      39 </span>            : #include &quot;tottfgpos.h&quot;
+<span class="lineNum">      40 </span>            : #include &quot;ustring.h&quot;
+<span class="lineNum">      41 </span>            : #include &quot;utype.h&quot;
+<span class="lineNum">      42 </span>            : #include &quot;gfile.h&quot;
+<span class="lineNum">      43 </span>            : #include &quot;chardata.h&quot;
+<a name="44"><span class="lineNum">      44 </span>            : #include &quot;namehash.h&quot;</a>
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span><span class="lineCov">        258 : RefChar *RefCharsCopy(RefChar *ref) {</span>
+<span class="lineNum">      47 </span><span class="lineCov">        258 :     RefChar *rhead=NULL, *last=NULL, *cur;</span>
+<span class="lineNum">      48 </span>            : 
+<span class="lineNum">      49 </span><span class="lineCov">        516 :     while ( ref!=NULL ) {</span>
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 :         cur = RefCharCreate();</span>
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 :         { struct reflayer *layers = cur-&gt;layers; int layer;</span>
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 :         layers = realloc(layers,ref-&gt;layer_cnt*sizeof(struct reflayer));</span>
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :         memcpy(layers,ref-&gt;layers,ref-&gt;layer_cnt*sizeof(struct reflayer));</span>
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :         *cur = *ref;</span>
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :         cur-&gt;layers = layers;</span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :         for ( layer=0; layer&lt;cur-&gt;layer_cnt; ++layer ) {</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :             cur-&gt;layers[layer].splines = NULL;</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :             cur-&gt;layers[layer].images = NULL;</span>
+<span class="lineNum">      59 </span>            :         }
+<span class="lineNum">      60 </span>            :         }
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :         if ( cur-&gt;sc!=NULL )</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :             cur-&gt;orig_pos = cur-&gt;sc-&gt;orig_pos;</span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :         cur-&gt;next = NULL;</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :         if ( rhead==NULL )</span>
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :             rhead = cur;</span>
+<span class="lineNum">      66 </span>            :         else
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :             last-&gt;next = cur;</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :         last = cur;</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :         ref = ref-&gt;next;</span>
+<span class="lineNum">      70 </span>            :     }
+<span class="lineNum">      71 </span><span class="lineCov">        258 : return( rhead );</span>
+<a name="72"><span class="lineNum">      72 </span>            : }</a>
+<span class="lineNum">      73 </span>            : 
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 : static OTLookup *MCConvertLookup(struct sfmergecontext *mc,OTLookup *otl) {</span>
+<span class="lineNum">      75 </span>            :     int l;
+<span class="lineNum">      76 </span>            :     OTLookup *newotl;
+<span class="lineNum">      77 </span>            : 
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :     if ( mc==NULL || mc-&gt;sf_from==mc-&gt;sf_to )</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 : return( otl );          /* No translation needed */</span>
+<span class="lineNum">      80 </span>            : 
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :     for ( l=0; l&lt;mc-&gt;lcnt; ++l ) {</span>
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :         if ( mc-&gt;lks[l].from == otl )</span>
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">      84 </span>            :     }
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :     if ( l==mc-&gt;lcnt )</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :     if ( mc-&gt;lks[l].to!=NULL )</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 : return( mc-&gt;lks[l].to );</span>
+<span class="lineNum">      89 </span>            : 
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :     mc-&gt;lks[l].to = newotl = chunkalloc(sizeof(OTLookup));</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :     newotl-&gt;lookup_name = strconcat(mc-&gt;prefix,otl-&gt;lookup_name);</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :     newotl-&gt;lookup_type = otl-&gt;lookup_type;</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :     newotl-&gt;lookup_flags = otl-&gt;lookup_flags;</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :     newotl-&gt;features = FeatureListCopy(otl-&gt;features);</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :     newotl-&gt;store_in_afm = otl-&gt;store_in_afm;</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 : return( newotl );</span>
+<a name="97"><span class="lineNum">      97 </span>            : }</a>
+<span class="lineNum">      98 </span>            : 
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 : struct lookup_subtable *MCConvertSubtable(struct sfmergecontext *mc,struct lookup_subtable *sub) {</span>
+<span class="lineNum">     100 </span>            :     int s;
+<span class="lineNum">     101 </span>            :     struct lookup_subtable *newsub;
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :     if ( mc==NULL || mc-&gt;sf_from==mc-&gt;sf_to )</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 : return( sub );          /* No translation needed */</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :     if ( mc-&gt;prefix==NULL ) {</span>
+<span class="lineNum">     106 </span>            :         int lcnt, scnt;
+<span class="lineNum">     107 </span>            :         OTLookup *otl;
+<span class="lineNum">     108 </span>            :         struct lookup_subtable *subs;
+<span class="lineNum">     109 </span>            :         int isgpos, doit;
+<span class="lineNum">     110 </span>            :         char *temp;
+<span class="lineNum">     111 </span>            : 
+<span class="lineNum">     112 </span>            :         /* Not initialized */
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :         if ( mc-&gt;sf_from-&gt;cidmaster ) mc-&gt;sf_from = mc-&gt;sf_from-&gt;cidmaster;</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :         else if ( mc-&gt;sf_from-&gt;mm!=NULL ) mc-&gt;sf_from = mc-&gt;sf_from-&gt;mm-&gt;normal;</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :         if ( mc-&gt;sf_to-&gt;cidmaster ) mc-&gt;sf_to = mc-&gt;sf_to-&gt;cidmaster;</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :         else if ( mc-&gt;sf_to-&gt;mm!=NULL ) mc-&gt;sf_to = mc-&gt;sf_to-&gt;mm-&gt;normal;</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :         if ( mc-&gt;sf_from == mc-&gt;sf_to )</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 : return( sub );</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :         mc-&gt;prefix = strconcat(mc-&gt;sf_from-&gt;fontname,&quot;-&quot;);</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :         for ( doit = 0; doit&lt;2; ++doit ) {</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :             lcnt = scnt = 0;</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :             for ( isgpos=0; isgpos&lt;2; ++isgpos ) {</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :                 for ( otl = isgpos ? mc-&gt;sf_from-&gt;gpos_lookups : mc-&gt;sf_from-&gt;gsub_lookups; otl!=NULL; otl=otl-&gt;next ) {</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :                     if ( doit ) {</span>
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 :                         mc-&gt;lks[lcnt].from = otl;</span>
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :                         temp = strconcat(mc-&gt;prefix,otl-&gt;lookup_name);</span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :                         mc-&gt;lks[lcnt].to = SFFindLookup(mc-&gt;sf_to,temp);</span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :                         free(temp);</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :                         mc-&gt;lks[lcnt].old = mc-&gt;lks[lcnt].to!=NULL;</span>
+<span class="lineNum">     130 </span>            :                     }
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :                     ++lcnt;</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :                     for ( subs=otl-&gt;subtables; subs!=NULL; subs=subs-&gt;next ) {</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :                         if ( doit ) {</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :                             mc-&gt;subs[scnt].from = subs;</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :                             temp = strconcat(mc-&gt;prefix,subs-&gt;subtable_name);</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :                             mc-&gt;subs[scnt].to = SFFindLookupSubtable(mc-&gt;sf_to,temp);</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :                             free(temp);</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :                             mc-&gt;subs[scnt].old = mc-&gt;subs[scnt].to!=NULL;</span>
+<span class="lineNum">     139 </span>            :                         }
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :                         ++scnt;</span>
+<span class="lineNum">     141 </span>            :                     }
+<span class="lineNum">     142 </span>            :                 }
+<span class="lineNum">     143 </span>            :             }
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :             if ( !doit ) {</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :                 mc-&gt;lcnt = lcnt; mc-&gt;scnt = scnt;</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :                 mc-&gt;lks = calloc(lcnt,sizeof(struct lookup_cvt));</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :                 mc-&gt;subs = calloc(scnt,sizeof(struct sub_cvt));</span>
+<span class="lineNum">     148 </span>            :             }
+<span class="lineNum">     149 </span>            :         }
+<span class="lineNum">     150 </span>            :     }
+<span class="lineNum">     151 </span>            : 
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :     for ( s=0; s&lt;mc-&gt;scnt; ++s ) {</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :         if ( mc-&gt;subs[s].from == sub )</span>
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     155 </span>            :     }
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :     if ( s==mc-&gt;scnt )</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :     if ( mc-&gt;subs[s].to!=NULL )</span>
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 : return( mc-&gt;subs[s].to );</span>
+<span class="lineNum">     160 </span>            : 
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :     mc-&gt;subs[s].to = newsub = chunkalloc(sizeof(struct lookup_subtable));</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :     newsub-&gt;subtable_name = strconcat(mc-&gt;prefix,sub-&gt;subtable_name);</span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :     newsub-&gt;lookup = MCConvertLookup(mc,sub-&gt;lookup);</span>
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :     newsub-&gt;anchor_classes = sub-&gt;anchor_classes;</span>
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :     newsub-&gt;per_glyph_pst_or_kern = sub-&gt;per_glyph_pst_or_kern;</span>
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :     newsub-&gt;separation = sub-&gt;separation;</span>
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :     newsub-&gt;minkern = sub-&gt;minkern;</span>
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 : return( newsub );</span>
+<a name="169"><span class="lineNum">     169 </span>            : }</a>
+<span class="lineNum">     170 </span>            : 
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 : AnchorClass *MCConvertAnchorClass(struct sfmergecontext *mc,AnchorClass *ac) {</span>
+<span class="lineNum">     172 </span>            :     int a;
+<span class="lineNum">     173 </span>            :     AnchorClass *newac;
+<span class="lineNum">     174 </span>            : 
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :     if ( mc==NULL || mc-&gt;sf_from==mc-&gt;sf_to )</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 : return( ac );           /* No translation needed */</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :     if ( mc-&gt;acnt==0 ) {</span>
+<span class="lineNum">     178 </span>            :         int acnt;
+<span class="lineNum">     179 </span>            :         AnchorClass *testac, *testac2;
+<span class="lineNum">     180 </span>            :         int doit;
+<span class="lineNum">     181 </span>            :         char *temp;
+<span class="lineNum">     182 </span>            : 
+<span class="lineNum">     183 </span>            :         /* Not initialized */
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :         for ( doit = 0; doit&lt;2; ++doit ) {</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :             acnt = 0;</span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :             for ( testac=mc-&gt;sf_from-&gt;anchor; testac!=NULL; testac=testac-&gt;next ) {</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :                 if ( doit ) {</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :                     mc-&gt;acs[acnt].from = testac;</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :                     temp = strconcat(mc-&gt;prefix,testac-&gt;name);</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :                     for ( testac2 = mc-&gt;sf_to-&gt;anchor; testac2!=NULL; testac2=testac2-&gt;next )</span>
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :                         if ( strcmp(testac2-&gt;name,temp)==0 )</span>
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :                     break;</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :                     mc-&gt;acs[acnt].to = testac2;</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :                     free(temp);</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :                     mc-&gt;acs[acnt].old = mc-&gt;acs[acnt].to!=NULL;</span>
+<span class="lineNum">     196 </span>            :                 }
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :                 ++acnt;</span>
+<span class="lineNum">     198 </span>            :             }
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :             if ( !doit ) {</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :                 mc-&gt;acnt = acnt;</span>
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :                 mc-&gt;acs = calloc(acnt,sizeof(struct ac_cvt));</span>
+<span class="lineNum">     202 </span>            :             }
+<span class="lineNum">     203 </span>            :         }
+<span class="lineNum">     204 </span>            :     }
+<span class="lineNum">     205 </span>            : 
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :     for ( a=0; a&lt;mc-&gt;acnt; ++a ) {</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :         if ( mc-&gt;acs[a].from == ac )</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     209 </span>            :     }
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :     if ( a==mc-&gt;acnt )</span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :     if ( mc-&gt;acs[a].to!=NULL )</span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 : return( mc-&gt;acs[a].to );</span>
+<span class="lineNum">     214 </span>            : 
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :     mc-&gt;acs[a].to = newac = chunkalloc(sizeof(AnchorClass));</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :     newac-&gt;name = strconcat(mc-&gt;prefix,ac-&gt;name);</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :     newac-&gt;subtable = ac-&gt;subtable ? MCConvertSubtable(mc,ac-&gt;subtable) : NULL;</span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :     newac-&gt;next = mc-&gt;sf_to-&gt;anchor;</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :     mc-&gt;sf_to-&gt;anchor = newac;</span>
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 : return( newac );</span>
+<a name="221"><span class="lineNum">     221 </span>            : }</a>
+<span class="lineNum">     222 </span>            : 
+<span class="lineNum">     223 </span><span class="lineCov">          2 : void SFFinishMergeContext(struct sfmergecontext *mc) {</span>
+<span class="lineNum">     224 </span>            :     int l,s,slast, isgpos;
+<span class="lineNum">     225 </span>            :     OTLookup *otl, *last;
+<span class="lineNum">     226 </span>            :     struct lookup_subtable *sub_last;
+<span class="lineNum">     227 </span>            : 
+<span class="lineNum">     228 </span><span class="lineCov">          2 :     if ( mc-&gt;prefix==NULL )          /* Nothing to do, never initialized, no lookups needed */</span>
+<span class="lineNum">     229 </span><span class="lineCov">          4 : return;</span>
+<span class="lineNum">     230 </span>            : 
+<span class="lineNum">     231 </span>            :     /* Get all the subtables in the right order */
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :     for ( s=0; s&lt;mc-&gt;scnt; s=slast ) {</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :         if ( mc-&gt;subs[s].to==NULL ) {</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :             slast = s+1;</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :     continue;</span>
+<span class="lineNum">     236 </span>            :         }
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :         otl = mc-&gt;subs[s].to-&gt;lookup;</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :         sub_last = otl-&gt;subtables = mc-&gt;subs[s].to;</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :         for ( slast=s+1; slast&lt;mc-&gt;scnt; ++slast ) {</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :             if ( mc-&gt;subs[slast].to==NULL )</span>
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :         continue;</span>
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :             if ( mc-&gt;subs[slast].to-&gt;lookup!=otl )</span>
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :             sub_last-&gt;next = mc-&gt;subs[slast].to;</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :             sub_last = sub_last-&gt;next;</span>
+<span class="lineNum">     246 </span>            :         }
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :         sub_last-&gt;next = NULL;</span>
+<span class="lineNum">     248 </span>            :     }
+<span class="lineNum">     249 </span>            : 
+<span class="lineNum">     250 </span>            :     /* Then order the lookups. Leave the old lookups as they are, insert the */
+<span class="lineNum">     251 </span>            :     /*  new at the end of the list */
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :     last = NULL;</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :     for ( l=0; l&lt;mc-&gt;lcnt; ++l ) {</span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :         if ( mc-&gt;lks[l].to==NULL || mc-&gt;lks[l].old )</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :     continue;</span>
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :         otl = mc-&gt;lks[l].to;</span>
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :         isgpos = (otl-&gt;lookup_type&gt;=gpos_start);</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :         if ( last==NULL || (last-&gt;lookup_type&gt;=gpos_start)!=isgpos) {</span>
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :             last = isgpos ? mc-&gt;sf_to-&gt;gpos_lookups : mc-&gt;sf_to-&gt;gsub_lookups;</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :             if ( last!=NULL )</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :                 while ( last-&gt;next!=NULL )</span>
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :                     last = last-&gt;next;</span>
+<span class="lineNum">     263 </span>            :         }
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :         if ( last!=NULL )</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :             last-&gt;next = otl;</span>
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :         else if ( isgpos )</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :             mc-&gt;sf_to-&gt;gpos_lookups = otl;</span>
+<span class="lineNum">     268 </span>            :         else
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :             mc-&gt;sf_to-&gt;gsub_lookups = otl;</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :         last = otl;</span>
+<span class="lineNum">     271 </span>            :     }
+<span class="lineNum">     272 </span>            : 
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :     free(mc-&gt;prefix);</span>
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :     free(mc-&gt;lks);</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :     free(mc-&gt;subs);</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :     free(mc-&gt;acs);</span>
+<a name="277"><span class="lineNum">     277 </span>            : }</a>
+<span class="lineNum">     278 </span>            : 
+<span class="lineNum">     279 </span><span class="lineCov">        129 : PST *PSTCopy(PST *base,SplineChar *sc,struct sfmergecontext *mc) {</span>
+<span class="lineNum">     280 </span><span class="lineCov">        129 :     PST *head=NULL, *last=NULL, *cur;</span>
+<span class="lineNum">     281 </span>            : 
+<span class="lineNum">     282 </span><span class="lineCov">        129 :     for ( ; base!=NULL; base = base-&gt;next ) {</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :         cur = chunkalloc(sizeof(PST));</span>
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :         *cur = *base;</span>
+<span class="lineNum">     285 </span><span class="lineNoCov">          0 :         cur-&gt;subtable = MCConvertSubtable(mc,base-&gt;subtable);</span>
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :         if ( cur-&gt;type==pst_ligature ) {</span>
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :             cur-&gt;u.lig.components = copy(cur-&gt;u.lig.components);</span>
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :             cur-&gt;u.lig.lig = sc;</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :         } else if ( cur-&gt;type==pst_pair ) {</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :             cur-&gt;u.pair.paired = copy(cur-&gt;u.pair.paired);</span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :             cur-&gt;u.pair.vr = chunkalloc(sizeof( struct vr [2]));</span>
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :             memcpy(cur-&gt;u.pair.vr,base-&gt;u.pair.vr,sizeof(struct vr [2]));</span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :             cur-&gt;u.pair.vr[0].adjust = ValDevTabCopy(base-&gt;u.pair.vr[0].adjust);</span>
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :             cur-&gt;u.pair.vr[1].adjust = ValDevTabCopy(base-&gt;u.pair.vr[1].adjust);</span>
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :         } else if ( cur-&gt;type==pst_lcaret ) {</span>
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :             cur-&gt;u.lcaret.carets = malloc(cur-&gt;u.lcaret.cnt*sizeof(uint16));</span>
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 :             memcpy(cur-&gt;u.lcaret.carets,base-&gt;u.lcaret.carets,cur-&gt;u.lcaret.cnt*sizeof(uint16));</span>
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :         } else if ( cur-&gt;type==pst_substitution || cur-&gt;type==pst_multiple || cur-&gt;type==pst_alternate )</span>
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :             cur-&gt;u.subs.variant = copy(cur-&gt;u.subs.variant);</span>
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :         if ( head==NULL )</span>
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :             head = cur;</span>
+<span class="lineNum">     302 </span>            :         else
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :             last-&gt;next = cur;</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :         last = cur;</span>
+<span class="lineNum">     305 </span>            :     }
+<span class="lineNum">     306 </span><span class="lineCov">        129 : return( head );</span>
+<a name="307"><span class="lineNum">     307 </span>            : }</a>
+<span class="lineNum">     308 </span>            : 
+<span class="lineNum">     309 </span><span class="lineCov">        129 : static AnchorPoint *AnchorPointsDuplicate(AnchorPoint *base,SplineChar *sc) {</span>
+<span class="lineNum">     310 </span><span class="lineCov">        129 :     AnchorPoint *head=NULL, *last=NULL, *cur;</span>
+<span class="lineNum">     311 </span>            :     AnchorClass *ac;
+<span class="lineNum">     312 </span>            : 
+<span class="lineNum">     313 </span><span class="lineCov">        129 :     for ( ; base!=NULL; base = base-&gt;next ) {</span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :         cur = chunkalloc(sizeof(AnchorPoint));</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :         *cur = *base;</span>
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :         cur-&gt;next = NULL;</span>
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :         for ( ac=sc-&gt;parent-&gt;anchor; ac!=NULL; ac=ac-&gt;next )</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :             if ( strcmp(ac-&gt;name,base-&gt;anchor-&gt;name)==0 )</span>
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     320 </span><span class="lineNoCov">          0 :         cur-&gt;anchor = ac;</span>
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 :         if ( ac==NULL ) {</span>
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 :             LogError(_(&quot;No matching AnchorClass for %s&quot;), base-&gt;anchor-&gt;name);</span>
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :             chunkfree(cur,sizeof(AnchorPoint));</span>
+<span class="lineNum">     324 </span>            :         } else {
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :             if ( head==NULL )</span>
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :                 head = cur;</span>
+<span class="lineNum">     327 </span>            :             else
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :                 last-&gt;next = cur;</span>
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :             last = cur;</span>
+<span class="lineNum">     330 </span>            :         }
+<span class="lineNum">     331 </span>            :     }
+<span class="lineNum">     332 </span><span class="lineCov">        129 : return( head );</span>
+<a name="333"><span class="lineNum">     333 </span>            : }</a>
+<span class="lineNum">     334 </span>            : 
+<span class="lineNum">     335 </span><span class="lineCov">          1 : static void AnchorClassesAdd(SplineFont *into, SplineFont *from, struct sfmergecontext *mc) {</span>
+<span class="lineNum">     336 </span>            :     AnchorClass *fac, *iac, *last, *cur;
+<span class="lineNum">     337 </span>            : 
+<span class="lineNum">     338 </span><span class="lineCov">          1 :     if ( into-&gt;cidmaster!=NULL )</span>
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 :         into = into-&gt;cidmaster;</span>
+<span class="lineNum">     340 </span><span class="lineCov">          1 :     if ( from-&gt;cidmaster!=NULL )</span>
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :         from = from-&gt;cidmaster;</span>
+<span class="lineNum">     342 </span>            : 
+<span class="lineNum">     343 </span><span class="lineCov">          1 :     for ( fac = from-&gt;anchor; fac!=NULL; fac=fac-&gt;next ) {</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :         last = NULL;</span>
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 :         for ( iac=into-&gt;anchor; iac!=NULL; iac=iac-&gt;next ) {</span>
+<span class="lineNum">     346 </span><span class="lineNoCov">          0 :             if ( strcmp(iac-&gt;name,fac-&gt;name)==0 )</span>
+<span class="lineNum">     347 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     348 </span><span class="lineNoCov">          0 :             last = iac;</span>
+<span class="lineNum">     349 </span>            :         }
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :         if ( iac==NULL ) {</span>
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :             cur = chunkalloc(sizeof(AnchorClass));</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :             *cur = *fac;</span>
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 :             cur-&gt;next = NULL;</span>
+<span class="lineNum">     354 </span><span class="lineNoCov">          0 :             cur-&gt;name = copy(cur-&gt;name);</span>
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :             cur-&gt;subtable = cur-&gt;subtable ? MCConvertSubtable(mc,cur-&gt;subtable) : NULL;</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :             if ( last==NULL )</span>
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :                 into-&gt;anchor = cur;</span>
+<span class="lineNum">     358 </span>            :             else
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 :                 last-&gt;next = cur;</span>
+<span class="lineNum">     360 </span>            :         } else {
+<span class="lineNum">     361 </span>            :             /* Just use the one that's there and hope it's right. Not sure */
+<span class="lineNum">     362 </span>            :             /*  what else we can do... */
+<span class="lineNum">     363 </span>            :         }
+<span class="lineNum">     364 </span>            :     }
+<a name="365"><span class="lineNum">     365 </span><span class="lineCov">          1 : }</span></a>
+<span class="lineNum">     366 </span>            : 
+<span class="lineNum">     367 </span><span class="lineCov">          1 : static void FPSTsAdd(SplineFont *into, SplineFont *from,struct sfmergecontext *mc) {</span>
+<span class="lineNum">     368 </span>            :     FPST *fpst, *nfpst, *last;
+<span class="lineNum">     369 </span>            :     int i,k;
+<span class="lineNum">     370 </span>            : 
+<span class="lineNum">     371 </span><span class="lineCov">          1 :     last = NULL;</span>
+<span class="lineNum">     372 </span><span class="lineCov">          1 :     if ( into-&gt;possub!=NULL )</span>
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 :         for ( last = into-&gt;possub; last-&gt;next!=NULL; last=last-&gt;next );</span>
+<span class="lineNum">     374 </span><span class="lineCov">          1 :     for ( fpst = from-&gt;possub; fpst!=NULL; fpst=fpst-&gt;next ) {</span>
+<span class="lineNum">     375 </span><span class="lineNoCov">          0 :         nfpst = FPSTCopy(fpst);</span>
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 :         nfpst-&gt;subtable = MCConvertSubtable(mc,fpst-&gt;subtable);</span>
+<span class="lineNum">     377 </span><span class="lineNoCov">          0 :         nfpst-&gt;subtable-&gt;fpst = nfpst;</span>
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;nfpst-&gt;rule_cnt; ++i ) {</span>
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :             struct fpst_rule *r = &amp;nfpst-&gt;rules[i], *oldr = &amp;fpst-&gt;rules[i];</span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :             for ( k=0; k&lt;r-&gt;lookup_cnt; ++k ) {</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :                 r-&gt;lookups[k].lookup = MCConvertLookup(mc,oldr-&gt;lookups[k].lookup);</span>
+<span class="lineNum">     382 </span>            :             }
+<span class="lineNum">     383 </span>            :         }
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :         if ( last==NULL )</span>
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :             into-&gt;possub = nfpst;</span>
+<span class="lineNum">     386 </span>            :         else
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :             last-&gt;next = nfpst;</span>
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 :         last = nfpst;</span>
+<span class="lineNum">     389 </span>            :     }
+<a name="390"><span class="lineNum">     390 </span><span class="lineCov">          1 : }</span></a>
+<span class="lineNum">     391 </span>            : 
+<span class="lineNum">     392 </span><span class="lineCov">          1 : static void ASMsAdd(SplineFont *into, SplineFont *from,struct sfmergecontext *mc) {</span>
+<span class="lineNum">     393 </span>            :     ASM *sm, *nsm, *last;
+<span class="lineNum">     394 </span>            :     int i;
+<span class="lineNum">     395 </span>            : 
+<span class="lineNum">     396 </span><span class="lineCov">          1 :     last = NULL;</span>
+<span class="lineNum">     397 </span><span class="lineCov">          1 :     if ( into-&gt;sm!=NULL )</span>
+<span class="lineNum">     398 </span><span class="lineNoCov">          0 :         for ( last = into-&gt;sm; last-&gt;next!=NULL; last=last-&gt;next );</span>
+<span class="lineNum">     399 </span><span class="lineCov">          1 :     for ( sm = from-&gt;sm; sm!=NULL; sm=sm-&gt;next ) {</span>
+<span class="lineNum">     400 </span><span class="lineNoCov">          0 :         nsm = chunkalloc(sizeof(ASM));</span>
+<span class="lineNum">     401 </span><span class="lineNoCov">          0 :         *nsm = *sm;</span>
+<span class="lineNum">     402 </span><span class="lineNoCov">          0 :         nsm-&gt;subtable = MCConvertSubtable(mc,sm-&gt;subtable);</span>
+<span class="lineNum">     403 </span><span class="lineNoCov">          0 :         nsm-&gt;subtable-&gt;sm = nsm;</span>
+<span class="lineNum">     404 </span><span class="lineNoCov">          0 :         nsm-&gt;classes = malloc(nsm-&gt;class_cnt*sizeof(char *));</span>
+<span class="lineNum">     405 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;nsm-&gt;class_cnt; ++i )</span>
+<span class="lineNum">     406 </span><span class="lineNoCov">          0 :             nsm-&gt;classes[i] = copy(sm-&gt;classes[i]);</span>
+<span class="lineNum">     407 </span><span class="lineNoCov">          0 :         nsm-&gt;state = malloc(nsm-&gt;class_cnt*nsm-&gt;state_cnt*sizeof(struct asm_state));</span>
+<span class="lineNum">     408 </span><span class="lineNoCov">          0 :         memcpy(nsm-&gt;state,sm-&gt;state,nsm-&gt;class_cnt*nsm-&gt;state_cnt*sizeof(struct asm_state));</span>
+<span class="lineNum">     409 </span><span class="lineNoCov">          0 :         if ( nsm-&gt;type == asm_kern ) {</span>
+<span class="lineNum">     410 </span><span class="lineNoCov">          0 :             for ( i=nsm-&gt;class_cnt*nsm-&gt;state_cnt-1; i&gt;=0; --i ) {</span>
+<span class="lineNum">     411 </span><span class="lineNoCov">          0 :                 nsm-&gt;state[i].u.kern.kerns = malloc(nsm-&gt;state[i].u.kern.kcnt*sizeof(int16));</span>
+<span class="lineNum">     412 </span><span class="lineNoCov">          0 :                 memcpy(nsm-&gt;state[i].u.kern.kerns,sm-&gt;state[i].u.kern.kerns,nsm-&gt;state[i].u.kern.kcnt*sizeof(int16));</span>
+<span class="lineNum">     413 </span>            :             }
+<span class="lineNum">     414 </span><span class="lineNoCov">          0 :         } else if ( nsm-&gt;type == asm_context ) {</span>
+<span class="lineNum">     415 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;nsm-&gt;class_cnt*nsm-&gt;state_cnt; ++i ) {</span>
+<span class="lineNum">     416 </span><span class="lineNoCov">          0 :                 nsm-&gt;state[i].u.context.mark_lookup = MCConvertLookup(mc,</span>
+<span class="lineNum">     417 </span><span class="lineNoCov">          0 :                         nsm-&gt;state[i].u.context.mark_lookup);</span>
+<span class="lineNum">     418 </span><span class="lineNoCov">          0 :                 nsm-&gt;state[i].u.context.cur_lookup = MCConvertLookup(mc,</span>
+<span class="lineNum">     419 </span><span class="lineNoCov">          0 :                         nsm-&gt;state[i].u.context.cur_lookup);</span>
+<span class="lineNum">     420 </span>            :             }
+<span class="lineNum">     421 </span><span class="lineNoCov">          0 :         } else if ( nsm-&gt;type == asm_insert ) {</span>
+<span class="lineNum">     422 </span><span class="lineNoCov">          0 :             for ( i=nsm-&gt;class_cnt*nsm-&gt;state_cnt-1; i&gt;=0; --i ) {</span>
+<span class="lineNum">     423 </span><span class="lineNoCov">          0 :                 nsm-&gt;state[i].u.insert.mark_ins = copy(sm-&gt;state[i].u.insert.mark_ins);</span>
+<span class="lineNum">     424 </span><span class="lineNoCov">          0 :                 nsm-&gt;state[i].u.insert.cur_ins = copy(sm-&gt;state[i].u.insert.cur_ins);</span>
+<span class="lineNum">     425 </span>            :             }
+<span class="lineNum">     426 </span>            :         }
+<span class="lineNum">     427 </span>            :     }
+<a name="428"><span class="lineNum">     428 </span><span class="lineCov">          1 : }</span></a>
+<span class="lineNum">     429 </span>            : 
+<span class="lineNum">     430 </span><span class="lineNoCov">          0 : static KernClass *_KernClassCopy(KernClass *kc,SplineFont *into,SplineFont *from,struct sfmergecontext *mc) {</span>
+<span class="lineNum">     431 </span>            :     KernClass *nkc;
+<span class="lineNum">     432 </span>            : 
+<span class="lineNum">     433 </span><span class="lineNoCov">          0 :     nkc = KernClassCopy(kc);</span>
+<span class="lineNum">     434 </span><span class="lineNoCov">          0 :     nkc-&gt;subtable = MCConvertSubtable(mc,kc-&gt;subtable);</span>
+<span class="lineNum">     435 </span><span class="lineNoCov">          0 :     nkc-&gt;subtable-&gt;kc = nkc;</span>
+<span class="lineNum">     436 </span><span class="lineNoCov">          0 : return( nkc );</span>
+<a name="437"><span class="lineNum">     437 </span>            : }</a>
+<span class="lineNum">     438 </span>            : 
+<span class="lineNum">     439 </span><span class="lineCov">          1 : static void KernClassesAdd(SplineFont *into, SplineFont *from,struct sfmergecontext *mc) {</span>
+<span class="lineNum">     440 </span>            :     /* Is this a good idea? We could end up with two kern classes that do */
+<span class="lineNum">     441 </span>            :     /*  the same thing and strange sets of slis so that they didn't all fit */
+<span class="lineNum">     442 </span>            :     /*  in one lookup... */
+<span class="lineNum">     443 </span>            :     KernClass *kc, *last, *cur;
+<span class="lineNum">     444 </span>            : 
+<span class="lineNum">     445 </span><span class="lineCov">          1 :     last = NULL;</span>
+<span class="lineNum">     446 </span><span class="lineCov">          1 :     if ( into-&gt;kerns!=NULL )</span>
+<span class="lineNum">     447 </span><span class="lineNoCov">          0 :         for ( last = into-&gt;kerns; last-&gt;next!=NULL; last=last-&gt;next );</span>
+<span class="lineNum">     448 </span><span class="lineCov">          1 :     for ( kc=from-&gt;kerns; kc!=NULL; kc=kc-&gt;next ) {</span>
+<span class="lineNum">     449 </span><span class="lineNoCov">          0 :         cur = _KernClassCopy(kc,into,from,mc);</span>
+<span class="lineNum">     450 </span><span class="lineNoCov">          0 :         if ( last==NULL )</span>
+<span class="lineNum">     451 </span><span class="lineNoCov">          0 :             into-&gt;kerns = cur;</span>
+<span class="lineNum">     452 </span>            :         else
+<span class="lineNum">     453 </span><span class="lineNoCov">          0 :             last-&gt;next = cur;</span>
+<span class="lineNum">     454 </span><span class="lineNoCov">          0 :         last = cur;</span>
+<span class="lineNum">     455 </span>            :     }
+<span class="lineNum">     456 </span>            : 
+<span class="lineNum">     457 </span><span class="lineCov">          1 :     last = NULL;</span>
+<span class="lineNum">     458 </span><span class="lineCov">          1 :     if ( into-&gt;vkerns!=NULL )</span>
+<span class="lineNum">     459 </span><span class="lineNoCov">          0 :         for ( last = into-&gt;vkerns; last-&gt;next!=NULL; last=last-&gt;next )</span>
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 :     for ( kc=from-&gt;vkerns; kc!=NULL; kc=kc-&gt;next ) {</span>
+<span class="lineNum">     461 </span><span class="lineNoCov">          0 :         cur = _KernClassCopy(kc,into,from,mc);</span>
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 :         if ( last==NULL )</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :             into-&gt;vkerns = cur;</span>
+<span class="lineNum">     464 </span>            :         else
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 :             last-&gt;next = cur;</span>
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :         last = cur;</span>
+<span class="lineNum">     467 </span>            :     }
+<a name="468"><span class="lineNum">     468 </span><span class="lineCov">          1 : }</span></a>
+<span class="lineNum">     469 </span>            : 
+<span class="lineNum">     470 </span><span class="lineCov">        129 : struct altuni *AltUniCopy(struct altuni *altuni,SplineFont *noconflicts) {</span>
+<span class="lineNum">     471 </span><span class="lineCov">        129 :     struct altuni *head=NULL, *last=NULL, *cur;</span>
+<span class="lineNum">     472 </span>            : 
+<span class="lineNum">     473 </span><span class="lineCov">        258 :     while ( altuni!=NULL ) {</span>
+<span class="lineNum">     474 </span><span class="lineNoCov">          0 :         if ( noconflicts==NULL || SFGetChar(noconflicts,altuni-&gt;unienc,NULL)==NULL ) {</span>
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 :             cur = chunkalloc(sizeof(struct altuni));</span>
+<span class="lineNum">     476 </span><span class="lineNoCov">          0 :             cur-&gt;unienc = altuni-&gt;unienc;</span>
+<span class="lineNum">     477 </span><span class="lineNoCov">          0 :             cur-&gt;vs = altuni-&gt;vs;</span>
+<span class="lineNum">     478 </span><span class="lineNoCov">          0 :             cur-&gt;fid = altuni-&gt;fid;</span>
+<span class="lineNum">     479 </span><span class="lineNoCov">          0 :             if ( head==NULL )</span>
+<span class="lineNum">     480 </span><span class="lineNoCov">          0 :                 head = cur;</span>
+<span class="lineNum">     481 </span>            :             else
+<span class="lineNum">     482 </span><span class="lineNoCov">          0 :                 last-&gt;next = cur;</span>
+<span class="lineNum">     483 </span><span class="lineNoCov">          0 :             last = cur;</span>
+<span class="lineNum">     484 </span>            :         }
+<span class="lineNum">     485 </span><span class="lineNoCov">          0 :         altuni = altuni-&gt;next;</span>
+<span class="lineNum">     486 </span>            :     }
+<span class="lineNum">     487 </span><span class="lineCov">        129 : return( head );</span>
+<a name="488"><span class="lineNum">     488 </span>            : }</a>
+<span class="lineNum">     489 </span>            : 
+<span class="lineNum">     490 </span><span class="lineCov">        129 : SplineChar *SplineCharCopy(SplineChar *sc,SplineFont *into,struct sfmergecontext *mc) {</span>
+<span class="lineNum">     491 </span><span class="lineCov">        129 :     SplineChar *nsc = SFSplineCharCreate(into);</span>
+<span class="lineNum">     492 </span><span class="lineCov">        129 :     Layer *layers = nsc-&gt;layers;</span>
+<span class="lineNum">     493 </span>            :     int layer, lycopy;
+<span class="lineNum">     494 </span>            : 
+<span class="lineNum">     495 </span><span class="lineCov">        129 :         *nsc = *sc;</span>
+<span class="lineNum">     496 </span>            : 
+<span class="lineNum">     497 </span>            :         /* Copy the instrs from the given sc to the new splinechar */
+<span class="lineNum">     498 </span><span class="lineCov">        129 :         if ( sc-&gt;ttf_instrs_len!=0 ) {</span>
+<span class="lineNum">     499 </span><span class="lineNoCov">          0 :                 nsc-&gt;ttf_instrs = malloc(sc-&gt;ttf_instrs_len);</span>
+<span class="lineNum">     500 </span><span class="lineNoCov">          0 :                 memcpy(nsc-&gt;ttf_instrs,sc-&gt;ttf_instrs,sc-&gt;ttf_instrs_len);</span>
+<span class="lineNum">     501 </span>            :         }
+<span class="lineNum">     502 </span>            : 
+<span class="lineNum">     503 </span>            :         /* We copy the layers just below */
+<span class="lineNum">     504 </span><span class="lineCov">        129 :     nsc-&gt;layer_cnt = into==NULL?2:into-&gt;layer_cnt;</span>
+<span class="lineNum">     505 </span><span class="lineCov">        129 :     nsc-&gt;layers = layers;</span>
+<span class="lineNum">     506 </span><span class="lineCov">        129 :     lycopy = sc-&gt;layer_cnt&gt;nsc-&gt;layer_cnt ? nsc-&gt;layer_cnt : sc-&gt;layer_cnt;</span>
+<span class="lineNum">     507 </span><span class="lineCov">        129 :     memcpy(layers,sc-&gt;layers,lycopy*sizeof(Layer));</span>
+<span class="lineNum">     508 </span><span class="lineCov">        129 :     if ( nsc-&gt;layer_cnt&gt;lycopy )</span>
+<span class="lineNum">     509 </span><span class="lineNoCov">          0 :         memset(layers+lycopy,0,(nsc-&gt;layer_cnt-lycopy)*sizeof(Layer));</span>
+<span class="lineNum">     510 </span><span class="lineCov">        387 :     for ( layer = ly_back; layer&lt;lycopy; ++layer ) {</span>
+<span class="lineNum">     511 </span><span class="lineCov">        258 :         layers[layer].splines = SplinePointListCopy(layers[layer].splines);</span>
+<span class="lineNum">     512 </span><span class="lineCov">        258 :         layers[layer].refs = RefCharsCopy(layers[layer].refs);</span>
+<span class="lineNum">     513 </span><span class="lineCov">        258 :         layers[layer].images = ImageListCopy(layers[layer].images);</span>
+<span class="lineNum">     514 </span><span class="lineCov">        258 :         layers[layer].undoes = NULL;</span>
+<span class="lineNum">     515 </span><span class="lineCov">        258 :         layers[layer].redoes = NULL;</span>
+<span class="lineNum">     516 </span><span class="lineCov">        258 :         if ( into!=NULL ) {</span>
+<span class="lineNum">     517 </span><span class="lineCov">        258 :             if ( into-&gt;layers[layer].order2!=sc-&gt;layers[layer].order2 ) {</span>
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 :                 nsc-&gt;layers[layer].order2 = into-&gt;layers[layer].order2;</span>
+<span class="lineNum">     519 </span><span class="lineNoCov">          0 :                 if ( into-&gt;layers[layer].order2 ) {</span>
+<span class="lineNum">     520 </span><span class="lineNoCov">          0 :                     SCConvertLayerToOrder2(nsc,layer);</span>
+<span class="lineNum">     521 </span>            :                 } else {
+<span class="lineNum">     522 </span><span class="lineNoCov">          0 :                     SCConvertLayerToOrder3(nsc,layer);</span>
+<span class="lineNum">     523 </span>            :                 }
+<span class="lineNum">     524 </span>            :             }
+<span class="lineNum">     525 </span>            :         } else {
+<span class="lineNum">     526 </span>            :             /* Happens in Apple's gvar (MM) fonts */
+<span class="lineNum">     527 </span><span class="lineNoCov">          0 :             nsc-&gt;layers[layer].order2 = sc-&gt;layers[layer].order2;</span>
+<span class="lineNum">     528 </span>            :         }
+<span class="lineNum">     529 </span>            :     }
+<span class="lineNum">     530 </span><span class="lineCov">        129 :     nsc-&gt;parent = into;</span>
+<span class="lineNum">     531 </span><span class="lineCov">        129 :     nsc-&gt;orig_pos = -2;</span>
+<span class="lineNum">     532 </span><span class="lineCov">        129 :     nsc-&gt;name = copy(sc-&gt;name);</span>
+<span class="lineNum">     533 </span><span class="lineCov">        129 :     nsc-&gt;hstem = StemInfoCopy(nsc-&gt;hstem);</span>
+<span class="lineNum">     534 </span><span class="lineCov">        129 :     nsc-&gt;vstem = StemInfoCopy(nsc-&gt;vstem);</span>
+<span class="lineNum">     535 </span><span class="lineCov">        129 :     nsc-&gt;dstem = DStemInfoCopy(nsc-&gt;dstem);</span>
+<span class="lineNum">     536 </span><span class="lineCov">        129 :     nsc-&gt;md = NULL;</span>
+<span class="lineNum">     537 </span><span class="lineCov">        129 :     if ( sc-&gt;countermask_cnt!=0 ) {</span>
+<span class="lineNum">     538 </span><span class="lineNoCov">          0 :         nsc-&gt;countermasks = malloc(sc-&gt;countermask_cnt*sizeof(HintMask));</span>
+<span class="lineNum">     539 </span><span class="lineNoCov">          0 :         memcpy(nsc-&gt;countermasks,sc-&gt;countermasks,sc-&gt;countermask_cnt*sizeof(HintMask));</span>
+<span class="lineNum">     540 </span>            :     }
+<span class="lineNum">     541 </span><span class="lineCov">        129 :     nsc-&gt;anchor = AnchorPointsDuplicate(nsc-&gt;anchor,nsc);</span>
+<span class="lineNum">     542 </span><span class="lineCov">        129 :     nsc-&gt;changed = true;</span>
+<span class="lineNum">     543 </span>            :     /* Fix up dependents later when we know more */
+<span class="lineNum">     544 </span><span class="lineCov">        129 :     nsc-&gt;dependents = NULL;</span>
+<span class="lineNum">     545 </span>            :     
+<span class="lineNum">     546 </span><span class="lineCov">        129 :     nsc-&gt;kerns = NULL;</span>
+<span class="lineNum">     547 </span><span class="lineCov">        129 :     nsc-&gt;vkerns = NULL;</span>
+<span class="lineNum">     548 </span><span class="lineCov">        129 :     nsc-&gt;possub = PSTCopy(nsc-&gt;possub,nsc,mc);</span>
+<span class="lineNum">     549 </span><span class="lineCov">        129 :     nsc-&gt;altuni = AltUniCopy(nsc-&gt;altuni,into);</span>
+<span class="lineNum">     550 </span><span class="lineCov">        129 :     nsc-&gt;charinfo = NULL;</span>
+<span class="lineNum">     551 </span><span class="lineCov">        129 :     nsc-&gt;views = NULL;</span>
+<span class="lineNum">     552 </span><span class="lineCov">        129 : return(nsc);</span>
+<span class="lineNum">     553 </span>            : }
+<span class="lineNum">     554 </span>            : 
+<a name="555"><span class="lineNum">     555 </span>            : static int _SFFindExistingSlot(SplineFont *sf, int unienc, const char *name );</a>
+<span class="lineNum">     556 </span>            : 
+<span class="lineNum">     557 </span><span class="lineCov">        129 : static KernPair *KernsCopy(KernPair *kp,int *mapping,SplineFont *into,</span>
+<span class="lineNum">     558 </span>            :         struct sfmergecontext *mc) {
+<span class="lineNum">     559 </span><span class="lineCov">        129 :     KernPair *head = NULL, *last=NULL, *new;</span>
+<span class="lineNum">     560 </span>            :     int index;
+<span class="lineNum">     561 </span>            : 
+<span class="lineNum">     562 </span><span class="lineCov">        258 :     while ( kp!=NULL ) {</span>
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 :         if ( (index=mapping[kp-&gt;sc-&gt;orig_pos])&lt;0 &amp;&amp; mc-&gt;preserveCrossFontKerning )</span>
+<span class="lineNum">     564 </span><span class="lineNoCov">          0 :             index =  _SFFindExistingSlot(into,kp-&gt;sc-&gt;unicodeenc,kp-&gt;sc-&gt;name);</span>
+<span class="lineNum">     565 </span><span class="lineNoCov">          0 :         if ( index&gt;=0 &amp;&amp; index&lt;into-&gt;glyphcnt &amp;&amp;</span>
+<span class="lineNum">     566 </span><span class="lineNoCov">          0 :                 into-&gt;glyphs[index]!=NULL ) {</span>
+<span class="lineNum">     567 </span><span class="lineNoCov">          0 :             new = chunkalloc(sizeof(KernPair));</span>
+<span class="lineNum">     568 </span><span class="lineNoCov">          0 :             new-&gt;off = kp-&gt;off;</span>
+<span class="lineNum">     569 </span><span class="lineNoCov">          0 :             new-&gt;subtable = MCConvertSubtable(mc,kp-&gt;subtable);</span>
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 :             new-&gt;sc = into-&gt;glyphs[index];</span>
+<span class="lineNum">     571 </span><span class="lineNoCov">          0 :             if ( head==NULL )</span>
+<span class="lineNum">     572 </span><span class="lineNoCov">          0 :                 head = new;</span>
+<span class="lineNum">     573 </span>            :             else
+<span class="lineNum">     574 </span><span class="lineNoCov">          0 :                 last-&gt;next = new;</span>
+<span class="lineNum">     575 </span><span class="lineNoCov">          0 :             last = new;</span>
+<span class="lineNum">     576 </span>            :         }
+<span class="lineNum">     577 </span><span class="lineNoCov">          0 :         kp = kp-&gt;next;</span>
+<span class="lineNum">     578 </span>            :     }
+<span class="lineNum">     579 </span><span class="lineCov">        129 : return( head );</span>
+<a name="580"><span class="lineNum">     580 </span>            : }</a>
+<span class="lineNum">     581 </span>            : 
+<span class="lineNum">     582 </span><span class="lineNoCov">          0 : BDFChar *BDFCharCopy(BDFChar *bc) {</span>
+<span class="lineNum">     583 </span><span class="lineNoCov">          0 :     BDFChar *nbc = malloc(sizeof( BDFChar ));</span>
+<span class="lineNum">     584 </span>            : 
+<span class="lineNum">     585 </span><span class="lineNoCov">          0 :     *nbc = *bc;</span>
+<span class="lineNum">     586 </span><span class="lineNoCov">          0 :     nbc-&gt;views = NULL;</span>
+<span class="lineNum">     587 </span><span class="lineNoCov">          0 :     nbc-&gt;selection = NULL;</span>
+<span class="lineNum">     588 </span><span class="lineNoCov">          0 :     nbc-&gt;undoes = NULL;</span>
+<span class="lineNum">     589 </span><span class="lineNoCov">          0 :     nbc-&gt;redoes = NULL;</span>
+<span class="lineNum">     590 </span><span class="lineNoCov">          0 :     nbc-&gt;bitmap = malloc((nbc-&gt;ymax-nbc-&gt;ymin+1)*nbc-&gt;bytes_per_line);</span>
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 :     memcpy(nbc-&gt;bitmap,bc-&gt;bitmap,(nbc-&gt;ymax-nbc-&gt;ymin+1)*nbc-&gt;bytes_per_line);</span>
+<span class="lineNum">     592 </span><span class="lineNoCov">          0 : return( nbc );</span>
+<a name="593"><span class="lineNum">     593 </span>            : }</a>
+<span class="lineNum">     594 </span>            : 
+<span class="lineNum">     595 </span><span class="lineNoCov">          0 : void BitmapsCopy(SplineFont *to, SplineFont *from, int to_index, int from_index ) {</span>
+<span class="lineNum">     596 </span>            :     BDFFont *f_bdf, *t_bdf;
+<span class="lineNum">     597 </span>            : 
+<span class="lineNum">     598 </span>            :     /* We assume that the bitmaps are ordered. They should be */
+<span class="lineNum">     599 </span><span class="lineNoCov">          0 :     for ( t_bdf=to-&gt;bitmaps, f_bdf=from-&gt;bitmaps; t_bdf!=NULL &amp;&amp; f_bdf!=NULL; ) {</span>
+<span class="lineNum">     600 </span><span class="lineNoCov">          0 :         if ( t_bdf-&gt;pixelsize == f_bdf-&gt;pixelsize ) {</span>
+<span class="lineNum">     601 </span><span class="lineNoCov">          0 :             if ( f_bdf-&gt;glyphs[from_index]!=NULL ) {</span>
+<span class="lineNum">     602 </span><span class="lineNoCov">          0 :                 BDFCharFree(t_bdf-&gt;glyphs[to_index]);</span>
+<span class="lineNum">     603 </span><span class="lineNoCov">          0 :                 t_bdf-&gt;glyphs[to_index] = BDFCharCopy(f_bdf-&gt;glyphs[from_index]);</span>
+<span class="lineNum">     604 </span><span class="lineNoCov">          0 :                 t_bdf-&gt;glyphs[to_index]-&gt;sc = to-&gt;glyphs[to_index];</span>
+<span class="lineNum">     605 </span><span class="lineNoCov">          0 :                 t_bdf-&gt;glyphs[to_index]-&gt;orig_pos = to_index;</span>
+<span class="lineNum">     606 </span>            :             }
+<span class="lineNum">     607 </span><span class="lineNoCov">          0 :             t_bdf = t_bdf-&gt;next;</span>
+<span class="lineNum">     608 </span><span class="lineNoCov">          0 :             f_bdf = f_bdf-&gt;next;</span>
+<span class="lineNum">     609 </span><span class="lineNoCov">          0 :         } else if ( t_bdf-&gt;pixelsize &lt; f_bdf-&gt;pixelsize ) {</span>
+<span class="lineNum">     610 </span><span class="lineNoCov">          0 :             t_bdf = t_bdf-&gt;next;</span>
+<span class="lineNum">     611 </span><span class="lineNoCov">          0 :         } else if ( t_bdf-&gt;pixelsize &gt; f_bdf-&gt;pixelsize ) {</span>
+<span class="lineNum">     612 </span>            :             /* Insert these bitmaps? Or skip? */
+<span class="lineNum">     613 </span><span class="lineNoCov">          0 :             f_bdf = f_bdf-&gt;next;</span>
+<span class="lineNum">     614 </span>            :         }
+<span class="lineNum">     615 </span>            :     }
+<a name="616"><span class="lineNum">     616 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     617 </span>            : 
+<span class="lineNum">     618 </span><span class="lineCov">         10 : void __GlyphHashFree(struct glyphnamehash *hash) {</span>
+<span class="lineNum">     619 </span>            :     struct glyphnamebucket *test, *next;
+<span class="lineNum">     620 </span>            :     int i;
+<span class="lineNum">     621 </span>            : 
+<span class="lineNum">     622 </span><span class="lineCov">         10 :     if ( hash==NULL )</span>
+<span class="lineNum">     623 </span><span class="lineCov">         10 : return;</span>
+<span class="lineNum">     624 </span><span class="lineCov">       2580 :     for ( i=0; i&lt;GN_HSIZE; ++i ) {</span>
+<span class="lineNum">     625 </span><span class="lineCov">       9030 :         for ( test = hash-&gt;table[i]; test!=NULL; test = next ) {</span>
+<span class="lineNum">     626 </span><span class="lineCov">       6460 :             next = test-&gt;next;</span>
+<span class="lineNum">     627 </span><span class="lineCov">       6460 :             chunkfree(test,sizeof(struct glyphnamebucket));</span>
+<span class="lineNum">     628 </span>            :         }
+<span class="lineNum">     629 </span>            :     }
+<a name="630"><span class="lineNum">     630 </span>            : }</a>
+<span class="lineNum">     631 </span>            : 
+<span class="lineNum">     632 </span><span class="lineCov">         45 : static void _GlyphHashFree(SplineFont *sf) {</span>
+<span class="lineNum">     633 </span>            : 
+<span class="lineNum">     634 </span><span class="lineCov">         45 :     if ( sf-&gt;glyphnames==NULL )</span>
+<span class="lineNum">     635 </span><span class="lineCov">         80 : return;</span>
+<span class="lineNum">     636 </span><span class="lineCov">         10 :     __GlyphHashFree(sf-&gt;glyphnames);</span>
+<span class="lineNum">     637 </span><span class="lineCov">         10 :     free(sf-&gt;glyphnames);</span>
+<span class="lineNum">     638 </span><span class="lineCov">         10 :     sf-&gt;glyphnames = NULL;</span>
+<a name="639"><span class="lineNum">     639 </span>            : }</a>
+<span class="lineNum">     640 </span>            : 
+<span class="lineNum">     641 </span><span class="lineCov">         41 : void GlyphHashFree(SplineFont *sf) {</span>
+<span class="lineNum">     642 </span><span class="lineCov">         41 :     _GlyphHashFree(sf);</span>
+<span class="lineNum">     643 </span><span class="lineCov">         41 :     if ( sf-&gt;cidmaster )</span>
+<span class="lineNum">     644 </span><span class="lineCov">          4 :         _GlyphHashFree(sf-&gt;cidmaster);</span>
+<a name="645"><span class="lineNum">     645 </span><span class="lineCov">         41 : }</span></a>
+<span class="lineNum">     646 </span>            : 
+<span class="lineNum">     647 </span><span class="lineCov">         32 : static void GlyphHashCreate(SplineFont *sf) {</span>
+<span class="lineNum">     648 </span>            :     int i, k, hash;
+<span class="lineNum">     649 </span>            :     SplineFont *_sf;
+<span class="lineNum">     650 </span>            :     struct glyphnamehash *gnh;
+<span class="lineNum">     651 </span>            :     struct glyphnamebucket *new;
+<span class="lineNum">     652 </span>            : 
+<span class="lineNum">     653 </span><span class="lineCov">         32 :     if ( sf-&gt;glyphnames!=NULL )</span>
+<span class="lineNum">     654 </span><span class="lineCov">         32 : return;</span>
+<span class="lineNum">     655 </span><span class="lineCov">         32 :     sf-&gt;glyphnames = gnh = calloc(1,sizeof(*gnh));</span>
+<span class="lineNum">     656 </span><span class="lineCov">         32 :     k = 0;</span>
+<span class="lineNum">     657 </span>            :     do {
+<span class="lineNum">     658 </span><span class="lineCov">         32 :         _sf = k&lt;sf-&gt;subfontcnt ? sf-&gt;subfonts[k] : sf;</span>
+<span class="lineNum">     659 </span>            :         /* I walk backwards because there are some ttf files where multiple */
+<span class="lineNum">     660 </span>            :         /*  glyphs get the same name. In the cases I've seen only one of these */
+<span class="lineNum">     661 </span>            :         /*  has an encoding. That's the one we want. It will be earlier in the */
+<span class="lineNum">     662 </span>            :         /*  font than the others. If we build the list backwards then it will */
+<span class="lineNum">     663 </span>            :         /*  be the top name in the bucket, and will be the one we return */
+<span class="lineNum">     664 </span><span class="lineCov">     145270 :         for ( i=_sf-&gt;glyphcnt-1; i&gt;=0; --i ) if ( _sf-&gt;glyphs[i]!=NULL ) {</span>
+<span class="lineNum">     665 </span><span class="lineCov">      13460 :             new = chunkalloc(sizeof(struct glyphnamebucket));</span>
+<span class="lineNum">     666 </span><span class="lineCov">      13460 :             new-&gt;sc = _sf-&gt;glyphs[i];</span>
+<span class="lineNum">     667 </span><span class="lineCov">      13460 :             hash = hashname(new-&gt;sc-&gt;name);</span>
+<span class="lineNum">     668 </span><span class="lineCov">      13460 :             new-&gt;next = gnh-&gt;table[hash];</span>
+<span class="lineNum">     669 </span><span class="lineCov">      13460 :             gnh-&gt;table[hash] = new;</span>
+<span class="lineNum">     670 </span>            :         }
+<span class="lineNum">     671 </span><span class="lineCov">         32 :         ++k;</span>
+<span class="lineNum">     672 </span><span class="lineCov">         32 :     } while ( k&lt;sf-&gt;subfontcnt );</span>
+<a name="673"><span class="lineNum">     673 </span>            : }</a>
+<span class="lineNum">     674 </span>            : 
+<span class="lineNum">     675 </span><span class="lineCov">        900 : void SFHashGlyph(SplineFont *sf,SplineChar *sc) {</span>
+<span class="lineNum">     676 </span>            :     /* sc just got added to the font. Put it in the lookup */
+<span class="lineNum">     677 </span>            :     int hash;
+<span class="lineNum">     678 </span>            :     struct glyphnamebucket *new;
+<span class="lineNum">     679 </span>            : 
+<span class="lineNum">     680 </span><span class="lineCov">        900 :     if ( sf-&gt;glyphnames==NULL )</span>
+<span class="lineNum">     681 </span><span class="lineCov">       1799 : return;         /* No hash table, nothing to update */</span>
+<span class="lineNum">     682 </span>            : 
+<span class="lineNum">     683 </span><span class="lineCov">          1 :     new = chunkalloc(sizeof(struct glyphnamebucket));</span>
+<span class="lineNum">     684 </span><span class="lineCov">          1 :     new-&gt;sc = sc;</span>
+<span class="lineNum">     685 </span><span class="lineCov">          1 :     hash = hashname(sc-&gt;name);</span>
+<span class="lineNum">     686 </span><span class="lineCov">          1 :     new-&gt;next = sf-&gt;glyphnames-&gt;table[hash];</span>
+<span class="lineNum">     687 </span><span class="lineCov">          1 :     sf-&gt;glyphnames-&gt;table[hash] = new;</span>
+<a name="688"><span class="lineNum">     688 </span>            : }</a>
+<span class="lineNum">     689 </span>            : 
+<span class="lineNum">     690 </span><span class="lineCov">      57168 : SplineChar *SFHashName(SplineFont *sf,const char *name) {</span>
+<span class="lineNum">     691 </span>            :     struct glyphnamebucket *test;
+<span class="lineNum">     692 </span>            : 
+<span class="lineNum">     693 </span><span class="lineCov">      57168 :     if ( sf-&gt;glyphnames==NULL )</span>
+<span class="lineNum">     694 </span><span class="lineCov">         32 :         GlyphHashCreate(sf);</span>
+<span class="lineNum">     695 </span>            : 
+<span class="lineNum">     696 </span><span class="lineCov">     150593 :     for ( test=sf-&gt;glyphnames-&gt;table[hashname(name)]; test!=NULL; test = test-&gt;next )</span>
+<span class="lineNum">     697 </span><span class="lineCov">     149725 :         if ( strcmp(test-&gt;sc-&gt;name,name)==0 )</span>
+<span class="lineNum">     698 </span><span class="lineCov">      56300 : return( test-&gt;sc );</span>
+<span class="lineNum">     699 </span>            : 
+<span class="lineNum">     700 </span><span class="lineCov">        868 : return( NULL );</span>
+<a name="701"><span class="lineNum">     701 </span>            : }</a>
+<span class="lineNum">     702 </span>            : 
+<span class="lineNum">     703 </span><span class="lineCov">  150699613 : static int SCUniMatch(SplineChar *sc,int unienc) {</span>
+<span class="lineNum">     704 </span>            :     struct altuni *alt;
+<span class="lineNum">     705 </span>            : 
+<span class="lineNum">     706 </span><span class="lineCov">  150699613 :     if ( sc-&gt;unicodeenc==unienc )</span>
+<span class="lineNum">     707 </span><span class="lineCov">       8678 : return( true );</span>
+<span class="lineNum">     708 </span><span class="lineCov">  150692085 :     for ( alt=sc-&gt;altuni; alt!=NULL; alt=alt-&gt;next )</span>
+<span class="lineNum">     709 </span><span class="lineCov">       1153 :         if ( alt-&gt;unienc==unienc )</span>
+<span class="lineNum">     710 </span><span class="lineCov">          3 : return( true );</span>
+<span class="lineNum">     711 </span>            : 
+<span class="lineNum">     712 </span><span class="lineCov">  150690932 : return( false );</span>
+<span class="lineNum">     713 </span>            : }
+<span class="lineNum">     714 </span>            : 
+<a name="715"><span class="lineNum">     715 </span>            : /* Find the position in the glyph list where this code point/name is found. */</a>
+<span class="lineNum">     716 </span>            : /*  Returns -1 else on error */
+<span class="lineNum">     717 </span><span class="lineCov">      61923 : int SFFindGID(SplineFont *sf, int unienc, const char *name ) {</span>
+<span class="lineNum">     718 </span>            :     int gid;
+<span class="lineNum">     719 </span>            :     SplineChar *sc;
+<span class="lineNum">     720 </span>            : 
+<span class="lineNum">     721 </span><span class="lineCov">      61923 :     if ( unienc!=-1 ) {</span>
+<span class="lineNum">     722 </span><span class="lineCov">   20844553 :         for ( gid=0; gid&lt;sf-&gt;glyphcnt; ++gid ) if ( sf-&gt;glyphs[gid]!=NULL ) {</span>
+<span class="lineNum">     723 </span><span class="lineCov">    6033195 :             if ( SCUniMatch(sf-&gt;glyphs[gid],unienc) )</span>
+<span class="lineNum">     724 </span><span class="lineCov">       6511 : return( gid );</span>
+<span class="lineNum">     725 </span>            :         }
+<span class="lineNum">     726 </span>            :     }
+<span class="lineNum">     727 </span><span class="lineCov">      55412 :     if ( name!=NULL ) {</span>
+<span class="lineNum">     728 </span><span class="lineCov">      50461 :         sc = SFHashName(sf,name);</span>
+<span class="lineNum">     729 </span><span class="lineCov">      50461 :         if ( sc!=NULL )</span>
+<span class="lineNum">     730 </span><span class="lineCov">      49903 : return( sc-&gt;orig_pos );</span>
+<span class="lineNum">     731 </span>            :     }
+<span class="lineNum">     732 </span>            : 
+<span class="lineNum">     733 </span><span class="lineCov">       5509 : return ( -1 );</span>
+<span class="lineNum">     734 </span>            : }
+<span class="lineNum">     735 </span>            : 
+<a name="736"><span class="lineNum">     736 </span>            : /* Find the position in the current encoding where this code point/name should*/</a>
+<span class="lineNum">     737 </span>            : /*  be found. (or for unencoded glyphs where it is found). Returns -1 else */
+<span class="lineNum">     738 </span><span class="lineCov">     138692 : int SFFindSlot(SplineFont *sf, EncMap *map, int unienc, const char *name ) {</span>
+<span class="lineNum">     739 </span><span class="lineCov">     138692 :     int index=-1, pos;</span>
+<span class="lineNum">     740 </span>            :     struct cidmap *cidmap;
+<span class="lineNum">     741 </span>            : 
+<span class="lineNum">     742 </span><span class="lineCov">     138692 :     if ( sf-&gt;cidmaster!=NULL &amp;&amp; !map-&gt;enc-&gt;is_compact &amp;&amp;</span>
+<span class="lineNum">     743 </span><span class="lineNoCov">          0 :                 (cidmap = FindCidMap(sf-&gt;cidmaster-&gt;cidregistry,</span>
+<span class="lineNum">     744 </span><span class="lineNoCov">          0 :                                     sf-&gt;cidmaster-&gt;ordering,</span>
+<span class="lineNum">     745 </span><span class="lineNoCov">          0 :                                     sf-&gt;cidmaster-&gt;supplement,</span>
+<span class="lineNum">     746 </span><span class="lineNoCov">          0 :                                     sf-&gt;cidmaster))!=NULL )</span>
+<span class="lineNum">     747 </span><span class="lineNoCov">          0 :         index = NameUni2CID(cidmap,unienc,name);</span>
+<span class="lineNum">     748 </span><span class="lineCov">     138692 :     if ( index!=-1 )</span>
+<span class="lineNum">     749 </span>            :         /* All done */;
+<span class="lineNum">     750 </span><span class="lineCov">     145215 :     else if ( (map-&gt;enc-&gt;is_custom || map-&gt;enc-&gt;is_compact ||</span>
+<span class="lineNum">     751 </span><span class="lineCov">     138696 :             map-&gt;enc-&gt;is_original) &amp;&amp; unienc!=-1 ) {</span>
+<span class="lineNum">     752 </span>            :         /* Just on the off-chance that it is unicode after all */
+<span class="lineNum">     753 </span><span class="lineCov">     264366 :         if ( unienc&lt;map-&gt;enccount &amp;&amp; map-&gt;map[unienc]!=-1 &amp;&amp;</span>
+<span class="lineNum">     754 </span><span class="lineCov">       4452 :                 sf-&gt;glyphs[map-&gt;map[unienc]]!=NULL &amp;&amp;</span>
+<span class="lineNum">     755 </span><span class="lineCov">       2226 :                 sf-&gt;glyphs[map-&gt;map[unienc]]-&gt;unicodeenc==unienc )</span>
+<span class="lineNum">     756 </span><span class="lineNoCov">          0 :             index = unienc;</span>
+<span class="lineNum">     757 </span><span class="lineCov">  144795318 :         else for ( index = map-&gt;enccount-1; index&gt;=0; --index ) {</span>
+<span class="lineNum">     758 </span><span class="lineCov">  289332836 :             if ( (pos = map-&gt;map[index])!=-1 &amp;&amp; sf-&gt;glyphs[pos]!=NULL &amp;&amp;</span>
+<span class="lineNum">     759 </span><span class="lineCov">  144666418 :                         SCUniMatch(sf-&gt;glyphs[pos],unienc) )</span>
+<span class="lineNum">     760 </span><span class="lineCov">       2170 :         break;</span>
+<span class="lineNum">     761 </span>            :         }
+<span class="lineNum">     762 </span><span class="lineCov">       7622 :     } else if ( unienc!=-1 &amp;&amp;</span>
+<span class="lineNum">     763 </span><span class="lineCov">       3506 :             ((unienc&lt;0x10000 &amp;&amp; map-&gt;enc-&gt;is_unicodebmp) ||</span>
+<span class="lineNum">     764 </span><span class="lineCov">        443 :              (unienc&lt;0x110000 &amp;&amp; map-&gt;enc-&gt;is_unicodefull))) {</span>
+<span class="lineNum">     765 </span><span class="lineCov">       3063 :          index = unienc;</span>
+<span class="lineNum">     766 </span><span class="lineCov">       4559 :     } else if ( unienc!=-1 ) {</span>
+<span class="lineNum">     767 </span><span class="lineCov">        443 :         index = EncFromUni(unienc,map-&gt;enc);</span>
+<span class="lineNum">     768 </span><span class="lineCov">        443 :         if ( index&lt;0 || index&gt;=map-&gt;enccount ) {</span>
+<span class="lineNum">     769 </span><span class="lineCov">      16192 :             for ( index=map-&gt;enc-&gt;char_cnt; index&lt;map-&gt;enccount; ++index )</span>
+<span class="lineNum">     770 </span><span class="lineCov">      15840 :                 if ( (pos = map-&gt;map[index])!=-1 &amp;&amp; sf-&gt;glyphs[pos]!=NULL &amp;&amp;</span>
+<span class="lineNum">     771 </span><span class="lineNoCov">          0 :                         SCUniMatch(sf-&gt;glyphs[pos],unienc) )</span>
+<span class="lineNum">     772 </span><span class="lineNoCov">          0 :             break;</span>
+<span class="lineNum">     773 </span><span class="lineCov">        352 :             if ( index&gt;=map-&gt;enccount )</span>
+<span class="lineNum">     774 </span><span class="lineCov">        352 :                 index = -1;</span>
+<span class="lineNum">     775 </span>            :         }
+<span class="lineNum">     776 </span>            :     }
+<span class="lineNum">     777 </span><span class="lineCov">     138692 :     if ( index==-1 &amp;&amp; name!=NULL ) {</span>
+<span class="lineNum">     778 </span><span class="lineCov">       4292 :         SplineChar *sc = SFHashName(sf,name);</span>
+<span class="lineNum">     779 </span><span class="lineCov">       4292 :         if ( sc!=NULL ) index = map-&gt;backmap[sc-&gt;orig_pos];</span>
+<span class="lineNum">     780 </span><span class="lineCov">       4292 :         if ( index==-1 ) {</span>
+<span class="lineNum">     781 </span><span class="lineCov">        181 :             unienc = UniFromName(name,sf-&gt;uni_interp,map-&gt;enc);</span>
+<span class="lineNum">     782 </span><span class="lineCov">        181 :             if ( unienc!=-1 )</span>
+<span class="lineNum">     783 </span><span class="lineCov">        177 : return( SFFindSlot(sf,map,unienc,NULL));</span>
+<span class="lineNum">     784 </span><span class="lineCov">          4 :             if ( map-&gt;enc-&gt;psnames!=NULL ) {</span>
+<span class="lineNum">     785 </span><span class="lineNoCov">          0 :                 for ( index = map-&gt;enc-&gt;char_cnt-1; index&gt;=0; --index )</span>
+<span class="lineNum">     786 </span><span class="lineNoCov">          0 :                     if ( map-&gt;enc-&gt;psnames[index]!=NULL &amp;&amp;</span>
+<span class="lineNum">     787 </span><span class="lineNoCov">          0 :                             strcmp(map-&gt;enc-&gt;psnames[index],name)==0 )</span>
+<span class="lineNum">     788 </span><span class="lineNoCov">          0 : return( index );</span>
+<span class="lineNum">     789 </span>            :             }
+<span class="lineNum">     790 </span>            :         }
+<span class="lineNum">     791 </span>            :     }
+<span class="lineNum">     792 </span>            : 
+<span class="lineNum">     793 </span><span class="lineCov">     138515 : return( index );</span>
+<a name="794"><span class="lineNum">     794 </span>            : }</a>
+<span class="lineNum">     795 </span>            : 
+<span class="lineNum">     796 </span><span class="lineNoCov">          0 : int SFCIDFindExistingChar(SplineFont *sf, int unienc, const char *name ) {</span>
+<span class="lineNum">     797 </span>            :     int j,ret;
+<span class="lineNum">     798 </span>            : 
+<span class="lineNum">     799 </span><span class="lineNoCov">          0 :     if ( sf-&gt;subfonts==NULL &amp;&amp; sf-&gt;cidmaster==NULL )</span>
+<span class="lineNum">     800 </span><span class="lineNoCov">          0 : return( SFFindExistingSlot(sf,unienc,name));</span>
+<span class="lineNum">     801 </span><span class="lineNoCov">          0 :     if ( sf-&gt;cidmaster!=NULL )</span>
+<span class="lineNum">     802 </span><span class="lineNoCov">          0 :         sf=sf-&gt;cidmaster;</span>
+<span class="lineNum">     803 </span><span class="lineNoCov">          0 :     for ( j=0; j&lt;sf-&gt;subfontcnt; ++j )</span>
+<span class="lineNum">     804 </span><span class="lineNoCov">          0 :         if (( ret = SFFindExistingSlot(sf,unienc,name))!=-1 )</span>
+<span class="lineNum">     805 </span><span class="lineNoCov">          0 : return( ret );</span>
+<span class="lineNum">     806 </span><span class="lineNoCov">          0 : return( -1 );</span>
+<a name="807"><span class="lineNum">     807 </span>            : }</a>
+<span class="lineNum">     808 </span>            : 
+<span class="lineNum">     809 </span><span class="lineCov">      60372 : int SFCIDFindCID(SplineFont *sf, int unienc, const char *name ) {</span>
+<span class="lineNum">     810 </span>            :         // For a given SplineFont *sf, find the index of the SplineChar with code unienc or name *name.
+<span class="lineNum">     811 </span>            :     int j,ret;
+<span class="lineNum">     812 </span>            :     struct cidmap *cidmap;
+<span class="lineNum">     813 </span>            :         
+<span class="lineNum">     814 </span>            :         // If there is a cidmap or if there are multiple subfonts, do complicated things.
+<span class="lineNum">     815 </span><span class="lineCov">      60372 :     if ( sf-&gt;cidmaster!=NULL || sf-&gt;subfontcnt!=0 ) {</span>
+<span class="lineNum">     816 </span><span class="lineCov">        517 :                 if ( sf-&gt;cidmaster!=NULL )</span>
+<span class="lineNum">     817 </span><span class="lineNoCov">          0 :                         sf=sf-&gt;cidmaster;</span>
+<span class="lineNum">     818 </span><span class="lineCov">        517 :                 cidmap = FindCidMap(sf-&gt;cidregistry,sf-&gt;ordering,sf-&gt;supplement,sf);</span>
+<span class="lineNum">     819 </span><span class="lineCov">        517 :                 ret = NameUni2CID(cidmap,unienc,name);</span>
+<span class="lineNum">     820 </span><span class="lineCov">        517 :                 if ( ret!=-1 )</span>
+<span class="lineNum">     821 </span><span class="lineNoCov">          0 :                     return( ret );</span>
+<span class="lineNum">     822 </span>            :     }
+<span class="lineNum">     823 </span>            : 
+<span class="lineNum">     824 </span>            :         // If things are simple, perform a flat map.
+<span class="lineNum">     825 </span><span class="lineCov">      60372 :     if ( sf-&gt;subfonts==NULL &amp;&amp; sf-&gt;cidmaster==NULL )</span>
+<span class="lineNum">     826 </span><span class="lineCov">      59855 :         return( SFFindGID(sf,unienc,name));</span>
+<span class="lineNum">     827 </span>            : 
+<span class="lineNum">     828 </span>            :         // If the cid lookup from before failed, look through subfonts.
+<span class="lineNum">     829 </span><span class="lineCov">        517 :     if ( sf-&gt;cidmaster!=NULL )</span>
+<span class="lineNum">     830 </span><span class="lineNoCov">          0 :                 sf=sf-&gt;cidmaster;</span>
+<span class="lineNum">     831 </span><span class="lineCov">       2585 :     for ( j=0; j&lt;sf-&gt;subfontcnt; ++j )</span>
+<span class="lineNum">     832 </span><span class="lineCov">       2068 :                 if (( ret = SFFindGID(sf,unienc,name))!=-1 )</span>
+<span class="lineNum">     833 </span><span class="lineNoCov">          0 :                         return( ret );</span>
+<span class="lineNum">     834 </span>            : 
+<span class="lineNum">     835 </span><span class="lineCov">        517 :         return( -1 );</span>
+<a name="836"><span class="lineNum">     836 </span>            : }</a>
+<span class="lineNum">     837 </span>            : 
+<span class="lineNum">     838 </span><span class="lineNoCov">          0 : int SFHasCID(SplineFont *sf,int cid) {</span>
+<span class="lineNum">     839 </span>            :     int i;
+<span class="lineNum">     840 </span>            :     /* What subfont (if any) contains this cid? */
+<span class="lineNum">     841 </span><span class="lineNoCov">          0 :     if ( sf-&gt;cidmaster!=NULL )</span>
+<span class="lineNum">     842 </span><span class="lineNoCov">          0 :         sf=sf-&gt;cidmaster;</span>
+<span class="lineNum">     843 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;sf-&gt;subfontcnt; ++i )</span>
+<span class="lineNum">     844 </span><span class="lineNoCov">          0 :         if ( cid&lt;sf-&gt;subfonts[i]-&gt;glyphcnt &amp;&amp;</span>
+<span class="lineNum">     845 </span><span class="lineNoCov">          0 :                 SCWorthOutputting(sf-&gt;subfonts[i]-&gt;glyphs[cid]) )</span>
+<span class="lineNum">     846 </span><span class="lineNoCov">          0 : return( i );</span>
+<span class="lineNum">     847 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;sf-&gt;subfontcnt; ++i )</span>
+<span class="lineNum">     848 </span><span class="lineNoCov">          0 :         if ( cid&lt;sf-&gt;subfonts[i]-&gt;glyphcnt &amp;&amp; sf-&gt;subfonts[i]-&gt;glyphs[cid]!=NULL )</span>
+<span class="lineNum">     849 </span><span class="lineNoCov">          0 : return( i );</span>
+<span class="lineNum">     850 </span>            : 
+<span class="lineNum">     851 </span><span class="lineNoCov">          0 : return( -1 );</span>
+<a name="852"><span class="lineNum">     852 </span>            : }</a>
+<span class="lineNum">     853 </span>            : 
+<span class="lineNum">     854 </span><span class="lineCov">      60372 : SplineChar *SFGetChar(SplineFont *sf, int unienc, const char *name ) {</span>
+<span class="lineNum">     855 </span>            :         // This function presumably finds a glyph matching the code or name supplied. Undefined code is unienc = -1. Undefined name is name = NULL.
+<span class="lineNum">     856 </span><span class="lineCov">      60372 :     int ind = -1;</span>
+<span class="lineNum">     857 </span>            :     int j;
+<span class="lineNum">     858 </span>            :     char *pt, *start; int ch;
+<span class="lineNum">     859 </span>            : 
+<span class="lineNum">     860 </span><span class="lineCov">      60372 :     if ( name==NULL )</span>
+<span class="lineNum">     861 </span><span class="lineCov">       9451 :                 ind = SFCIDFindCID(sf,unienc,NULL);</span>
+<span class="lineNum">     862 </span>            :     else {
+<span class="lineNum">     863 </span><span class="lineCov">      50921 :                 for ( start=(char *) name; *start==' '; ++start );</span>
+<span class="lineNum">     864 </span><span class="lineCov">      50921 :                 for ( pt=start; *pt!='\0' &amp;&amp; *pt!='('; ++pt );</span>
+<span class="lineNum">     865 </span><span class="lineCov">      50921 :                 ch = *pt;</span>
+<span class="lineNum">     866 </span>            :                 // We truncate any glyph name before parentheses.
+<span class="lineNum">     867 </span><span class="lineCov">      50921 :                 if ( ch=='\0' )</span>
+<span class="lineNum">     868 </span><span class="lineCov">      50921 :                         ind = SFCIDFindCID(sf,unienc,start);</span>
+<span class="lineNum">     869 </span>            :                 else {
+<span class="lineNum">     870 </span>            :                         char *tmp;
+<span class="lineNum">     871 </span><span class="lineNoCov">          0 :                         if ( (tmp = copy(name)) ) {</span>
+<span class="lineNum">     872 </span><span class="lineNoCov">          0 :                                 tmp[pt-name] = '\0';</span>
+<span class="lineNum">     873 </span><span class="lineNoCov">          0 :                                 ind = SFCIDFindCID(sf,unienc,tmp+(start-name));</span>
+<span class="lineNum">     874 </span><span class="lineNoCov">          0 :                                 tmp[pt-name] = ch;</span>
+<span class="lineNum">     875 </span><span class="lineNoCov">          0 :                                 free(tmp);</span>
+<span class="lineNum">     876 </span>            :                         }
+<span class="lineNum">     877 </span>            :                 }
+<span class="lineNum">     878 </span>            :     }
+<span class="lineNum">     879 </span><span class="lineCov">      60372 :     if ( ind==-1 )</span>
+<span class="lineNum">     880 </span><span class="lineCov">       3958 :                 return( NULL );</span>
+<span class="lineNum">     881 </span>            : 
+<span class="lineNum">     882 </span>            :         // If the typeface is simple, return the result from the flat glyph collection.
+<span class="lineNum">     883 </span><span class="lineCov">      56414 :     if ( sf-&gt;subfonts==NULL &amp;&amp; sf-&gt;cidmaster==NULL )</span>
+<span class="lineNum">     884 </span><span class="lineCov">      56414 :                 return( sf-&gt;glyphs[ind]);</span>
+<span class="lineNum">     885 </span>            : 
+<span class="lineNum">     886 </span><span class="lineNoCov">          0 :     if ( sf-&gt;cidmaster!=NULL )</span>
+<span class="lineNum">     887 </span><span class="lineNoCov">          0 :                 sf=sf-&gt;cidmaster;</span>
+<span class="lineNum">     888 </span>            : 
+<span class="lineNum">     889 </span>            :         // Find a subfont that contains the glyph in question.
+<span class="lineNum">     890 </span><span class="lineNoCov">          0 :     j = SFHasCID(sf,ind);</span>
+<span class="lineNum">     891 </span><span class="lineNoCov">          0 :     if ( j==-1 )</span>
+<span class="lineNum">     892 </span><span class="lineNoCov">          0 :                 return( NULL );</span>
+<span class="lineNum">     893 </span>            : 
+<span class="lineNum">     894 </span><span class="lineNoCov">          0 :         return( sf-&gt;subfonts[j]-&gt;glyphs[ind] );</span>
+<a name="895"><span class="lineNum">     895 </span>            : }</a>
+<span class="lineNum">     896 </span>            : 
+<span class="lineNum">     897 </span><span class="lineNoCov">          0 : SplineChar *SFGetOrMakeChar(SplineFont *sf, int unienc, const char *name ) {</span>
+<span class="lineNum">     898 </span><span class="lineNoCov">          0 :     SplineChar *sc=NULL;</span>
+<span class="lineNum">     899 </span>            : 
+<span class="lineNum">     900 </span><span class="lineNoCov">          0 :     if ( sf-&gt;fv!=NULL ) {</span>
+<span class="lineNum">     901 </span><span class="lineNoCov">          0 :         int ind = SFFindSlot(sf,sf-&gt;fv-&gt;map,unienc,name);</span>
+<span class="lineNum">     902 </span><span class="lineNoCov">          0 :         if ( ind!=-1 )</span>
+<span class="lineNum">     903 </span><span class="lineNoCov">          0 :             sc = SFMakeChar(sf,sf-&gt;fv-&gt;map,ind);</span>
+<span class="lineNum">     904 </span>            :     } else
+<span class="lineNum">     905 </span><span class="lineNoCov">          0 :         sc = SFGetChar(sf,unienc,name);</span>
+<span class="lineNum">     906 </span><span class="lineNoCov">          0 :     if ( sc==NULL &amp;&amp; (unienc!=-1 || name!=NULL)) {</span>
+<span class="lineNum">     907 </span><span class="lineNoCov">          0 :         sc = SFSplineCharCreate(sf);</span>
+<span class="lineNum">     908 </span><span class="lineNoCov">          0 :         if ( sf-&gt;strokedfont ) {</span>
+<span class="lineNum">     909 </span><span class="lineNoCov">          0 :             sc-&gt;layers[ly_fore].dostroke = true;</span>
+<span class="lineNum">     910 </span><span class="lineNoCov">          0 :             sc-&gt;layers[ly_fore].dofill = false;</span>
+<span class="lineNum">     911 </span>            :         }
+<span class="lineNum">     912 </span><span class="lineNoCov">          0 :         sc-&gt;unicodeenc = unienc;</span>
+<span class="lineNum">     913 </span><span class="lineNoCov">          0 :         if ( name!=NULL )</span>
+<span class="lineNum">     914 </span><span class="lineNoCov">          0 :             sc-&gt;name = copy(name);</span>
+<span class="lineNum">     915 </span>            :         else {
+<span class="lineNum">     916 </span>            :             char buffer[40];
+<span class="lineNum">     917 </span><span class="lineNoCov">          0 :             sprintf(buffer,&quot;glyph%d&quot;, sf-&gt;glyphcnt);</span>
+<span class="lineNum">     918 </span><span class="lineNoCov">          0 :             sc-&gt;name = copy(buffer);</span>
+<span class="lineNum">     919 </span>            :         }
+<span class="lineNum">     920 </span><span class="lineNoCov">          0 :         SFAddGlyphAndEncode(sf,sc,NULL,-1);</span>
+<span class="lineNum">     921 </span>            :         /*SCLigDefault(sc);*/
+<span class="lineNum">     922 </span>            :     }
+<span class="lineNum">     923 </span><span class="lineNoCov">          0 : return( sc );</span>
+<a name="924"><span class="lineNum">     924 </span>            : }</a>
+<span class="lineNum">     925 </span>            : 
+<span class="lineNum">     926 </span><span class="lineNoCov">          0 : SplineChar *SFGetOrMakeCharFromUnicode( SplineFont *sf, EncMap *map, int ch )</span>
+<span class="lineNum">     927 </span>            : {
+<span class="lineNum">     928 </span>            :     int i;
+<span class="lineNum">     929 </span>            :     SplineChar *sc;
+<span class="lineNum">     930 </span>            : 
+<span class="lineNum">     931 </span><span class="lineNoCov">          0 :     i = SFFindSlot(sf,map,ch,NULL);</span>
+<span class="lineNum">     932 </span><span class="lineNoCov">          0 :     if ( i==-1 )</span>
+<span class="lineNum">     933 </span><span class="lineNoCov">          0 :         return( NULL );</span>
+<span class="lineNum">     934 </span>            :     else
+<span class="lineNum">     935 </span>            :     {
+<span class="lineNum">     936 </span><span class="lineNoCov">          0 :         sc = SFMakeChar(sf,map,i);</span>
+<span class="lineNum">     937 </span>            :     }
+<a name="938"><span class="lineNum">     938 </span><span class="lineNoCov">          0 :     return( sc );</span></a>
+<span class="lineNum">     939 </span>            : }
+<span class="lineNum">     940 </span><span class="lineNoCov">          0 : SplineChar *SFGetOrMakeCharFromUnicodeBasic( SplineFont *sf, int ch )</span>
+<span class="lineNum">     941 </span>            : {
+<span class="lineNum">     942 </span><span class="lineNoCov">          0 :     return SFGetOrMakeCharFromUnicode( sf, sf-&gt;fv-&gt;map, ch );</span>
+<span class="lineNum">     943 </span>            : }
+<span class="lineNum">     944 </span>            : 
+<a name="945"><span class="lineNum">     945 </span>            : </a>
+<span class="lineNum">     946 </span>            : 
+<span class="lineNum">     947 </span><span class="lineCov">       2480 : static int _SFFindExistingSlot(SplineFont *sf, int unienc, const char *name ) {</span>
+<span class="lineNum">     948 </span><span class="lineCov">       2480 :     int gid = -1;</span>
+<span class="lineNum">     949 </span>            :     struct altuni *altuni;
+<span class="lineNum">     950 </span>            : 
+<span class="lineNum">     951 </span><span class="lineCov">       2480 :     if ( unienc!=-1 ) {</span>
+<span class="lineNum">     952 </span><span class="lineCov">      58897 :         for ( gid=sf-&gt;glyphcnt-1; gid&gt;=0; --gid ) if ( sf-&gt;glyphs[gid]!=NULL ) {</span>
+<span class="lineNum">     953 </span><span class="lineCov">      58770 :             if ( sf-&gt;glyphs[gid]-&gt;unicodeenc==unienc )</span>
+<span class="lineNum">     954 </span><span class="lineCov">         65 :         break;</span>
+<span class="lineNum">     955 </span><span class="lineCov">     117410 :             for ( altuni=sf-&gt;glyphs[gid]-&gt;altuni ; altuni!=NULL &amp;&amp;</span>
+<span class="lineNum">     956 </span><span class="lineNoCov">          0 :                     (altuni-&gt;unienc!=unienc || altuni-&gt;vs!=-1 || altuni-&gt;fid!=0);</span>
+<span class="lineNum">     957 </span><span class="lineNoCov">          0 :                     altuni=altuni-&gt;next );</span>
+<span class="lineNum">     958 </span><span class="lineCov">      58705 :             if ( altuni!=NULL )</span>
+<span class="lineNum">     959 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     960 </span>            :         }
+<span class="lineNum">     961 </span>            :     }
+<span class="lineNum">     962 </span><span class="lineCov">       2480 :     if ( gid==-1 &amp;&amp; name!=NULL ) {</span>
+<span class="lineNum">     963 </span><span class="lineCov">       2415 :         SplineChar *sc = SFHashName(sf,name);</span>
+<span class="lineNum">     964 </span><span class="lineCov">       2415 :         if ( sc==NULL )</span>
+<span class="lineNum">     965 </span><span class="lineCov">        129 : return( -1 );</span>
+<span class="lineNum">     966 </span><span class="lineCov">       2286 :         gid = sc-&gt;orig_pos;</span>
+<span class="lineNum">     967 </span><span class="lineCov">       2286 :         if ( gid&lt;0 || gid&gt;=sf-&gt;glyphcnt ) {</span>
+<span class="lineNum">     968 </span><span class="lineNoCov">          0 :             IError(&quot;Invalid glyph location when searching for %s&quot;, name );</span>
+<span class="lineNum">     969 </span><span class="lineNoCov">          0 : return( -1 );</span>
+<span class="lineNum">     970 </span>            :         }
+<span class="lineNum">     971 </span>            :     }
+<span class="lineNum">     972 </span><span class="lineCov">       2351 : return( gid );</span>
+<a name="973"><span class="lineNum">     973 </span>            : }</a>
+<span class="lineNum">     974 </span>            : 
+<span class="lineNum">     975 </span><span class="lineCov">       2351 : int SFFindExistingSlot(SplineFont *sf, int unienc, const char *name ) {</span>
+<span class="lineNum">     976 </span><span class="lineCov">       2351 :     int gid = _SFFindExistingSlot(sf,unienc,name);</span>
+<span class="lineNum">     977 </span>            : 
+<span class="lineNum">     978 </span><span class="lineCov">       2351 :     if ( gid==-1 || !SCWorthOutputting(sf-&gt;glyphs[gid]) )</span>
+<span class="lineNum">     979 </span><span class="lineNoCov">          0 : return( -1 );</span>
+<span class="lineNum">     980 </span>            : 
+<span class="lineNum">     981 </span><span class="lineCov">       2351 : return( gid );</span>
+<a name="982"><span class="lineNum">     982 </span>            : }</a>
+<span class="lineNum">     983 </span>            : 
+<span class="lineNum">     984 </span><span class="lineCov">        129 : static void MFixupSC(SplineFont *sf, SplineChar *sc,int i) {</span>
+<span class="lineNum">     985 </span>            :     RefChar *ref, *prev;
+<span class="lineNum">     986 </span>            :     int l;
+<span class="lineNum">     987 </span>            : 
+<span class="lineNum">     988 </span><span class="lineCov">        129 :     sc-&gt;orig_pos = i;</span>
+<span class="lineNum">     989 </span><span class="lineCov">        129 :     sc-&gt;parent = sf;</span>
+<span class="lineNum">     990 </span><span class="lineCov">        129 :     sc-&gt;ticked = true;</span>
+<span class="lineNum">     991 </span><span class="lineCov">        387 :     for ( l=0; l&lt;sc-&gt;layer_cnt; ++l ) {</span>
+<span class="lineNum">     992 </span>            :      retry:
+<span class="lineNum">     993 </span><span class="lineCov">        258 :         for ( ref=sc-&gt;layers[l].refs; ref!=NULL; ref=ref-&gt;next ) {</span>
+<span class="lineNum">     994 </span>            :             /* The sc in the ref is from the old font. It's got to be in the */
+<span class="lineNum">     995 </span>            :             /*  new font too (was either already there or just got copied) */
+<span class="lineNum">     996 </span><span class="lineNoCov">          0 :             ref-&gt;orig_pos =  SFFindExistingSlot(sf,ref-&gt;sc-&gt;unicodeenc,ref-&gt;sc-&gt;name);</span>
+<span class="lineNum">     997 </span><span class="lineNoCov">          0 :             if ( ref-&gt;orig_pos==-1 ) {</span>
+<span class="lineNum">     998 </span><span class="lineNoCov">          0 :                 IError(&quot;Bad reference, can't fix it up&quot;);</span>
+<span class="lineNum">     999 </span><span class="lineNoCov">          0 :                 if ( ref==sc-&gt;layers[l].refs ) {</span>
+<span class="lineNum">    1000 </span><span class="lineNoCov">          0 :                     sc-&gt;layers[l].refs = ref-&gt;next;</span>
+<span class="lineNum">    1001 </span><span class="lineNoCov">          0 :      goto retry;</span>
+<span class="lineNum">    1002 </span>            :                 } else {
+<span class="lineNum">    1003 </span><span class="lineNoCov">          0 :                     for ( prev=sc-&gt;layers[l].refs; prev-&gt;next!=ref; prev=prev-&gt;next );</span>
+<span class="lineNum">    1004 </span><span class="lineNoCov">          0 :                     prev-&gt;next = ref-&gt;next;</span>
+<span class="lineNum">    1005 </span><span class="lineNoCov">          0 :                     chunkfree(ref,sizeof(*ref));</span>
+<span class="lineNum">    1006 </span><span class="lineNoCov">          0 :                     ref = prev;</span>
+<span class="lineNum">    1007 </span>            :                 }
+<span class="lineNum">    1008 </span>            :             } else {
+<span class="lineNum">    1009 </span><span class="lineNoCov">          0 :                 ref-&gt;sc = sf-&gt;glyphs[ref-&gt;orig_pos];</span>
+<span class="lineNum">    1010 </span><span class="lineNoCov">          0 :                 if ( !ref-&gt;sc-&gt;ticked )</span>
+<span class="lineNum">    1011 </span><span class="lineNoCov">          0 :                     MFixupSC(sf,ref-&gt;sc,ref-&gt;orig_pos);</span>
+<span class="lineNum">    1012 </span><span class="lineNoCov">          0 :                 SCReinstanciateRefChar(sc,ref,l);</span>
+<span class="lineNum">    1013 </span><span class="lineNoCov">          0 :                 SCMakeDependent(sc,ref-&gt;sc);</span>
+<span class="lineNum">    1014 </span>            :             }
+<span class="lineNum">    1015 </span>            :         }
+<span class="lineNum">    1016 </span>            :     }
+<span class="lineNum">    1017 </span>            :     /* I shan't automagically generate bitmaps for any bdf fonts */
+<span class="lineNum">    1018 </span>            :     /*  but I have copied over the ones which match */
+<a name="1019"><span class="lineNum">    1019 </span><span class="lineCov">        129 : }</span></a>
+<span class="lineNum">    1020 </span>            : 
+<span class="lineNum">    1021 </span><span class="lineCov">          1 : static void MergeFixupRefChars(SplineFont *sf) {</span>
+<span class="lineNum">    1022 </span>            :     int i;
+<span class="lineNum">    1023 </span>            : 
+<span class="lineNum">    1024 </span><span class="lineCov">        130 :     for ( i=0; i&lt;sf-&gt;glyphcnt; ++i ) if ( sf-&gt;glyphs[i]!=NULL ) {</span>
+<span class="lineNum">    1025 </span><span class="lineCov">        129 :         sf-&gt;glyphs[i]-&gt;ticked = false;</span>
+<span class="lineNum">    1026 </span>            :     }
+<span class="lineNum">    1027 </span><span class="lineCov">        130 :     for ( i=0; i&lt;sf-&gt;glyphcnt; ++i ) if ( sf-&gt;glyphs[i]!=NULL &amp;&amp; !sf-&gt;glyphs[i]-&gt;ticked ) {</span>
+<span class="lineNum">    1028 </span><span class="lineCov">        129 :         MFixupSC(sf,sf-&gt;glyphs[i], i);</span>
+<span class="lineNum">    1029 </span>            :     }
+<a name="1030"><span class="lineNum">    1030 </span><span class="lineCov">          1 : }</span></a>
+<span class="lineNum">    1031 </span>            : 
+<span class="lineNum">    1032 </span><span class="lineCov">        129 : int SFHasChar(SplineFont *sf, int unienc, const char *name ) {</span>
+<span class="lineNum">    1033 </span><span class="lineCov">        129 :     SplineChar *sc = SFGetChar(sf,unienc,name);</span>
+<span class="lineNum">    1034 </span>            : 
+<span class="lineNum">    1035 </span><span class="lineCov">        129 : return( SCWorthOutputting(sc) );</span>
+<a name="1036"><span class="lineNum">    1036 </span>            : }</a>
+<span class="lineNum">    1037 </span>            : 
+<span class="lineNum">    1038 </span><span class="lineCov">          1 : static void FVMergeRefigureMapSel(FontViewBase *fv,SplineFont *into,SplineFont *o_sf,</span>
+<span class="lineNum">    1039 </span>            :         int *mapping, int emptypos, int cnt) {
+<span class="lineNum">    1040 </span>            :     int extras, doit, i;
+<span class="lineNum">    1041 </span><span class="lineCov">          1 :     EncMap *map = fv-&gt;map;</span>
+<span class="lineNum">    1042 </span><span class="lineCov">          1 :     int base = map-&gt;enccount;</span>
+<span class="lineNum">    1043 </span>            : 
+<span class="lineNum">    1044 </span><span class="lineCov">          1 :     base = map-&gt;enccount;</span>
+<span class="lineNum">    1045 </span>            : 
+<span class="lineNum">    1046 </span><span class="lineCov">          3 :     for ( doit=0; doit&lt;2; ++doit ) {</span>
+<span class="lineNum">    1047 </span><span class="lineCov">          2 :         extras = 0;</span>
+<span class="lineNum">    1048 </span><span class="lineCov">        262 :         for ( i=0; i&lt;o_sf-&gt;glyphcnt; ++i ) if ( mapping[i]&gt;=emptypos ) {</span>
+<span class="lineNum">    1049 </span><span class="lineCov">        258 :             int index = SFFindSlot(into,map,o_sf-&gt;glyphs[i]-&gt;unicodeenc,o_sf-&gt;glyphs[i]-&gt;name);</span>
+<span class="lineNum">    1050 </span><span class="lineCov">        258 :             if ( !doit ) {</span>
+<span class="lineNum">    1051 </span><span class="lineCov">        129 :                 if ( index==-1 )</span>
+<span class="lineNum">    1052 </span><span class="lineCov">         90 :                     ++extras;</span>
+<span class="lineNum">    1053 </span>            :             } else {
+<span class="lineNum">    1054 </span><span class="lineCov">        129 :                 if ( index==-1 )</span>
+<span class="lineNum">    1055 </span><span class="lineCov">         90 :                     index = base+ extras++;</span>
+<span class="lineNum">    1056 </span><span class="lineCov">        129 :                 map-&gt;map[index] = mapping[i];</span>
+<span class="lineNum">    1057 </span><span class="lineCov">        129 :                 map-&gt;backmap[mapping[i]] = index;</span>
+<span class="lineNum">    1058 </span>            :             }
+<span class="lineNum">    1059 </span>            :         }
+<span class="lineNum">    1060 </span><span class="lineCov">          2 :         if ( !doit ) {</span>
+<span class="lineNum">    1061 </span><span class="lineCov">          1 :             if ( into-&gt;glyphcnt+cnt&gt;map-&gt;backmax ) {</span>
+<span class="lineNum">    1062 </span><span class="lineNoCov">          0 :                 map-&gt;backmap = realloc(map-&gt;backmap,(into-&gt;glyphcnt+cnt)*sizeof(int));</span>
+<span class="lineNum">    1063 </span><span class="lineNoCov">          0 :                 map-&gt;backmax = into-&gt;glyphcnt+cnt;</span>
+<span class="lineNum">    1064 </span>            :             }
+<span class="lineNum">    1065 </span><span class="lineCov">          1 :             memset(map-&gt;backmap+into-&gt;glyphcnt,-1,cnt*sizeof(int));</span>
+<span class="lineNum">    1066 </span><span class="lineCov">          1 :             if ( map-&gt;enccount+extras&gt;map-&gt;encmax ) {</span>
+<span class="lineNum">    1067 </span><span class="lineCov">          1 :                 map-&gt;map = realloc(map-&gt;map,(map-&gt;enccount+extras)*sizeof(int));</span>
+<span class="lineNum">    1068 </span><span class="lineCov">          1 :                 map-&gt;encmax = map-&gt;enccount+extras;</span>
+<span class="lineNum">    1069 </span>            :             }
+<span class="lineNum">    1070 </span><span class="lineCov">          1 :             memset(map-&gt;map+map-&gt;enccount,-1,extras*sizeof(int));</span>
+<span class="lineNum">    1071 </span><span class="lineCov">          1 :             map-&gt;enccount += extras;</span>
+<span class="lineNum">    1072 </span>            :         }
+<span class="lineNum">    1073 </span>            :     }
+<span class="lineNum">    1074 </span><span class="lineCov">          1 :     if ( extras!=0 ) {</span>
+<span class="lineNum">    1075 </span><span class="lineCov">          1 :         fv-&gt;selected = realloc(fv-&gt;selected,map-&gt;enccount);</span>
+<span class="lineNum">    1076 </span><span class="lineCov">          1 :         memset(fv-&gt;selected+map-&gt;enccount-extras,0,extras);</span>
+<span class="lineNum">    1077 </span>            :     }
+<a name="1078"><span class="lineNum">    1078 </span><span class="lineCov">          1 : }</span></a>
+<span class="lineNum">    1079 </span>            : 
+<span class="lineNum">    1080 </span><span class="lineCov">          1 : static void _MergeFont(SplineFont *into,SplineFont *other,struct sfmergecontext *mc) {</span>
+<span class="lineNum">    1081 </span>            :     int i, cnt, doit, emptypos, index, k;
+<span class="lineNum">    1082 </span>            :     SplineFont *o_sf, *bitmap_into;
+<span class="lineNum">    1083 </span>            :     BDFFont *bdf;
+<span class="lineNum">    1084 </span>            :     FontViewBase *fvs;
+<span class="lineNum">    1085 </span>            :     int *mapping;
+<span class="lineNum">    1086 </span>            : 
+<span class="lineNum">    1087 </span><span class="lineCov">          1 :     emptypos = into-&gt;glyphcnt;</span>
+<span class="lineNum">    1088 </span><span class="lineCov">          1 :     mapping = malloc(other-&gt;glyphcnt*sizeof(int));</span>
+<span class="lineNum">    1089 </span><span class="lineCov">          1 :     memset(mapping,-1,other-&gt;glyphcnt*sizeof(int));</span>
+<span class="lineNum">    1090 </span>            : 
+<span class="lineNum">    1091 </span><span class="lineCov">          1 :     bitmap_into = into-&gt;cidmaster!=NULL? into-&gt;cidmaster : into;</span>
+<span class="lineNum">    1092 </span>            : 
+<span class="lineNum">    1093 </span><span class="lineCov">          3 :     for ( doit=0; doit&lt;2; ++doit ) {</span>
+<span class="lineNum">    1094 </span><span class="lineCov">          2 :         cnt = 0;</span>
+<span class="lineNum">    1095 </span><span class="lineCov">          2 :         k = 0;</span>
+<span class="lineNum">    1096 </span>            :         do {
+<span class="lineNum">    1097 </span><span class="lineCov">          2 :             o_sf = ( other-&gt;subfonts==NULL ) ? other : other-&gt;subfonts[k];</span>
+<span class="lineNum">    1098 </span><span class="lineCov">        262 :             for ( i=0; i&lt;o_sf-&gt;glyphcnt; ++i ) if ( o_sf-&gt;glyphs[i]!=NULL ) {</span>
+<span class="lineNum">    1099 </span><span class="lineCov">        260 :                 if ( doit &amp;&amp; (index = mapping[i])!=-1 ) {</span>
+<span class="lineNum">    1100 </span>            :                     /* Bug here. Suppose someone has a reference to our empty */
+<span class="lineNum">    1101 </span>            :                     /*  char */
+<span class="lineNum">    1102 </span><span class="lineCov">        129 :                     SplineCharFree(into-&gt;glyphs[index]);</span>
+<span class="lineNum">    1103 </span><span class="lineCov">        129 :                     into-&gt;glyphs[index] = SplineCharCopy(o_sf-&gt;glyphs[i],into,mc);</span>
+<span class="lineNum">    1104 </span><span class="lineCov">        129 :                     into-&gt;glyphs[index]-&gt;orig_pos = index;</span>
+<span class="lineNum">    1105 </span><span class="lineCov">        258 :                     if ( into-&gt;bitmaps!=NULL &amp;&amp; other-&gt;bitmaps!=NULL )</span>
+<span class="lineNum">    1106 </span><span class="lineNoCov">          0 :                         BitmapsCopy(bitmap_into,other,index,i);</span>
+<span class="lineNum">    1107 </span><span class="lineCov">        131 :                 } else if ( !doit ) {</span>
+<span class="lineNum">    1108 </span><span class="lineCov">        130 :                     if ( !SCWorthOutputting(o_sf-&gt;glyphs[i] ))</span>
+<span class="lineNum">    1109 </span>            :                         /* Don't bother to copy it */;
+<span class="lineNum">    1110 </span><span class="lineCov">        129 :                     else if ( !SFHasChar(into,o_sf-&gt;glyphs[i]-&gt;unicodeenc,o_sf-&gt;glyphs[i]-&gt;name)) {</span>
+<span class="lineNum">    1111 </span>            :                         /* Possible for a font to contain a glyph not worth outputting */
+<span class="lineNum">    1112 </span><span class="lineCov">        129 :                         if ( (index = _SFFindExistingSlot(into,o_sf-&gt;glyphs[i]-&gt;unicodeenc,o_sf-&gt;glyphs[i]-&gt;name))==-1 )</span>
+<span class="lineNum">    1113 </span><span class="lineCov">        129 :                             index = emptypos+cnt++;</span>
+<span class="lineNum">    1114 </span><span class="lineCov">        129 :                         mapping[i] = index;</span>
+<span class="lineNum">    1115 </span>            :                     }
+<span class="lineNum">    1116 </span>            :                 }
+<span class="lineNum">    1117 </span>            :             }
+<span class="lineNum">    1118 </span><span class="lineCov">          2 :             if ( !doit ) {</span>
+<span class="lineNum">    1119 </span><span class="lineCov">          1 :                 if ( emptypos+cnt &gt;= into-&gt;glyphcnt &amp;&amp; emptypos+cnt&gt;0 ) {</span>
+<span class="lineNum">    1120 </span><span class="lineCov">          1 :                     into-&gt;glyphs = realloc(into-&gt;glyphs,(emptypos+cnt)*sizeof(SplineChar *));</span>
+<span class="lineNum">    1121 </span><span class="lineCov">          1 :                     memset(into-&gt;glyphs+emptypos,0,cnt*sizeof(SplineChar *));</span>
+<span class="lineNum">    1122 </span><span class="lineCov">          1 :                     for ( bdf = bitmap_into-&gt;bitmaps; bdf!=NULL; bdf=bdf-&gt;next )</span>
+<span class="lineNum">    1123 </span><span class="lineNoCov">          0 :                         if ( emptypos+cnt &gt; bdf-&gt;glyphcnt ) {</span>
+<span class="lineNum">    1124 </span><span class="lineNoCov">          0 :                             bdf-&gt;glyphs = realloc(bdf-&gt;glyphs,(emptypos+cnt)*sizeof(BDFChar *));</span>
+<span class="lineNum">    1125 </span><span class="lineNoCov">          0 :                             memset(bdf-&gt;glyphs+emptypos,0,cnt*sizeof(BDFChar *));</span>
+<span class="lineNum">    1126 </span><span class="lineNoCov">          0 :                             bdf-&gt;glyphmax = bdf-&gt;glyphcnt = emptypos+cnt;</span>
+<span class="lineNum">    1127 </span>            :                         }
+<span class="lineNum">    1128 </span><span class="lineCov">          2 :                     for ( fvs = into-&gt;fv; fvs!=NULL; fvs=fvs-&gt;nextsame )</span>
+<span class="lineNum">    1129 </span><span class="lineCov">          1 :                         FVBiggerGlyphCache(fvs,emptypos+cnt);</span>
+<span class="lineNum">    1130 </span><span class="lineCov">          2 :                     for ( fvs = into-&gt;fv; fvs!=NULL; fvs=fvs-&gt;nextsame )</span>
+<span class="lineNum">    1131 </span><span class="lineCov">          1 :                         if ( fvs-&gt;sf == into )</span>
+<span class="lineNum">    1132 </span><span class="lineCov">          1 :                             FVMergeRefigureMapSel(fvs,into,o_sf,mapping,emptypos,cnt);</span>
+<span class="lineNum">    1133 </span><span class="lineCov">          1 :                     into-&gt;glyphcnt = into-&gt;glyphmax = emptypos+cnt;</span>
+<span class="lineNum">    1134 </span>            :                 }
+<span class="lineNum">    1135 </span>            :             }
+<span class="lineNum">    1136 </span><span class="lineCov">          2 :             ++k;</span>
+<span class="lineNum">    1137 </span><span class="lineCov">          2 :         } while ( k&lt;other-&gt;subfontcnt );</span>
+<span class="lineNum">    1138 </span>            :     }
+<span class="lineNum">    1139 </span><span class="lineCov">        131 :     for ( i=0; i&lt;other-&gt;glyphcnt; ++i ) {</span>
+<span class="lineNum">    1140 </span><span class="lineCov">        130 :         if ( (index=mapping[i])!=-1 )</span>
+<span class="lineNum">    1141 </span><span class="lineCov">        129 :             into-&gt;glyphs[index]-&gt;kerns = KernsCopy(other-&gt;glyphs[i]-&gt;kerns,mapping,into,mc);</span>
+<span class="lineNum">    1142 </span><span class="lineCov">          1 :         else if ( mc-&gt;preserveCrossFontKerning &amp;&amp; other-&gt;glyphs[i]!=NULL ) {</span>
+<span class="lineNum">    1143 </span>            :             KernPair *kpnew, *kpend;
+<span class="lineNum">    1144 </span><span class="lineNoCov">          0 :             index = _SFFindExistingSlot(into,other-&gt;glyphs[i]-&gt;unicodeenc,other-&gt;glyphs[i]-&gt;name);</span>
+<span class="lineNum">    1145 </span><span class="lineNoCov">          0 :             if ( index!=-1 ) {</span>
+<span class="lineNum">    1146 </span><span class="lineNoCov">          0 :                 mc-&gt;preserveCrossFontKerning = false;</span>
+<span class="lineNum">    1147 </span><span class="lineNoCov">          0 :                 kpnew = KernsCopy(other-&gt;glyphs[i]-&gt;kerns,mapping,into,mc);</span>
+<span class="lineNum">    1148 </span><span class="lineNoCov">          0 :                 mc-&gt;preserveCrossFontKerning = true;</span>
+<span class="lineNum">    1149 </span><span class="lineNoCov">          0 :                 if ( kpnew ) {</span>
+<span class="lineNum">    1150 </span><span class="lineNoCov">          0 :                     for ( kpend=kpnew; kpend-&gt;next!=NULL; kpend=kpend-&gt;next );</span>
+<span class="lineNum">    1151 </span><span class="lineNoCov">          0 :                     kpend-&gt;next = into-&gt;glyphs[index]-&gt;kerns;</span>
+<span class="lineNum">    1152 </span><span class="lineNoCov">          0 :                     into-&gt;glyphs[index]-&gt;kerns = kpnew;</span>
+<span class="lineNum">    1153 </span>            :                 }
+<span class="lineNum">    1154 </span>            :             }
+<span class="lineNum">    1155 </span>            :         }
+<span class="lineNum">    1156 </span>            :     }
+<span class="lineNum">    1157 </span>            : 
+<span class="lineNum">    1158 </span><span class="lineCov">          1 :     free(mapping);</span>
+<span class="lineNum">    1159 </span><span class="lineCov">          1 :     GlyphHashFree(into);</span>
+<span class="lineNum">    1160 </span><span class="lineCov">          1 :     MergeFixupRefChars(into);</span>
+<span class="lineNum">    1161 </span><span class="lineCov">          1 :     if ( other-&gt;fv==NULL )</span>
+<span class="lineNum">    1162 </span><span class="lineCov">          1 :         SplineFontFree(other);</span>
+<span class="lineNum">    1163 </span><span class="lineCov">          1 :     into-&gt;changed = true;</span>
+<span class="lineNum">    1164 </span><span class="lineCov">          1 :     FontViewReformatAll(into);</span>
+<span class="lineNum">    1165 </span><span class="lineCov">          1 :     GlyphHashFree(into);</span>
+<a name="1166"><span class="lineNum">    1166 </span><span class="lineCov">          1 : }</span></a>
+<span class="lineNum">    1167 </span>            : 
+<span class="lineNum">    1168 </span><span class="lineCov">          1 : static void __MergeFont(SplineFont *into,SplineFont *other, int preserveCrossFontKerning) {</span>
+<span class="lineNum">    1169 </span>            :     struct sfmergecontext mc;
+<span class="lineNum">    1170 </span>            : 
+<span class="lineNum">    1171 </span><span class="lineCov">          1 :     memset(&amp;mc,0,sizeof(mc));</span>
+<span class="lineNum">    1172 </span><span class="lineCov">          1 :     mc.sf_from = other; mc.sf_to = into;</span>
+<span class="lineNum">    1173 </span><span class="lineCov">          1 :     mc.preserveCrossFontKerning = preserveCrossFontKerning;</span>
+<span class="lineNum">    1174 </span>            : 
+<span class="lineNum">    1175 </span><span class="lineCov">          1 :     AnchorClassesAdd(into,other,&amp;mc);</span>
+<span class="lineNum">    1176 </span><span class="lineCov">          1 :     FPSTsAdd(into,other,&amp;mc);</span>
+<span class="lineNum">    1177 </span><span class="lineCov">          1 :     ASMsAdd(into,other,&amp;mc);</span>
+<span class="lineNum">    1178 </span><span class="lineCov">          1 :     KernClassesAdd(into,other,&amp;mc);</span>
+<span class="lineNum">    1179 </span>            : 
+<span class="lineNum">    1180 </span><span class="lineCov">          1 :     _MergeFont(into,other,&amp;mc);</span>
+<span class="lineNum">    1181 </span>            : 
+<span class="lineNum">    1182 </span><span class="lineCov">          1 :     SFFinishMergeContext(&amp;mc);</span>
+<a name="1183"><span class="lineNum">    1183 </span><span class="lineCov">          1 : }</span></a>
+<span class="lineNum">    1184 </span>            : 
+<span class="lineNum">    1185 </span><span class="lineNoCov">          0 : static void CIDMergeFont(SplineFont *into,SplineFont *other, int preserveCrossFontKerning) {</span>
+<span class="lineNum">    1186 </span>            :     int i,j,k;
+<span class="lineNum">    1187 </span>            :     SplineFont *i_sf, *o_sf;
+<span class="lineNum">    1188 </span>            :     FontViewBase *fvs;
+<span class="lineNum">    1189 </span>            :     struct sfmergecontext mc;
+<span class="lineNum">    1190 </span>            : 
+<span class="lineNum">    1191 </span><span class="lineNoCov">          0 :     memset(&amp;mc,0,sizeof(mc));</span>
+<span class="lineNum">    1192 </span><span class="lineNoCov">          0 :     mc.sf_from = other; mc.sf_to = into;</span>
+<span class="lineNum">    1193 </span><span class="lineNoCov">          0 :     mc.preserveCrossFontKerning = preserveCrossFontKerning;</span>
+<span class="lineNum">    1194 </span>            : 
+<span class="lineNum">    1195 </span><span class="lineNoCov">          0 :     AnchorClassesAdd(into,other,&amp;mc);</span>
+<span class="lineNum">    1196 </span><span class="lineNoCov">          0 :     FPSTsAdd(into,other,&amp;mc);</span>
+<span class="lineNum">    1197 </span><span class="lineNoCov">          0 :     ASMsAdd(into,other,&amp;mc);</span>
+<span class="lineNum">    1198 </span><span class="lineNoCov">          0 :     KernClassesAdd(into,other,&amp;mc);</span>
+<span class="lineNum">    1199 </span>            : 
+<span class="lineNum">    1200 </span><span class="lineNoCov">          0 :     k = 0;</span>
+<span class="lineNum">    1201 </span>            :     do {
+<span class="lineNum">    1202 </span><span class="lineNoCov">          0 :         o_sf = other-&gt;subfonts[k];</span>
+<span class="lineNum">    1203 </span><span class="lineNoCov">          0 :         i_sf = into-&gt;subfonts[k];</span>
+<span class="lineNum">    1204 </span><span class="lineNoCov">          0 :         for ( i=o_sf-&gt;glyphcnt-1; i&gt;=0 &amp;&amp; o_sf-&gt;glyphs[i]==NULL; --i );</span>
+<span class="lineNum">    1205 </span><span class="lineNoCov">          0 :         if ( i&gt;=i_sf-&gt;glyphcnt ) {</span>
+<span class="lineNum">    1206 </span><span class="lineNoCov">          0 :             i_sf-&gt;glyphs = realloc(i_sf-&gt;glyphs,(i+1)*sizeof(SplineChar *));</span>
+<span class="lineNum">    1207 </span><span class="lineNoCov">          0 :             for ( j=i_sf-&gt;glyphcnt; j&lt;=i; ++j )</span>
+<span class="lineNum">    1208 </span><span class="lineNoCov">          0 :                 i_sf-&gt;glyphs[j] = NULL;</span>
+<span class="lineNum">    1209 </span><span class="lineNoCov">          0 :             for ( fvs = i_sf-&gt;fv; fvs!=NULL; fvs=fvs-&gt;nextsame )</span>
+<span class="lineNum">    1210 </span><span class="lineNoCov">          0 :                 if ( fvs-&gt;sf==i_sf ) {</span>
+<span class="lineNum">    1211 </span><span class="lineNoCov">          0 :                     fvs-&gt;selected = realloc(fvs-&gt;selected,i+1);</span>
+<span class="lineNum">    1212 </span><span class="lineNoCov">          0 :                     for ( j=i_sf-&gt;glyphcnt; j&lt;=i; ++j )</span>
+<span class="lineNum">    1213 </span><span class="lineNoCov">          0 :                         fvs-&gt;selected[j] = false;</span>
+<span class="lineNum">    1214 </span>            :                 }
+<span class="lineNum">    1215 </span><span class="lineNoCov">          0 :             i_sf-&gt;glyphcnt = i_sf-&gt;glyphmax = i+1;</span>
+<span class="lineNum">    1216 </span>            :         }
+<span class="lineNum">    1217 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;o_sf-&gt;glyphcnt; ++i ) if ( o_sf-&gt;glyphs[i]!=NULL ) {</span>
+<span class="lineNum">    1218 </span><span class="lineNoCov">          0 :             if ( o_sf-&gt;glyphs[i]-&gt;layers[ly_fore].splines==NULL &amp;&amp; o_sf-&gt;glyphs[i]-&gt;layers[ly_fore].refs==NULL &amp;&amp;</span>
+<span class="lineNum">    1219 </span><span class="lineNoCov">          0 :                     !o_sf-&gt;glyphs[i]-&gt;widthset )</span>
+<span class="lineNum">    1220 </span>            :                 /* Don't bother to copy it */;
+<span class="lineNum">    1221 </span><span class="lineNoCov">          0 :             else if ( SFHasCID(into,i)==-1 ) {</span>
+<span class="lineNum">    1222 </span><span class="lineNoCov">          0 :                 SplineCharFree(i_sf-&gt;glyphs[i]);</span>
+<span class="lineNum">    1223 </span><span class="lineNoCov">          0 :                 i_sf-&gt;glyphs[i] = SplineCharCopy(o_sf-&gt;glyphs[i],i_sf,&amp;mc);</span>
+<span class="lineNum">    1224 </span><span class="lineNoCov">          0 :                 i_sf-&gt;glyphs[i]-&gt;orig_pos = i;</span>
+<span class="lineNum">    1225 </span><span class="lineNoCov">          0 :                 if ( into-&gt;bitmaps!=NULL &amp;&amp; other-&gt;bitmaps!=NULL )</span>
+<span class="lineNum">    1226 </span><span class="lineNoCov">          0 :                     BitmapsCopy(into,other,i,i);</span>
+<span class="lineNum">    1227 </span>            :             }
+<span class="lineNum">    1228 </span>            :         }
+<span class="lineNum">    1229 </span><span class="lineNoCov">          0 :         MergeFixupRefChars(i_sf);</span>
+<span class="lineNum">    1230 </span><span class="lineNoCov">          0 :         ++k;</span>
+<span class="lineNum">    1231 </span><span class="lineNoCov">          0 :     } while ( k&lt;other-&gt;subfontcnt );</span>
+<span class="lineNum">    1232 </span><span class="lineNoCov">          0 :     FontViewReformatAll(into);</span>
+<span class="lineNum">    1233 </span><span class="lineNoCov">          0 :     into-&gt;changed = true;</span>
+<span class="lineNum">    1234 </span><span class="lineNoCov">          0 :     GlyphHashFree(into);</span>
+<span class="lineNum">    1235 </span>            : 
+<span class="lineNum">    1236 </span><span class="lineNoCov">          0 :     SFFinishMergeContext(&amp;mc);</span>
+<a name="1237"><span class="lineNum">    1237 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1238 </span>            : 
+<span class="lineNum">    1239 </span><span class="lineCov">          1 : void MergeFont(FontViewBase *fv,SplineFont *other, int preserveCrossFontKerning) {</span>
+<span class="lineNum">    1240 </span>            : 
+<span class="lineNum">    1241 </span><span class="lineCov">          1 :     if ( fv-&gt;sf==other ) {</span>
+<span class="lineNum">    1242 </span><span class="lineNoCov">          0 :         ff_post_error(_(&quot;Merging Problem&quot;),_(&quot;Merging a font with itself achieves nothing&quot;));</span>
+<span class="lineNum">    1243 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">    1244 </span>            :     }
+<span class="lineNum">    1245 </span><span class="lineCov">          1 :     if ( fv-&gt;sf-&gt;cidmaster!=NULL &amp;&amp; other-&gt;subfonts!=NULL &amp;&amp;</span>
+<span class="lineNum">    1246 </span><span class="lineNoCov">          0 :             (strcmp(fv-&gt;sf-&gt;cidmaster-&gt;cidregistry,other-&gt;cidregistry)!=0 ||</span>
+<span class="lineNum">    1247 </span><span class="lineNoCov">          0 :              strcmp(fv-&gt;sf-&gt;cidmaster-&gt;ordering,other-&gt;ordering)!=0 ||</span>
+<span class="lineNum">    1248 </span><span class="lineNoCov">          0 :              fv-&gt;sf-&gt;cidmaster-&gt;supplement&lt;other-&gt;supplement ||</span>
+<span class="lineNum">    1249 </span><span class="lineNoCov">          0 :              fv-&gt;sf-&gt;cidmaster-&gt;subfontcnt&lt;other-&gt;subfontcnt )) {</span>
+<span class="lineNum">    1250 </span><span class="lineNoCov">          0 :         ff_post_error(_(&quot;Merging Problem&quot;),_(&quot;When merging two CID keyed fonts, they must have the same Registry and Ordering, and the font being merged into (the mergee) must have a supplement which is at least as recent as the other's. Furthermore the mergee must have at least as many subfonts as the merger.&quot;));</span>
+<span class="lineNum">    1251 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">    1252 </span>            :     }
+<span class="lineNum">    1253 </span>            :     /* Ok. when merging CID fonts... */
+<span class="lineNum">    1254 </span>            :     /*  If fv is normal and other is CID then just flatten other and merge everything into fv */
+<span class="lineNum">    1255 </span>            :     /*  If fv is CID and other is normal then merge other into the currently active font */
+<span class="lineNum">    1256 </span>            :     /*  If both are CID then merge each subfont separately */
+<span class="lineNum">    1257 </span><span class="lineCov">          1 :     if ( fv-&gt;sf-&gt;cidmaster!=NULL &amp;&amp; other-&gt;subfonts!=NULL )</span>
+<span class="lineNum">    1258 </span><span class="lineNoCov">          0 :         CIDMergeFont(fv-&gt;sf-&gt;cidmaster,other,preserveCrossFontKerning);</span>
+<span class="lineNum">    1259 </span>            :     else
+<span class="lineNum">    1260 </span><span class="lineCov">          1 :         __MergeFont(fv-&gt;sf,other,preserveCrossFontKerning);</span>
+<span class="lineNum">    1261 </span>            : }
+<span class="lineNum">    1262 </span>            : 
+<span class="lineNum">    1263 </span>            : /******************************************************************************/
+<span class="lineNum">    1264 </span>            : /* *************************** Font Interpolation *************************** */
+<a name="1265"><span class="lineNum">    1265 </span>            : /******************************************************************************/</a>
+<span class="lineNum">    1266 </span>            : 
+<span class="lineNum">    1267 </span><span class="lineNoCov">          0 : static RefChar *InterpRefs(RefChar *base, RefChar *other, real amount, SplineChar *sc) {</span>
+<span class="lineNum">    1268 </span><span class="lineNoCov">          0 :     RefChar *head=NULL, *last=NULL, *cur;</span>
+<span class="lineNum">    1269 </span>            :     RefChar *test;
+<span class="lineNum">    1270 </span>            :     int i;
+<span class="lineNum">    1271 </span>            : 
+<span class="lineNum">    1272 </span><span class="lineNoCov">          0 :     for ( test = other; test!=NULL; test=test-&gt;next )</span>
+<span class="lineNum">    1273 </span><span class="lineNoCov">          0 :         test-&gt;checked = false;</span>
+<span class="lineNum">    1274 </span>            : 
+<span class="lineNum">    1275 </span><span class="lineNoCov">          0 :     while ( base!=NULL ) {</span>
+<span class="lineNum">    1276 </span><span class="lineNoCov">          0 :         for ( test = other; test!=NULL; test=test-&gt;next ) {</span>
+<span class="lineNum">    1277 </span><span class="lineNoCov">          0 :             if ( test-&gt;checked )</span>
+<span class="lineNum">    1278 </span>            :                 /* Do nothing */;
+<span class="lineNum">    1279 </span><span class="lineNoCov">          0 :             else if ( test-&gt;unicode_enc==base-&gt;unicode_enc &amp;&amp;</span>
+<span class="lineNum">    1280 </span><span class="lineNoCov">          0 :                     (test-&gt;unicode_enc!=-1 || strcmp(test-&gt;sc-&gt;name,base-&gt;sc-&gt;name)==0 ) )</span>
+<span class="lineNum">    1281 </span>            :         break;
+<span class="lineNum">    1282 </span>            :         }
+<span class="lineNum">    1283 </span><span class="lineNoCov">          0 :         if ( test!=NULL ) {</span>
+<span class="lineNum">    1284 </span><span class="lineNoCov">          0 :             test-&gt;checked = true;</span>
+<span class="lineNum">    1285 </span><span class="lineNoCov">          0 :             cur = RefCharCreate();</span>
+<span class="lineNum">    1286 </span><span class="lineNoCov">          0 :             free(cur-&gt;layers);</span>
+<span class="lineNum">    1287 </span><span class="lineNoCov">          0 :             *cur = *base;</span>
+<span class="lineNum">    1288 </span><span class="lineNoCov">          0 :             cur-&gt;orig_pos = cur-&gt;sc-&gt;orig_pos;</span>
+<span class="lineNum">    1289 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;6; ++i )</span>
+<span class="lineNum">    1290 </span><span class="lineNoCov">          0 :                 cur-&gt;transform[i] = base-&gt;transform[i] + amount*(other-&gt;transform[i]-base-&gt;transform[i]);</span>
+<span class="lineNum">    1291 </span><span class="lineNoCov">          0 :             cur-&gt;layers = NULL;</span>
+<span class="lineNum">    1292 </span><span class="lineNoCov">          0 :             cur-&gt;layer_cnt = 0;</span>
+<span class="lineNum">    1293 </span><span class="lineNoCov">          0 :             cur-&gt;checked = false;</span>
+<span class="lineNum">    1294 </span><span class="lineNoCov">          0 :             if ( head==NULL )</span>
+<span class="lineNum">    1295 </span><span class="lineNoCov">          0 :                 head = cur;</span>
+<span class="lineNum">    1296 </span>            :             else
+<span class="lineNum">    1297 </span><span class="lineNoCov">          0 :                 last-&gt;next = cur;</span>
+<span class="lineNum">    1298 </span><span class="lineNoCov">          0 :             last = cur;</span>
+<span class="lineNum">    1299 </span>            :         } else
+<span class="lineNum">    1300 </span><span class="lineNoCov">          0 :             LogError( _(&quot;In character %s, could not find reference to %s\n&quot;),</span>
+<span class="lineNum">    1301 </span><span class="lineNoCov">          0 :                     sc-&gt;name, base-&gt;sc-&gt;name );</span>
+<span class="lineNum">    1302 </span><span class="lineNoCov">          0 :         base = base-&gt;next;</span>
+<span class="lineNum">    1303 </span><span class="lineNoCov">          0 :         if ( test==other &amp;&amp; other!=NULL )</span>
+<span class="lineNum">    1304 </span><span class="lineNoCov">          0 :             other = other-&gt;next;</span>
+<span class="lineNum">    1305 </span>            :     }
+<span class="lineNum">    1306 </span><span class="lineNoCov">          0 : return( head );</span>
+<a name="1307"><span class="lineNum">    1307 </span>            : }</a>
+<span class="lineNum">    1308 </span>            : 
+<span class="lineNum">    1309 </span><span class="lineNoCov">          0 : static void InterpPoint(SplineSet *cur, SplinePoint *base, SplinePoint *other, real amount ) {</span>
+<span class="lineNum">    1310 </span><span class="lineNoCov">          0 :     SplinePoint *p = chunkalloc(sizeof(SplinePoint));</span>
+<span class="lineNum">    1311 </span><span class="lineNoCov">          0 :     int order2 = base-&gt;prev!=NULL ? base-&gt;prev-&gt;order2 : base-&gt;next!=NULL ? base-&gt;next-&gt;order2 : false;</span>
+<span class="lineNum">    1312 </span>            : 
+<span class="lineNum">    1313 </span><span class="lineNoCov">          0 :     p-&gt;me.x = base-&gt;me.x + amount*(other-&gt;me.x-base-&gt;me.x);</span>
+<span class="lineNum">    1314 </span><span class="lineNoCov">          0 :     p-&gt;me.y = base-&gt;me.y + amount*(other-&gt;me.y-base-&gt;me.y);</span>
+<span class="lineNum">    1315 </span><span class="lineNoCov">          0 :     if ( order2 &amp;&amp; base-&gt;prev!=NULL &amp;&amp; (base-&gt;prev-&gt;islinear || other-&gt;prev-&gt;islinear ))</span>
+<span class="lineNum">    1316 </span><span class="lineNoCov">          0 :         p-&gt;prevcp = p-&gt;me;</span>
+<span class="lineNum">    1317 </span>            :     else {
+<span class="lineNum">    1318 </span><span class="lineNoCov">          0 :         p-&gt;prevcp.x = base-&gt;prevcp.x + amount*(other-&gt;prevcp.x-base-&gt;prevcp.x);</span>
+<span class="lineNum">    1319 </span><span class="lineNoCov">          0 :         p-&gt;prevcp.y = base-&gt;prevcp.y + amount*(other-&gt;prevcp.y-base-&gt;prevcp.y);</span>
+<span class="lineNum">    1320 </span><span class="lineNoCov">          0 :         if ( order2 &amp;&amp; cur-&gt;first!=NULL ) {</span>
+<span class="lineNum">    1321 </span>            :             /* In the normal course of events this isn't needed, but if we have */
+<span class="lineNum">    1322 </span>            :             /*  a different number of points on one path than on the other then */
+<span class="lineNum">    1323 </span>            :             /*  all hell breaks lose without this */
+<span class="lineNum">    1324 </span><span class="lineNoCov">          0 :             cur-&gt;last-&gt;nextcp.x = p-&gt;prevcp.x = (cur-&gt;last-&gt;nextcp.x+p-&gt;prevcp.x)/2;</span>
+<span class="lineNum">    1325 </span><span class="lineNoCov">          0 :             cur-&gt;last-&gt;nextcp.y = p-&gt;prevcp.y = (cur-&gt;last-&gt;nextcp.y+p-&gt;prevcp.y)/2;</span>
+<span class="lineNum">    1326 </span>            :         }
+<span class="lineNum">    1327 </span>            :     }
+<span class="lineNum">    1328 </span><span class="lineNoCov">          0 :     if ( order2 &amp;&amp; base-&gt;next!=NULL &amp;&amp; (base-&gt;next-&gt;islinear || other-&gt;next-&gt;islinear ))</span>
+<span class="lineNum">    1329 </span><span class="lineNoCov">          0 :         p-&gt;nextcp = p-&gt;me;</span>
+<span class="lineNum">    1330 </span>            :     else {
+<span class="lineNum">    1331 </span><span class="lineNoCov">          0 :         p-&gt;nextcp.x = base-&gt;nextcp.x + amount*(other-&gt;nextcp.x-base-&gt;nextcp.x);</span>
+<span class="lineNum">    1332 </span><span class="lineNoCov">          0 :         p-&gt;nextcp.y = base-&gt;nextcp.y + amount*(other-&gt;nextcp.y-base-&gt;nextcp.y);</span>
+<span class="lineNum">    1333 </span>            :     }
+<span class="lineNum">    1334 </span><span class="lineNoCov">          0 :     p-&gt;nonextcp = ( p-&gt;nextcp.x==p-&gt;me.x &amp;&amp; p-&gt;nextcp.y==p-&gt;me.y );</span>
+<span class="lineNum">    1335 </span><span class="lineNoCov">          0 :     p-&gt;noprevcp = ( p-&gt;prevcp.x==p-&gt;me.x &amp;&amp; p-&gt;prevcp.y==p-&gt;me.y );</span>
+<span class="lineNum">    1336 </span><span class="lineNoCov">          0 :     p-&gt;prevcpdef = base-&gt;prevcpdef &amp;&amp; other-&gt;prevcpdef;</span>
+<span class="lineNum">    1337 </span><span class="lineNoCov">          0 :     p-&gt;nextcpdef = base-&gt;nextcpdef &amp;&amp; other-&gt;nextcpdef;</span>
+<span class="lineNum">    1338 </span><span class="lineNoCov">          0 :     p-&gt;selected = false;</span>
+<span class="lineNum">    1339 </span><span class="lineNoCov">          0 :     p-&gt;pointtype = (base-&gt;pointtype==other-&gt;pointtype)?base-&gt;pointtype:pt_corner;</span>
+<span class="lineNum">    1340 </span>            :     /*p-&gt;flex = 0;*/
+<span class="lineNum">    1341 </span><span class="lineNoCov">          0 :     if ( cur-&gt;first==NULL ) {</span>
+<span class="lineNum">    1342 </span><span class="lineNoCov">          0 :         cur-&gt;first = p;</span>
+<span class="lineNum">    1343 </span><span class="lineNoCov">          0 :         cur-&gt;start_offset = 0;</span>
+<span class="lineNum">    1344 </span>            :     } else
+<span class="lineNum">    1345 </span><span class="lineNoCov">          0 :         SplineMake(cur-&gt;last,p,order2);</span>
+<span class="lineNum">    1346 </span><span class="lineNoCov">          0 :     cur-&gt;last = p;</span>
+<a name="1347"><span class="lineNum">    1347 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1348 </span>            :     
+<span class="lineNum">    1349 </span><span class="lineNoCov">          0 : static SplineSet *InterpSplineSet(SplineSet *base, SplineSet *other, real amount, SplineChar *sc) {</span>
+<span class="lineNum">    1350 </span><span class="lineNoCov">          0 :     SplineSet *cur = chunkalloc(sizeof(SplineSet));</span>
+<span class="lineNum">    1351 </span>            :     SplinePoint *bp, *op;
+<span class="lineNum">    1352 </span>            : 
+<span class="lineNum">    1353 </span><span class="lineNoCov">          0 :     for ( bp=base-&gt;first, op = other-&gt;first; ; ) {</span>
+<span class="lineNum">    1354 </span><span class="lineNoCov">          0 :         InterpPoint(cur,bp,op,amount);</span>
+<span class="lineNum">    1355 </span><span class="lineNoCov">          0 :         if ( bp-&gt;next == NULL &amp;&amp; op-&gt;next == NULL )</span>
+<span class="lineNum">    1356 </span><span class="lineNoCov">          0 : return( cur );</span>
+<span class="lineNum">    1357 </span><span class="lineNoCov">          0 :         if ( bp-&gt;next!=NULL &amp;&amp; op-&gt;next!=NULL &amp;&amp;</span>
+<span class="lineNum">    1358 </span><span class="lineNoCov">          0 :                 bp-&gt;next-&gt;to==base-&gt;first &amp;&amp; op-&gt;next-&gt;to==other-&gt;first ) {</span>
+<span class="lineNum">    1359 </span><span class="lineNoCov">          0 :             SplineMake(cur-&gt;last,cur-&gt;first,bp-&gt;next-&gt;order2);</span>
+<span class="lineNum">    1360 </span><span class="lineNoCov">          0 :             cur-&gt;last = cur-&gt;first;</span>
+<span class="lineNum">    1361 </span><span class="lineNoCov">          0 : return( cur );</span>
+<span class="lineNum">    1362 </span>            :         }
+<span class="lineNum">    1363 </span><span class="lineNoCov">          0 :         if ( bp-&gt;next == NULL || bp-&gt;next-&gt;to==base-&gt;first ) {</span>
+<span class="lineNum">    1364 </span><span class="lineNoCov">          0 :             LogError( _(&quot;In character %s, there are too few points on a path in the base\n&quot;), sc-&gt;name);</span>
+<span class="lineNum">    1365 </span><span class="lineNoCov">          0 :             if ( bp-&gt;next!=NULL ) {</span>
+<span class="lineNum">    1366 </span><span class="lineNoCov">          0 :                 if ( bp-&gt;next-&gt;order2 ) {</span>
+<span class="lineNum">    1367 </span><span class="lineNoCov">          0 :                     cur-&gt;last-&gt;nextcp.x = cur-&gt;first-&gt;prevcp.x = (cur-&gt;last-&gt;nextcp.x+cur-&gt;first-&gt;prevcp.x)/2;</span>
+<span class="lineNum">    1368 </span><span class="lineNoCov">          0 :                     cur-&gt;last-&gt;nextcp.y = cur-&gt;first-&gt;prevcp.y = (cur-&gt;last-&gt;nextcp.y+cur-&gt;first-&gt;prevcp.y)/2;</span>
+<span class="lineNum">    1369 </span>            :                 }
+<span class="lineNum">    1370 </span><span class="lineNoCov">          0 :                 SplineMake(cur-&gt;last,cur-&gt;first,bp-&gt;next-&gt;order2);</span>
+<span class="lineNum">    1371 </span><span class="lineNoCov">          0 :                 cur-&gt;last = cur-&gt;first;</span>
+<span class="lineNum">    1372 </span>            :             }
+<span class="lineNum">    1373 </span><span class="lineNoCov">          0 : return( cur );</span>
+<span class="lineNum">    1374 </span><span class="lineNoCov">          0 :         } else if ( op-&gt;next==NULL || op-&gt;next-&gt;to==other-&gt;first ) {</span>
+<span class="lineNum">    1375 </span><span class="lineNoCov">          0 :             LogError( _(&quot;In character %s, there are too many points on a path in the base\n&quot;), sc-&gt;name);</span>
+<span class="lineNum">    1376 </span><span class="lineNoCov">          0 :             while ( bp-&gt;next!=NULL &amp;&amp; bp-&gt;next-&gt;to!=base-&gt;first ) {</span>
+<span class="lineNum">    1377 </span><span class="lineNoCov">          0 :                 bp = bp-&gt;next-&gt;to;</span>
+<span class="lineNum">    1378 </span><span class="lineNoCov">          0 :                 InterpPoint(cur,bp,op,amount);</span>
+<span class="lineNum">    1379 </span>            :             }
+<span class="lineNum">    1380 </span><span class="lineNoCov">          0 :             if ( bp-&gt;next!=NULL ) {</span>
+<span class="lineNum">    1381 </span><span class="lineNoCov">          0 :                 if ( bp-&gt;next-&gt;order2 ) {</span>
+<span class="lineNum">    1382 </span><span class="lineNoCov">          0 :                     cur-&gt;last-&gt;nextcp.x = cur-&gt;first-&gt;prevcp.x = (cur-&gt;last-&gt;nextcp.x+cur-&gt;first-&gt;prevcp.x)/2;</span>
+<span class="lineNum">    1383 </span><span class="lineNoCov">          0 :                     cur-&gt;last-&gt;nextcp.y = cur-&gt;first-&gt;prevcp.y = (cur-&gt;last-&gt;nextcp.y+cur-&gt;first-&gt;prevcp.y)/2;</span>
+<span class="lineNum">    1384 </span>            :                 }
+<span class="lineNum">    1385 </span><span class="lineNoCov">          0 :                 SplineMake(cur-&gt;last,cur-&gt;first,bp-&gt;next-&gt;order2);</span>
+<span class="lineNum">    1386 </span><span class="lineNoCov">          0 :                 cur-&gt;last = cur-&gt;first;</span>
+<span class="lineNum">    1387 </span>            :             }
+<span class="lineNum">    1388 </span><span class="lineNoCov">          0 : return( cur );</span>
+<span class="lineNum">    1389 </span>            :         }
+<span class="lineNum">    1390 </span><span class="lineNoCov">          0 :         bp = bp-&gt;next-&gt;to;</span>
+<span class="lineNum">    1391 </span><span class="lineNoCov">          0 :         op = op-&gt;next-&gt;to;</span>
+<span class="lineNum">    1392 </span><span class="lineNoCov">          0 :     }</span>
+<a name="1393"><span class="lineNum">    1393 </span>            : }</a>
+<span class="lineNum">    1394 </span>            : 
+<span class="lineNum">    1395 </span><span class="lineNoCov">          0 : SplineSet *SplineSetsInterpolate(SplineSet *base, SplineSet *other, real amount, SplineChar *sc) {</span>
+<span class="lineNum">    1396 </span><span class="lineNoCov">          0 :     SplineSet *head=NULL, *last=NULL, *cur;</span>
+<span class="lineNum">    1397 </span>            : 
+<span class="lineNum">    1398 </span>            :     /* we could do something really complex to try and figure out which spline*/
+<span class="lineNum">    1399 </span>            :     /*  set goes with which, but I'm not sure that it would really accomplish */
+<span class="lineNum">    1400 </span>            :     /*  much, if things are off the computer probably won't figure it out */
+<span class="lineNum">    1401 </span>            :     /* Could use path open/closed, direction, point count */
+<span class="lineNum">    1402 </span><span class="lineNoCov">          0 :     while ( base!=NULL &amp;&amp; other!=NULL ) {</span>
+<span class="lineNum">    1403 </span><span class="lineNoCov">          0 :         cur = InterpSplineSet(base,other,amount,sc);</span>
+<span class="lineNum">    1404 </span><span class="lineNoCov">          0 :         if ( head==NULL )</span>
+<span class="lineNum">    1405 </span><span class="lineNoCov">          0 :             head = cur;</span>
+<span class="lineNum">    1406 </span>            :         else
+<span class="lineNum">    1407 </span><span class="lineNoCov">          0 :             last-&gt;next = cur;</span>
+<span class="lineNum">    1408 </span><span class="lineNoCov">          0 :         last = cur;</span>
+<span class="lineNum">    1409 </span><span class="lineNoCov">          0 :         base = base-&gt;next;</span>
+<span class="lineNum">    1410 </span><span class="lineNoCov">          0 :         other = other-&gt;next;</span>
+<span class="lineNum">    1411 </span>            :     }
+<span class="lineNum">    1412 </span><span class="lineNoCov">          0 : return( head );</span>
+<a name="1413"><span class="lineNum">    1413 </span>            : }</a>
+<span class="lineNum">    1414 </span>            : 
+<span class="lineNum">    1415 </span><span class="lineNoCov">          0 : static int SCSameChar(SplineChar *sc1,SplineChar *sc2) {</span>
+<span class="lineNum">    1416 </span><span class="lineNoCov">          0 :     if ( sc1-&gt;unicodeenc!=-1 )</span>
+<span class="lineNum">    1417 </span><span class="lineNoCov">          0 : return( sc1-&gt;unicodeenc==sc2-&gt;unicodeenc );</span>
+<span class="lineNum">    1418 </span>            : 
+<span class="lineNum">    1419 </span><span class="lineNoCov">          0 : return( strcmp(sc1-&gt;name,sc2-&gt;name)==0 );</span>
+<a name="1420"><span class="lineNum">    1420 </span>            : }</a>
+<span class="lineNum">    1421 </span>            : 
+<span class="lineNum">    1422 </span><span class="lineNoCov">          0 : static KernPair *InterpKerns(KernPair *kp1, KernPair *kp2, real amount,</span>
+<span class="lineNum">    1423 </span>            :         SplineFont *new, SplineChar *scnew) {
+<span class="lineNum">    1424 </span><span class="lineNoCov">          0 :     KernPair *head=NULL, *last, *nkp, *k;</span>
+<span class="lineNum">    1425 </span>            : 
+<span class="lineNum">    1426 </span><span class="lineNoCov">          0 :     if ( kp1==NULL || kp2==NULL )</span>
+<span class="lineNum">    1427 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">    1428 </span><span class="lineNoCov">          0 :     while ( kp1!=NULL ) {</span>
+<span class="lineNum">    1429 </span><span class="lineNoCov">          0 :         for ( k=kp2; k!=NULL &amp;&amp; !SCSameChar(k-&gt;sc,kp1-&gt;sc); k=k-&gt;next );</span>
+<span class="lineNum">    1430 </span><span class="lineNoCov">          0 :         if ( k!=NULL ) {</span>
+<span class="lineNum">    1431 </span><span class="lineNoCov">          0 :             if ( k==kp2 ) kp2 = kp2-&gt;next;</span>
+<span class="lineNum">    1432 </span><span class="lineNoCov">          0 :             nkp = chunkalloc(sizeof(KernPair));</span>
+<span class="lineNum">    1433 </span><span class="lineNoCov">          0 :             nkp-&gt;sc = new-&gt;glyphs[kp1-&gt;sc-&gt;orig_pos];</span>
+<span class="lineNum">    1434 </span><span class="lineNoCov">          0 :             nkp-&gt;off = kp1-&gt;off + amount*(k-&gt;off-kp1-&gt;off);</span>
+<span class="lineNum">    1435 </span><span class="lineNoCov">          0 :             nkp-&gt;subtable = SFSubTableFindOrMake(new,CHR('k','e','r','n'),</span>
+<span class="lineNum">    1436 </span>            :                     SCScriptFromUnicode(scnew),gpos_pair);
+<span class="lineNum">    1437 </span><span class="lineNoCov">          0 :             if ( head==NULL )</span>
+<span class="lineNum">    1438 </span><span class="lineNoCov">          0 :                 head = nkp;</span>
+<span class="lineNum">    1439 </span>            :             else
+<span class="lineNum">    1440 </span><span class="lineNoCov">          0 :                 last-&gt;next = nkp;</span>
+<span class="lineNum">    1441 </span><span class="lineNoCov">          0 :             last = nkp;</span>
+<span class="lineNum">    1442 </span>            :         }
+<span class="lineNum">    1443 </span><span class="lineNoCov">          0 :         kp1 = kp1-&gt;next;</span>
+<span class="lineNum">    1444 </span>            :     }
+<span class="lineNum">    1445 </span><span class="lineNoCov">          0 : return( head );</span>
+<a name="1446"><span class="lineNum">    1446 </span>            : }</a>
+<span class="lineNum">    1447 </span>            : 
+<span class="lineNum">    1448 </span><span class="lineNoCov">          0 : static uint32 InterpColor( uint32 col1,uint32 col2, real amount ) {</span>
+<span class="lineNum">    1449 </span>            :     int r1, g1, b1, r2, b2, g2;
+<span class="lineNum">    1450 </span>            : 
+<span class="lineNum">    1451 </span><span class="lineNoCov">          0 :     r1 = (col1&gt;&gt;16)&amp;0xff;</span>
+<span class="lineNum">    1452 </span><span class="lineNoCov">          0 :     r2 = (col2&gt;&gt;16)&amp;0xff;</span>
+<span class="lineNum">    1453 </span><span class="lineNoCov">          0 :     g1 = (col1&gt;&gt;8 )&amp;0xff;</span>
+<span class="lineNum">    1454 </span><span class="lineNoCov">          0 :     g2 = (col2&gt;&gt;8 )&amp;0xff;</span>
+<span class="lineNum">    1455 </span><span class="lineNoCov">          0 :     b1 = (col1    )&amp;0xff;</span>
+<span class="lineNum">    1456 </span><span class="lineNoCov">          0 :     b2 = (col2    )&amp;0xff;</span>
+<span class="lineNum">    1457 </span><span class="lineNoCov">          0 :     r1 += amount * (r2-r1);</span>
+<span class="lineNum">    1458 </span><span class="lineNoCov">          0 :     g1 += amount * (g2-g1);</span>
+<span class="lineNum">    1459 </span><span class="lineNoCov">          0 :     b1 += amount * (b2-b1);</span>
+<span class="lineNum">    1460 </span><span class="lineNoCov">          0 : return( (r1&lt;&lt;16) | (g1&lt;&lt;8) | b1 );</span>
+<a name="1461"><span class="lineNum">    1461 </span>            : }</a>
+<span class="lineNum">    1462 </span>            : 
+<span class="lineNum">    1463 </span><span class="lineNoCov">          0 : static void LayerInterpolate(Layer *to,Layer *base,Layer *other,real amount,SplineChar *sc, int lc) {</span>
+<span class="lineNum">    1464 </span>            : 
+<span class="lineNum">    1465 </span>            :     /* to already has things set to default values, so when an error occurs */
+<span class="lineNum">    1466 </span>            :     /*  I just leave things as the default (and don't need to set it again) */
+<span class="lineNum">    1467 </span><span class="lineNoCov">          0 :     if ( base-&gt;dostroke==other-&gt;dostroke )</span>
+<span class="lineNum">    1468 </span><span class="lineNoCov">          0 :         to-&gt;dostroke = base-&gt;dostroke;</span>
+<span class="lineNum">    1469 </span>            :     else
+<span class="lineNum">    1470 </span><span class="lineNoCov">          0 :         LogError( _(&quot;Different settings on whether to stroke in layer %d of %s\n&quot;), lc, sc-&gt;name );</span>
+<span class="lineNum">    1471 </span><span class="lineNoCov">          0 :     if ( base-&gt;dofill==other-&gt;dofill )</span>
+<span class="lineNum">    1472 </span><span class="lineNoCov">          0 :         to-&gt;dofill = base-&gt;dofill;</span>
+<span class="lineNum">    1473 </span>            :     else
+<span class="lineNum">    1474 </span><span class="lineNoCov">          0 :         LogError(_(&quot;Different settings on whether to fill in layer %d of %s\n&quot;), lc, sc-&gt;name );</span>
+<span class="lineNum">    1475 </span><span class="lineNoCov">          0 :     if ( base-&gt;fill_brush.col==COLOR_INHERITED &amp;&amp; other-&gt;fill_brush.col==COLOR_INHERITED )</span>
+<span class="lineNum">    1476 </span><span class="lineNoCov">          0 :         to-&gt;fill_brush.col = COLOR_INHERITED;</span>
+<span class="lineNum">    1477 </span><span class="lineNoCov">          0 :     else if ( base-&gt;fill_brush.col!=COLOR_INHERITED &amp;&amp; other-&gt;fill_brush.col!=COLOR_INHERITED )</span>
+<span class="lineNum">    1478 </span><span class="lineNoCov">          0 :         to-&gt;fill_brush.col = InterpColor( base-&gt;fill_brush.col,other-&gt;fill_brush.col, amount );</span>
+<span class="lineNum">    1479 </span>            :     else
+<span class="lineNum">    1480 </span><span class="lineNoCov">          0 :         LogError(_(&quot;Different settings on whether to inherit fill color in layer %d of %s\n&quot;), lc, sc-&gt;name );</span>
+<span class="lineNum">    1481 </span><span class="lineNoCov">          0 :     if ( base-&gt;fill_brush.opacity&lt;0 &amp;&amp; other-&gt;fill_brush.opacity&lt;0 )</span>
+<span class="lineNum">    1482 </span><span class="lineNoCov">          0 :         to-&gt;fill_brush.opacity = WIDTH_INHERITED;</span>
+<span class="lineNum">    1483 </span><span class="lineNoCov">          0 :     else if ( base-&gt;fill_brush.opacity&gt;=0 &amp;&amp; other-&gt;fill_brush.opacity&gt;=0 )</span>
+<span class="lineNum">    1484 </span><span class="lineNoCov">          0 :         to-&gt;fill_brush.opacity = base-&gt;fill_brush.opacity + amount*(other-&gt;fill_brush.opacity-base-&gt;fill_brush.opacity);</span>
+<span class="lineNum">    1485 </span>            :     else
+<span class="lineNum">    1486 </span><span class="lineNoCov">          0 :         LogError(_(&quot;Different settings on whether to inherit fill opacity in layer %d of %s\n&quot;), lc, sc-&gt;name );</span>
+<span class="lineNum">    1487 </span><span class="lineNoCov">          0 :     if ( base-&gt;stroke_pen.brush.col==COLOR_INHERITED &amp;&amp; other-&gt;stroke_pen.brush.col==COLOR_INHERITED )</span>
+<span class="lineNum">    1488 </span><span class="lineNoCov">          0 :         to-&gt;stroke_pen.brush.col = COLOR_INHERITED;</span>
+<span class="lineNum">    1489 </span><span class="lineNoCov">          0 :     else if ( base-&gt;stroke_pen.brush.col!=COLOR_INHERITED &amp;&amp; other-&gt;stroke_pen.brush.col!=COLOR_INHERITED )</span>
+<span class="lineNum">    1490 </span><span class="lineNoCov">          0 :         to-&gt;stroke_pen.brush.col = InterpColor( base-&gt;stroke_pen.brush.col,other-&gt;stroke_pen.brush.col, amount );</span>
+<span class="lineNum">    1491 </span>            :     else
+<span class="lineNum">    1492 </span><span class="lineNoCov">          0 :         LogError(_(&quot;Different settings on whether to inherit fill color in layer %d of %s\n&quot;), lc, sc-&gt;name );</span>
+<span class="lineNum">    1493 </span><span class="lineNoCov">          0 :     if ( base-&gt;stroke_pen.brush.opacity&lt;0 &amp;&amp; other-&gt;stroke_pen.brush.opacity&lt;0 )</span>
+<span class="lineNum">    1494 </span><span class="lineNoCov">          0 :         to-&gt;stroke_pen.brush.opacity = WIDTH_INHERITED;</span>
+<span class="lineNum">    1495 </span><span class="lineNoCov">          0 :     else if ( base-&gt;stroke_pen.brush.opacity&gt;=0 &amp;&amp; other-&gt;stroke_pen.brush.opacity&gt;=0 )</span>
+<span class="lineNum">    1496 </span><span class="lineNoCov">          0 :         to-&gt;stroke_pen.brush.opacity = base-&gt;stroke_pen.brush.opacity + amount*(other-&gt;stroke_pen.brush.opacity-base-&gt;stroke_pen.brush.opacity);</span>
+<span class="lineNum">    1497 </span>            :     else
+<span class="lineNum">    1498 </span><span class="lineNoCov">          0 :         LogError(_(&quot;Different settings on whether to inherit stroke opacity in layer %d of %s\n&quot;), lc, sc-&gt;name );</span>
+<span class="lineNum">    1499 </span><span class="lineNoCov">          0 :     if ( base-&gt;stroke_pen.width&lt;0 &amp;&amp; other-&gt;stroke_pen.width&lt;0 )</span>
+<span class="lineNum">    1500 </span><span class="lineNoCov">          0 :         to-&gt;stroke_pen.width = WIDTH_INHERITED;</span>
+<span class="lineNum">    1501 </span><span class="lineNoCov">          0 :     else if ( base-&gt;stroke_pen.width&gt;=0 &amp;&amp; other-&gt;stroke_pen.width&gt;=0 )</span>
+<span class="lineNum">    1502 </span><span class="lineNoCov">          0 :         to-&gt;stroke_pen.width = base-&gt;stroke_pen.width + amount*(other-&gt;stroke_pen.width-base-&gt;stroke_pen.width);</span>
+<span class="lineNum">    1503 </span>            :     else
+<span class="lineNum">    1504 </span><span class="lineNoCov">          0 :         LogError(_(&quot;Different settings on whether to inherit stroke width in layer %d of %s\n&quot;), lc, sc-&gt;name );</span>
+<span class="lineNum">    1505 </span><span class="lineNoCov">          0 :     if ( base-&gt;stroke_pen.linecap==other-&gt;stroke_pen.linecap )</span>
+<span class="lineNum">    1506 </span><span class="lineNoCov">          0 :         to-&gt;stroke_pen.linecap = base-&gt;stroke_pen.linecap;</span>
+<span class="lineNum">    1507 </span>            :     else
+<span class="lineNum">    1508 </span><span class="lineNoCov">          0 :         LogError(_(&quot;Different settings on stroke linecap in layer %d of %s\n&quot;), lc, sc-&gt;name );</span>
+<span class="lineNum">    1509 </span><span class="lineNoCov">          0 :     if ( base-&gt;stroke_pen.linejoin==other-&gt;stroke_pen.linejoin )</span>
+<span class="lineNum">    1510 </span><span class="lineNoCov">          0 :         to-&gt;stroke_pen.linejoin = base-&gt;stroke_pen.linejoin;</span>
+<span class="lineNum">    1511 </span>            :     else
+<span class="lineNum">    1512 </span><span class="lineNoCov">          0 :         LogError(_(&quot;Different settings on stroke linejoin in layer %d of %s\n&quot;), lc, sc-&gt;name );</span>
+<span class="lineNum">    1513 </span><span class="lineNoCov">          0 :     if ( base-&gt;fill_brush.gradient!=NULL || other-&gt;fill_brush.gradient!=NULL ||</span>
+<span class="lineNum">    1514 </span><span class="lineNoCov">          0 :             base-&gt;stroke_pen.brush.gradient!=NULL || other-&gt;stroke_pen.brush.gradient!=NULL )</span>
+<span class="lineNum">    1515 </span><span class="lineNoCov">          0 :         LogError(_(&quot;I can't even imagine how to attempt to interpolate gradients in layer %d of %s\n&quot;), lc, sc-&gt;name );</span>
+<span class="lineNum">    1516 </span><span class="lineNoCov">          0 :     if ( base-&gt;fill_brush.pattern!=NULL || other-&gt;fill_brush.pattern!=NULL )</span>
+<span class="lineNum">    1517 </span><span class="lineNoCov">          0 :         LogError(_(&quot;Different fill patterns in layer %d of %s\n&quot;), lc, sc-&gt;name );</span>
+<span class="lineNum">    1518 </span><span class="lineNoCov">          0 :     if ( base-&gt;stroke_pen.brush.pattern!=NULL || other-&gt;stroke_pen.brush.pattern!=NULL )</span>
+<span class="lineNum">    1519 </span><span class="lineNoCov">          0 :         LogError(_(&quot;Different stroke patterns in layer %d of %s\n&quot;), lc, sc-&gt;name );</span>
+<span class="lineNum">    1520 </span>            : 
+<span class="lineNum">    1521 </span><span class="lineNoCov">          0 :     to-&gt;splines = SplineSetsInterpolate(base-&gt;splines,other-&gt;splines,amount,sc);</span>
+<span class="lineNum">    1522 </span><span class="lineNoCov">          0 :     to-&gt;refs = InterpRefs(base-&gt;refs,other-&gt;refs,amount,sc);</span>
+<span class="lineNum">    1523 </span><span class="lineNoCov">          0 :     if ( base-&gt;images!=NULL || other-&gt;images!=NULL )</span>
+<span class="lineNum">    1524 </span><span class="lineNoCov">          0 :         LogError(_(&quot;I can't even imagine how to attempt to interpolate images in layer %d of %s\n&quot;), lc, sc-&gt;name );</span>
+<a name="1525"><span class="lineNum">    1525 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1526 </span>            : 
+<span class="lineNum">    1527 </span><span class="lineNoCov">          0 : SplineChar *SplineCharInterpolate(SplineChar *base, SplineChar *other,</span>
+<span class="lineNum">    1528 </span>            :         real amount, SplineFont *newfont) {
+<span class="lineNum">    1529 </span>            :     SplineChar *sc;
+<span class="lineNum">    1530 </span>            :     int i;
+<span class="lineNum">    1531 </span>            : 
+<span class="lineNum">    1532 </span><span class="lineNoCov">          0 :     if ( base==NULL || other==NULL )</span>
+<span class="lineNum">    1533 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">    1534 </span><span class="lineNoCov">          0 :     sc = SFSplineCharCreate(newfont);</span>
+<span class="lineNum">    1535 </span><span class="lineNoCov">          0 :     sc-&gt;unicodeenc = base-&gt;unicodeenc;</span>
+<span class="lineNum">    1536 </span><span class="lineNoCov">          0 :     sc-&gt;changed = true;</span>
+<span class="lineNum">    1537 </span><span class="lineNoCov">          0 :     sc-&gt;views = NULL;</span>
+<span class="lineNum">    1538 </span><span class="lineNoCov">          0 :     sc-&gt;dependents = NULL;</span>
+<span class="lineNum">    1539 </span><span class="lineNoCov">          0 :     sc-&gt;layers[ly_back].splines = NULL;</span>
+<span class="lineNum">    1540 </span><span class="lineNoCov">          0 :     sc-&gt;layers[ly_back].images = NULL;</span>
+<span class="lineNum">    1541 </span><span class="lineNoCov">          0 :     sc-&gt;layers[ly_fore].undoes = sc-&gt;layers[ly_back].undoes = NULL;</span>
+<span class="lineNum">    1542 </span><span class="lineNoCov">          0 :     sc-&gt;layers[ly_fore].redoes = sc-&gt;layers[ly_back].redoes = NULL;</span>
+<span class="lineNum">    1543 </span><span class="lineNoCov">          0 :     sc-&gt;kerns = NULL;</span>
+<span class="lineNum">    1544 </span><span class="lineNoCov">          0 :     sc-&gt;name = copy(base-&gt;name);</span>
+<span class="lineNum">    1545 </span><span class="lineNoCov">          0 :     sc-&gt;width = base-&gt;width + amount*(other-&gt;width-base-&gt;width);</span>
+<span class="lineNum">    1546 </span><span class="lineNoCov">          0 :     sc-&gt;vwidth = base-&gt;vwidth + amount*(other-&gt;vwidth-base-&gt;vwidth);</span>
+<span class="lineNum">    1547 </span><span class="lineNoCov">          0 :     sc-&gt;lsidebearing = base-&gt;lsidebearing + amount*(other-&gt;lsidebearing-base-&gt;lsidebearing);</span>
+<span class="lineNum">    1548 </span><span class="lineNoCov">          0 :     if ( base-&gt;parent-&gt;multilayer &amp;&amp; other-&gt;parent-&gt;multilayer ) {</span>
+<span class="lineNum">    1549 </span><span class="lineNoCov">          0 :         int lc = base-&gt;layer_cnt;</span>
+<span class="lineNum">    1550 </span><span class="lineNoCov">          0 :         if ( lc!=other-&gt;layer_cnt ) {</span>
+<span class="lineNum">    1551 </span><span class="lineNoCov">          0 :             LogError(_(&quot;Different numbers of layers in %s\n&quot;), base-&gt;name );</span>
+<span class="lineNum">    1552 </span><span class="lineNoCov">          0 :             if ( other-&gt;layer_cnt&lt;lc ) lc = other-&gt;layer_cnt;</span>
+<span class="lineNum">    1553 </span>            :         }
+<span class="lineNum">    1554 </span><span class="lineNoCov">          0 :         if ( lc&gt;2 ) {</span>
+<span class="lineNum">    1555 </span><span class="lineNoCov">          0 :             sc-&gt;layers = realloc(sc-&gt;layers,lc*sizeof(Layer));</span>
+<span class="lineNum">    1556 </span><span class="lineNoCov">          0 :             for ( i=ly_fore+1; i&lt;lc; ++i )</span>
+<span class="lineNum">    1557 </span><span class="lineNoCov">          0 :                 LayerDefault(&amp;sc-&gt;layers[i]);</span>
+<span class="lineNum">    1558 </span>            :         }
+<span class="lineNum">    1559 </span><span class="lineNoCov">          0 :         for ( i=ly_fore; i&lt;lc; ++i )</span>
+<span class="lineNum">    1560 </span><span class="lineNoCov">          0 :             LayerInterpolate(&amp;sc-&gt;layers[i],&amp;base-&gt;layers[i],&amp;other-&gt;layers[i],amount,sc,i);</span>
+<span class="lineNum">    1561 </span>            :     } else {
+<span class="lineNum">    1562 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;sc-&gt;layer_cnt; ++i ) {</span>
+<span class="lineNum">    1563 </span><span class="lineNoCov">          0 :             if ( i&gt;=base-&gt;layer_cnt || i&gt;= other-&gt;layer_cnt )</span>
+<span class="lineNum">    1564 </span>            :         break;
+<span class="lineNum">    1565 </span><span class="lineNoCov">          0 :             sc-&gt;layers[i].splines = SplineSetsInterpolate(base-&gt;layers[i].splines,other-&gt;layers[i].splines,amount,sc);</span>
+<span class="lineNum">    1566 </span><span class="lineNoCov">          0 :             sc-&gt;layers[i].refs = InterpRefs(base-&gt;layers[i].refs,other-&gt;layers[i].refs,amount,sc);</span>
+<span class="lineNum">    1567 </span>            :         }
+<span class="lineNum">    1568 </span>            :     }
+<span class="lineNum">    1569 </span><span class="lineNoCov">          0 :     sc-&gt;changedsincelasthinted = true;</span>
+<span class="lineNum">    1570 </span><span class="lineNoCov">          0 :     sc-&gt;widthset = base-&gt;widthset;</span>
+<span class="lineNum">    1571 </span><span class="lineNoCov">          0 :     sc-&gt;glyph_class = base-&gt;glyph_class;</span>
+<span class="lineNum">    1572 </span><span class="lineNoCov">          0 : return( sc );</span>
+<a name="1573"><span class="lineNum">    1573 </span>            : }</a>
+<span class="lineNum">    1574 </span>            : 
+<span class="lineNum">    1575 </span><span class="lineNoCov">          0 : static void _SplineCharInterpolate(SplineFont *new, int orig_pos, SplineChar *base, SplineChar *other, real amount) {</span>
+<span class="lineNum">    1576 </span>            :     SplineChar *sc;
+<span class="lineNum">    1577 </span>            : 
+<span class="lineNum">    1578 </span><span class="lineNoCov">          0 :     sc = SplineCharInterpolate(base,other,amount,new);</span>
+<span class="lineNum">    1579 </span><span class="lineNoCov">          0 :     if ( sc==NULL )</span>
+<span class="lineNum">    1580 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">    1581 </span><span class="lineNoCov">          0 :     sc-&gt;orig_pos = orig_pos;</span>
+<span class="lineNum">    1582 </span><span class="lineNoCov">          0 :     new-&gt;glyphs[orig_pos] = sc;</span>
+<span class="lineNum">    1583 </span><span class="lineNoCov">          0 :     if ( orig_pos+1&gt;new-&gt;glyphcnt )</span>
+<span class="lineNum">    1584 </span><span class="lineNoCov">          0 :         new-&gt;glyphcnt = orig_pos+1;</span>
+<span class="lineNum">    1585 </span><span class="lineNoCov">          0 :     sc-&gt;parent = new;</span>
+<a name="1586"><span class="lineNum">    1586 </span>            : }</a>
+<span class="lineNum">    1587 </span>            : 
+<span class="lineNum">    1588 </span><span class="lineNoCov">          0 : static void IFixupSC(SplineFont *sf, SplineChar *sc,int i) {</span>
+<span class="lineNum">    1589 </span>            :     RefChar *ref;
+<span class="lineNum">    1590 </span>            : 
+<span class="lineNum">    1591 </span><span class="lineNoCov">          0 :     for ( ref=sc-&gt;layers[ly_fore].refs; ref!=NULL; ref=ref-&gt;next ) if ( !ref-&gt;checked ) {</span>
+<span class="lineNum">    1592 </span>            :         /* The sc in the ref is from the base font. It's got to be in the */
+<span class="lineNum">    1593 </span>            :         /*  new font too (the ref only gets created if it's present in both fonts)*/
+<span class="lineNum">    1594 </span><span class="lineNoCov">          0 :         ref-&gt;checked = true;</span>
+<span class="lineNum">    1595 </span><span class="lineNoCov">          0 :         ref-&gt;orig_pos = SFFindExistingSlot(sf,ref-&gt;sc-&gt;unicodeenc,ref-&gt;sc-&gt;name);</span>
+<span class="lineNum">    1596 </span><span class="lineNoCov">          0 :         ref-&gt;sc = sf-&gt;glyphs[ref-&gt;orig_pos];</span>
+<span class="lineNum">    1597 </span><span class="lineNoCov">          0 :         IFixupSC(sf,ref-&gt;sc,ref-&gt;orig_pos);</span>
+<span class="lineNum">    1598 </span><span class="lineNoCov">          0 :         SCReinstanciateRefChar(sc,ref,ly_fore);</span>
+<span class="lineNum">    1599 </span><span class="lineNoCov">          0 :         SCMakeDependent(sc,ref-&gt;sc);</span>
+<span class="lineNum">    1600 </span>            :     }
+<a name="1601"><span class="lineNum">    1601 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1602 </span>            : 
+<span class="lineNum">    1603 </span><span class="lineNoCov">          0 : static void InterpFixupRefChars(SplineFont *sf) {</span>
+<span class="lineNum">    1604 </span>            :     int i;
+<span class="lineNum">    1605 </span>            : 
+<span class="lineNum">    1606 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;sf-&gt;glyphcnt; ++i ) if ( sf-&gt;glyphs[i]!=NULL ) {</span>
+<span class="lineNum">    1607 </span><span class="lineNoCov">          0 :         IFixupSC(sf,sf-&gt;glyphs[i], i);</span>
+<span class="lineNum">    1608 </span>            :     }
+<a name="1609"><span class="lineNum">    1609 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1610 </span>            : 
+<span class="lineNum">    1611 </span><span class="lineNoCov">          0 : SplineFont *InterpolateFont(SplineFont *base, SplineFont *other, real amount,</span>
+<span class="lineNum">    1612 </span>            :         Encoding *enc) {
+<span class="lineNum">    1613 </span>            :     SplineFont *new;
+<span class="lineNum">    1614 </span>            :     int i, index, lc;
+<span class="lineNum">    1615 </span>            : 
+<span class="lineNum">    1616 </span><span class="lineNoCov">          0 :     if ( base==other ) {</span>
+<span class="lineNum">    1617 </span><span class="lineNoCov">          0 :         ff_post_error(_(&quot;Interpolating Problem&quot;),_(&quot;Interpolating a font with itself achieves nothing&quot;));</span>
+<span class="lineNum">    1618 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">    1619 </span><span class="lineNoCov">          0 :     } else if ( base-&gt;layers[ly_fore].order2!=other-&gt;layers[ly_fore].order2 ) {</span>
+<span class="lineNum">    1620 </span><span class="lineNoCov">          0 :         ff_post_error(_(&quot;Interpolating Problem&quot;),_(&quot;Interpolating between fonts with different spline orders (i.e. between postscript and truetype)&quot;));</span>
+<span class="lineNum">    1621 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">    1622 </span><span class="lineNoCov">          0 :     } else if ( base-&gt;multilayer &amp;&amp; other-&gt;multilayer ) {</span>
+<span class="lineNum">    1623 </span><span class="lineNoCov">          0 :         ff_post_error(_(&quot;Interpolating Problem&quot;),_(&quot;Interpolating between fonts with different editing types (ie. between type3 and type1)&quot;));</span>
+<span class="lineNum">    1624 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">    1625 </span>            :     }
+<span class="lineNum">    1626 </span><span class="lineNoCov">          0 :     new = SplineFontBlank(base-&gt;glyphcnt);</span>
+<span class="lineNum">    1627 </span><span class="lineNoCov">          0 :     new-&gt;ascent = base-&gt;ascent + amount*(other-&gt;ascent-base-&gt;ascent);</span>
+<span class="lineNum">    1628 </span><span class="lineNoCov">          0 :     new-&gt;descent = base-&gt;descent + amount*(other-&gt;descent-base-&gt;descent);</span>
+<span class="lineNum">    1629 </span><span class="lineNoCov">          0 :     if ( (lc=base-&gt;layer_cnt)&gt;other-&gt;layer_cnt )</span>
+<span class="lineNum">    1630 </span><span class="lineNoCov">          0 :         lc = other-&gt;layer_cnt;</span>
+<span class="lineNum">    1631 </span><span class="lineNoCov">          0 :     if ( lc!=new-&gt;layer_cnt ) {</span>
+<span class="lineNum">    1632 </span><span class="lineNoCov">          0 :         new-&gt;layer_cnt = lc;</span>
+<span class="lineNum">    1633 </span><span class="lineNoCov">          0 :         new-&gt;layers = realloc(new-&gt;layers,lc*sizeof(LayerInfo));</span>
+<span class="lineNum">    1634 </span><span class="lineNoCov">          0 :         if ( lc&gt;2 )</span>
+<span class="lineNum">    1635 </span><span class="lineNoCov">          0 :             memset(new-&gt;layers+2,0,(lc-2)*sizeof(LayerInfo));</span>
+<span class="lineNum">    1636 </span><span class="lineNoCov">          0 :         for ( i=2; i&lt;lc; ++i ) {</span>
+<span class="lineNum">    1637 </span><span class="lineNoCov">          0 :             new-&gt;layers[i].name = copy(base-&gt;layers[i].name);</span>
+<span class="lineNum">    1638 </span><span class="lineNoCov">          0 :             new-&gt;layers[i].background = base-&gt;layers[i].background;</span>
+<span class="lineNum">    1639 </span><span class="lineNoCov">          0 :             new-&gt;layers[i].order2 = base-&gt;layers[i].order2;</span>
+<span class="lineNum">    1640 </span>            :         }
+<span class="lineNum">    1641 </span>            :     }
+<span class="lineNum">    1642 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;2; ++i ) {</span>
+<span class="lineNum">    1643 </span><span class="lineNoCov">          0 :         new-&gt;layers[i].background = base-&gt;layers[i].background;</span>
+<span class="lineNum">    1644 </span><span class="lineNoCov">          0 :         new-&gt;layers[i].order2 = base-&gt;layers[i].order2;</span>
+<span class="lineNum">    1645 </span>            :     }
+<span class="lineNum">    1646 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;base-&gt;glyphcnt; ++i ) if ( base-&gt;glyphs[i]!=NULL ) {</span>
+<span class="lineNum">    1647 </span><span class="lineNoCov">          0 :         index = SFFindExistingSlot(other,base-&gt;glyphs[i]-&gt;unicodeenc,base-&gt;glyphs[i]-&gt;name);</span>
+<span class="lineNum">    1648 </span><span class="lineNoCov">          0 :         if ( index!=-1 &amp;&amp; other-&gt;glyphs[index]!=NULL ) {</span>
+<span class="lineNum">    1649 </span><span class="lineNoCov">          0 :             _SplineCharInterpolate(new,i,base-&gt;glyphs[i],other-&gt;glyphs[index],amount);</span>
+<span class="lineNum">    1650 </span><span class="lineNoCov">          0 :             if ( new-&gt;glyphs[i]!=NULL )</span>
+<span class="lineNum">    1651 </span><span class="lineNoCov">          0 :                 new-&gt;glyphs[i]-&gt;kerns = InterpKerns(base-&gt;glyphs[i]-&gt;kerns,</span>
+<span class="lineNum">    1652 </span><span class="lineNoCov">          0 :                         other-&gt;glyphs[index]-&gt;kerns,amount,new,new-&gt;glyphs[i]);</span>
+<span class="lineNum">    1653 </span>            :         }
+<span class="lineNum">    1654 </span>            :     }
+<span class="lineNum">    1655 </span><span class="lineNoCov">          0 :     InterpFixupRefChars(new);</span>
+<span class="lineNum">    1656 </span><span class="lineNoCov">          0 :     new-&gt;changed = true;</span>
+<span class="lineNum">    1657 </span><span class="lineNoCov">          0 :     new-&gt;map = EncMapFromEncoding(new,enc);</span>
+<span class="lineNum">    1658 </span><span class="lineNoCov">          0 : return( new );</span>
+<span class="lineNum">    1659 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

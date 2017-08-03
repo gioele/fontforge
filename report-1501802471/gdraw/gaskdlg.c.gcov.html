@@ -1,0 +1,1243 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - gdraw/gaskdlg.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gdraw</a> - gaskdlg.c<span style="font-size: 80%;"> (source / <a href="gaskdlg.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">22</td>
+            <td class="headerCovTableEntry">785</td>
+            <td class="headerCovTableEntryLo">2.8 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntry">23</td>
+            <td class="headerCovTableEntryLo">13.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &lt;stdarg.h&gt;
+<span class="lineNum">      28 </span>            : #include &lt;stdlib.h&gt;
+<span class="lineNum">      29 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">      30 </span>            : #include &quot;ustring.h&quot;
+<span class="lineNum">      31 </span>            : #include &quot;ffglib.h&quot;
+<span class="lineNum">      32 </span>            : #include &lt;glib/gprintf.h&gt;
+<span class="lineNum">      33 </span>            : #include &quot;gdraw.h&quot;
+<span class="lineNum">      34 </span>            : #include &quot;gwidget.h&quot;
+<span class="lineNum">      35 </span>            : #include &quot;ggadget.h&quot;
+<span class="lineNum">      36 </span>            : #include &quot;ggadgetP.h&quot;
+<span class="lineNum">      37 </span>            : 
+<span class="lineNum">      38 </span>            : static GWindow last;
+<span class="lineNum">      39 </span>            : static const char *last_title;
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span>            : struct dlg_info {
+<span class="lineNum">      42 </span>            :     int done;
+<span class="lineNum">      43 </span>            :     int ret;
+<span class="lineNum">      44 </span>            :     int multi;
+<span class="lineNum">      45 </span>            :     int exposed;
+<span class="lineNum">      46 </span>            :     int size_diff;
+<span class="lineNum">      47 </span>            :     int bcnt;
+<a name="48"><span class="lineNum">      48 </span>            : };</a>
+<span class="lineNum">      49 </span>            : 
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 : static int d_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 :     struct dlg_info *d = GDrawGetUserData(gw);</span>
+<span class="lineNum">      52 </span>            : 
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :     if ( event-&gt;type==et_close ) {</span>
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :         d-&gt;done = true;</span>
+<span class="lineNum">      55 </span>            :         /* d-&gt;ret is initialized to cancel */
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type==et_controlevent &amp;&amp;</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :             event-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :         d-&gt;done = true;</span>
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :         d-&gt;ret = GGadgetGetCid(event-&gt;u.control.g);</span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_expose ) {</span>
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :         d-&gt;exposed = true;</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_char ) {</span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_resize &amp;&amp; !d-&gt;exposed ) {</span>
+<span class="lineNum">      65 </span>            :         GRect pos,rootsize;
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :         GDrawGetSize(gw,&amp;pos);</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :         GDrawGetSize(GDrawGetRoot(NULL),&amp;rootsize);</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :         if ( pos.x+pos.width&gt;=rootsize.width || pos.y+pos.height&gt;=rootsize.height ) {</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :             if ( pos.x+pos.width&gt;=rootsize.width )</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :                 if (( pos.x = rootsize.width - pos.width )&lt;0 ) pos.x = 0;</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :             if ( pos.y+pos.height&gt;=rootsize.height )</span>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :                 if (( pos.y = rootsize.height - pos.height )&lt;0 ) pos.y = 0;</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :             GDrawMove(gw,pos.x,pos.y);</span>
+<span class="lineNum">      74 </span>            :         }
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_map ) {</span>
+<span class="lineNum">      76 </span>            :         /* Above palettes */
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :         GDrawRaise(gw);</span>
+<span class="lineNum">      78 </span>            :     }
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="80"><span class="lineNum">      80 </span>            : }</a>
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 : static int w_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">      83 </span>            : 
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :     if ( event-&gt;type==et_close ||</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :             (event-&gt;type==et_controlevent &amp;&amp;</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :              event-&gt;u.control.subtype == et_buttonactivate ) ||</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :             event-&gt;type==et_timer )</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :         GDrawDestroyWindow(gw);</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :     else if ( event-&gt;type == et_map ) {</span>
+<span class="lineNum">      90 </span>            :         /* Above palettes */
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :         GDrawRaise(gw);</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_char ) {</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_destroy ) {</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :         if ( last==gw ) {</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :             last = NULL;</span>
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :             last_title = NULL;</span>
+<span class="lineNum">      98 </span>            :         }
+<span class="lineNum">      99 </span>            :     }
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     101 </span>            : }
+<span class="lineNum">     102 </span>            : 
+<a name="103"><span class="lineNum">     103 </span>            : #define GLINE_MAX       20</a>
+<span class="lineNum">     104 </span>            : 
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 : static int FindLineBreaks(const unichar_t *question, GTextInfo linebreaks[GLINE_MAX+1]) {</span>
+<span class="lineNum">     106 </span>            :     int lb, i;
+<span class="lineNum">     107 </span>            :     const unichar_t *pt, *last;
+<span class="lineNum">     108 </span>            : 
+<span class="lineNum">     109 </span>            :     /* Find good places to break the question into bits */
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :     last = pt = question;</span>
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :     linebreaks[0].text = (unichar_t *) question;</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :     lb=0;</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :     while ( *pt!='\0' &amp;&amp; lb&lt;GLINE_MAX-1 ) {</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :         last = pt;</span>
+<span class="lineNum">     115 </span>            :         /* break lines around 60 characters (or if there are no spaces at 90 chars) */
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :         while ( pt-linebreaks[lb].text&lt;60 ||</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :                 (pt-linebreaks[lb].text&lt;90 &amp;&amp; last==linebreaks[lb].text)) {</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :             if ( *pt=='\n' || *pt=='\0' ) {</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :                 last = pt;</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     121 </span>            :             }
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :             if ( *pt==' ' )</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :                 last = pt;</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :             ++pt;</span>
+<span class="lineNum">     125 </span>            :         }
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :         if ( last==linebreaks[lb].text )</span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :             last = pt;</span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :         if ( *last==' ' || *last=='\n' ) ++last;</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :         linebreaks[++lb].text = (unichar_t *) last;</span>
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :         pt = last;</span>
+<span class="lineNum">     131 </span>            :     }
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :     if ( *pt!='\0' )</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :         linebreaks[++lb].text = (unichar_t *) pt+u_strlen(pt);</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;lb; ++i ) {</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :         int temp = linebreaks[i+1].text - linebreaks[i].text;</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :         if ( linebreaks[i+1].text[-1]==' ' || linebreaks[i+1].text[-1]=='\n' )</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :             --temp;</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :         linebreaks[i].text = u_copyn(linebreaks[i].text,temp);</span>
+<span class="lineNum">     139 </span>            :     }
+<span class="lineNum">     140 </span>            : 
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :     if ( question[u_strlen(question)-1]=='\n' )</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :         --lb;</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 : return( lb );</span>
+<a name="144"><span class="lineNum">     144 </span>            : }</a>
+<span class="lineNum">     145 </span>            : 
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 : static GWindow DlgCreate(const unichar_t *title,const unichar_t *question,va_list ap,</span>
+<span class="lineNum">     147 </span>            :         const unichar_t **answers, const unichar_t *mn, int def, int cancel,
+<span class="lineNum">     148 </span>            :         struct dlg_info *d, int add_text, int restrict_input, int center) {
+<span class="lineNum">     149 </span>            :     GTextInfo qlabels[GLINE_MAX+1], *blabels;
+<span class="lineNum">     150 </span>            :     GGadgetCreateData *gcd;
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :     int lb, bcnt=0;</span>
+<span class="lineNum">     152 </span>            :     GRect pos;
+<span class="lineNum">     153 </span>            :     GWindow gw;
+<span class="lineNum">     154 </span>            :     GWindowAttrs wattrs;
+<span class="lineNum">     155 </span>            :     extern FontInstance *_ggadget_default_font;
+<span class="lineNum">     156 </span>            :     int as, ds, ld, fh;
+<span class="lineNum">     157 </span>            :     int w, maxw, bw, bspace;
+<span class="lineNum">     158 </span>            :     int i, y;
+<span class="lineNum">     159 </span>            :     gchar *buf, *qbuf;
+<span class="lineNum">     160 </span>            :     unichar_t *ubuf;
+<span class="lineNum">     161 </span>            :     extern GBox _GGadget_defaultbutton_box;
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :     if ( d!=NULL )</span>
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :         memset(d,0,sizeof(*d));</span>
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :     GGadgetInit();</span>
+<span class="lineNum">     166 </span>            :     /* u_vsnprintf(ubuf,sizeof(ubuf)/sizeof(ubuf[0]),question,ap);*/
+<span class="lineNum">     167 </span>            :     /* u_vsnprintf() also assumes UCS4 string is null terminated */
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :     qbuf = g_ucs4_to_utf8( (const gunichar *)question, -1, NULL, NULL, NULL );</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :     if( !qbuf ) {</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :         fprintf( stderr, &quot;Failed to convert question string in DlgCreate()\n&quot; );</span>
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :         return( NULL );</span>
+<span class="lineNum">     172 </span>            :     }
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :     g_vasprintf(&amp;buf, qbuf, ap);</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :     g_free( qbuf );</span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :     ubuf = (unichar_t *) g_utf8_to_ucs4( buf, -1, NULL, NULL, NULL );</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :     g_free( buf );</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :     if( !ubuf ) {</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :         fprintf( stderr, &quot;Failed to convert formatted string in DlgCreate()\n&quot; );</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :         return( NULL );</span>
+<span class="lineNum">     180 </span>            :     }
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 :     if ( screen_display==NULL ) {</span>
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :         char *temp = u2def_copy(ubuf);</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :         fprintf(stderr, &quot;%s\n&quot;, temp);</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :         free(temp);</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :         if ( d!=NULL ) d-&gt;done = true;</span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     187 </span>            :     }
+<span class="lineNum">     188 </span>            : 
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :     GProgressPauseTimer();</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :     memset(qlabels,'\0',sizeof(qlabels));</span>
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :     lb = FindLineBreaks(ubuf,qlabels);</span>
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :     for ( bcnt=0; answers[bcnt]!=NULL; ++bcnt);</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :     blabels = calloc(bcnt+1,sizeof(GTextInfo));</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :     for ( bcnt=0; answers[bcnt]!=NULL; ++bcnt)</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :         blabels[bcnt].text = (unichar_t *) answers[bcnt];</span>
+<span class="lineNum">     196 </span>            : 
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :     memset(&amp;wattrs,0,sizeof(wattrs));</span>
+<span class="lineNum">     198 </span>            :     /* If we have many questions in quick succession the dlg will jump around*/
+<span class="lineNum">     199 </span>            :     /*  as it tracks the cursor (which moves to the buttons). That's not good*/
+<span class="lineNum">     200 </span>            :     /*  So I don't do undercursor here */
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :     wattrs.mask = wam_events|wam_cursor|wam_wtitle|wam_isdlg;</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :     if ( restrict_input )</span>
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :         wattrs.mask |= wam_restrict;</span>
+<span class="lineNum">     204 </span>            :     else 
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :         wattrs.mask |= wam_notrestricted;</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :     if ( center )</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :         wattrs.mask |= wam_centered;</span>
+<span class="lineNum">     208 </span>            :     else
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :         wattrs.mask |= wam_undercursor;</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :     wattrs.is_dlg = true;</span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :     wattrs.not_restricted = true;</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :     wattrs.restrict_input_to_me = 1;</span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :     wattrs.event_masks = ~(1&lt;&lt;et_charup);</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :     wattrs.undercursor = 1;</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :     wattrs.centered = 2;</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :     wattrs.cursor = ct_pointer;</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :     wattrs.window_title = (unichar_t *) title;</span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :     pos.x = pos.y = 0;</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :     pos.width = 200; pos.height = 60;           /* We'll figure size later */</span>
+<span class="lineNum">     220 </span>            :                 /* but if we get the size too small, the cursor isn't in dlg */
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :     gw = GDrawCreateTopWindow(NULL,&amp;pos,restrict_input?d_e_h:w_e_h,d,&amp;wattrs);</span>
+<span class="lineNum">     222 </span>            : 
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :     GGadgetInit();</span>
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :     GDrawSetFont(gw,_ggadget_default_font);</span>
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 :     GDrawWindowFontMetrics(gw,_ggadget_default_font,&amp;as,&amp;ds,&amp;ld);</span>
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :     fh = as+ds;</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :     maxw = 0;</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;lb; ++i ) {</span>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :         w = GDrawGetTextWidth(gw,qlabels[i].text,-1);</span>
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :         if ( w&gt;maxw ) maxw = w;</span>
+<span class="lineNum">     231 </span>            :     }
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :     bw = 0;</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;bcnt; ++i ) {</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :         w = GDrawGetTextWidth(gw,answers[i],-1);</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :         if ( w&gt;bw ) bw = w;</span>
+<span class="lineNum">     236 </span>            :     }
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :     bw += GDrawPointsToPixels(gw,20);</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :     bspace = GDrawPointsToPixels(gw,6);</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :     if ( (bw+bspace) * bcnt &gt; maxw )</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :         maxw = (bw+bspace)*bcnt;</span>
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :     if ( bcnt!=1 )</span>
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :         bspace = (maxw-bcnt*bw)/(bcnt-1);</span>
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :     maxw += GDrawPointsToPixels(gw,16);</span>
+<span class="lineNum">     244 </span>            : 
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :     gcd = calloc(lb+bcnt+2,sizeof(GGadgetCreateData));</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :     if ( lb==1 ) {</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :         gcd[0].gd.pos.width = GDrawGetTextWidth(gw,qlabels[0].text,-1);</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :         gcd[0].gd.pos.x = (maxw-gcd[0].gd.pos.width)/2;</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :         gcd[0].gd.pos.y = GDrawPointsToPixels(gw,6);</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :         gcd[0].gd.pos.height = fh;</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :         gcd[0].gd.flags = gg_visible | gg_enabled | gg_pos_in_pixels | gg_pos_use0;</span>
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :         gcd[0].gd.label = &amp;qlabels[0];</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :         gcd[0].creator = GLabelCreate;</span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :     } else for ( i=0; i&lt;lb; ++i ) {</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.x = GDrawPointsToPixels(gw,8);</span>
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.y = GDrawPointsToPixels(gw,6)+i*fh;</span>
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.width = GDrawGetTextWidth(gw,qlabels[i].text,-1);</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.height = fh;</span>
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :         gcd[i].gd.flags = gg_visible | gg_enabled | gg_pos_in_pixels | gg_pos_use0;</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :         gcd[i].gd.label = &amp;qlabels[i];</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :         gcd[i].creator = GLabelCreate;</span>
+<span class="lineNum">     262 </span>            :     }
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :     y = GDrawPointsToPixels(gw,12)+lb*fh;</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :     if ( add_text ) {</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :         gcd[bcnt+lb].gd.pos.x = GDrawPointsToPixels(gw,8);</span>
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :         gcd[bcnt+lb].gd.pos.y = y;</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :         gcd[bcnt+lb].gd.pos.width = maxw-2*GDrawPointsToPixels(gw,6);</span>
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :         gcd[bcnt+lb].gd.flags = gg_visible | gg_enabled | gg_pos_in_pixels | gg_pos_use0 | gg_text_xim;</span>
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :         gcd[bcnt+lb].gd.cid = bcnt;</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :         gcd[bcnt+lb].creator = GTextFieldCreate;</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :         y += fh + GDrawPointsToPixels(gw,6) + GDrawPointsToPixels(gw,10);</span>
+<span class="lineNum">     272 </span>            :     }
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :     y += GDrawPointsToPixels(gw,2);</span>
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;bcnt; ++i ) {</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :         gcd[i+lb].gd.pos.x = GDrawPointsToPixels(gw,8) + i*(bw+bspace);</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :         gcd[i+lb].gd.pos.y = y;</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :         gcd[i+lb].gd.pos.width = bw;</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :         gcd[i+lb].gd.flags = gg_visible | gg_enabled | gg_pos_in_pixels | gg_pos_use0;</span>
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 :         if ( i==def ) {</span>
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 :             gcd[i+lb].gd.flags |= gg_but_default;</span>
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :             if ( _GGadget_defaultbutton_box.flags&amp;box_draw_default ) {</span>
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :                 gcd[i+lb].gd.pos.x -= GDrawPointsToPixels(gw,3);</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :                 gcd[i+lb].gd.pos.y -= GDrawPointsToPixels(gw,3);</span>
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :                 gcd[i+lb].gd.pos.width += 2*GDrawPointsToPixels(gw,3);</span>
+<span class="lineNum">     285 </span>            :             }
+<span class="lineNum">     286 </span>            :         }
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :         if ( i==cancel )</span>
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :             gcd[i+lb].gd.flags |= gg_but_cancel;</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :         gcd[i+lb].gd.cid = i;</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :         gcd[i+lb].gd.label = &amp;blabels[i];</span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :         if ( mn!=NULL ) {</span>
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :             gcd[i+lb].gd.mnemonic = mn[i];</span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :             if ( mn[i]=='\0' ) mn = NULL;</span>
+<span class="lineNum">     294 </span>            :         }
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :         gcd[i+lb].creator = GButtonCreate;</span>
+<span class="lineNum">     296 </span>            :     }
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 :     if ( bcnt==1 )</span>
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :         gcd[lb].gd.pos.x = (maxw-bw)/2;</span>
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :     GGadgetsCreate(gw,gcd);</span>
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :     pos.width = maxw;</span>
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :     pos.height = (lb+1)*fh + GDrawPointsToPixels(gw,34);</span>
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 :     if ( add_text )</span>
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :         pos.height += fh + GDrawPointsToPixels(gw,16);</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :     GDrawResize(gw,pos.width,pos.height);</span>
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 :     GWidgetHidePalettes();</span>
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :     if ( d!=NULL ) {</span>
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :         d-&gt;ret  = cancel;</span>
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 :         d-&gt;bcnt = bcnt;</span>
+<span class="lineNum">     309 </span>            :     }
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 :     GDrawSetVisible(gw,true);</span>
+<span class="lineNum">     311 </span><span class="lineNoCov">          0 :     free(blabels);</span>
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 :     free(gcd);</span>
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;lb; ++i )</span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :         free(qlabels[i].text);</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :     GProgressResumeTimer();</span>
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 : return( gw );</span>
+<a name="317"><span class="lineNum">     317 </span>            : }</a>
+<span class="lineNum">     318 </span>            : 
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 : int GWidgetAsk(const unichar_t *title,</span>
+<span class="lineNum">     320 </span>            :         const unichar_t **answers, const unichar_t *mn, int def, int cancel,
+<span class="lineNum">     321 </span>            :         const unichar_t *question,...) {
+<span class="lineNum">     322 </span>            :     struct dlg_info d;
+<span class="lineNum">     323 </span>            :     GWindow gw;
+<span class="lineNum">     324 </span>            :     va_list ap;
+<span class="lineNum">     325 </span>            : 
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :     if ( screen_display==NULL )</span>
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 : return( def );</span>
+<span class="lineNum">     328 </span>            : 
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :     va_start(ap,question);</span>
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 :     gw = DlgCreate(title,question,ap,answers,mn,def,cancel,&amp;d,false,true,false);</span>
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :     va_end(ap);</span>
+<span class="lineNum">     332 </span>            : 
+<span class="lineNum">     333 </span><span class="lineNoCov">          0 :     while ( !d.done )</span>
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :         GDrawProcessOneEvent(NULL);</span>
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(gw);</span>
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :     GDrawSync(NULL);</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :     GDrawProcessPendingEvents(NULL);</span>
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 : return(d.ret);</span>
+<a name="339"><span class="lineNum">     339 </span>            : }</a>
+<span class="lineNum">     340 </span>            : 
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 : unichar_t *GWidgetAskStringR(int title,const unichar_t *def,int question,...) {</span>
+<span class="lineNum">     342 </span>            :     struct dlg_info d;
+<span class="lineNum">     343 </span>            :     GWindow gw;
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :     unichar_t *ret = NULL;</span>
+<span class="lineNum">     345 </span>            :     const unichar_t *ocb[3]; unichar_t ocmn[2];
+<span class="lineNum">     346 </span>            :     va_list ap;
+<span class="lineNum">     347 </span>            : 
+<span class="lineNum">     348 </span><span class="lineNoCov">          0 :     if ( screen_display==NULL )</span>
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 : return( u_copy(def ));</span>
+<span class="lineNum">     350 </span>            : 
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :     ocb[2]=NULL;</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :     ocb[0] = GStringGetResource( _STR_OK, &amp;ocmn[0]);</span>
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 :     ocb[1] = GStringGetResource( _STR_Cancel, &amp;ocmn[1]);</span>
+<span class="lineNum">     354 </span><span class="lineNoCov">          0 :     va_start(ap,question);</span>
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :     gw = DlgCreate(GStringGetResource( title,NULL),GStringGetResource( question,NULL),ap,</span>
+<span class="lineNum">     356 </span>            :             ocb,ocmn,0,1,&amp;d,true,true,false);
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :     va_end(ap);</span>
+<span class="lineNum">     358 </span><span class="lineNoCov">          0 :     if ( def!=NULL &amp;&amp; *def!='\0' )</span>
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 :         GGadgetSetTitle(GWidgetGetControl(gw,2),def);</span>
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :     while ( !d.done )</span>
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 :         GDrawProcessOneEvent(NULL);</span>
+<span class="lineNum">     362 </span><span class="lineNoCov">          0 :     if ( d.ret==0 )</span>
+<span class="lineNum">     363 </span><span class="lineNoCov">          0 :         ret = GGadgetGetTitle(GWidgetGetControl(gw,2));</span>
+<span class="lineNum">     364 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(gw);</span>
+<span class="lineNum">     365 </span><span class="lineNoCov">          0 :     GDrawSync(NULL);</span>
+<span class="lineNum">     366 </span><span class="lineNoCov">          0 :     GDrawProcessPendingEvents(NULL);</span>
+<span class="lineNum">     367 </span><span class="lineNoCov">          0 : return(ret);</span>
+<a name="368"><span class="lineNum">     368 </span>            : }</a>
+<span class="lineNum">     369 </span>            : 
+<span class="lineNum">     370 </span><span class="lineNoCov">          0 : void GWidgetError(const unichar_t *title,const unichar_t *statement, ...) {</span>
+<span class="lineNum">     371 </span>            :     struct dlg_info d;
+<span class="lineNum">     372 </span>            :     GWindow gw;
+<span class="lineNum">     373 </span>            :     const unichar_t *ob[2]; unichar_t omn[1];
+<span class="lineNum">     374 </span>            :     va_list ap;
+<span class="lineNum">     375 </span>            : 
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 :     ob[1]=NULL;</span>
+<span class="lineNum">     377 </span><span class="lineNoCov">          0 :     ob[0] = GStringGetResource( _STR_OK, &amp;omn[0]);</span>
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 :     va_start(ap,statement);</span>
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :     gw = DlgCreate(title,statement,ap,ob,omn,0,0,&amp;d,false,true,true);</span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :     va_end(ap);</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :     if ( gw!=NULL ) {</span>
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :         while ( !d.done )</span>
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :             GDrawProcessOneEvent(NULL);</span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :         GDrawDestroyWindow(gw);</span>
+<span class="lineNum">     385 </span>            :     }
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     387 </span>            : 
+<span class="lineNum">     388 </span>            : /* ************************************************************************** */
+<span class="lineNum">     389 </span>            : 
+<span class="lineNum">     390 </span>            : #define CID_Cancel      0
+<span class="lineNum">     391 </span>            : #define CID_OK          1
+<span class="lineNum">     392 </span>            : #define CID_List        2
+<span class="lineNum">     393 </span>            : #define CID_SelectAll   3
+<a name="394"><span class="lineNum">     394 </span>            : #define CID_SelectNone  4</a>
+<span class="lineNum">     395 </span>            : 
+<span class="lineNum">     396 </span><span class="lineNoCov">          0 : static int GCD_Select(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     397 </span>            : 
+<span class="lineNum">     398 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     399 </span><span class="lineNoCov">          0 :         GWindow gw = GGadgetGetWindow(g);</span>
+<span class="lineNum">     400 </span><span class="lineNoCov">          0 :         GGadget *list = GWidgetGetControl(gw,CID_List);</span>
+<span class="lineNum">     401 </span>            : 
+<span class="lineNum">     402 </span><span class="lineNoCov">          0 :         GGadgetSelectListItem(list,-1,GGadgetGetCid(g)==CID_SelectAll?1:0 );</span>
+<span class="lineNum">     403 </span>            :     }
+<span class="lineNum">     404 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="405"><span class="lineNum">     405 </span>            : }</a>
+<span class="lineNum">     406 </span>            : 
+<span class="lineNum">     407 </span><span class="lineNoCov">          0 : static int c_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     408 </span><span class="lineNoCov">          0 :     struct dlg_info *d = GDrawGetUserData(gw);</span>
+<span class="lineNum">     409 </span>            : 
+<span class="lineNum">     410 </span><span class="lineNoCov">          0 :     if ( event-&gt;type==et_close ) {</span>
+<span class="lineNum">     411 </span><span class="lineNoCov">          0 :         d-&gt;done = true;</span>
+<span class="lineNum">     412 </span><span class="lineNoCov">          0 :         d-&gt;ret = -1;</span>
+<span class="lineNum">     413 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type==et_resize ) {</span>
+<span class="lineNum">     414 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(gw,NULL,false);</span>
+<span class="lineNum">     415 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type==et_controlevent &amp;&amp;</span>
+<span class="lineNum">     416 </span><span class="lineNoCov">          0 :             (event-&gt;u.control.subtype == et_buttonactivate ||</span>
+<span class="lineNum">     417 </span><span class="lineNoCov">          0 :              event-&gt;u.control.subtype == et_listdoubleclick )) {</span>
+<span class="lineNum">     418 </span><span class="lineNoCov">          0 :         d-&gt;done = true;</span>
+<span class="lineNum">     419 </span><span class="lineNoCov">          0 :         if ( GGadgetGetCid(event-&gt;u.control.g)==CID_Cancel )</span>
+<span class="lineNum">     420 </span><span class="lineNoCov">          0 :             d-&gt;ret = -1;</span>
+<span class="lineNum">     421 </span>            :         else
+<span class="lineNum">     422 </span><span class="lineNoCov">          0 :             d-&gt;ret = GGadgetGetFirstListSelectedItem(GWidgetGetControl(gw,CID_List));</span>
+<span class="lineNum">     423 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_char ) {</span>
+<span class="lineNum">     424 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     425 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_map ) {</span>
+<span class="lineNum">     426 </span>            :         /* Above palettes */
+<span class="lineNum">     427 </span><span class="lineNoCov">          0 :         GDrawRaise(gw);</span>
+<span class="lineNum">     428 </span>            :     }
+<span class="lineNum">     429 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     430 </span>            : }
+<span class="lineNum">     431 </span>            : 
+<a name="432"><span class="lineNum">     432 </span>            : /* ************** Parallel routines using utf8 arguments ******************** */</a>
+<span class="lineNum">     433 </span>            : 
+<span class="lineNum">     434 </span><span class="lineCov">         14 : static GWindow DlgCreate8(const char *title,const char *question,va_list ap,</span>
+<span class="lineNum">     435 </span>            :         const char **answers, int def, int cancel,
+<span class="lineNum">     436 </span>            :         struct dlg_info *d, int add_text, const char *defstr,
+<span class="lineNum">     437 </span>            :         int restrict_input, int center) {
+<span class="lineNum">     438 </span>            :     GTextInfo qlabels[GLINE_MAX+1], *blabels;
+<span class="lineNum">     439 </span>            :     GGadgetCreateData *gcd, *array[2*(GLINE_MAX+5)+1], boxes[5], **barray, *labarray[4];
+<span class="lineNum">     440 </span><span class="lineCov">         14 :     int lb, bcnt=0, l;</span>
+<span class="lineNum">     441 </span>            :     GRect pos;
+<span class="lineNum">     442 </span>            :     GWindow gw;
+<span class="lineNum">     443 </span>            :     GWindowAttrs wattrs;
+<span class="lineNum">     444 </span>            :     extern FontInstance *_ggadget_default_font;
+<span class="lineNum">     445 </span>            :     int as, ds, ld, fh;
+<span class="lineNum">     446 </span>            :     int w, maxw, bw, bspace;
+<span class="lineNum">     447 </span>            :     int i, y;
+<span class="lineNum">     448 </span>            :     gchar *buf;
+<span class="lineNum">     449 </span>            :     unichar_t *ubuf;
+<span class="lineNum">     450 </span>            :     extern GBox _GGadget_defaultbutton_box;
+<span class="lineNum">     451 </span>            : 
+<span class="lineNum">     452 </span><span class="lineCov">         14 :     if ( d!=NULL )</span>
+<span class="lineNum">     453 </span><span class="lineCov">         14 :         memset(d,0,sizeof(*d));</span>
+<span class="lineNum">     454 </span>            :     /*vsnprintf(buf,sizeof(buf)/sizeof(buf[0]),question,ap);*/
+<span class="lineNum">     455 </span><span class="lineCov">         14 :     g_vasprintf( &amp;buf, (const gchar *) question, ap );</span>
+<span class="lineNum">     456 </span><span class="lineCov">         14 :     if ( screen_display==NULL ) {</span>
+<span class="lineNum">     457 </span><span class="lineCov">         14 :         fprintf(stderr, &quot;%s\n&quot;, buf );</span>
+<span class="lineNum">     458 </span><span class="lineCov">         14 :         if ( d!=NULL ) d-&gt;done = true;</span>
+<span class="lineNum">     459 </span><span class="lineCov">         14 : return( NULL );</span>
+<span class="lineNum">     460 </span>            :     }
+<span class="lineNum">     461 </span>            :     /*ubuf = utf82u_copy(buf);*/
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 :     ubuf = (unichar_t *) g_utf8_to_ucs4( (const gchar *) buf, -1, NULL, NULL, NULL);</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :     g_free( buf );</span>
+<span class="lineNum">     464 </span><span class="lineNoCov">          0 :     if( !ubuf ) {</span>
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 :         fprintf( stderr, &quot;Failed to convert question string in DlgCreate8()\n&quot; );</span>
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :         return( NULL );</span>
+<span class="lineNum">     467 </span>            :     }
+<span class="lineNum">     468 </span>            : 
+<span class="lineNum">     469 </span><span class="lineNoCov">          0 :     GGadgetInit();</span>
+<span class="lineNum">     470 </span><span class="lineNoCov">          0 :     GProgressPauseTimer();</span>
+<span class="lineNum">     471 </span><span class="lineNoCov">          0 :     memset(qlabels,'\0',sizeof(qlabels));</span>
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 :     lb = FindLineBreaks(ubuf,qlabels);</span>
+<span class="lineNum">     473 </span><span class="lineNoCov">          0 :     for ( bcnt=0; answers[bcnt]!=NULL; ++bcnt);</span>
+<span class="lineNum">     474 </span><span class="lineNoCov">          0 :     blabels = calloc(bcnt+1,sizeof(GTextInfo));</span>
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 :     barray = calloc(2*bcnt+3,sizeof(GGadgetCreateData *));</span>
+<span class="lineNum">     476 </span><span class="lineNoCov">          0 :     for ( bcnt=0; answers[bcnt]!=NULL; ++bcnt) {</span>
+<span class="lineNum">     477 </span><span class="lineNoCov">          0 :         blabels[bcnt].text = (unichar_t *) answers[bcnt];</span>
+<span class="lineNum">     478 </span><span class="lineNoCov">          0 :         blabels[bcnt].text_is_1byte = true;</span>
+<span class="lineNum">     479 </span><span class="lineNoCov">          0 :         blabels[bcnt].text_in_resource = true;  /* Look for mnemonics in the utf8 string (preceded by _) */</span>
+<span class="lineNum">     480 </span>            :     }
+<span class="lineNum">     481 </span>            : 
+<span class="lineNum">     482 </span><span class="lineNoCov">          0 :     memset(&amp;wattrs,0,sizeof(wattrs));</span>
+<span class="lineNum">     483 </span>            :     /* If we have many questions in quick succession the dlg will jump around*/
+<span class="lineNum">     484 </span>            :     /*  as it tracks the cursor (which moves to the buttons). That's not good*/
+<span class="lineNum">     485 </span>            :     /*  So I don't do undercursor here */
+<span class="lineNum">     486 </span><span class="lineNoCov">          0 :     wattrs.mask = wam_events|wam_cursor|wam_utf8_wtitle|wam_isdlg;</span>
+<span class="lineNum">     487 </span><span class="lineNoCov">          0 :     if ( restrict_input )</span>
+<span class="lineNum">     488 </span><span class="lineNoCov">          0 :         wattrs.mask |= wam_restrict;</span>
+<span class="lineNum">     489 </span>            :     else 
+<span class="lineNum">     490 </span><span class="lineNoCov">          0 :         wattrs.mask |= wam_notrestricted;</span>
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 :     if ( center )</span>
+<span class="lineNum">     492 </span><span class="lineNoCov">          0 :         wattrs.mask |= wam_centered;</span>
+<span class="lineNum">     493 </span>            :     else
+<span class="lineNum">     494 </span><span class="lineNoCov">          0 :         wattrs.mask |= wam_undercursor;</span>
+<span class="lineNum">     495 </span><span class="lineNoCov">          0 :     wattrs.not_restricted = true;</span>
+<span class="lineNum">     496 </span><span class="lineNoCov">          0 :     wattrs.restrict_input_to_me = 1;</span>
+<span class="lineNum">     497 </span><span class="lineNoCov">          0 :     wattrs.is_dlg = true;</span>
+<span class="lineNum">     498 </span><span class="lineNoCov">          0 :     wattrs.event_masks = ~(1&lt;&lt;et_charup);</span>
+<span class="lineNum">     499 </span><span class="lineNoCov">          0 :     wattrs.undercursor = 1;</span>
+<span class="lineNum">     500 </span><span class="lineNoCov">          0 :     wattrs.centered = 2;</span>
+<span class="lineNum">     501 </span><span class="lineNoCov">          0 :     wattrs.cursor = ct_pointer;</span>
+<span class="lineNum">     502 </span><span class="lineNoCov">          0 :     wattrs.utf8_window_title = (char *) title;</span>
+<span class="lineNum">     503 </span><span class="lineNoCov">          0 :     pos.x = pos.y = 0;</span>
+<span class="lineNum">     504 </span><span class="lineNoCov">          0 :     pos.width = 200; pos.height = 60;           /* We'll figure size later */</span>
+<span class="lineNum">     505 </span>            :                 /* but if we get the size too small, the cursor isn't in dlg */
+<span class="lineNum">     506 </span><span class="lineNoCov">          0 :     gw = GDrawCreateTopWindow(NULL,&amp;pos,restrict_input?d_e_h:w_e_h,d,&amp;wattrs);</span>
+<span class="lineNum">     507 </span>            : 
+<span class="lineNum">     508 </span><span class="lineNoCov">          0 :     GGadgetInit();</span>
+<span class="lineNum">     509 </span><span class="lineNoCov">          0 :     GDrawSetFont(gw,_ggadget_default_font);</span>
+<span class="lineNum">     510 </span><span class="lineNoCov">          0 :     GDrawWindowFontMetrics(gw,_ggadget_default_font,&amp;as,&amp;ds,&amp;ld);</span>
+<span class="lineNum">     511 </span><span class="lineNoCov">          0 :     fh = as+ds;</span>
+<span class="lineNum">     512 </span><span class="lineNoCov">          0 :     maxw = 0;</span>
+<span class="lineNum">     513 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;lb; ++i ) {</span>
+<span class="lineNum">     514 </span><span class="lineNoCov">          0 :         w = GDrawGetTextWidth(gw,qlabels[i].text,-1);</span>
+<span class="lineNum">     515 </span><span class="lineNoCov">          0 :         if ( w&gt;maxw ) maxw = w;</span>
+<span class="lineNum">     516 </span>            :     }
+<span class="lineNum">     517 </span><span class="lineNoCov">          0 :     if ( add_text &amp;&amp; defstr!=NULL ) {</span>
+<span class="lineNum">     518 </span>            :         extern GFont *_gtextfield_font;
+<span class="lineNum">     519 </span><span class="lineNoCov">          0 :         if ( _gtextfield_font!=NULL ) {</span>
+<span class="lineNum">     520 </span><span class="lineNoCov">          0 :             GDrawSetFont(gw,_gtextfield_font);</span>
+<span class="lineNum">     521 </span><span class="lineNoCov">          0 :             w = GDrawGetText8Width(gw,defstr,-1);</span>
+<span class="lineNum">     522 </span><span class="lineNoCov">          0 :             GDrawSetFont(gw,_ggadget_default_font);</span>
+<span class="lineNum">     523 </span>            :         } else
+<span class="lineNum">     524 </span><span class="lineNoCov">          0 :             w = 8*GDrawGetText8Width(gw,defstr,-1)/5;</span>
+<span class="lineNum">     525 </span><span class="lineNoCov">          0 :         w += GDrawPointsToPixels(gw,40);</span>
+<span class="lineNum">     526 </span><span class="lineNoCov">          0 :         if ( w &gt;1000 ) w = 1000;</span>
+<span class="lineNum">     527 </span><span class="lineNoCov">          0 :         if ( w&gt;maxw ) maxw = w;</span>
+<span class="lineNum">     528 </span>            :     }
+<span class="lineNum">     529 </span><span class="lineNoCov">          0 :     bw = 0;</span>
+<span class="lineNum">     530 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;bcnt; ++i ) {</span>
+<span class="lineNum">     531 </span><span class="lineNoCov">          0 :         w = GDrawGetText8Width(gw,answers[i],-1);</span>
+<span class="lineNum">     532 </span><span class="lineNoCov">          0 :         if ( w&gt;bw ) bw = w;</span>
+<span class="lineNum">     533 </span>            :     }
+<span class="lineNum">     534 </span><span class="lineNoCov">          0 :     bw += GDrawPointsToPixels(gw,20);</span>
+<span class="lineNum">     535 </span><span class="lineNoCov">          0 :     bspace = GDrawPointsToPixels(gw,6);</span>
+<span class="lineNum">     536 </span><span class="lineNoCov">          0 :     if ( (bw+bspace) * bcnt &gt; maxw )</span>
+<span class="lineNum">     537 </span><span class="lineNoCov">          0 :         maxw = (bw+bspace)*bcnt;</span>
+<span class="lineNum">     538 </span><span class="lineNoCov">          0 :     if ( bcnt!=1 )</span>
+<span class="lineNum">     539 </span><span class="lineNoCov">          0 :         bspace = (maxw-bcnt*bw)/(bcnt-1);</span>
+<span class="lineNum">     540 </span><span class="lineNoCov">          0 :     maxw += GDrawPointsToPixels(gw,16);</span>
+<span class="lineNum">     541 </span>            : 
+<span class="lineNum">     542 </span><span class="lineNoCov">          0 :     gcd = calloc(lb+bcnt+2,sizeof(GGadgetCreateData));</span>
+<span class="lineNum">     543 </span><span class="lineNoCov">          0 :     memset(boxes,0,sizeof(boxes));</span>
+<span class="lineNum">     544 </span><span class="lineNoCov">          0 :     l = 0;</span>
+<span class="lineNum">     545 </span><span class="lineNoCov">          0 :     if ( lb==1 ) {</span>
+<span class="lineNum">     546 </span><span class="lineNoCov">          0 :         gcd[0].gd.pos.width = GDrawGetTextWidth(gw,qlabels[0].text,-1);</span>
+<span class="lineNum">     547 </span><span class="lineNoCov">          0 :         gcd[0].gd.pos.x = (maxw-gcd[0].gd.pos.width)/2;</span>
+<span class="lineNum">     548 </span><span class="lineNoCov">          0 :         gcd[0].gd.pos.y = GDrawPointsToPixels(gw,6);</span>
+<span class="lineNum">     549 </span><span class="lineNoCov">          0 :         gcd[0].gd.pos.height = fh;</span>
+<span class="lineNum">     550 </span><span class="lineNoCov">          0 :         gcd[0].gd.flags = gg_visible | gg_enabled | gg_pos_in_pixels | gg_pos_use0;</span>
+<span class="lineNum">     551 </span><span class="lineNoCov">          0 :         gcd[0].gd.label = &amp;qlabels[0];</span>
+<span class="lineNum">     552 </span><span class="lineNoCov">          0 :         gcd[0].creator = GLabelCreate;</span>
+<span class="lineNum">     553 </span><span class="lineNoCov">          0 :         labarray[0] = GCD_Glue; labarray[1] = &amp;gcd[0]; labarray[2] = GCD_Glue; labarray[3] = NULL;</span>
+<span class="lineNum">     554 </span><span class="lineNoCov">          0 :         boxes[2].gd.flags = gg_visible|gg_enabled;</span>
+<span class="lineNum">     555 </span><span class="lineNoCov">          0 :         boxes[2].gd.u.boxelements = labarray;</span>
+<span class="lineNum">     556 </span><span class="lineNoCov">          0 :         boxes[2].creator = GHBoxCreate;</span>
+<span class="lineNum">     557 </span><span class="lineNoCov">          0 :         array[0] = &amp;boxes[2]; array[1] = NULL;</span>
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :         l = 1;</span>
+<span class="lineNum">     559 </span><span class="lineNoCov">          0 :     } else for ( i=0; i&lt;lb; ++i ) {</span>
+<span class="lineNum">     560 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.x = GDrawPointsToPixels(gw,8);</span>
+<span class="lineNum">     561 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.y = GDrawPointsToPixels(gw,6)+i*fh;</span>
+<span class="lineNum">     562 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.width = GDrawGetTextWidth(gw,qlabels[i].text,-1);</span>
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.height = fh;</span>
+<span class="lineNum">     564 </span><span class="lineNoCov">          0 :         gcd[i].gd.flags = gg_visible | gg_enabled | gg_pos_in_pixels | gg_pos_use0;</span>
+<span class="lineNum">     565 </span><span class="lineNoCov">          0 :         gcd[i].gd.label = &amp;qlabels[i];</span>
+<span class="lineNum">     566 </span><span class="lineNoCov">          0 :         gcd[i].creator = GLabelCreate;</span>
+<span class="lineNum">     567 </span><span class="lineNoCov">          0 :         array[2*l] = &amp;gcd[i]; array[2*l++ +1] = NULL;</span>
+<span class="lineNum">     568 </span>            :     }
+<span class="lineNum">     569 </span><span class="lineNoCov">          0 :     y = GDrawPointsToPixels(gw,12)+lb*fh;</span>
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 :     if ( add_text ) {</span>
+<span class="lineNum">     571 </span><span class="lineNoCov">          0 :         gcd[bcnt+lb].gd.pos.x = GDrawPointsToPixels(gw,8);</span>
+<span class="lineNum">     572 </span><span class="lineNoCov">          0 :         gcd[bcnt+lb].gd.pos.y = y;</span>
+<span class="lineNum">     573 </span><span class="lineNoCov">          0 :         gcd[bcnt+lb].gd.pos.width = maxw-2*GDrawPointsToPixels(gw,6);</span>
+<span class="lineNum">     574 </span><span class="lineNoCov">          0 :         gcd[bcnt+lb].gd.flags = gg_visible | gg_enabled | gg_pos_in_pixels | gg_pos_use0 | gg_text_xim;</span>
+<span class="lineNum">     575 </span><span class="lineNoCov">          0 :         gcd[bcnt+lb].gd.cid = bcnt;</span>
+<span class="lineNum">     576 </span><span class="lineNoCov">          0 :         gcd[bcnt+lb].creator = GTextFieldCreate;</span>
+<span class="lineNum">     577 </span><span class="lineNoCov">          0 :         if ( add_text==2 )</span>
+<span class="lineNum">     578 </span><span class="lineNoCov">          0 :             gcd[bcnt+lb].creator = GPasswordCreate;</span>
+<span class="lineNum">     579 </span><span class="lineNoCov">          0 :         y += fh + GDrawPointsToPixels(gw,6) + GDrawPointsToPixels(gw,10);</span>
+<span class="lineNum">     580 </span><span class="lineNoCov">          0 :         array[2*l] = &amp;gcd[bcnt+lb]; array[2*l++ +1] = NULL;</span>
+<span class="lineNum">     581 </span>            :     }
+<span class="lineNum">     582 </span><span class="lineNoCov">          0 :     y += GDrawPointsToPixels(gw,2);</span>
+<span class="lineNum">     583 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;bcnt; ++i ) {</span>
+<span class="lineNum">     584 </span><span class="lineNoCov">          0 :         gcd[i+lb].gd.pos.x = GDrawPointsToPixels(gw,8) + i*(bw+bspace);</span>
+<span class="lineNum">     585 </span><span class="lineNoCov">          0 :         gcd[i+lb].gd.pos.y = y;</span>
+<span class="lineNum">     586 </span><span class="lineNoCov">          0 :         gcd[i+lb].gd.pos.width = bw;</span>
+<span class="lineNum">     587 </span><span class="lineNoCov">          0 :         gcd[i+lb].gd.flags = gg_visible | gg_enabled | gg_pos_in_pixels | gg_pos_use0;</span>
+<span class="lineNum">     588 </span><span class="lineNoCov">          0 :         if ( i==def ) {</span>
+<span class="lineNum">     589 </span><span class="lineNoCov">          0 :             gcd[i+lb].gd.flags |= gg_but_default;</span>
+<span class="lineNum">     590 </span><span class="lineNoCov">          0 :             if ( _GGadget_defaultbutton_box.flags&amp;box_draw_default ) {</span>
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 :                 gcd[i+lb].gd.pos.x -= GDrawPointsToPixels(gw,3);</span>
+<span class="lineNum">     592 </span><span class="lineNoCov">          0 :                 gcd[i+lb].gd.pos.y -= GDrawPointsToPixels(gw,3);</span>
+<span class="lineNum">     593 </span><span class="lineNoCov">          0 :                 gcd[i+lb].gd.pos.width += 2*GDrawPointsToPixels(gw,3);</span>
+<span class="lineNum">     594 </span>            :             }
+<span class="lineNum">     595 </span>            :         }
+<span class="lineNum">     596 </span><span class="lineNoCov">          0 :         if ( i==cancel )</span>
+<span class="lineNum">     597 </span><span class="lineNoCov">          0 :             gcd[i+lb].gd.flags |= gg_but_cancel;</span>
+<span class="lineNum">     598 </span><span class="lineNoCov">          0 :         gcd[i+lb].gd.cid = i;</span>
+<span class="lineNum">     599 </span><span class="lineNoCov">          0 :         gcd[i+lb].gd.label = &amp;blabels[i];</span>
+<span class="lineNum">     600 </span><span class="lineNoCov">          0 :         gcd[i+lb].creator = GButtonCreate;</span>
+<span class="lineNum">     601 </span><span class="lineNoCov">          0 :         barray[2*i] = GCD_Glue; barray[2*i+1] = &amp;gcd[i+lb];</span>
+<span class="lineNum">     602 </span>            :     }
+<span class="lineNum">     603 </span><span class="lineNoCov">          0 :     barray[2*i] = GCD_Glue; barray[2*i+1] = NULL;</span>
+<span class="lineNum">     604 </span><span class="lineNoCov">          0 :     boxes[3].gd.flags = gg_visible|gg_enabled;</span>
+<span class="lineNum">     605 </span><span class="lineNoCov">          0 :     boxes[3].gd.u.boxelements = barray;</span>
+<span class="lineNum">     606 </span><span class="lineNoCov">          0 :     boxes[3].creator = GHBoxCreate;</span>
+<span class="lineNum">     607 </span><span class="lineNoCov">          0 :     array[2*l] = &amp;boxes[3]; array[2*l++ +1] = NULL;</span>
+<span class="lineNum">     608 </span><span class="lineNoCov">          0 :     array[2*l] = NULL;</span>
+<span class="lineNum">     609 </span>            : 
+<span class="lineNum">     610 </span><span class="lineNoCov">          0 :     boxes[0].gd.pos.x = boxes[0].gd.pos.y = 2;</span>
+<span class="lineNum">     611 </span><span class="lineNoCov">          0 :     boxes[0].gd.flags = gg_visible|gg_enabled;</span>
+<span class="lineNum">     612 </span><span class="lineNoCov">          0 :     boxes[0].gd.u.boxelements = array;</span>
+<span class="lineNum">     613 </span><span class="lineNoCov">          0 :     boxes[0].creator = GHVGroupCreate;</span>
+<span class="lineNum">     614 </span>            : 
+<span class="lineNum">     615 </span><span class="lineNoCov">          0 :     GGadgetsCreate(gw,boxes);</span>
+<span class="lineNum">     616 </span><span class="lineNoCov">          0 :     GHVBoxSetExpandableCol(boxes[3].ret,gb_expandgluesame);</span>
+<span class="lineNum">     617 </span><span class="lineNoCov">          0 :     if ( boxes[2].ret!=NULL )</span>
+<span class="lineNum">     618 </span><span class="lineNoCov">          0 :         GHVBoxSetExpandableCol(boxes[2].ret,gb_expandglue);</span>
+<span class="lineNum">     619 </span><span class="lineNoCov">          0 :     GHVBoxFitWindow(boxes[0].ret);</span>
+<span class="lineNum">     620 </span>            : 
+<span class="lineNum">     621 </span><span class="lineNoCov">          0 :     GWidgetHidePalettes();</span>
+<span class="lineNum">     622 </span><span class="lineNoCov">          0 :     if ( d!=NULL ) {</span>
+<span class="lineNum">     623 </span><span class="lineNoCov">          0 :         d-&gt;ret  = cancel;</span>
+<span class="lineNum">     624 </span><span class="lineNoCov">          0 :         d-&gt;bcnt = bcnt;</span>
+<span class="lineNum">     625 </span>            :     }
+<span class="lineNum">     626 </span><span class="lineNoCov">          0 :     GDrawSetVisible(gw,true);</span>
+<span class="lineNum">     627 </span><span class="lineNoCov">          0 :     free(blabels);</span>
+<span class="lineNum">     628 </span><span class="lineNoCov">          0 :     free(gcd);</span>
+<span class="lineNum">     629 </span><span class="lineNoCov">          0 :     free(barray);</span>
+<span class="lineNum">     630 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;lb; ++i )</span>
+<span class="lineNum">     631 </span><span class="lineNoCov">          0 :         free(qlabels[i].text);</span>
+<span class="lineNum">     632 </span><span class="lineNoCov">          0 :     free(ubuf);</span>
+<span class="lineNum">     633 </span><span class="lineNoCov">          0 :     GProgressResumeTimer();</span>
+<span class="lineNum">     634 </span><span class="lineNoCov">          0 : return( gw );</span>
+<a name="635"><span class="lineNum">     635 </span>            : }</a>
+<span class="lineNum">     636 </span>            : 
+<span class="lineNum">     637 </span><span class="lineNoCov">          0 : int GWidgetAsk8(const char *title,</span>
+<span class="lineNum">     638 </span>            :         const char **answers, int def, int cancel,
+<span class="lineNum">     639 </span>            :         const char *question,...) {
+<span class="lineNum">     640 </span>            :     struct dlg_info d;
+<span class="lineNum">     641 </span>            :     GWindow gw;
+<span class="lineNum">     642 </span>            :     va_list ap;
+<span class="lineNum">     643 </span>            : 
+<span class="lineNum">     644 </span><span class="lineNoCov">          0 :     if ( screen_display==NULL )</span>
+<span class="lineNum">     645 </span><span class="lineNoCov">          0 : return( def );</span>
+<span class="lineNum">     646 </span>            : 
+<span class="lineNum">     647 </span><span class="lineNoCov">          0 :     va_start(ap,question);</span>
+<span class="lineNum">     648 </span><span class="lineNoCov">          0 :     gw = DlgCreate8(title,question,ap,answers,def,cancel,&amp;d,false,NULL,true,false);</span>
+<span class="lineNum">     649 </span><span class="lineNoCov">          0 :     va_end(ap);</span>
+<span class="lineNum">     650 </span>            : 
+<span class="lineNum">     651 </span><span class="lineNoCov">          0 :     while ( !d.done )</span>
+<span class="lineNum">     652 </span><span class="lineNoCov">          0 :         GDrawProcessOneEvent(NULL);</span>
+<span class="lineNum">     653 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(gw);</span>
+<span class="lineNum">     654 </span><span class="lineNoCov">          0 :     GDrawSync(NULL);</span>
+<span class="lineNum">     655 </span><span class="lineNoCov">          0 :     GDrawProcessPendingEvents(NULL);</span>
+<span class="lineNum">     656 </span><span class="lineNoCov">          0 : return(d.ret);</span>
+<a name="657"><span class="lineNum">     657 </span>            : }</a>
+<span class="lineNum">     658 </span>            : 
+<span class="lineNum">     659 </span><span class="lineCov">          1 : int GWidgetAskCentered8(const char *title,</span>
+<span class="lineNum">     660 </span>            :         const char **answers, int def, int cancel,
+<span class="lineNum">     661 </span>            :         const char *question, ... ) {
+<span class="lineNum">     662 </span>            :     struct dlg_info d;
+<span class="lineNum">     663 </span>            :     GWindow gw;
+<span class="lineNum">     664 </span>            :     va_list ap;
+<span class="lineNum">     665 </span>            : 
+<span class="lineNum">     666 </span><span class="lineCov">          1 :     if ( screen_display==NULL )</span>
+<span class="lineNum">     667 </span><span class="lineCov">          1 : return( def );</span>
+<span class="lineNum">     668 </span>            : 
+<span class="lineNum">     669 </span><span class="lineNoCov">          0 :     va_start(ap,question);</span>
+<span class="lineNum">     670 </span><span class="lineNoCov">          0 :     gw = DlgCreate8(title,question,ap,answers,def,cancel,&amp;d,false,NULL,true,true);</span>
+<span class="lineNum">     671 </span><span class="lineNoCov">          0 :     va_end(ap);</span>
+<span class="lineNum">     672 </span>            : 
+<span class="lineNum">     673 </span><span class="lineNoCov">          0 :     while ( !d.done )</span>
+<span class="lineNum">     674 </span><span class="lineNoCov">          0 :         GDrawProcessOneEvent(NULL);</span>
+<span class="lineNum">     675 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(gw);</span>
+<span class="lineNum">     676 </span><span class="lineNoCov">          0 :     GDrawSync(NULL);</span>
+<span class="lineNum">     677 </span><span class="lineNoCov">          0 :     GDrawProcessPendingEvents(NULL);</span>
+<span class="lineNum">     678 </span><span class="lineNoCov">          0 : return(d.ret);</span>
+<a name="679"><span class="lineNum">     679 </span>            : }</a>
+<span class="lineNum">     680 </span>            : 
+<span class="lineNum">     681 </span><span class="lineNoCov">          0 : char *GWidgetAskString8(const char *title,const char *def,</span>
+<span class="lineNum">     682 </span>            :         const char *question,...) {
+<span class="lineNum">     683 </span>            :     struct dlg_info d;
+<span class="lineNum">     684 </span>            :     GWindow gw;
+<span class="lineNum">     685 </span><span class="lineNoCov">          0 :     char *ret = NULL;</span>
+<span class="lineNum">     686 </span>            :     char *ocb[3];
+<span class="lineNum">     687 </span>            :     va_list ap;
+<span class="lineNum">     688 </span>            : 
+<span class="lineNum">     689 </span><span class="lineNoCov">          0 :     if ( screen_display==NULL )</span>
+<span class="lineNum">     690 </span><span class="lineNoCov">          0 : return( copy(def ));</span>
+<span class="lineNum">     691 </span>            : 
+<span class="lineNum">     692 </span><span class="lineNoCov">          0 :     ocb[2]=NULL;</span>
+<span class="lineNum">     693 </span><span class="lineNoCov">          0 :     if ( _ggadget_use_gettext ) {</span>
+<span class="lineNum">     694 </span><span class="lineNoCov">          0 :         ocb[0] = _(&quot;_OK&quot;);</span>
+<span class="lineNum">     695 </span><span class="lineNoCov">          0 :         ocb[1] = _(&quot;_Cancel&quot;);</span>
+<span class="lineNum">     696 </span>            :     } else {
+<span class="lineNum">     697 </span><span class="lineNoCov">          0 :         ocb[0] = u2utf8_copy(GStringGetResource( _STR_OK, NULL));</span>
+<span class="lineNum">     698 </span><span class="lineNoCov">          0 :         ocb[1] = u2utf8_copy(GStringGetResource( _STR_Cancel, NULL));</span>
+<span class="lineNum">     699 </span>            :     }
+<span class="lineNum">     700 </span><span class="lineNoCov">          0 :     va_start(ap,question);</span>
+<span class="lineNum">     701 </span><span class="lineNoCov">          0 :     gw = DlgCreate8(title,question,ap,(const char **) ocb,0,1,&amp;d,true,def,true,false);</span>
+<span class="lineNum">     702 </span><span class="lineNoCov">          0 :     va_end(ap);</span>
+<span class="lineNum">     703 </span><span class="lineNoCov">          0 :     if ( def!=NULL &amp;&amp; *def!='\0' )</span>
+<span class="lineNum">     704 </span><span class="lineNoCov">          0 :         GGadgetSetTitle8(GWidgetGetControl(gw,2),def);</span>
+<span class="lineNum">     705 </span><span class="lineNoCov">          0 :     while ( !d.done )</span>
+<span class="lineNum">     706 </span><span class="lineNoCov">          0 :         GDrawProcessOneEvent(NULL);</span>
+<span class="lineNum">     707 </span><span class="lineNoCov">          0 :     if ( d.ret==0 )</span>
+<span class="lineNum">     708 </span><span class="lineNoCov">          0 :         ret = GGadgetGetTitle8(GWidgetGetControl(gw,2));</span>
+<span class="lineNum">     709 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(gw);</span>
+<span class="lineNum">     710 </span><span class="lineNoCov">          0 :     GDrawSync(NULL);</span>
+<span class="lineNum">     711 </span><span class="lineNoCov">          0 :     GDrawProcessPendingEvents(NULL);</span>
+<span class="lineNum">     712 </span><span class="lineNoCov">          0 :     if ( !_ggadget_use_gettext ) {</span>
+<span class="lineNum">     713 </span><span class="lineNoCov">          0 :         free(ocb[0]); free(ocb[1]);</span>
+<span class="lineNum">     714 </span>            :     }
+<span class="lineNum">     715 </span><span class="lineNoCov">          0 : return(ret);</span>
+<a name="716"><span class="lineNum">     716 </span>            : }</a>
+<span class="lineNum">     717 </span>            : 
+<span class="lineNum">     718 </span><span class="lineNoCov">          0 : char *GWidgetAskPassword8(const char *title,const char *def,</span>
+<span class="lineNum">     719 </span>            :         const char *question,...) {
+<span class="lineNum">     720 </span>            :     struct dlg_info d;
+<span class="lineNum">     721 </span>            :     GWindow gw;
+<span class="lineNum">     722 </span><span class="lineNoCov">          0 :     char *ret = NULL;</span>
+<span class="lineNum">     723 </span>            :     char *ocb[3];
+<span class="lineNum">     724 </span>            :     va_list ap;
+<span class="lineNum">     725 </span>            : 
+<span class="lineNum">     726 </span><span class="lineNoCov">          0 :     if ( screen_display==NULL )</span>
+<span class="lineNum">     727 </span><span class="lineNoCov">          0 : return( copy(def ));</span>
+<span class="lineNum">     728 </span>            : 
+<span class="lineNum">     729 </span><span class="lineNoCov">          0 :     ocb[2]=NULL;</span>
+<span class="lineNum">     730 </span><span class="lineNoCov">          0 :     if ( _ggadget_use_gettext ) {</span>
+<span class="lineNum">     731 </span><span class="lineNoCov">          0 :         ocb[0] = _(&quot;_OK&quot;);</span>
+<span class="lineNum">     732 </span><span class="lineNoCov">          0 :         ocb[1] = _(&quot;_Cancel&quot;);</span>
+<span class="lineNum">     733 </span>            :     } else {
+<span class="lineNum">     734 </span><span class="lineNoCov">          0 :         ocb[0] = u2utf8_copy(GStringGetResource( _STR_OK, NULL));</span>
+<span class="lineNum">     735 </span><span class="lineNoCov">          0 :         ocb[1] = u2utf8_copy(GStringGetResource( _STR_Cancel, NULL));</span>
+<span class="lineNum">     736 </span>            :     }
+<span class="lineNum">     737 </span><span class="lineNoCov">          0 :     va_start(ap,question);</span>
+<span class="lineNum">     738 </span><span class="lineNoCov">          0 :     gw = DlgCreate8(title,question,ap,(const char **) ocb,0,1,&amp;d,2,def,true,false);</span>
+<span class="lineNum">     739 </span><span class="lineNoCov">          0 :     va_end(ap);</span>
+<span class="lineNum">     740 </span><span class="lineNoCov">          0 :     if ( def!=NULL &amp;&amp; *def!='\0' )</span>
+<span class="lineNum">     741 </span><span class="lineNoCov">          0 :         GGadgetSetTitle8(GWidgetGetControl(gw,2),def);</span>
+<span class="lineNum">     742 </span><span class="lineNoCov">          0 :     while ( !d.done )</span>
+<span class="lineNum">     743 </span><span class="lineNoCov">          0 :         GDrawProcessOneEvent(NULL);</span>
+<span class="lineNum">     744 </span><span class="lineNoCov">          0 :     if ( d.ret==0 )</span>
+<span class="lineNum">     745 </span><span class="lineNoCov">          0 :         ret = GGadgetGetTitle8(GWidgetGetControl(gw,2));</span>
+<span class="lineNum">     746 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(gw);</span>
+<span class="lineNum">     747 </span><span class="lineNoCov">          0 :     GDrawSync(NULL);</span>
+<span class="lineNum">     748 </span><span class="lineNoCov">          0 :     GDrawProcessPendingEvents(NULL);</span>
+<span class="lineNum">     749 </span><span class="lineNoCov">          0 :     if ( !_ggadget_use_gettext ) {</span>
+<span class="lineNum">     750 </span><span class="lineNoCov">          0 :         free(ocb[0]); free(ocb[1]);</span>
+<span class="lineNum">     751 </span>            :     }
+<span class="lineNum">     752 </span><span class="lineNoCov">          0 : return(ret);</span>
+<a name="753"><span class="lineNum">     753 </span>            : }</a>
+<span class="lineNum">     754 </span>            : 
+<span class="lineNum">     755 </span><span class="lineNoCov">          0 : void _GWidgetPostNotice8(const char *title,const char *statement,va_list ap, int timeout) {</span>
+<span class="lineNum">     756 </span>            :     GWindow gw;
+<span class="lineNum">     757 </span>            :     char *ob[2];
+<span class="lineNum">     758 </span>            : 
+<span class="lineNum">     759 </span>            :     /* Force an old notice to disappear */
+<span class="lineNum">     760 </span><span class="lineNoCov">          0 :     if ( title==NULL ) {</span>
+<span class="lineNum">     761 </span><span class="lineNoCov">          0 :         if ( last!=NULL )</span>
+<span class="lineNum">     762 </span><span class="lineNoCov">          0 :             GDrawDestroyWindow(last);</span>
+<span class="lineNum">     763 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     764 </span>            :     }
+<span class="lineNum">     765 </span>            : 
+<span class="lineNum">     766 </span><span class="lineNoCov">          0 :     ob[1]=NULL;</span>
+<span class="lineNum">     767 </span><span class="lineNoCov">          0 :     if ( _ggadget_use_gettext )</span>
+<span class="lineNum">     768 </span><span class="lineNoCov">          0 :         ob[0] = _(&quot;_OK&quot;);</span>
+<span class="lineNum">     769 </span>            :     else
+<span class="lineNum">     770 </span><span class="lineNoCov">          0 :         ob[0] = u2utf8_copy(GStringGetResource( _STR_OK, NULL));</span>
+<span class="lineNum">     771 </span><span class="lineNoCov">          0 :     gw = DlgCreate8(title,statement,ap,(const char **) ob,0,0,NULL,false,NULL,false,true);</span>
+<span class="lineNum">     772 </span><span class="lineNoCov">          0 :     if ( gw!=NULL &amp;&amp; timeout&gt;0 ) </span>
+<span class="lineNum">     773 </span><span class="lineNoCov">          0 :         GDrawRequestTimer(gw,timeout*1000,0,NULL);</span>
+<span class="lineNum">     774 </span>            :     /* Continue merrily on our way. Window will destroy itself in 40 secs */
+<span class="lineNum">     775 </span>            :     /*  or when user kills it. We can ignore it */
+<span class="lineNum">     776 </span><span class="lineNoCov">          0 :     if ( !_ggadget_use_gettext )</span>
+<span class="lineNum">     777 </span><span class="lineNoCov">          0 :         free(ob[0]);</span>
+<span class="lineNum">     778 </span><span class="lineNoCov">          0 :     last = gw;</span>
+<span class="lineNum">     779 </span><span class="lineNoCov">          0 :     last_title = title;</span>
+<a name="780"><span class="lineNum">     780 </span>            : }</a>
+<span class="lineNum">     781 </span>            : 
+<span class="lineNum">     782 </span><span class="lineNoCov">          0 : void GWidgetPostNotice8(const char *title,const char *statement,...) {</span>
+<span class="lineNum">     783 </span>            :     va_list ap;
+<span class="lineNum">     784 </span>            : 
+<span class="lineNum">     785 </span>            :     /* Force an old notice to disappear */
+<span class="lineNum">     786 </span><span class="lineNoCov">          0 :     if ( title==NULL ) {</span>
+<span class="lineNum">     787 </span><span class="lineNoCov">          0 :         if ( last!=NULL )</span>
+<span class="lineNum">     788 </span><span class="lineNoCov">          0 :             GDrawDestroyWindow(last);</span>
+<span class="lineNum">     789 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     790 </span>            :     }
+<span class="lineNum">     791 </span>            : 
+<span class="lineNum">     792 </span><span class="lineNoCov">          0 :     va_start(ap,statement);</span>
+<span class="lineNum">     793 </span><span class="lineNoCov">          0 :     _GWidgetPostNotice8(title,statement,ap,40);</span>
+<span class="lineNum">     794 </span><span class="lineNoCov">          0 :     va_end(ap);</span>
+<a name="795"><span class="lineNum">     795 </span>            : }</a>
+<span class="lineNum">     796 </span>            : 
+<span class="lineNum">     797 </span><span class="lineNoCov">          0 : void GWidgetPostNoticeTimeout8(int timeout,const char *title,const char *statement,...) {</span>
+<span class="lineNum">     798 </span>            :     va_list ap;
+<span class="lineNum">     799 </span>            : 
+<span class="lineNum">     800 </span>            :     /* Force an old notice to disappear */
+<span class="lineNum">     801 </span><span class="lineNoCov">          0 :     if ( title==NULL ) {</span>
+<span class="lineNum">     802 </span><span class="lineNoCov">          0 :         if ( last!=NULL )</span>
+<span class="lineNum">     803 </span><span class="lineNoCov">          0 :             GDrawDestroyWindow(last);</span>
+<span class="lineNum">     804 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     805 </span>            :     }
+<span class="lineNum">     806 </span>            : 
+<span class="lineNum">     807 </span><span class="lineNoCov">          0 :     va_start(ap,statement);</span>
+<span class="lineNum">     808 </span><span class="lineNoCov">          0 :     _GWidgetPostNotice8(title,statement,ap,timeout);</span>
+<span class="lineNum">     809 </span><span class="lineNoCov">          0 :     va_end(ap);</span>
+<a name="810"><span class="lineNum">     810 </span>            : }</a>
+<span class="lineNum">     811 </span>            : 
+<span class="lineNum">     812 </span><span class="lineNoCov">          0 : int GWidgetPostNoticeActive8(const char *title) {</span>
+<span class="lineNum">     813 </span><span class="lineNoCov">          0 : return( last!=NULL &amp;&amp; last_title == title );</span>
+<a name="814"><span class="lineNum">     814 </span>            : }</a>
+<span class="lineNum">     815 </span>            : 
+<span class="lineNum">     816 </span><span class="lineCov">         14 : void GWidgetError8(const char *title,const char *statement, ...) {</span>
+<span class="lineNum">     817 </span>            :     struct dlg_info d;
+<span class="lineNum">     818 </span>            :     GWindow gw;
+<span class="lineNum">     819 </span>            :     char *ob[2];
+<span class="lineNum">     820 </span>            :     va_list ap;
+<span class="lineNum">     821 </span>            : 
+<span class="lineNum">     822 </span><span class="lineCov">         14 :     ob[1]=NULL;</span>
+<span class="lineNum">     823 </span><span class="lineCov">         14 :     if ( _ggadget_use_gettext )</span>
+<span class="lineNum">     824 </span><span class="lineCov">         14 :         ob[0] = _(&quot;_OK&quot;);</span>
+<span class="lineNum">     825 </span>            :     else
+<span class="lineNum">     826 </span><span class="lineNoCov">          0 :         ob[0] = u2utf8_copy(GStringGetResource( _STR_OK, NULL));</span>
+<span class="lineNum">     827 </span><span class="lineCov">         14 :     va_start(ap,statement);</span>
+<span class="lineNum">     828 </span><span class="lineCov">         14 :     gw = DlgCreate8(title,statement,ap,(const char **) ob,0,0,&amp;d,false,NULL,true,true);</span>
+<span class="lineNum">     829 </span><span class="lineCov">         14 :     va_end(ap);</span>
+<span class="lineNum">     830 </span><span class="lineCov">         14 :     if ( gw!=NULL ) {</span>
+<span class="lineNum">     831 </span><span class="lineNoCov">          0 :         while ( !d.done )</span>
+<span class="lineNum">     832 </span><span class="lineNoCov">          0 :             GDrawProcessOneEvent(NULL);</span>
+<span class="lineNum">     833 </span><span class="lineNoCov">          0 :         GDrawDestroyWindow(gw);</span>
+<span class="lineNum">     834 </span>            :     }
+<span class="lineNum">     835 </span><span class="lineCov">         14 :     if ( !_ggadget_use_gettext )</span>
+<span class="lineNum">     836 </span><span class="lineNoCov">          0 :         free(ob[0]);</span>
+<a name="837"><span class="lineNum">     837 </span><span class="lineCov">         14 : }</span></a>
+<span class="lineNum">     838 </span>            : 
+<span class="lineNum">     839 </span><span class="lineNoCov">          0 : static GWindow ChoiceDlgCreate8(struct dlg_info *d,const char *title,</span>
+<span class="lineNum">     840 </span>            :         const char *question, va_list ap,
+<span class="lineNum">     841 </span>            :         const char **choices, int cnt, char *multisel,
+<span class="lineNum">     842 </span>            :         char *buts[2], int def,
+<span class="lineNum">     843 </span>            :         int restrict_input, int center) {
+<span class="lineNum">     844 </span>            :     GTextInfo qlabels[GLINE_MAX+1], *llabels, blabel[4];
+<span class="lineNum">     845 </span>            :     GGadgetCreateData *gcd, **array, boxes[5], *labarray[4], *barray[10], *barray2[8];
+<span class="lineNum">     846 </span>            :     int lb,l;
+<span class="lineNum">     847 </span>            :     GRect pos;
+<span class="lineNum">     848 </span>            :     GWindow gw;
+<span class="lineNum">     849 </span>            :     GWindowAttrs wattrs;
+<span class="lineNum">     850 </span>            :     extern FontInstance *_ggadget_default_font;
+<span class="lineNum">     851 </span>            :     int as, ds, ld, fh;
+<span class="lineNum">     852 </span>            :     int w, maxw;
+<span class="lineNum">     853 </span>            :     int i, y, listi;
+<span class="lineNum">     854 </span>            :     char buf[600];
+<span class="lineNum">     855 </span>            :     unichar_t *ubuf;
+<span class="lineNum">     856 </span>            :     extern GBox _GGadget_defaultbutton_box;
+<span class="lineNum">     857 </span>            : 
+<span class="lineNum">     858 </span><span class="lineNoCov">          0 :     memset(d,0,sizeof(*d));</span>
+<span class="lineNum">     859 </span><span class="lineNoCov">          0 :     GProgressPauseTimer();</span>
+<span class="lineNum">     860 </span><span class="lineNoCov">          0 :     vsnprintf(buf,sizeof(buf)/sizeof(buf[0]),question,ap);</span>
+<span class="lineNum">     861 </span><span class="lineNoCov">          0 :     ubuf = utf82u_copy(buf);</span>
+<span class="lineNum">     862 </span><span class="lineNoCov">          0 :     memset(qlabels,'\0',sizeof(qlabels));</span>
+<span class="lineNum">     863 </span><span class="lineNoCov">          0 :     lb = FindLineBreaks(ubuf,qlabels);</span>
+<span class="lineNum">     864 </span><span class="lineNoCov">          0 :     llabels = calloc(cnt+1,sizeof(GTextInfo));</span>
+<span class="lineNum">     865 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;cnt; ++i) {</span>
+<span class="lineNum">     866 </span><span class="lineNoCov">          0 :         if ( choices[i][0]=='-' &amp;&amp; choices[i][1]=='\0' )</span>
+<span class="lineNum">     867 </span><span class="lineNoCov">          0 :             llabels[i].line = true;</span>
+<span class="lineNum">     868 </span>            :         else {
+<span class="lineNum">     869 </span><span class="lineNoCov">          0 :             llabels[i].text = (unichar_t *) choices[i];</span>
+<span class="lineNum">     870 </span><span class="lineNoCov">          0 :             llabels[i].text_is_1byte = true;</span>
+<span class="lineNum">     871 </span>            :         }
+<span class="lineNum">     872 </span><span class="lineNoCov">          0 :         if ( multisel )</span>
+<span class="lineNum">     873 </span><span class="lineNoCov">          0 :             llabels[i].selected = multisel[i];</span>
+<span class="lineNum">     874 </span>            :         else
+<span class="lineNum">     875 </span><span class="lineNoCov">          0 :             llabels[i].selected = (i==def);</span>
+<span class="lineNum">     876 </span>            :     }
+<span class="lineNum">     877 </span>            : 
+<span class="lineNum">     878 </span><span class="lineNoCov">          0 :     memset(&amp;wattrs,0,sizeof(wattrs));</span>
+<span class="lineNum">     879 </span>            :     /* If we have many questions in quick succession the dlg will jump around*/
+<span class="lineNum">     880 </span>            :     /*  as it tracks the cursor (which moves to the buttons). That's not good*/
+<span class="lineNum">     881 </span>            :     /*  So I don't do undercursor here */
+<span class="lineNum">     882 </span><span class="lineNoCov">          0 :     wattrs.mask = wam_events|wam_cursor|wam_utf8_wtitle|wam_isdlg;</span>
+<span class="lineNum">     883 </span><span class="lineNoCov">          0 :     if ( restrict_input )</span>
+<span class="lineNum">     884 </span><span class="lineNoCov">          0 :         wattrs.mask |= wam_restrict;</span>
+<span class="lineNum">     885 </span>            :     else 
+<span class="lineNum">     886 </span><span class="lineNoCov">          0 :         wattrs.mask |= wam_notrestricted;</span>
+<span class="lineNum">     887 </span><span class="lineNoCov">          0 :     if ( center )</span>
+<span class="lineNum">     888 </span><span class="lineNoCov">          0 :         wattrs.mask |= wam_centered;</span>
+<span class="lineNum">     889 </span>            :     else
+<span class="lineNum">     890 </span><span class="lineNoCov">          0 :         wattrs.mask |= wam_undercursor;</span>
+<span class="lineNum">     891 </span><span class="lineNoCov">          0 :     wattrs.not_restricted = true;</span>
+<span class="lineNum">     892 </span><span class="lineNoCov">          0 :     wattrs.restrict_input_to_me = 1;</span>
+<span class="lineNum">     893 </span><span class="lineNoCov">          0 :     wattrs.is_dlg = true;</span>
+<span class="lineNum">     894 </span><span class="lineNoCov">          0 :     wattrs.event_masks = ~(1&lt;&lt;et_charup);</span>
+<span class="lineNum">     895 </span><span class="lineNoCov">          0 :     wattrs.undercursor = 1;</span>
+<span class="lineNum">     896 </span><span class="lineNoCov">          0 :     wattrs.centered = 2;</span>
+<span class="lineNum">     897 </span><span class="lineNoCov">          0 :     wattrs.cursor = ct_pointer;</span>
+<span class="lineNum">     898 </span><span class="lineNoCov">          0 :     wattrs.utf8_window_title = (char *) title;</span>
+<span class="lineNum">     899 </span><span class="lineNoCov">          0 :     pos.x = pos.y = 0;</span>
+<span class="lineNum">     900 </span><span class="lineNoCov">          0 :     pos.width = 220; pos.height = 60;           /* We'll figure size later */</span>
+<span class="lineNum">     901 </span>            :                 /* but if we get the size too small, the cursor isn't in dlg */
+<span class="lineNum">     902 </span><span class="lineNoCov">          0 :     gw = GDrawCreateTopWindow(NULL,&amp;pos,c_e_h,d,&amp;wattrs);</span>
+<span class="lineNum">     903 </span>            : 
+<span class="lineNum">     904 </span><span class="lineNoCov">          0 :     GGadgetInit();</span>
+<span class="lineNum">     905 </span><span class="lineNoCov">          0 :     GDrawSetFont(gw,_ggadget_default_font);</span>
+<span class="lineNum">     906 </span><span class="lineNoCov">          0 :     GDrawWindowFontMetrics(gw,_ggadget_default_font,&amp;as,&amp;ds,&amp;ld);</span>
+<span class="lineNum">     907 </span><span class="lineNoCov">          0 :     fh = as+ds;</span>
+<span class="lineNum">     908 </span><span class="lineNoCov">          0 :     maxw = 220;</span>
+<span class="lineNum">     909 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;cnt; ++i) {</span>
+<span class="lineNum">     910 </span><span class="lineNoCov">          0 :         if ( llabels[i].text!=NULL ) {          /* lines */</span>
+<span class="lineNum">     911 </span><span class="lineNoCov">          0 :             w = GDrawGetText8Width(gw,(char *) llabels[i].text,-1);</span>
+<span class="lineNum">     912 </span><span class="lineNoCov">          0 :             if ( w&gt;900 ) w = 900;</span>
+<span class="lineNum">     913 </span><span class="lineNoCov">          0 :             if ( w&gt;maxw ) maxw = w;</span>
+<span class="lineNum">     914 </span>            :         }
+<span class="lineNum">     915 </span>            :     }
+<span class="lineNum">     916 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;lb; ++i ) {</span>
+<span class="lineNum">     917 </span><span class="lineNoCov">          0 :         w = GDrawGetTextWidth(gw,qlabels[i].text,-1);</span>
+<span class="lineNum">     918 </span><span class="lineNoCov">          0 :         if ( w&gt;maxw ) maxw = w;</span>
+<span class="lineNum">     919 </span>            :     }
+<span class="lineNum">     920 </span><span class="lineNoCov">          0 :     maxw += GDrawPointsToPixels(gw,20);</span>
+<span class="lineNum">     921 </span>            : 
+<span class="lineNum">     922 </span><span class="lineNoCov">          0 :     gcd = calloc(lb+1+2+2+2,sizeof(GGadgetCreateData));</span>
+<span class="lineNum">     923 </span><span class="lineNoCov">          0 :     array = calloc(2*(lb+1+2+2+2+1),sizeof(GGadgetCreateData *));</span>
+<span class="lineNum">     924 </span><span class="lineNoCov">          0 :     memset(boxes,0,sizeof(boxes));</span>
+<span class="lineNum">     925 </span><span class="lineNoCov">          0 :     l=0;</span>
+<span class="lineNum">     926 </span><span class="lineNoCov">          0 :     if ( lb==1 ) {</span>
+<span class="lineNum">     927 </span><span class="lineNoCov">          0 :         gcd[0].gd.pos.width = GDrawGetTextWidth(gw,qlabels[0].text,-1);</span>
+<span class="lineNum">     928 </span><span class="lineNoCov">          0 :         gcd[0].gd.pos.x = (maxw-gcd[0].gd.pos.width)/2;</span>
+<span class="lineNum">     929 </span><span class="lineNoCov">          0 :         gcd[0].gd.pos.y = GDrawPointsToPixels(gw,6);</span>
+<span class="lineNum">     930 </span><span class="lineNoCov">          0 :         gcd[0].gd.pos.height = fh;</span>
+<span class="lineNum">     931 </span><span class="lineNoCov">          0 :         gcd[0].gd.flags = gg_visible | gg_enabled | gg_pos_in_pixels | gg_pos_use0;</span>
+<span class="lineNum">     932 </span><span class="lineNoCov">          0 :         gcd[0].gd.label = &amp;qlabels[0];</span>
+<span class="lineNum">     933 </span><span class="lineNoCov">          0 :         gcd[0].creator = GLabelCreate;</span>
+<span class="lineNum">     934 </span><span class="lineNoCov">          0 :         labarray[0] = GCD_Glue; labarray[1] = &amp;gcd[0]; labarray[2] = GCD_Glue; labarray[3] = NULL;</span>
+<span class="lineNum">     935 </span><span class="lineNoCov">          0 :         boxes[2].gd.flags = gg_visible|gg_enabled;</span>
+<span class="lineNum">     936 </span><span class="lineNoCov">          0 :         boxes[2].gd.u.boxelements = labarray;</span>
+<span class="lineNum">     937 </span><span class="lineNoCov">          0 :         boxes[2].creator = GHBoxCreate;</span>
+<span class="lineNum">     938 </span><span class="lineNoCov">          0 :         array[0] = &amp;boxes[2]; array[1] = NULL;</span>
+<span class="lineNum">     939 </span><span class="lineNoCov">          0 :         i = l = 1;</span>
+<span class="lineNum">     940 </span><span class="lineNoCov">          0 :     } else for ( i=0; i&lt;lb; ++i ) {</span>
+<span class="lineNum">     941 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.x = GDrawPointsToPixels(gw,8);</span>
+<span class="lineNum">     942 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.y = GDrawPointsToPixels(gw,6)+i*fh;</span>
+<span class="lineNum">     943 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.width = GDrawGetTextWidth(gw,qlabels[i].text,-1);</span>
+<span class="lineNum">     944 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.height = fh;</span>
+<span class="lineNum">     945 </span><span class="lineNoCov">          0 :         gcd[i].gd.flags = gg_visible | gg_enabled | gg_pos_in_pixels | gg_pos_use0;</span>
+<span class="lineNum">     946 </span><span class="lineNoCov">          0 :         gcd[i].gd.label = &amp;qlabels[i];</span>
+<span class="lineNum">     947 </span><span class="lineNoCov">          0 :         gcd[i].creator = GLabelCreate;</span>
+<span class="lineNum">     948 </span><span class="lineNoCov">          0 :         array[2*l] = &amp;gcd[i]; array[2*l++ +1] = NULL;</span>
+<span class="lineNum">     949 </span>            :     }
+<span class="lineNum">     950 </span>            : 
+<span class="lineNum">     951 </span><span class="lineNoCov">          0 :     y = GDrawPointsToPixels(gw,12)+lb*fh;</span>
+<span class="lineNum">     952 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.x = GDrawPointsToPixels(gw,8); gcd[i].gd.pos.y = y;</span>
+<span class="lineNum">     953 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.width = maxw - 2*GDrawPointsToPixels(gw,8);</span>
+<span class="lineNum">     954 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.height = (cnt&lt;4?4:cnt&lt;8?cnt:8)*fh + 2*GDrawPointsToPixels(gw,6);</span>
+<span class="lineNum">     955 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_visible | gg_enabled | gg_pos_in_pixels | gg_pos_use0;</span>
+<span class="lineNum">     956 </span><span class="lineNoCov">          0 :     if ( multisel )</span>
+<span class="lineNum">     957 </span><span class="lineNoCov">          0 :         gcd[i].gd.flags |= gg_list_multiplesel;</span>
+<span class="lineNum">     958 </span>            :     else
+<span class="lineNum">     959 </span><span class="lineNoCov">          0 :         gcd[i].gd.flags |= gg_list_exactlyone;</span>
+<span class="lineNum">     960 </span><span class="lineNoCov">          0 :     gcd[i].gd.u.list = llabels;</span>
+<span class="lineNum">     961 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_List;</span>
+<span class="lineNum">     962 </span><span class="lineNoCov">          0 :     listi = i;</span>
+<span class="lineNum">     963 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GListCreate;</span>
+<span class="lineNum">     964 </span><span class="lineNoCov">          0 :     y += gcd[i-1].gd.pos.height + GDrawPointsToPixels(gw,10);</span>
+<span class="lineNum">     965 </span><span class="lineNoCov">          0 :     array[2*l] = &amp;gcd[i-1]; array[2*l++ +1] = NULL;</span>
+<span class="lineNum">     966 </span>            : 
+<span class="lineNum">     967 </span><span class="lineNoCov">          0 :     memset(blabel,'\0',sizeof(blabel));</span>
+<span class="lineNum">     968 </span><span class="lineNoCov">          0 :     if ( multisel ) {</span>
+<span class="lineNum">     969 </span><span class="lineNoCov">          0 :         y -= GDrawPointsToPixels(gw,5);</span>
+<span class="lineNum">     970 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.x = GDrawPointsToPixels(gw,15); gcd[i].gd.pos.y = y;</span>
+<span class="lineNum">     971 </span><span class="lineNoCov">          0 :         gcd[i].gd.flags = gg_visible | gg_enabled | gg_pos_in_pixels | gg_pos_use0;</span>
+<span class="lineNum">     972 </span><span class="lineNoCov">          0 :         gcd[i].gd.label = &amp;blabel[2];</span>
+<span class="lineNum">     973 </span><span class="lineNoCov">          0 :         if ( _ggadget_use_gettext ) {</span>
+<span class="lineNum">     974 </span><span class="lineNoCov">          0 :             blabel[2].text = (unichar_t *) _(&quot;Select _All&quot;);</span>
+<span class="lineNum">     975 </span><span class="lineNoCov">          0 :             blabel[2].text_is_1byte = true;</span>
+<span class="lineNum">     976 </span>            :         } else
+<span class="lineNum">     977 </span><span class="lineNoCov">          0 :             blabel[2].text = (unichar_t *) _STR_SelectAll;</span>
+<span class="lineNum">     978 </span><span class="lineNoCov">          0 :         blabel[2].text_in_resource = true;</span>
+<span class="lineNum">     979 </span><span class="lineNoCov">          0 :         gcd[i].gd.cid = CID_SelectAll;</span>
+<span class="lineNum">     980 </span><span class="lineNoCov">          0 :         gcd[i].gd.handle_controlevent = GCD_Select;</span>
+<span class="lineNum">     981 </span><span class="lineNoCov">          0 :         gcd[i++].creator = GButtonCreate;</span>
+<span class="lineNum">     982 </span><span class="lineNoCov">          0 :         barray2[0] = GCD_Glue; barray2[1] = &amp;gcd[i-1];</span>
+<span class="lineNum">     983 </span>            : 
+<span class="lineNum">     984 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.x = maxw-GDrawPointsToPixels(gw,15)-</span>
+<span class="lineNum">     985 </span><span class="lineNoCov">          0 :                 GDrawPointsToPixels(gw,GIntGetResource(_NUM_Buttonsize));</span>
+<span class="lineNum">     986 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.y = y;</span>
+<span class="lineNum">     987 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.width = -1;</span>
+<span class="lineNum">     988 </span><span class="lineNoCov">          0 :         gcd[i].gd.flags = gg_visible | gg_enabled | gg_pos_in_pixels | gg_pos_use0 ;</span>
+<span class="lineNum">     989 </span><span class="lineNoCov">          0 :         gcd[i].gd.label = &amp;blabel[3];</span>
+<span class="lineNum">     990 </span><span class="lineNoCov">          0 :         if ( _ggadget_use_gettext ) {</span>
+<span class="lineNum">     991 </span><span class="lineNoCov">          0 :             blabel[3].text = (unichar_t *) _(&quot;_None&quot;);</span>
+<span class="lineNum">     992 </span><span class="lineNoCov">          0 :             blabel[3].text_is_1byte = true;</span>
+<span class="lineNum">     993 </span>            :         } else
+<span class="lineNum">     994 </span><span class="lineNoCov">          0 :             blabel[3].text = (unichar_t *) _STR_None;</span>
+<span class="lineNum">     995 </span><span class="lineNoCov">          0 :         blabel[3].text_in_resource = true;</span>
+<span class="lineNum">     996 </span><span class="lineNoCov">          0 :         gcd[i].gd.cid = CID_SelectNone;</span>
+<span class="lineNum">     997 </span><span class="lineNoCov">          0 :         gcd[i].gd.handle_controlevent = GCD_Select;</span>
+<span class="lineNum">     998 </span><span class="lineNoCov">          0 :         gcd[i++].creator = GButtonCreate;</span>
+<span class="lineNum">     999 </span><span class="lineNoCov">          0 :         y += GDrawPointsToPixels(gw,30);</span>
+<span class="lineNum">    1000 </span><span class="lineNoCov">          0 :         barray2[2] = GCD_Glue; barray2[3] = &amp;gcd[i-1]; barray2[4] = GCD_Glue; barray2[5] = NULL;</span>
+<span class="lineNum">    1001 </span><span class="lineNoCov">          0 :         boxes[3].gd.flags = gg_visible|gg_enabled;</span>
+<span class="lineNum">    1002 </span><span class="lineNoCov">          0 :         boxes[3].gd.u.boxelements = barray2;</span>
+<span class="lineNum">    1003 </span><span class="lineNoCov">          0 :         boxes[3].creator = GHBoxCreate;</span>
+<span class="lineNum">    1004 </span><span class="lineNoCov">          0 :         array[2*l] = &amp;boxes[3]; array[2*l++ +1] = NULL;</span>
+<span class="lineNum">    1005 </span>            :     }
+<span class="lineNum">    1006 </span>            : 
+<span class="lineNum">    1007 </span><span class="lineNoCov">          0 :     if ( _GGadget_defaultbutton_box.flags&amp;box_draw_default ) {</span>
+<span class="lineNum">    1008 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.x = GDrawPointsToPixels(gw,15)-3; gcd[i].gd.pos.y = y-3;</span>
+<span class="lineNum">    1009 </span>            :     } else {
+<span class="lineNum">    1010 </span><span class="lineNoCov">          0 :         gcd[i].gd.pos.x = GDrawPointsToPixels(gw,15); gcd[i].gd.pos.y = y;</span>
+<span class="lineNum">    1011 </span>            :     }
+<span class="lineNum">    1012 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.width = -1;</span>
+<span class="lineNum">    1013 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_visible | gg_enabled | gg_pos_in_pixels |gg_but_default | gg_pos_use0;</span>
+<span class="lineNum">    1014 </span><span class="lineNoCov">          0 :     gcd[i].gd.label = &amp;blabel[0];</span>
+<span class="lineNum">    1015 </span><span class="lineNoCov">          0 :     blabel[0].text = (unichar_t *) buts[0];</span>
+<span class="lineNum">    1016 </span><span class="lineNoCov">          0 :     blabel[0].text_is_1byte = true;</span>
+<span class="lineNum">    1017 </span><span class="lineNoCov">          0 :     blabel[0].text_in_resource = true;</span>
+<span class="lineNum">    1018 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_OK;</span>
+<span class="lineNum">    1019 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GButtonCreate;</span>
+<span class="lineNum">    1020 </span><span class="lineNoCov">          0 :     barray[0] = GCD_Glue; barray[1] = &amp;gcd[i-1]; barray[2] = GCD_Glue; barray[3] = GCD_Glue;</span>
+<span class="lineNum">    1021 </span>            : 
+<span class="lineNum">    1022 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.x = maxw-GDrawPointsToPixels(gw,15)-</span>
+<span class="lineNum">    1023 </span><span class="lineNoCov">          0 :             GDrawPointsToPixels(gw,GIntGetResource(_NUM_Buttonsize));</span>
+<span class="lineNum">    1024 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.y = y;</span>
+<span class="lineNum">    1025 </span><span class="lineNoCov">          0 :     gcd[i].gd.pos.width = -1;</span>
+<span class="lineNum">    1026 </span><span class="lineNoCov">          0 :     gcd[i].gd.flags = gg_visible | gg_enabled | gg_pos_in_pixels |gg_but_cancel | gg_pos_use0;</span>
+<span class="lineNum">    1027 </span><span class="lineNoCov">          0 :     gcd[i].gd.label = &amp;blabel[1];</span>
+<span class="lineNum">    1028 </span><span class="lineNoCov">          0 :     blabel[1].text = (unichar_t *) buts[1];</span>
+<span class="lineNum">    1029 </span><span class="lineNoCov">          0 :     blabel[1].text_is_1byte = true;</span>
+<span class="lineNum">    1030 </span><span class="lineNoCov">          0 :     blabel[1].text_in_resource = true;</span>
+<span class="lineNum">    1031 </span><span class="lineNoCov">          0 :     gcd[i].gd.cid = CID_Cancel;</span>
+<span class="lineNum">    1032 </span><span class="lineNoCov">          0 :     gcd[i++].creator = GButtonCreate;</span>
+<span class="lineNum">    1033 </span><span class="lineNoCov">          0 :     barray[4] = barray[5] = barray[6] = GCD_Glue; barray[7] = &amp;gcd[i-1]; barray[8] = GCD_Glue; barray[9] = NULL;</span>
+<span class="lineNum">    1034 </span>            : 
+<span class="lineNum">    1035 </span><span class="lineNoCov">          0 :     boxes[4].gd.flags = gg_visible|gg_enabled;</span>
+<span class="lineNum">    1036 </span><span class="lineNoCov">          0 :     boxes[4].gd.u.boxelements = barray;</span>
+<span class="lineNum">    1037 </span><span class="lineNoCov">          0 :     boxes[4].creator = GHBoxCreate;</span>
+<span class="lineNum">    1038 </span><span class="lineNoCov">          0 :     array[2*l] = &amp;boxes[4]; array[2*l++ +1] = NULL;</span>
+<span class="lineNum">    1039 </span><span class="lineNoCov">          0 :     array[2*l] = NULL;</span>
+<span class="lineNum">    1040 </span>            : 
+<span class="lineNum">    1041 </span><span class="lineNoCov">          0 :     boxes[0].gd.pos.x = boxes[0].gd.pos.y = 2;</span>
+<span class="lineNum">    1042 </span><span class="lineNoCov">          0 :     boxes[0].gd.flags = gg_visible|gg_enabled;</span>
+<span class="lineNum">    1043 </span><span class="lineNoCov">          0 :     boxes[0].gd.u.boxelements = array;</span>
+<span class="lineNum">    1044 </span><span class="lineNoCov">          0 :     boxes[0].creator = GHVGroupCreate;</span>
+<span class="lineNum">    1045 </span>            : 
+<span class="lineNum">    1046 </span><span class="lineNoCov">          0 :     GGadgetsCreate(gw,boxes);</span>
+<span class="lineNum">    1047 </span><span class="lineNoCov">          0 :     GHVBoxSetExpandableCol(boxes[4].ret,gb_expandgluesame);</span>
+<span class="lineNum">    1048 </span><span class="lineNoCov">          0 :     if ( boxes[3].ret!=NULL )</span>
+<span class="lineNum">    1049 </span><span class="lineNoCov">          0 :         GHVBoxSetExpandableCol(boxes[3].ret,gb_expandgluesame);</span>
+<span class="lineNum">    1050 </span><span class="lineNoCov">          0 :     if ( boxes[2].ret!=NULL )</span>
+<span class="lineNum">    1051 </span><span class="lineNoCov">          0 :         GHVBoxSetExpandableCol(boxes[2].ret,gb_expandglue);</span>
+<span class="lineNum">    1052 </span><span class="lineNoCov">          0 :     GHVBoxFitWindow(boxes[0].ret);</span>
+<span class="lineNum">    1053 </span><span class="lineNoCov">          0 :     GWidgetHidePalettes();</span>
+<span class="lineNum">    1054 </span><span class="lineNoCov">          0 :     GDrawSetVisible(gw,true);</span>
+<span class="lineNum">    1055 </span><span class="lineNoCov">          0 :     d-&gt;ret = -1;</span>
+<span class="lineNum">    1056 </span><span class="lineNoCov">          0 :     d-&gt;size_diff = pos.height - gcd[listi].gd.pos.height;</span>
+<span class="lineNum">    1057 </span><span class="lineNoCov">          0 :     free(llabels);</span>
+<span class="lineNum">    1058 </span><span class="lineNoCov">          0 :     free(array);</span>
+<span class="lineNum">    1059 </span><span class="lineNoCov">          0 :     free(gcd);</span>
+<span class="lineNum">    1060 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;lb; ++i )</span>
+<span class="lineNum">    1061 </span><span class="lineNoCov">          0 :         free(qlabels[i].text);</span>
+<span class="lineNum">    1062 </span><span class="lineNoCov">          0 :     free(ubuf);</span>
+<span class="lineNum">    1063 </span><span class="lineNoCov">          0 :     GProgressResumeTimer();</span>
+<span class="lineNum">    1064 </span><span class="lineNoCov">          0 : return( gw );</span>
+<a name="1065"><span class="lineNum">    1065 </span>            : }</a>
+<span class="lineNum">    1066 </span>            : 
+<span class="lineNum">    1067 </span><span class="lineNoCov">          0 : int GWidgetChoices8(const char *title, const char **choices,int cnt, int def,</span>
+<span class="lineNum">    1068 </span>            :         const char *question,...) {
+<span class="lineNum">    1069 </span>            :     struct dlg_info d;
+<span class="lineNum">    1070 </span>            :     GWindow gw;
+<span class="lineNum">    1071 </span>            :     va_list ap;
+<span class="lineNum">    1072 </span>            :     char *buts[3];
+<span class="lineNum">    1073 </span>            : 
+<span class="lineNum">    1074 </span><span class="lineNoCov">          0 :     if ( screen_display==NULL )</span>
+<span class="lineNum">    1075 </span><span class="lineNoCov">          0 : return( -2 );</span>
+<span class="lineNum">    1076 </span>            : 
+<span class="lineNum">    1077 </span><span class="lineNoCov">          0 :     va_start(ap,question);</span>
+<span class="lineNum">    1078 </span><span class="lineNoCov">          0 :     if ( _ggadget_use_gettext ) {</span>
+<span class="lineNum">    1079 </span><span class="lineNoCov">          0 :         buts[0] = _(&quot;_OK&quot;);</span>
+<span class="lineNum">    1080 </span><span class="lineNoCov">          0 :         buts[1] = _(&quot;_Cancel&quot;);</span>
+<span class="lineNum">    1081 </span>            :     } else {
+<span class="lineNum">    1082 </span><span class="lineNoCov">          0 :         buts[0] = u2utf8_copy(GStringGetResource(_STR_OK,NULL));</span>
+<span class="lineNum">    1083 </span><span class="lineNoCov">          0 :         buts[1] = u2utf8_copy(GStringGetResource(_STR_Cancel,NULL));</span>
+<span class="lineNum">    1084 </span>            :     }
+<span class="lineNum">    1085 </span><span class="lineNoCov">          0 :     buts[2] = NULL;</span>
+<span class="lineNum">    1086 </span><span class="lineNoCov">          0 :     gw = ChoiceDlgCreate8(&amp;d,title,question,ap,</span>
+<span class="lineNum">    1087 </span>            :             choices,cnt,NULL, buts,def,true,false);
+<span class="lineNum">    1088 </span><span class="lineNoCov">          0 :     va_end(ap);</span>
+<span class="lineNum">    1089 </span><span class="lineNoCov">          0 :     while ( !d.done )</span>
+<span class="lineNum">    1090 </span><span class="lineNoCov">          0 :         GDrawProcessOneEvent(NULL);</span>
+<span class="lineNum">    1091 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(gw);</span>
+<span class="lineNum">    1092 </span><span class="lineNoCov">          0 :     GDrawSync(NULL);</span>
+<span class="lineNum">    1093 </span><span class="lineNoCov">          0 :     GDrawProcessPendingEvents(NULL);</span>
+<span class="lineNum">    1094 </span><span class="lineNoCov">          0 :     if ( !_ggadget_use_gettext ) {</span>
+<span class="lineNum">    1095 </span><span class="lineNoCov">          0 :         free(buts[0]); free(buts[1]);</span>
+<span class="lineNum">    1096 </span>            :     }
+<span class="lineNum">    1097 </span><span class="lineNoCov">          0 : return(d.ret);</span>
+<a name="1098"><span class="lineNum">    1098 </span>            : }</a>
+<span class="lineNum">    1099 </span>            : 
+<span class="lineNum">    1100 </span><span class="lineNoCov">          0 : int GWidgetChoicesB8(char *title, const char **choices, int cnt, int def,</span>
+<span class="lineNum">    1101 </span>            :         char *buts[2], const char *question,...) {
+<span class="lineNum">    1102 </span>            :     struct dlg_info d;
+<span class="lineNum">    1103 </span>            :     GWindow gw;
+<span class="lineNum">    1104 </span>            :     va_list ap;
+<span class="lineNum">    1105 </span>            : 
+<span class="lineNum">    1106 </span><span class="lineNoCov">          0 :     if ( screen_display==NULL )</span>
+<span class="lineNum">    1107 </span><span class="lineNoCov">          0 : return( -2 );</span>
+<span class="lineNum">    1108 </span>            : 
+<span class="lineNum">    1109 </span><span class="lineNoCov">          0 :     va_start(ap,question);</span>
+<span class="lineNum">    1110 </span><span class="lineNoCov">          0 :     gw = ChoiceDlgCreate8(&amp;d,title,question,ap,</span>
+<span class="lineNum">    1111 </span>            :             choices,cnt,NULL,buts,def,true,false);
+<span class="lineNum">    1112 </span><span class="lineNoCov">          0 :     va_end(ap);</span>
+<span class="lineNum">    1113 </span><span class="lineNoCov">          0 :     while ( !d.done )</span>
+<span class="lineNum">    1114 </span><span class="lineNoCov">          0 :         GDrawProcessOneEvent(NULL);</span>
+<span class="lineNum">    1115 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(gw);</span>
+<span class="lineNum">    1116 </span><span class="lineNoCov">          0 :     GDrawSync(NULL);</span>
+<span class="lineNum">    1117 </span><span class="lineNoCov">          0 :     GDrawProcessPendingEvents(NULL);</span>
+<span class="lineNum">    1118 </span><span class="lineNoCov">          0 : return(d.ret);</span>
+<a name="1119"><span class="lineNum">    1119 </span>            : }</a>
+<span class="lineNum">    1120 </span>            : 
+<span class="lineNum">    1121 </span><span class="lineNoCov">          0 : int GWidgetChoicesBM8(char *title, const char **choices,char *sel,</span>
+<span class="lineNum">    1122 </span>            :         int cnt, char *buts[2], const char *question,...) {
+<span class="lineNum">    1123 </span>            :     struct dlg_info d;
+<span class="lineNum">    1124 </span>            :     GWindow gw;
+<span class="lineNum">    1125 </span>            :     va_list ap;
+<span class="lineNum">    1126 </span>            :     GGadget *list;
+<span class="lineNum">    1127 </span>            :     GTextInfo **lsel;
+<span class="lineNum">    1128 </span>            :     int i; int32 len;
+<span class="lineNum">    1129 </span>            :     char *buttons[3];
+<span class="lineNum">    1130 </span>            : 
+<span class="lineNum">    1131 </span><span class="lineNoCov">          0 :     if ( screen_display==NULL )</span>
+<span class="lineNum">    1132 </span><span class="lineNoCov">          0 : return( -2 );</span>
+<span class="lineNum">    1133 </span>            : 
+<span class="lineNum">    1134 </span><span class="lineNoCov">          0 :     if ( buts==NULL ) {</span>
+<span class="lineNum">    1135 </span><span class="lineNoCov">          0 :         buts = buttons;</span>
+<span class="lineNum">    1136 </span><span class="lineNoCov">          0 :         buttons[2] = NULL;</span>
+<span class="lineNum">    1137 </span><span class="lineNoCov">          0 :         if ( _ggadget_use_gettext ) {</span>
+<span class="lineNum">    1138 </span><span class="lineNoCov">          0 :             buts[0] = _(&quot;_OK&quot;);</span>
+<span class="lineNum">    1139 </span><span class="lineNoCov">          0 :             buts[1] = _(&quot;_Cancel&quot;);</span>
+<span class="lineNum">    1140 </span>            :         } else {
+<span class="lineNum">    1141 </span><span class="lineNoCov">          0 :             buts[0] = u2utf8_copy(GStringGetResource(_STR_OK,NULL));</span>
+<span class="lineNum">    1142 </span><span class="lineNoCov">          0 :             buts[1] = u2utf8_copy(GStringGetResource(_STR_Cancel,NULL));</span>
+<span class="lineNum">    1143 </span>            :         }
+<span class="lineNum">    1144 </span>            :     }
+<span class="lineNum">    1145 </span><span class="lineNoCov">          0 :     va_start(ap,question);</span>
+<span class="lineNum">    1146 </span><span class="lineNoCov">          0 :     gw = ChoiceDlgCreate8(&amp;d,title,question,ap,</span>
+<span class="lineNum">    1147 </span>            :             choices,cnt,sel,buts,-1,true,false);
+<span class="lineNum">    1148 </span><span class="lineNoCov">          0 :     va_end(ap);</span>
+<span class="lineNum">    1149 </span><span class="lineNoCov">          0 :     while ( !d.done )</span>
+<span class="lineNum">    1150 </span><span class="lineNoCov">          0 :         GDrawProcessOneEvent(NULL);</span>
+<span class="lineNum">    1151 </span><span class="lineNoCov">          0 :     if ( d.ret==-1 ) {</span>
+<span class="lineNum">    1152 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;cnt; ++i )</span>
+<span class="lineNum">    1153 </span><span class="lineNoCov">          0 :             sel[i] = 0;</span>
+<span class="lineNum">    1154 </span>            :     } else {
+<span class="lineNum">    1155 </span><span class="lineNoCov">          0 :         list = GWidgetGetControl(gw,CID_List);</span>
+<span class="lineNum">    1156 </span><span class="lineNoCov">          0 :         lsel = GGadgetGetList(list,&amp;len);</span>
+<span class="lineNum">    1157 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;len; ++i )</span>
+<span class="lineNum">    1158 </span><span class="lineNoCov">          0 :             sel[i] = lsel[i]-&gt;selected;</span>
+<span class="lineNum">    1159 </span>            :     }
+<span class="lineNum">    1160 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(gw);</span>
+<span class="lineNum">    1161 </span><span class="lineNoCov">          0 :     GDrawSync(NULL);</span>
+<span class="lineNum">    1162 </span><span class="lineNoCov">          0 :     GDrawProcessPendingEvents(NULL);</span>
+<span class="lineNum">    1163 </span><span class="lineNoCov">          0 :     if ( !_ggadget_use_gettext ) {</span>
+<span class="lineNum">    1164 </span><span class="lineNoCov">          0 :         free(buts[0]); free(buts[1]);</span>
+<span class="lineNum">    1165 </span>            :     }
+<span class="lineNum">    1166 </span><span class="lineNoCov">          0 : return(d.ret);</span>
+<span class="lineNum">    1167 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

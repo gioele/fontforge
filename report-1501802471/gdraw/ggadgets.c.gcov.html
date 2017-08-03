@@ -1,0 +1,1580 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - gdraw/ggadgets.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gdraw</a> - ggadgets.c<span style="font-size: 80%;"> (source / <a href="ggadgets.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">908</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">101</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &lt;basics.h&gt;
+<span class="lineNum">      28 </span>            : #include &lt;stdlib.h&gt;
+<span class="lineNum">      29 </span>            : #include &quot;utype.h&quot;
+<span class="lineNum">      30 </span>            : #include &quot;gdraw.h&quot;
+<span class="lineNum">      31 </span>            : #include &quot;ggadgetP.h&quot;
+<span class="lineNum">      32 </span>            : #include &quot;gresource.h&quot;
+<span class="lineNum">      33 </span>            : #include &quot;gwidget.h&quot;
+<span class="lineNum">      34 </span>            : #include &quot;gkeysym.h&quot;
+<span class="lineNum">      35 </span>            : #include &quot;ustring.h&quot;
+<span class="lineNum">      36 </span>            : 
+<span class="lineNum">      37 </span>            : GBox _ggadget_Default_Box = { bt_raised, bs_rect, 2, 2, 0, 0, 
+<span class="lineNum">      38 </span>            :     COLOR_CREATE(0xd8,0xd8,0xd8),               /* border left */ /* brightest */
+<span class="lineNum">      39 </span>            :     COLOR_CREATE(0xd0,0xd0,0xd0),               /* border top */
+<span class="lineNum">      40 </span>            :     COLOR_CREATE(0x80,0x80,0x80),               /* border right */
+<span class="lineNum">      41 </span>            :     COLOR_CREATE(0x66,0x66,0x66),               /* border bottom */ /* darkest */
+<span class="lineNum">      42 </span>            :     COLOR_DEFAULT,                              /* normal background */
+<span class="lineNum">      43 </span>            :     COLOR_DEFAULT,                              /* normal foreground */
+<span class="lineNum">      44 </span>            :     COLOR_CREATE(0xd8,0xd8,0xd8),               /* disabled background */
+<span class="lineNum">      45 </span>            :     COLOR_CREATE(0x66,0x66,0x66),               /* disabled foreground */
+<span class="lineNum">      46 </span>            :     COLOR_CREATE(0xff,0xff,0x00),               /* active border */
+<span class="lineNum">      47 </span>            :     COLOR_CREATE(0xa0,0xa0,0xa0),               /* pressed background */
+<span class="lineNum">      48 </span>            :     COLOR_CREATE(0x00,0x00,0x00),               /* gradient bg end */
+<span class="lineNum">      49 </span>            :     COLOR_CREATE(0x00,0x00,0x00),               /* border inner */
+<span class="lineNum">      50 </span>            :     COLOR_CREATE(0x00,0x00,0x00),               /* border outer */
+<span class="lineNum">      51 </span>            : };
+<span class="lineNum">      52 </span>            : GBox _GListMark_Box = GBOX_EMPTY; /* Don't initialize here */
+<span class="lineNum">      53 </span>            : FontInstance *_ggadget_default_font = NULL;
+<span class="lineNum">      54 </span>            : static FontInstance *popup_font = NULL;
+<span class="lineNum">      55 </span>            : int _GListMarkSize = 12;
+<span class="lineNum">      56 </span>            : GResImage *_GListMark_Image = NULL, *_GListMark_DisImage;
+<span class="lineNum">      57 </span>            : static int _GGadget_FirstLine = 6;
+<span class="lineNum">      58 </span>            : static int _GGadget_LeftMargin = 6;
+<span class="lineNum">      59 </span>            : static int _GGadget_LineSkip = 3;
+<span class="lineNum">      60 </span>            : int _GGadget_Skip = 6;
+<span class="lineNum">      61 </span>            : int _GGadget_TextImageSkip = 4;
+<span class="lineNum">      62 </span>            : char *_GGadget_ImagePath = NULL;
+<span class="lineNum">      63 </span>            : static int _ggadget_inited=0;
+<span class="lineNum">      64 </span>            : static Color popup_foreground=0, popup_background=COLOR_CREATE(0xff,0xff,0xc0);
+<span class="lineNum">      65 </span>            : static int popup_delay=1000, popup_lifetime=20000;
+<span class="lineNum">      66 </span>            : 
+<span class="lineNum">      67 </span>            : static GResInfo popup_ri;
+<span class="lineNum">      68 </span>            : static struct resed ggadget_re[] = {
+<span class="lineNum">      69 </span>            :     {N_(&quot;Text Image Skip&quot;), &quot;TextImageSkip&quot;, rt_int, &amp;_GGadget_TextImageSkip, N_(&quot;Space (in points) left between images and text in labels, buttons, menu items, etc. which have both&quot;), NULL, { 0 }, 0, 0 },
+<span class="lineNum">      70 </span>            :     {N_(&quot;Image Path&quot;), &quot;ImagePath&quot;, rt_stringlong, &amp;_GGadget_ImagePath, N_(&quot;List of directories to search for images, separated by colons&quot;), NULL, { 0 }, 0, 0 },
+<span class="lineNum">      71 </span>            :     RESED_EMPTY
+<span class="lineNum">      72 </span>            : };
+<span class="lineNum">      73 </span>            : GResInfo ggadget_ri = {
+<span class="lineNum">      74 </span>            :     &amp;listmark_ri, NULL,NULL, NULL,
+<span class="lineNum">      75 </span>            :     &amp;_ggadget_Default_Box,
+<span class="lineNum">      76 </span>            :     &amp;_ggadget_default_font,
+<span class="lineNum">      77 </span>            :     NULL,
+<span class="lineNum">      78 </span>            :     ggadget_re,
+<span class="lineNum">      79 </span>            :     N_(&quot;GGadget&quot;),
+<span class="lineNum">      80 </span>            :     N_(&quot;This is an \&quot;abstract\&quot; gadget. It will never appear on the screen\nbut it is the root of gadget tree from which all others inherit&quot;),
+<span class="lineNum">      81 </span>            :     &quot;GGadget&quot;,
+<span class="lineNum">      82 </span>            :     &quot;Gdraw&quot;,
+<span class="lineNum">      83 </span>            :     false,
+<span class="lineNum">      84 </span>            :     0,
+<span class="lineNum">      85 </span>            :     NULL,
+<span class="lineNum">      86 </span>            :     GBOX_EMPTY,
+<span class="lineNum">      87 </span>            :     NULL,
+<span class="lineNum">      88 </span>            :     NULL,
+<span class="lineNum">      89 </span>            :     NULL
+<span class="lineNum">      90 </span>            : };
+<span class="lineNum">      91 </span>            : static struct resed popup_re[] = {
+<span class="lineNum">      92 </span>            :     {N_(&quot;Color|Foreground&quot;), &quot;Foreground&quot;, rt_color, &amp;popup_foreground, N_(&quot;Text color for popup windows&quot;), NULL, { 0 }, 0, 0 },
+<span class="lineNum">      93 </span>            :     {N_(&quot;Color|Background&quot;), &quot;Background&quot;, rt_color, &amp;popup_background, N_(&quot;Background color for popup windows&quot;), NULL, { 0 }, 0, 0 },
+<span class="lineNum">      94 </span>            :     {N_(&quot;Delay&quot;), &quot;Delay&quot;, rt_int, &amp;popup_delay, N_(&quot;Delay (in milliseconds) before popup windows appear&quot;), NULL, { 0 }, 0, 0 },
+<span class="lineNum">      95 </span>            :     {N_(&quot;Life Time&quot;), &quot;LifeTime&quot;, rt_int, &amp;popup_lifetime, N_(&quot;Time (in milliseconds) that popup windows remain visible&quot;), NULL, { 0 }, 0, 0 },
+<span class="lineNum">      96 </span>            :     RESED_EMPTY
+<span class="lineNum">      97 </span>            : };
+<span class="lineNum">      98 </span>            : static void popup_refresh(void);
+<span class="lineNum">      99 </span>            : static GResInfo popup_ri = {
+<span class="lineNum">     100 </span>            :     &amp;ggadget_ri, NULL, NULL,NULL,
+<span class="lineNum">     101 </span>            :     NULL,       /* No box */
+<span class="lineNum">     102 </span>            :     &amp;popup_font,
+<span class="lineNum">     103 </span>            :     NULL,
+<span class="lineNum">     104 </span>            :     popup_re,
+<span class="lineNum">     105 </span>            :     N_(&quot;Popup&quot;),
+<span class="lineNum">     106 </span>            :     N_(&quot;Popup windows&quot;),
+<span class="lineNum">     107 </span>            :     &quot;GGadget.Popup&quot;,
+<span class="lineNum">     108 </span>            :     &quot;Gdraw&quot;,
+<span class="lineNum">     109 </span>            :     false,
+<span class="lineNum">     110 </span>            :     omf_refresh,
+<span class="lineNum">     111 </span>            :     NULL,
+<span class="lineNum">     112 </span>            :     GBOX_EMPTY,
+<span class="lineNum">     113 </span>            :     popup_refresh,
+<span class="lineNum">     114 </span>            :     NULL,
+<span class="lineNum">     115 </span>            :     NULL
+<span class="lineNum">     116 </span>            : };
+<span class="lineNum">     117 </span>            : static struct resed listmark_re[] = {
+<span class="lineNum">     118 </span>            :     { N_(&quot;Image&quot;), &quot;Image&quot;, rt_image, &amp;_GListMark_Image, N_(&quot;Image used for enabled listmarks (overrides the box)&quot;), NULL, { 0 }, 0, 0 },
+<span class="lineNum">     119 </span>            :     { N_(&quot;Disabled Image&quot;), &quot;DisabledImage&quot;, rt_image, &amp;_GListMark_DisImage, N_(&quot;Image used for disabled listmarks (overrides the box)&quot;), NULL, { 0 }, 0, 0 },
+<span class="lineNum">     120 </span>            :     { N_(&quot;Width&quot;), &quot;Width&quot;, rt_int, &amp;_GListMarkSize, N_(&quot;Size of the list mark&quot;), NULL, { 0 }, 0, 0 },
+<span class="lineNum">     121 </span>            :     RESED_EMPTY
+<span class="lineNum">     122 </span>            : };
+<span class="lineNum">     123 </span>            : static GTextInfo list_choices[] = {
+<span class="lineNum">     124 </span>            :     { (unichar_t *) &quot;1&quot;, NULL, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     125 </span>            :     { (unichar_t *) &quot;2&quot;, NULL, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     126 </span>            :     { (unichar_t *) &quot;3&quot;, NULL, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     127 </span>            :     GTEXTINFO_EMPTY
+<span class="lineNum">     128 </span>            : };
+<span class="lineNum">     129 </span>            : static GGadgetCreateData droplist_gcd[] = {
+<span class="lineNum">     130 </span>            :     { GListFieldCreate, { {0, 0, 80, 0 }, NULL, 0, 0, 0, 0, 0, &amp;list_choices[0], { list_choices }, gg_visible, NULL, NULL }, NULL, NULL },
+<span class="lineNum">     131 </span>            :     { GListFieldCreate, { {0, 0, 80, 0 }, NULL, 0, 0, 0, 0, 0, &amp;list_choices[1], { list_choices }, gg_visible|gg_enabled, NULL, NULL }, NULL, NULL }
+<span class="lineNum">     132 </span>            : };
+<span class="lineNum">     133 </span>            : static GGadgetCreateData *dlarray[] = { GCD_Glue, &amp;droplist_gcd[0], GCD_Glue, &amp;droplist_gcd[1], GCD_Glue, NULL, NULL };
+<span class="lineNum">     134 </span>            : static GGadgetCreateData droplistbox =
+<span class="lineNum">     135 </span>            :     { GHVGroupCreate, { { 2, 2, 0, 0 }, NULL, 0, 0, 0, 0, 0, NULL, { (GTextInfo *) dlarray }, gg_visible|gg_enabled, NULL, NULL }, NULL, NULL };
+<span class="lineNum">     136 </span>            : GResInfo listmark_ri = {
+<span class="lineNum">     137 </span>            :     NULL, &amp;ggadget_ri, NULL,NULL,
+<span class="lineNum">     138 </span>            :     &amp;_GListMark_Box,        /* No box */
+<span class="lineNum">     139 </span>            :     NULL,
+<span class="lineNum">     140 </span>            :     &amp;droplistbox,
+<span class="lineNum">     141 </span>            :     listmark_re,
+<span class="lineNum">     142 </span>            :     N_(&quot;List Mark&quot;),
+<span class="lineNum">     143 </span>            :     N_(&quot;This is the mark that differentiates ComboBoxes and ListButtons\n&quot;
+<span class="lineNum">     144 </span>            :         &quot;from TextFields and normal Buttons.&quot; ),
+<span class="lineNum">     145 </span>            :     &quot;GListMark&quot;,
+<span class="lineNum">     146 </span>            :     &quot;Gdraw&quot;,
+<span class="lineNum">     147 </span>            :     false,
+<span class="lineNum">     148 </span>            :     omf_border_width|omf_padding,
+<span class="lineNum">     149 </span>            :     NULL,
+<span class="lineNum">     150 </span>            :     GBOX_EMPTY,
+<span class="lineNum">     151 </span>            :     NULL,
+<span class="lineNum">     152 </span>            :     NULL,
+<span class="lineNum">     153 </span>            :     NULL
+<span class="lineNum">     154 </span>            : };
+<span class="lineNum">     155 </span>            : 
+<span class="lineNum">     156 </span>            : 
+<span class="lineNum">     157 </span>            : static GWindow popup;
+<span class="lineNum">     158 </span>            : static GTimer *popup_timer, *popup_vanish_timer;
+<span class="lineNum">     159 </span>            : static int popup_visible = false;
+<a name="160"><span class="lineNum">     160 </span>            : static GRect popup_within;</a>
+<span class="lineNum">     161 </span>            : 
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 : static int match(char **list, char *val) {</span>
+<span class="lineNum">     163 </span>            :     int i;
+<span class="lineNum">     164 </span>            : 
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :     for ( i=0; list[i]!=NULL; ++i )</span>
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :         if ( strmatch(val,list[i])==0 )</span>
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 : return( i );</span>
+<span class="lineNum">     168 </span>            : 
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 : return( -1 );</span>
+<a name="170"><span class="lineNum">     170 </span>            : }</a>
+<span class="lineNum">     171 </span>            : 
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 : static void *border_type_cvt(char *val, void *def) {</span>
+<span class="lineNum">     173 </span>            :     static char *types[] = { &quot;none&quot;, &quot;box&quot;, &quot;raised&quot;, &quot;lowered&quot;, &quot;engraved&quot;,
+<span class="lineNum">     174 </span>            :             &quot;embossed&quot;, &quot;double&quot;, NULL };
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :     int ret = match(types,val);</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :     if ( ret== -1 )</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 : return( def );</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 : return( (void *) (intpt) ret );</span>
+<a name="179"><span class="lineNum">     179 </span>            : }</a>
+<span class="lineNum">     180 </span>            : 
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 : static void *border_shape_cvt(char *val, void *def) {</span>
+<span class="lineNum">     182 </span>            :     static char *shapes[] = { &quot;rect&quot;, &quot;roundrect&quot;, &quot;elipse&quot;, &quot;diamond&quot;, NULL };
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :     int ret = match(shapes,val);</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :     if ( ret== -1 )</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 : return( def );</span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 : return( (void *) (intpt) ret );</span>
+<span class="lineNum">     187 </span>            : }
+<span class="lineNum">     188 </span>            : 
+<span class="lineNum">     189 </span>            : /* font name may be something like:
+<span class="lineNum">     190 </span>            :         bold italic extended 12pt courier
+<span class="lineNum">     191 </span>            :         400 10pt small-caps
+<a name="192"><span class="lineNum">     192 </span>            :     family name comes at the end, size must have &quot;pt&quot; after it</a>
+<span class="lineNum">     193 </span>            : */
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 : void *GResource_font_cvt(char *val, void *def) {</span>
+<span class="lineNum">     195 </span>            :     static char *styles[] = { &quot;normal&quot;, &quot;italic&quot;, &quot;oblique&quot;, &quot;small-caps&quot;,
+<span class="lineNum">     196 </span>            :             &quot;bold&quot;, &quot;light&quot;, &quot;extended&quot;, &quot;condensed&quot;, NULL };
+<span class="lineNum">     197 </span>            :     FontRequest rq;
+<span class="lineNum">     198 </span>            :     FontInstance *fi;
+<span class="lineNum">     199 </span>            :     char *pt, *end, ch;
+<span class="lineNum">     200 </span>            :     int ret;
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :     char *freeme=NULL;</span>
+<span class="lineNum">     202 </span>            : 
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :     memset(&amp;rq,0,sizeof(rq));</span>
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :     rq.utf8_family_name = SANS_UI_FAMILIES;</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :     rq.point_size = 10;</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :     rq.weight = 400;</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :     rq.style = 0;</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :     if ( def!=NULL )</span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :         GDrawDecomposeFont((FontInstance *)def, &amp;rq);</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :     else if ( _ggadget_default_font!=NULL )</span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :         GDrawDecomposeFont(_ggadget_default_font, &amp;rq);</span>
+<span class="lineNum">     212 </span>            : 
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :     for ( pt=val; *pt &amp;&amp; *pt!='&quot;'; ) {</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :         for ( end=pt; *end!=' ' &amp;&amp; *end!='\0'; ++end );</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :         ch = *end; *end = '\0';</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :         ret = match(styles,pt);</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :         if ( ret==-1 &amp;&amp; isdigit(*pt)) {</span>
+<span class="lineNum">     218 </span>            :             char *e;
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :             ret = strtol(pt,&amp;e,10);</span>
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :             if ( strmatch(e,&quot;pt&quot;)==0 )</span>
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :                 rq.point_size = ret;</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :             else if ( *e=='\0' )</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :                 rq.weight = ret;</span>
+<span class="lineNum">     224 </span>            :             else {
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 :                 *end = ch;</span>
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     227 </span>            :             }
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :         } else if ( ret==-1 ) {</span>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :             *end = ch;</span>
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :         } else if ( ret==0 )</span>
+<span class="lineNum">     232 </span>            :             /* Do Nothing */;
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :         else if ( ret==1 || ret==2 )</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :             rq.style |= fs_italic;</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :         else if ( ret==3 )</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :             rq.style |= fs_smallcaps;</span>
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :         else if ( ret==4 )</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :             rq.weight = 700;</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :         else if ( ret==5 )</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :             rq.weight = 300;</span>
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :         else if ( ret==6 )</span>
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :             rq.style |= fs_extended;</span>
+<span class="lineNum">     243 </span>            :         else
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :             rq.style |= fs_condensed;</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :         *end = ch;</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :         pt = end;</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :         while ( *pt==' ' ) ++pt;</span>
+<span class="lineNum">     248 </span>            :     }
+<span class="lineNum">     249 </span>            : 
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :     if ( *pt!='\0' )</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :         rq.utf8_family_name = freeme = copy(pt);</span>
+<span class="lineNum">     252 </span>            :                 
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :     fi = GDrawInstanciateFont(NULL,&amp;rq);</span>
+<span class="lineNum">     254 </span>            : 
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :     free(freeme);</span>
+<span class="lineNum">     256 </span>            : 
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :     if ( fi==NULL )</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 : return( def );</span>
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 : return( (void *) fi );</span>
+<a name="260"><span class="lineNum">     260 </span>            : }</a>
+<span class="lineNum">     261 </span>            : 
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 : FontInstance *GResourceFindFont(char *resourcename,FontInstance *deffont) {</span>
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :     char *val = GResourceFindString(resourcename);</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :     if ( val==NULL )</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 : return( deffont );</span>
+<span class="lineNum">     266 </span>            : 
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 : return( GResource_font_cvt(val,deffont));</span>
+<a name="268"><span class="lineNum">     268 </span>            : }</a>
+<span class="lineNum">     269 </span>            : 
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 : void _GGadgetCopyDefaultBox(GBox *box) {</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :     *box = _ggadget_Default_Box;</span>
+<a name="272"><span class="lineNum">     272 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     273 </span>            : 
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 : FontInstance *_GGadgetInitDefaultBox(char *class,GBox *box, FontInstance *deffont) {</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :     GResStruct bordertype[] = {</span>
+<span class="lineNum">     276 </span>            :         { &quot;Box.BorderType&quot;, rt_string, NULL, border_type_cvt, 0 },
+<span class="lineNum">     277 </span>            :         GRESSTRUCT_EMPTY
+<span class="lineNum">     278 </span>            :     };
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 :     GResStruct boxtypes[] = {</span>
+<span class="lineNum">     280 </span>            :         { &quot;Box.BorderType&quot;, rt_string, NULL, border_type_cvt, 0 },
+<span class="lineNum">     281 </span>            :         { &quot;Box.BorderShape&quot;, rt_string, NULL, border_shape_cvt, 0 },
+<span class="lineNum">     282 </span>            :         { &quot;Box.BorderWidth&quot;, rt_int, NULL, NULL, 0 },
+<span class="lineNum">     283 </span>            :         { &quot;Box.Padding&quot;, rt_int, NULL, NULL, 0 },
+<span class="lineNum">     284 </span>            :         { &quot;Box.Radius&quot;, rt_int, NULL, NULL, 0 },
+<span class="lineNum">     285 </span>            :         { &quot;Box.BorderInner&quot;, rt_bool, NULL, NULL, 0 },
+<span class="lineNum">     286 </span>            :         { &quot;Box.BorderOuter&quot;, rt_bool, NULL, NULL, 0 },
+<span class="lineNum">     287 </span>            :         { &quot;Box.ActiveInner&quot;, rt_bool, NULL, NULL, 0 },
+<span class="lineNum">     288 </span>            :         { &quot;Box.DoDepressedBackground&quot;, rt_bool, NULL, NULL, 0 },
+<span class="lineNum">     289 </span>            :         { &quot;Box.DrawDefault&quot;, rt_bool, NULL, NULL, 0 },
+<span class="lineNum">     290 </span>            :         { &quot;Box.BorderBrightest&quot;, rt_color, NULL, NULL, 0 },
+<span class="lineNum">     291 </span>            :         { &quot;Box.BorderBrighter&quot;, rt_color, NULL, NULL, 0 },
+<span class="lineNum">     292 </span>            :         { &quot;Box.BorderDarkest&quot;, rt_color, NULL, NULL, 0 },
+<span class="lineNum">     293 </span>            :         { &quot;Box.BorderDarker&quot;, rt_color, NULL, NULL, 0 },
+<span class="lineNum">     294 </span>            :         { &quot;Box.NormalBackground&quot;, rt_color, NULL, NULL, 0 },
+<span class="lineNum">     295 </span>            :         { &quot;Box.NormalForeground&quot;, rt_color, NULL, NULL, 0 },
+<span class="lineNum">     296 </span>            :         { &quot;Box.DisabledBackground&quot;, rt_color, NULL, NULL, 0 },
+<span class="lineNum">     297 </span>            :         { &quot;Box.DisabledForeground&quot;, rt_color, NULL, NULL, 0 },
+<span class="lineNum">     298 </span>            :         { &quot;Box.ActiveBorder&quot;, rt_color, NULL, NULL, 0 },
+<span class="lineNum">     299 </span>            :         { &quot;Box.PressedBackground&quot;, rt_color, NULL, NULL, 0 },
+<span class="lineNum">     300 </span>            :         { &quot;Box.BorderLeft&quot;, rt_color, NULL, NULL, 0 },
+<span class="lineNum">     301 </span>            :         { &quot;Box.BorderTop&quot;, rt_color, NULL, NULL, 0 },
+<span class="lineNum">     302 </span>            :         { &quot;Box.BorderRight&quot;, rt_color, NULL, NULL, 0 },
+<span class="lineNum">     303 </span>            :         { &quot;Box.BorderBottom&quot;, rt_color, NULL, NULL, 0 },
+<span class="lineNum">     304 </span>            :         { &quot;Font&quot;, rt_string, NULL, GResource_font_cvt, 0 },
+<span class="lineNum">     305 </span>            :         { &quot;Box.GradientBG&quot;, rt_bool, NULL, NULL, 0 },
+<span class="lineNum">     306 </span>            :         { &quot;Box.GradientStartCol&quot;, rt_color, NULL, NULL, 0 },
+<span class="lineNum">     307 </span>            :         { &quot;Box.ShadowOuter&quot;, rt_bool, NULL, NULL, 0 },
+<span class="lineNum">     308 </span>            :         { &quot;Box.BorderInnerCol&quot;, rt_color, NULL, NULL, 0 },
+<span class="lineNum">     309 </span>            :         { &quot;Box.BorderOuterCol&quot;, rt_color, NULL, NULL, 0 },
+<span class="lineNum">     310 </span>            :         GRESSTRUCT_EMPTY
+<span class="lineNum">     311 </span>            :     };
+<span class="lineNum">     312 </span>            :     intpt bt, bs;
+<span class="lineNum">     313 </span>            :     int bw, pad, rr, inner, outer, active, depressed, def, grad, shadow;
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :     FontInstance *fi=deffont;</span>
+<span class="lineNum">     315 </span>            : 
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :     if ( !_ggadget_inited )</span>
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :         GGadgetInit();</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :     if ( fi==NULL )</span>
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :         fi = _ggadget_default_font;</span>
+<span class="lineNum">     320 </span><span class="lineNoCov">          0 :     bt = box-&gt;border_type;</span>
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 :     bs = box-&gt;border_shape;</span>
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 :     bw = box-&gt;border_width;</span>
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :     pad = box-&gt;padding;</span>
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :     rr = box-&gt;rr_radius;</span>
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :     inner = box-&gt;flags &amp; box_foreground_border_inner;</span>
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :     outer = box-&gt;flags &amp; box_foreground_border_outer;</span>
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :     active = box-&gt;flags &amp; box_active_border_inner;</span>
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :     depressed = box-&gt;flags &amp; box_do_depressed_background;</span>
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :     def = box-&gt;flags &amp; box_draw_default;</span>
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 :     grad = box-&gt;flags &amp; box_gradient_bg;</span>
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :     shadow = box-&gt;flags &amp; box_foreground_shadow_outer;</span>
+<span class="lineNum">     332 </span>            : 
+<span class="lineNum">     333 </span><span class="lineNoCov">          0 :     bordertype[0].val = &amp;bt;</span>
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :     boxtypes[0].val = &amp;bt;</span>
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 :     boxtypes[1].val = &amp;bs;</span>
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :     boxtypes[2].val = &amp;bw;</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :     boxtypes[3].val = &amp;pad;</span>
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 :     boxtypes[4].val = &amp;rr;</span>
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 :     boxtypes[5].val = &amp;inner;</span>
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :     boxtypes[6].val = &amp;outer;</span>
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :     boxtypes[7].val = &amp;active;</span>
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :     boxtypes[8].val = &amp;depressed;</span>
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :     boxtypes[9].val = &amp;def;</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :     boxtypes[10].val = &amp;box-&gt;border_brightest;</span>
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 :     boxtypes[11].val = &amp;box-&gt;border_brighter;</span>
+<span class="lineNum">     346 </span><span class="lineNoCov">          0 :     boxtypes[12].val = &amp;box-&gt;border_darkest;</span>
+<span class="lineNum">     347 </span><span class="lineNoCov">          0 :     boxtypes[13].val = &amp;box-&gt;border_darker;</span>
+<span class="lineNum">     348 </span><span class="lineNoCov">          0 :     boxtypes[14].val = &amp;box-&gt;main_background;</span>
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :     boxtypes[15].val = &amp;box-&gt;main_foreground;</span>
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :     boxtypes[16].val = &amp;box-&gt;disabled_background;</span>
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :     boxtypes[17].val = &amp;box-&gt;disabled_foreground;</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :     boxtypes[18].val = &amp;box-&gt;active_border;</span>
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 :     boxtypes[19].val = &amp;box-&gt;depressed_background;</span>
+<span class="lineNum">     354 </span><span class="lineNoCov">          0 :     boxtypes[20].val = &amp;box-&gt;border_brightest;</span>
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :     boxtypes[21].val = &amp;box-&gt;border_brighter;</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :     boxtypes[22].val = &amp;box-&gt;border_darkest;</span>
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :     boxtypes[23].val = &amp;box-&gt;border_darker;</span>
+<span class="lineNum">     358 </span><span class="lineNoCov">          0 :     boxtypes[24].val = &amp;fi;</span>
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 :     boxtypes[25].val = &amp;grad;</span>
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :     boxtypes[26].val = &amp;box-&gt;gradient_bg_end;</span>
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 :     boxtypes[27].val = &amp;shadow;</span>
+<span class="lineNum">     362 </span><span class="lineNoCov">          0 :     boxtypes[28].val = &amp;box-&gt;border_inner;</span>
+<span class="lineNum">     363 </span><span class="lineNoCov">          0 :     boxtypes[29].val = &amp;box-&gt;border_outer;</span>
+<span class="lineNum">     364 </span>            : 
+<span class="lineNum">     365 </span><span class="lineNoCov">          0 :     GResourceFind( bordertype, class);</span>
+<span class="lineNum">     366 </span>            :     /* for a plain box, default to all borders being the same. they must change*/
+<span class="lineNum">     367 </span>            :     /*  explicitly */
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :     if ( bt==bt_box || bt==bt_double )</span>
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 :         box-&gt;border_brightest = box-&gt;border_brighter = box-&gt;border_darker = box-&gt;border_darkest;</span>
+<span class="lineNum">     370 </span><span class="lineNoCov">          0 :     GResourceFind( boxtypes, class);</span>
+<span class="lineNum">     371 </span>            : 
+<span class="lineNum">     372 </span><span class="lineNoCov">          0 :     box-&gt;border_type = bt;</span>
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 :     box-&gt;border_shape = bs;</span>
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 :     box-&gt;border_width = bw;</span>
+<span class="lineNum">     375 </span><span class="lineNoCov">          0 :     box-&gt;padding = pad;</span>
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 :     box-&gt;rr_radius = rr;</span>
+<span class="lineNum">     377 </span><span class="lineNoCov">          0 :     box-&gt;flags=0;</span>
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 :     if ( inner )</span>
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :         box-&gt;flags |= box_foreground_border_inner;</span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :     if ( outer )</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :         box-&gt;flags |= box_foreground_border_outer;</span>
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :     if ( active )</span>
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :         box-&gt;flags |= box_active_border_inner;</span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :     if ( depressed )</span>
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :         box-&gt;flags |= box_do_depressed_background;</span>
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :     if ( def )</span>
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :         box-&gt;flags |= box_draw_default;</span>
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 :     if ( grad )</span>
+<span class="lineNum">     389 </span><span class="lineNoCov">          0 :         box-&gt;flags |= box_gradient_bg;</span>
+<span class="lineNum">     390 </span><span class="lineNoCov">          0 :     if ( shadow )</span>
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 :         box-&gt;flags |= box_foreground_shadow_outer;</span>
+<span class="lineNum">     392 </span>            : 
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 :     if ( fi==NULL ) {</span>
+<span class="lineNum">     394 </span>            :         FontRequest rq;
+<span class="lineNum">     395 </span><span class="lineNoCov">          0 :         memset(&amp;rq,0,sizeof(rq));</span>
+<span class="lineNum">     396 </span><span class="lineNoCov">          0 :         rq.utf8_family_name = SANS_UI_FAMILIES;</span>
+<span class="lineNum">     397 </span><span class="lineNoCov">          0 :         rq.point_size = 10;</span>
+<span class="lineNum">     398 </span><span class="lineNoCov">          0 :         rq.weight = 400;</span>
+<span class="lineNum">     399 </span><span class="lineNoCov">          0 :         rq.style = 0;</span>
+<span class="lineNum">     400 </span><span class="lineNoCov">          0 :         fi = GDrawInstanciateFont(NULL,&amp;rq);</span>
+<span class="lineNum">     401 </span><span class="lineNoCov">          0 :         if ( fi==NULL )</span>
+<span class="lineNum">     402 </span><span class="lineNoCov">          0 :             GDrawFatalError(&quot;Cannot find a default font for gadgets&quot;);</span>
+<span class="lineNum">     403 </span>            :     }
+<span class="lineNum">     404 </span><span class="lineNoCov">          0 : return( fi );</span>
+<a name="405"><span class="lineNum">     405 </span>            : }</a>
+<span class="lineNum">     406 </span>            : 
+<span class="lineNum">     407 </span><span class="lineNoCov">          0 : static int localeptsize(void) {</span>
+<span class="lineNum">     408 </span>            : /* smaller point size to squeeze these languages in */
+<span class="lineNum">     409 </span><span class="lineNoCov">          0 :     const char *loc = getenv(&quot;LC_ALL&quot;);</span>
+<span class="lineNum">     410 </span><span class="lineNoCov">          0 :     if ( loc==NULL ) loc = getenv(&quot;LC_CTYPE&quot;);</span>
+<span class="lineNum">     411 </span><span class="lineNoCov">          0 :     if ( loc==NULL ) loc = getenv(&quot;LANG&quot;);</span>
+<span class="lineNum">     412 </span>            :     /* if ( loc==NULL ) loc = getenv(&quot;LC_MESSAGES&quot;); */
+<span class="lineNum">     413 </span>            : 
+<span class="lineNum">     414 </span><span class="lineNoCov">          0 :     if ( loc!=NULL &amp;&amp; ( \</span>
+<span class="lineNum">     415 </span><span class="lineNoCov">          0 :                 strncmp(loc,&quot;ja&quot;,2)==0 || \</span>
+<span class="lineNum">     416 </span><span class="lineNoCov">          0 :                 strncmp(loc,&quot;zh&quot;,2)==0 || \</span>
+<span class="lineNum">     417 </span><span class="lineNoCov">          0 :                 strncmp(loc,&quot;ko&quot;,2)==0) )</span>
+<span class="lineNum">     418 </span><span class="lineNoCov">          0 :         return( -16 );</span>
+<span class="lineNum">     419 </span>            : 
+<span class="lineNum">     420 </span><span class="lineNoCov">          0 :     return( -10 );</span>
+<a name="421"><span class="lineNum">     421 </span>            : }</a>
+<span class="lineNum">     422 </span>            : 
+<span class="lineNum">     423 </span><span class="lineNoCov">          0 : void GGadgetInit(void) {</span>
+<span class="lineNum">     424 </span>            :     static GResStruct res[] = {
+<span class="lineNum">     425 </span>            :         { &quot;Font&quot;, rt_string, NULL, GResource_font_cvt, 0 },
+<span class="lineNum">     426 </span>            :         GRESSTRUCT_EMPTY
+<span class="lineNum">     427 </span>            :     };
+<span class="lineNum">     428 </span><span class="lineNoCov">          0 :     if ( !_ggadget_inited ) {</span>
+<span class="lineNum">     429 </span><span class="lineNoCov">          0 :         _ggadget_inited = true;</span>
+<span class="lineNum">     430 </span><span class="lineNoCov">          0 :         GGadgetSetImagePath(GResourceFindString(&quot;GGadget.ImagePath&quot;));</span>
+<span class="lineNum">     431 </span><span class="lineNoCov">          0 :         _ggadget_Default_Box.main_background = GDrawGetDefaultBackground(NULL);</span>
+<span class="lineNum">     432 </span><span class="lineNoCov">          0 :         _ggadget_Default_Box.main_foreground = GDrawGetDefaultForeground(NULL);</span>
+<span class="lineNum">     433 </span><span class="lineNoCov">          0 :         _ggadget_default_font = _GGadgetInitDefaultBox(&quot;GGadget.&quot;,&amp;_ggadget_Default_Box,NULL);</span>
+<span class="lineNum">     434 </span><span class="lineNoCov">          0 :         _GGadgetCopyDefaultBox(&amp;_GListMark_Box);</span>
+<span class="lineNum">     435 </span><span class="lineNoCov">          0 :         _GListMark_Box.border_width = _GListMark_Box.padding = 1;</span>
+<span class="lineNum">     436 </span>            :         /*_GListMark_Box.flags = 0;*/
+<span class="lineNum">     437 </span><span class="lineNoCov">          0 :         _GGadgetInitDefaultBox(&quot;GListMark.&quot;,&amp;_GListMark_Box,NULL);</span>
+<span class="lineNum">     438 </span><span class="lineNoCov">          0 :         _GListMarkSize = GResourceFindInt(&quot;GListMark.Width&quot;, _GListMarkSize);</span>
+<span class="lineNum">     439 </span><span class="lineNoCov">          0 :         _GListMark_Image = GGadgetResourceFindImage(&quot;GListMark.Image&quot;, NULL);</span>
+<span class="lineNum">     440 </span><span class="lineNoCov">          0 :         _GListMark_DisImage = GGadgetResourceFindImage(&quot;GListMark.DisabledImage&quot;, NULL);</span>
+<span class="lineNum">     441 </span><span class="lineNoCov">          0 :         if ( _GListMark_Image!=NULL &amp;&amp; _GListMark_Image-&gt;image!=NULL ) {</span>
+<span class="lineNum">     442 </span><span class="lineNoCov">          0 :             int size = GDrawPixelsToPoints(NULL,GImageGetWidth(_GListMark_Image-&gt;image));</span>
+<span class="lineNum">     443 </span><span class="lineNoCov">          0 :             if ( size&gt;_GListMarkSize )</span>
+<span class="lineNum">     444 </span><span class="lineNoCov">          0 :                 _GListMarkSize=size;</span>
+<span class="lineNum">     445 </span>            :         }
+<span class="lineNum">     446 </span><span class="lineNoCov">          0 :         _GGadget_FirstLine = GResourceFindInt(&quot;GGadget.FirstLine&quot;, _GGadget_FirstLine);</span>
+<span class="lineNum">     447 </span><span class="lineNoCov">          0 :         _GGadget_LeftMargin = GResourceFindInt(&quot;GGadget.LeftMargin&quot;, _GGadget_LeftMargin);</span>
+<span class="lineNum">     448 </span><span class="lineNoCov">          0 :         _GGadget_LineSkip = GResourceFindInt(&quot;GGadget.LineSkip&quot;, _GGadget_LineSkip);</span>
+<span class="lineNum">     449 </span><span class="lineNoCov">          0 :         _GGadget_Skip = GResourceFindInt(&quot;GGadget.Skip&quot;, _GGadget_Skip);</span>
+<span class="lineNum">     450 </span><span class="lineNoCov">          0 :         _GGadget_TextImageSkip = GResourceFindInt(&quot;GGadget.TextImageSkip&quot;, _GGadget_TextImageSkip);</span>
+<span class="lineNum">     451 </span>            : 
+<span class="lineNum">     452 </span><span class="lineNoCov">          0 :         popup_foreground = GResourceFindColor(&quot;GGadget.Popup.Foreground&quot;,popup_foreground);</span>
+<span class="lineNum">     453 </span><span class="lineNoCov">          0 :         popup_background = GResourceFindColor(&quot;GGadget.Popup.Background&quot;,popup_background);</span>
+<span class="lineNum">     454 </span><span class="lineNoCov">          0 :         popup_delay = GResourceFindInt(&quot;GGadget.Popup.Delay&quot;,popup_delay);</span>
+<span class="lineNum">     455 </span><span class="lineNoCov">          0 :         popup_lifetime = GResourceFindInt(&quot;GGadget.Popup.LifeTime&quot;,popup_lifetime);</span>
+<span class="lineNum">     456 </span><span class="lineNoCov">          0 :         res[0].val = &amp;popup_font;</span>
+<span class="lineNum">     457 </span><span class="lineNoCov">          0 :         GResourceFind( res, &quot;GGadget.Popup.&quot;);</span>
+<span class="lineNum">     458 </span><span class="lineNoCov">          0 :         if ( popup_font==NULL ) {</span>
+<span class="lineNum">     459 </span>            :             FontRequest rq;
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 :             memset(&amp;rq,0,sizeof(rq));</span>
+<span class="lineNum">     461 </span><span class="lineNoCov">          0 :             rq.utf8_family_name = SANS_UI_FAMILIES;</span>
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 :             rq.point_size = localeptsize();</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :             rq.weight = 400;</span>
+<span class="lineNum">     464 </span><span class="lineNoCov">          0 :             rq.style = 0;</span>
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 :             popup_font = GDrawInstanciateFont(NULL,&amp;rq);</span>
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :             if ( popup_font==NULL )</span>
+<span class="lineNum">     467 </span><span class="lineNoCov">          0 :                 popup_font = _ggadget_default_font;</span>
+<span class="lineNum">     468 </span>            :         }
+<span class="lineNum">     469 </span>            :     }
+<a name="470"><span class="lineNum">     470 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     471 </span>            : 
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 : void GListMarkDraw(GWindow pixmap,int x, int y, int height, enum gadget_state state ) {</span>
+<span class="lineNum">     473 </span>            :     GRect r, old;
+<span class="lineNum">     474 </span><span class="lineNoCov">          0 :     int marklen = GDrawPointsToPixels(pixmap,_GListMarkSize);</span>
+<span class="lineNum">     475 </span>            : 
+<span class="lineNum">     476 </span><span class="lineNoCov">          0 :     if ( state == gs_disabled &amp;&amp;</span>
+<span class="lineNum">     477 </span><span class="lineNoCov">          0 :            _GListMark_DisImage!=NULL &amp;&amp; _GListMark_DisImage-&gt;image!=NULL) {</span>
+<span class="lineNum">     478 </span><span class="lineNoCov">          0 :         GDrawDrawScaledImage(pixmap,_GListMark_DisImage-&gt;image,x,</span>
+<span class="lineNum">     479 </span><span class="lineNoCov">          0 :                 y + (height-GImageGetScaledHeight(pixmap,_GListMark_DisImage-&gt;image))/2);</span>
+<span class="lineNum">     480 </span><span class="lineNoCov">          0 :     } else if ( _GListMark_Image!=NULL &amp;&amp; _GListMark_Image-&gt;image!=NULL ) {</span>
+<span class="lineNum">     481 </span><span class="lineNoCov">          0 :         GDrawDrawScaledImage(pixmap,_GListMark_Image-&gt;image,x,</span>
+<span class="lineNum">     482 </span><span class="lineNoCov">          0 :                 y + (height-GImageGetScaledHeight(pixmap,_GListMark_Image-&gt;image))/2);</span>
+<span class="lineNum">     483 </span>            :     } else {
+<span class="lineNum">     484 </span><span class="lineNoCov">          0 :         r.x = x; r.width = marklen;</span>
+<span class="lineNum">     485 </span><span class="lineNoCov">          0 :         r.height = 2*GDrawPointsToPixels(pixmap,_GListMark_Box.border_width) +</span>
+<span class="lineNum">     486 </span><span class="lineNoCov">          0 :                     GDrawPointsToPixels(pixmap,3);</span>
+<span class="lineNum">     487 </span><span class="lineNoCov">          0 :         r.y = y + (height-r.height)/2;</span>
+<span class="lineNum">     488 </span><span class="lineNoCov">          0 :         GDrawPushClip(pixmap,&amp;r,&amp;old);</span>
+<span class="lineNum">     489 </span>            : 
+<span class="lineNum">     490 </span><span class="lineNoCov">          0 :         GBoxDrawBackground(pixmap,&amp;r,&amp;_GListMark_Box, state,false);</span>
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 :         GBoxDrawBorder(pixmap,&amp;r,&amp;_GListMark_Box,state,false);</span>
+<span class="lineNum">     492 </span><span class="lineNoCov">          0 :         GDrawPopClip(pixmap,&amp;old);</span>
+<span class="lineNum">     493 </span>            :     }
+<span class="lineNum">     494 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     495 </span>            : 
+<span class="lineNum">     496 </span>            : static struct popup_info {
+<span class="lineNum">     497 </span>            :     const unichar_t *msg;
+<span class="lineNum">     498 </span>            :     GImage *img;
+<span class="lineNum">     499 </span>            :     const void *data;
+<span class="lineNum">     500 </span>            :     GImage *(*get_image)(const void *data);
+<span class="lineNum">     501 </span>            :     void (*free_image)(const void *data,GImage *img);
+<a name="502"><span class="lineNum">     502 </span>            : } popup_info;</a>
+<span class="lineNum">     503 </span>            : 
+<span class="lineNum">     504 </span><span class="lineNoCov">          0 : void GGadgetEndPopup() {</span>
+<span class="lineNum">     505 </span><span class="lineNoCov">          0 :     if ( popup_visible ) {</span>
+<span class="lineNum">     506 </span><span class="lineNoCov">          0 :         GDrawSetVisible(popup,false);</span>
+<span class="lineNum">     507 </span><span class="lineNoCov">          0 :         popup_visible = false;</span>
+<span class="lineNum">     508 </span>            :     }
+<span class="lineNum">     509 </span><span class="lineNoCov">          0 :     if ( popup_timer!=NULL ) {</span>
+<span class="lineNum">     510 </span><span class="lineNoCov">          0 :         GDrawCancelTimer(popup_timer);</span>
+<span class="lineNum">     511 </span><span class="lineNoCov">          0 :         popup_timer = NULL;</span>
+<span class="lineNum">     512 </span>            :     }
+<span class="lineNum">     513 </span><span class="lineNoCov">          0 :     if ( popup_vanish_timer!=NULL ) {</span>
+<span class="lineNum">     514 </span><span class="lineNoCov">          0 :         GDrawCancelTimer(popup_vanish_timer);</span>
+<span class="lineNum">     515 </span><span class="lineNoCov">          0 :         popup_vanish_timer = NULL;</span>
+<span class="lineNum">     516 </span>            :     }
+<span class="lineNum">     517 </span><span class="lineNoCov">          0 :     if ( popup_info.img!=NULL ) {</span>
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 :         if ( popup_info.free_image!=NULL )</span>
+<span class="lineNum">     519 </span><span class="lineNoCov">          0 :             (popup_info.free_image)(popup_info.data,popup_info.img);</span>
+<span class="lineNum">     520 </span>            :         else
+<span class="lineNum">     521 </span><span class="lineNoCov">          0 :             GImageDestroy(popup_info.img);</span>
+<span class="lineNum">     522 </span>            :     }
+<span class="lineNum">     523 </span>            :             
+<span class="lineNum">     524 </span><span class="lineNoCov">          0 :     memset(&amp;popup_info,0,sizeof(popup_info));</span>
+<a name="525"><span class="lineNum">     525 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     526 </span>            : 
+<span class="lineNum">     527 </span><span class="lineNoCov">          0 : void GGadgetPopupExternalEvent(GEvent *e) {</span>
+<span class="lineNum">     528 </span>            :     /* Depress control key to keep popup alive */
+<span class="lineNum">     529 </span><span class="lineNoCov">          0 :     if ( e-&gt;type == et_char &amp;&amp;</span>
+<span class="lineNum">     530 </span><span class="lineNoCov">          0 :             ( e-&gt;u.chr.keysym == GK_Control_L || e-&gt;u.chr.keysym == GK_Control_R )) {</span>
+<span class="lineNum">     531 </span><span class="lineNoCov">          0 :         if ( popup_vanish_timer!=NULL ) {</span>
+<span class="lineNum">     532 </span><span class="lineNoCov">          0 :             GDrawCancelTimer(popup_vanish_timer);</span>
+<span class="lineNum">     533 </span><span class="lineNoCov">          0 :             popup_vanish_timer = NULL;</span>
+<span class="lineNum">     534 </span>            :         }
+<span class="lineNum">     535 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     536 </span>            :     }
+<span class="lineNum">     537 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_char || e-&gt;type==et_charup || e-&gt;type==et_mousemove ||</span>
+<span class="lineNum">     538 </span><span class="lineNoCov">          0 :             e-&gt;type == et_mousedown || e-&gt;type==et_mouseup ||</span>
+<span class="lineNum">     539 </span><span class="lineNoCov">          0 :             e-&gt;type==et_destroy || (e-&gt;type==et_create &amp;&amp; popup!=e-&gt;w))</span>
+<span class="lineNum">     540 </span><span class="lineNoCov">          0 :         GGadgetEndPopup();</span>
+<a name="541"><span class="lineNum">     541 </span>            : }</a>
+<span class="lineNum">     542 </span>            : 
+<span class="lineNum">     543 </span><span class="lineNoCov">          0 : static int GGadgetPopupTest(GEvent *e) {</span>
+<span class="lineNum">     544 </span>            :     unichar_t *msg;
+<span class="lineNum">     545 </span>            :     int lines, temp, width;
+<span class="lineNum">     546 </span><span class="lineNoCov">          0 :     GWindow root = GDrawGetRoot(GDrawGetDisplayOfWindow(popup));</span>
+<span class="lineNum">     547 </span>            :     GRect pos, size;
+<span class="lineNum">     548 </span>            :     unichar_t *pt, *ept;
+<span class="lineNum">     549 </span><span class="lineNoCov">          0 :     int as, ds, ld, img_height=0;</span>
+<span class="lineNum">     550 </span>            :     GEvent where;
+<span class="lineNum">     551 </span>            : 
+<span class="lineNum">     552 </span><span class="lineNoCov">          0 :     if ( e-&gt;type!=et_timer || e-&gt;u.timer.timer!=popup_timer || popup==NULL )</span>
+<span class="lineNum">     553 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     554 </span><span class="lineNoCov">          0 :     popup_timer = NULL;</span>
+<span class="lineNum">     555 </span>            : 
+<span class="lineNum">     556 </span>            :     /* Is the cursor still in the original window? */
+<span class="lineNum">     557 </span><span class="lineNoCov">          0 :     GDrawGetPointerPosition(root,&amp;where);</span>
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :     if ( where.u.mouse.x&lt;popup_within.x || where.u.mouse.y&lt;popup_within.y ||</span>
+<span class="lineNum">     559 </span><span class="lineNoCov">          0 :             where.u.mouse.x&gt;popup_within.x+popup_within.width ||</span>
+<span class="lineNum">     560 </span><span class="lineNoCov">          0 :             where.u.mouse.y&gt;popup_within.y+popup_within.height )</span>
+<span class="lineNum">     561 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     562 </span>            : 
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 :     lines = 0; width = 1;</span>
+<span class="lineNum">     564 </span><span class="lineNoCov">          0 :     if ( popup_info.img==NULL &amp;&amp; popup_info.get_image!=NULL ) {</span>
+<span class="lineNum">     565 </span><span class="lineNoCov">          0 :         popup_info.img = (popup_info.get_image)(popup_info.data);</span>
+<span class="lineNum">     566 </span><span class="lineNoCov">          0 :         popup_info.get_image = NULL;</span>
+<span class="lineNum">     567 </span>            :     }
+<span class="lineNum">     568 </span><span class="lineNoCov">          0 :     if ( popup_info.img!=NULL ) {</span>
+<span class="lineNum">     569 </span><span class="lineNoCov">          0 :         img_height = GImageGetHeight(popup_info.img);</span>
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 :         width = GImageGetWidth(popup_info.img);</span>
+<span class="lineNum">     571 </span>            :     }
+<span class="lineNum">     572 </span><span class="lineNoCov">          0 :     pt = msg = (unichar_t *) popup_info.msg;</span>
+<span class="lineNum">     573 </span><span class="lineNoCov">          0 :     if ( msg!=NULL ) {</span>
+<span class="lineNum">     574 </span><span class="lineNoCov">          0 :         GDrawSetFont(popup,popup_font);</span>
+<span class="lineNum">     575 </span>            :         do {
+<span class="lineNum">     576 </span><span class="lineNoCov">          0 :             temp = -1;</span>
+<span class="lineNum">     577 </span><span class="lineNoCov">          0 :             if (( ept = u_strchr(pt,'\n'))!=NULL )</span>
+<span class="lineNum">     578 </span><span class="lineNoCov">          0 :                 temp = ept-pt;</span>
+<span class="lineNum">     579 </span><span class="lineNoCov">          0 :             temp = GDrawGetTextWidth(popup,pt,temp);</span>
+<span class="lineNum">     580 </span><span class="lineNoCov">          0 :             if ( temp&gt;width ) width = temp;</span>
+<span class="lineNum">     581 </span><span class="lineNoCov">          0 :             ++lines;</span>
+<span class="lineNum">     582 </span><span class="lineNoCov">          0 :             pt = ept+1;</span>
+<span class="lineNum">     583 </span><span class="lineNoCov">          0 :         } while ( ept!=NULL &amp;&amp; *pt!='\0' );</span>
+<span class="lineNum">     584 </span>            :     }
+<span class="lineNum">     585 </span><span class="lineNoCov">          0 :     GDrawWindowFontMetrics(popup,popup_font,&amp;as, &amp;ds, &amp;ld);</span>
+<span class="lineNum">     586 </span><span class="lineNoCov">          0 :     pos.width = width+2*GDrawPointsToPixels(popup,2);</span>
+<span class="lineNum">     587 </span><span class="lineNoCov">          0 :     pos.height = lines*(as+ds) + img_height + 2*GDrawPointsToPixels(popup,2);</span>
+<span class="lineNum">     588 </span>            : 
+<span class="lineNum">     589 </span><span class="lineNoCov">          0 :     pos.x = where.u.mouse.x+10; pos.y = where.u.mouse.y+10;</span>
+<span class="lineNum">     590 </span><span class="lineNoCov">          0 :     GDrawGetSize(root,&amp;size);</span>
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 :     if ( pos.x + pos.width &gt; size.width )</span>
+<span class="lineNum">     592 </span><span class="lineNoCov">          0 :         pos.x = (pos.x - 20 - pos.width );</span>
+<span class="lineNum">     593 </span><span class="lineNoCov">          0 :     if ( pos.x&lt;0 ) pos.x = 0;</span>
+<span class="lineNum">     594 </span><span class="lineNoCov">          0 :     if ( pos.y + pos.height &gt; size.height )</span>
+<span class="lineNum">     595 </span><span class="lineNoCov">          0 :         pos.y = (pos.y - 20 - pos.height );</span>
+<span class="lineNum">     596 </span><span class="lineNoCov">          0 :     if ( pos.y&lt;0 ) pos.y = 0;</span>
+<span class="lineNum">     597 </span><span class="lineNoCov">          0 :     GDrawMoveResize(popup,pos.x,pos.y,pos.width,pos.height);</span>
+<span class="lineNum">     598 </span><span class="lineNoCov">          0 :     GDrawSetVisible(popup,true);</span>
+<span class="lineNum">     599 </span><span class="lineNoCov">          0 :     GDrawRaise(popup);</span>
+<span class="lineNum">     600 </span><span class="lineNoCov">          0 :     GDrawSetUserData(popup,msg);</span>
+<span class="lineNum">     601 </span><span class="lineNoCov">          0 :     popup_vanish_timer = GDrawRequestTimer(popup,popup_lifetime,0,NULL);</span>
+<span class="lineNum">     602 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="603"><span class="lineNum">     603 </span>            : }</a>
+<span class="lineNum">     604 </span>            : 
+<span class="lineNum">     605 </span><span class="lineNoCov">          0 : static int msgpopup_eh(GWindow popup,GEvent *event) {</span>
+<span class="lineNum">     606 </span><span class="lineNoCov">          0 :     if ( event-&gt;type == et_expose ) {</span>
+<span class="lineNum">     607 </span>            :         unichar_t *msg, *pt, *ept;
+<span class="lineNum">     608 </span>            :         int x,y, fh, temp;
+<span class="lineNum">     609 </span>            :         int as, ds, ld;
+<span class="lineNum">     610 </span>            : 
+<span class="lineNum">     611 </span><span class="lineNoCov">          0 :         popup_visible = true;</span>
+<span class="lineNum">     612 </span><span class="lineNoCov">          0 :         pt = msg = (unichar_t *) popup_info.msg;</span>
+<span class="lineNum">     613 </span><span class="lineNoCov">          0 :         if ( (pt==NULL || *pt=='\0') &amp;&amp; popup_info.img==NULL ) {</span>
+<span class="lineNum">     614 </span><span class="lineNoCov">          0 :             GGadgetEndPopup();</span>
+<span class="lineNum">     615 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     616 </span>            :         }
+<span class="lineNum">     617 </span><span class="lineNoCov">          0 :         y = x = GDrawPointsToPixels(popup,2);</span>
+<span class="lineNum">     618 </span><span class="lineNoCov">          0 :         if ( popup_info.img!=NULL ) {</span>
+<span class="lineNum">     619 </span><span class="lineNoCov">          0 :             GDrawDrawImage(popup,popup_info.img,NULL,x,y);</span>
+<span class="lineNum">     620 </span><span class="lineNoCov">          0 :             y += GImageGetHeight(popup_info.img);</span>
+<span class="lineNum">     621 </span>            :         }
+<span class="lineNum">     622 </span><span class="lineNoCov">          0 :         if ( pt!=NULL ) {</span>
+<span class="lineNum">     623 </span><span class="lineNoCov">          0 :             GDrawWindowFontMetrics(popup,popup_font,&amp;as, &amp;ds, &amp;ld);</span>
+<span class="lineNum">     624 </span><span class="lineNoCov">          0 :             fh = as+ds;</span>
+<span class="lineNum">     625 </span><span class="lineNoCov">          0 :             y += as;</span>
+<span class="lineNum">     626 </span><span class="lineNoCov">          0 :             while ( *pt!='\0' ) {</span>
+<span class="lineNum">     627 </span>            :                 /* Find end of this line, if multiline text */
+<span class="lineNum">     628 </span><span class="lineNoCov">          0 :                 if (( ept = u_strchr(pt,'\n'))!=NULL )</span>
+<span class="lineNum">     629 </span><span class="lineNoCov">          0 :                     temp = ept-pt;  /* display next segment of multiline text */</span>
+<span class="lineNum">     630 </span>            :                 else
+<span class="lineNum">     631 </span><span class="lineNoCov">          0 :                     temp = -1;     /* last line, so display remainder of text */</span>
+<span class="lineNum">     632 </span><span class="lineNoCov">          0 :                 GDrawDrawText(popup,x,y,pt,temp,popup_foreground);</span>
+<span class="lineNum">     633 </span><span class="lineNoCov">          0 :                 y += fh;</span>
+<span class="lineNum">     634 </span><span class="lineNoCov">          0 :                 pt = ept+1;</span>
+<span class="lineNum">     635 </span><span class="lineNoCov">          0 :                 if ( ept==NULL )</span>
+<span class="lineNum">     636 </span><span class="lineNoCov">          0 :                     break;</span>
+<span class="lineNum">     637 </span>            :             }
+<span class="lineNum">     638 </span>            :         }
+<span class="lineNum">     639 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_timer &amp;&amp; event-&gt;u.timer.timer==popup_timer ) {</span>
+<span class="lineNum">     640 </span><span class="lineNoCov">          0 :         GGadgetPopupTest(event);</span>
+<span class="lineNum">     641 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_mousemove || event-&gt;type == et_mouseup ||</span>
+<span class="lineNum">     642 </span><span class="lineNoCov">          0 :             event-&gt;type == et_mousedown || event-&gt;type == et_char ||</span>
+<span class="lineNum">     643 </span><span class="lineNoCov">          0 :             event-&gt;type == et_timer || event-&gt;type == et_crossing ) {</span>
+<span class="lineNum">     644 </span><span class="lineNoCov">          0 :         GGadgetEndPopup();</span>
+<span class="lineNum">     645 </span>            :     }
+<span class="lineNum">     646 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="647"><span class="lineNum">     647 </span>            : }</a>
+<span class="lineNum">     648 </span>            : 
+<span class="lineNum">     649 </span><span class="lineNoCov">          0 : void GGadgetPreparePopupImage(GWindow base,const unichar_t *msg, const void *data,</span>
+<span class="lineNum">     650 </span>            :         GImage *(*get_image)(const void *data),
+<span class="lineNum">     651 </span>            :         void (*free_image)(const void *data,GImage *img)) {
+<span class="lineNum">     652 </span>            :     GPoint pt;
+<span class="lineNum">     653 </span>            : 
+<span class="lineNum">     654 </span><span class="lineNoCov">          0 :     GGadgetEndPopup();</span>
+<span class="lineNum">     655 </span><span class="lineNoCov">          0 :     if ( msg==NULL &amp;&amp; get_image==NULL )</span>
+<span class="lineNum">     656 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     657 </span>            : 
+<span class="lineNum">     658 </span><span class="lineNoCov">          0 :     memset(&amp;popup_info,0,sizeof(popup_info));</span>
+<span class="lineNum">     659 </span><span class="lineNoCov">          0 :     popup_info.msg = msg;</span>
+<span class="lineNum">     660 </span><span class="lineNoCov">          0 :     popup_info.data = data;</span>
+<span class="lineNum">     661 </span><span class="lineNoCov">          0 :     popup_info.get_image = get_image;</span>
+<span class="lineNum">     662 </span><span class="lineNoCov">          0 :     popup_info.free_image = free_image;</span>
+<span class="lineNum">     663 </span>            : 
+<span class="lineNum">     664 </span><span class="lineNoCov">          0 :     if ( popup==NULL ) {</span>
+<span class="lineNum">     665 </span>            :         GWindowAttrs pattrs;
+<span class="lineNum">     666 </span>            :         GRect pos;
+<span class="lineNum">     667 </span>            : 
+<span class="lineNum">     668 </span><span class="lineNoCov">          0 :         pattrs.mask = wam_events|wam_nodecor|wam_positioned|wam_cursor|wam_backcol/*|wam_transient*/;</span>
+<span class="lineNum">     669 </span><span class="lineNoCov">          0 :         pattrs.event_masks = -1;</span>
+<span class="lineNum">     670 </span><span class="lineNoCov">          0 :         pattrs.nodecoration = true;</span>
+<span class="lineNum">     671 </span><span class="lineNoCov">          0 :         pattrs.positioned = true;</span>
+<span class="lineNum">     672 </span><span class="lineNoCov">          0 :         pattrs.cursor = ct_pointer;</span>
+<span class="lineNum">     673 </span><span class="lineNoCov">          0 :         pattrs.background_color = popup_background;</span>
+<span class="lineNum">     674 </span>            :         /*pattrs.transient = GWidgetGetTopWidget(base);*/
+<span class="lineNum">     675 </span><span class="lineNoCov">          0 :         pos.x = pos.y = 0; pos.width = pos.height = 1;</span>
+<span class="lineNum">     676 </span><span class="lineNoCov">          0 :         popup = GDrawCreateTopWindow(GDrawGetDisplayOfWindow(base),&amp;pos,</span>
+<span class="lineNum">     677 </span>            :                 msgpopup_eh,NULL,&amp;pattrs);
+<span class="lineNum">     678 </span><span class="lineNoCov">          0 :         GDrawSetFont(popup,popup_font);</span>
+<span class="lineNum">     679 </span>            :     }
+<span class="lineNum">     680 </span><span class="lineNoCov">          0 :     GDrawGetSize(base,&amp;popup_within);</span>
+<span class="lineNum">     681 </span><span class="lineNoCov">          0 :     pt.x = pt.y = 0;</span>
+<span class="lineNum">     682 </span><span class="lineNoCov">          0 :     GDrawTranslateCoordinates(base,GDrawGetRoot(GDrawGetDisplayOfWindow(popup)), &amp;pt);</span>
+<span class="lineNum">     683 </span><span class="lineNoCov">          0 :     popup_within.x = pt.x; popup_within.y = pt.y;</span>
+<span class="lineNum">     684 </span><span class="lineNoCov">          0 :     popup_timer = GDrawRequestTimer(popup,popup_delay,0,(void *) msg);</span>
+<a name="685"><span class="lineNum">     685 </span>            : }</a>
+<span class="lineNum">     686 </span>            : 
+<span class="lineNum">     687 </span><span class="lineNoCov">          0 : static void popup_refresh(void) {</span>
+<span class="lineNum">     688 </span><span class="lineNoCov">          0 :     if ( popup!=NULL ) {</span>
+<span class="lineNum">     689 </span><span class="lineNoCov">          0 :         GDrawSetWindowBackground(popup,popup_background);</span>
+<span class="lineNum">     690 </span>            :     }
+<a name="691"><span class="lineNum">     691 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     692 </span>            : 
+<span class="lineNum">     693 </span><span class="lineNoCov">          0 : void GGadgetPreparePopup(GWindow base,const unichar_t *msg) {</span>
+<span class="lineNum">     694 </span><span class="lineNoCov">          0 :     GGadgetPreparePopupImage(base,msg,NULL,NULL,NULL);</span>
+<a name="695"><span class="lineNum">     695 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     696 </span>            : 
+<span class="lineNum">     697 </span><span class="lineNoCov">          0 : void GGadgetPreparePopupR(GWindow base,int msg) {</span>
+<span class="lineNum">     698 </span><span class="lineNoCov">          0 :     GGadgetPreparePopupImage(base,GStringGetResource(msg,NULL),NULL,NULL,NULL);</span>
+<a name="699"><span class="lineNum">     699 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     700 </span>            : 
+<span class="lineNum">     701 </span><span class="lineNoCov">          0 : void GGadgetPreparePopup8(GWindow base, const char *msg) {</span>
+<span class="lineNum">     702 </span>            :     static unichar_t popup_msg[500];
+<span class="lineNum">     703 </span><span class="lineNoCov">          0 :     utf82u_strncpy(popup_msg,msg,sizeof(popup_msg)/sizeof(popup_msg[0]));</span>
+<span class="lineNum">     704 </span><span class="lineNoCov">          0 :     popup_msg[sizeof(popup_msg)/sizeof(popup_msg[0])-1]=0;</span>
+<span class="lineNum">     705 </span><span class="lineNoCov">          0 :     GGadgetPreparePopupImage(base,popup_msg,NULL,NULL,NULL);</span>
+<a name="706"><span class="lineNum">     706 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     707 </span>            : 
+<span class="lineNum">     708 </span><span class="lineNoCov">          0 : void _ggadget_redraw(GGadget *g) {</span>
+<span class="lineNum">     709 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(g-&gt;base, &amp;g-&gt;r, false);</span>
+<a name="710"><span class="lineNum">     710 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     711 </span>            : 
+<span class="lineNum">     712 </span><span class="lineNoCov">          0 : int _ggadget_noop(GGadget *g, GEvent *event) {</span>
+<span class="lineNum">     713 </span><span class="lineNoCov">          0 : return( false );</span>
+<a name="714"><span class="lineNum">     714 </span>            : }</a>
+<span class="lineNum">     715 </span>            : 
+<span class="lineNum">     716 </span><span class="lineNoCov">          0 : static void GBoxFigureRect(GWindow gw, GBox *design, GRect *r, int isdef) {</span>
+<span class="lineNum">     717 </span><span class="lineNoCov">          0 :     int scale = GDrawPointsToPixels(gw,1);</span>
+<span class="lineNum">     718 </span><span class="lineNoCov">          0 :     int bp = GDrawPointsToPixels(gw,design-&gt;border_width)+</span>
+<span class="lineNum">     719 </span><span class="lineNoCov">          0 :              GDrawPointsToPixels(gw,design-&gt;padding)+</span>
+<span class="lineNum">     720 </span><span class="lineNoCov">          0 :              ((design-&gt;flags &amp; box_foreground_border_outer)?scale:0)+</span>
+<span class="lineNum">     721 </span><span class="lineNoCov">          0 :              ((design-&gt;flags &amp;</span>
+<span class="lineNum">     722 </span><span class="lineNoCov">          0 :                  (box_foreground_border_inner|box_active_border_inner))?scale:0)+</span>
+<span class="lineNum">     723 </span><span class="lineNoCov">          0 :              (isdef &amp;&amp; (design-&gt;flags &amp; box_draw_default)?scale+GDrawPointsToPixels(gw,2):0);</span>
+<span class="lineNum">     724 </span><span class="lineNoCov">          0 :     r-&gt;width += 2*bp;</span>
+<span class="lineNum">     725 </span><span class="lineNoCov">          0 :     r-&gt;height += 2*bp;</span>
+<a name="726"><span class="lineNum">     726 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     727 </span>            : 
+<span class="lineNum">     728 </span><span class="lineNoCov">          0 : static void GBoxFigureDiamond(GWindow gw, GBox *design, GRect *r, int isdef) {</span>
+<span class="lineNum">     729 </span><span class="lineNoCov">          0 :     int scale = GDrawPointsToPixels(gw,1);</span>
+<span class="lineNum">     730 </span><span class="lineNoCov">          0 :     int p = GDrawPointsToPixels(gw,design-&gt;padding);</span>
+<span class="lineNum">     731 </span><span class="lineNoCov">          0 :     int b = GDrawPointsToPixels(gw,design-&gt;border_width)+</span>
+<span class="lineNum">     732 </span><span class="lineNoCov">          0 :              ((design-&gt;flags &amp; box_foreground_border_outer)?scale:0)+</span>
+<span class="lineNum">     733 </span><span class="lineNoCov">          0 :              ((design-&gt;flags &amp;</span>
+<span class="lineNum">     734 </span><span class="lineNoCov">          0 :                  (box_foreground_border_inner|box_active_border_inner))?scale:0)+</span>
+<span class="lineNum">     735 </span><span class="lineNoCov">          0 :              (isdef &amp;&amp; (design-&gt;flags &amp; box_draw_default)?scale+GDrawPointsToPixels(gw,2):0);</span>
+<span class="lineNum">     736 </span><span class="lineNoCov">          0 :     int xoff = r-&gt;width/2, yoff = r-&gt;height/2;</span>
+<span class="lineNum">     737 </span>            : 
+<span class="lineNum">     738 </span><span class="lineNoCov">          0 :     if ( xoff&lt;2*p ) xoff = 2*p;</span>
+<span class="lineNum">     739 </span><span class="lineNoCov">          0 :     if ( yoff&lt;2*p ) yoff = 2*p;</span>
+<span class="lineNum">     740 </span><span class="lineNoCov">          0 :      r-&gt;width += 2*b+xoff;</span>
+<span class="lineNum">     741 </span><span class="lineNoCov">          0 :      r-&gt;height += 2*b+yoff;</span>
+<a name="742"><span class="lineNum">     742 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     743 </span>            : 
+<span class="lineNum">     744 </span><span class="lineNoCov">          0 : void _ggadgetFigureSize(GWindow gw, GBox *design, GRect *r, int isdef) {</span>
+<span class="lineNum">     745 </span>            :     /* given that we want something with a client rectangle as big as r */
+<span class="lineNum">     746 </span>            :     /*  Then given the box shape, figure out how much of a rectangle we */
+<span class="lineNum">     747 </span>            :     /*  need around it */
+<span class="lineNum">     748 </span>            : 
+<span class="lineNum">     749 </span><span class="lineNoCov">          0 :     if ( r-&gt;width&lt;=0 ) r-&gt;width = 1;</span>
+<span class="lineNum">     750 </span><span class="lineNoCov">          0 :     if ( r-&gt;height&lt;=0 ) r-&gt;height = 1;</span>
+<span class="lineNum">     751 </span>            : 
+<span class="lineNum">     752 </span><span class="lineNoCov">          0 :     switch ( design-&gt;border_shape ) {</span>
+<span class="lineNum">     753 </span>            :       case bs_rect:
+<span class="lineNum">     754 </span><span class="lineNoCov">          0 :         GBoxFigureRect(gw,design,r,isdef);</span>
+<span class="lineNum">     755 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     756 </span>            :       case bs_roundrect:
+<span class="lineNum">     757 </span><span class="lineNoCov">          0 :         GBoxFigureRect(gw,design,r,isdef);</span>
+<span class="lineNum">     758 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     759 </span>            :       case bs_elipse:
+<span class="lineNum">     760 </span><span class="lineNoCov">          0 :         GBoxFigureDiamond(gw,design,r,isdef);</span>
+<span class="lineNum">     761 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     762 </span>            :       case bs_diamond:
+<span class="lineNum">     763 </span><span class="lineNoCov">          0 :         GBoxFigureDiamond(gw,design,r,isdef);</span>
+<span class="lineNum">     764 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     765 </span>            :     }
+<a name="766"><span class="lineNum">     766 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     767 </span>            : 
+<span class="lineNum">     768 </span><span class="lineNoCov">          0 : void _ggadgetSetRects(GGadget *g, GRect *outer, GRect *inner, int xjust, int yjust) {</span>
+<span class="lineNum">     769 </span><span class="lineNoCov">          0 :     int bp = GBoxBorderWidth(g-&gt;base,g-&gt;box);</span>
+<span class="lineNum">     770 </span>            : 
+<span class="lineNum">     771 </span>            : 
+<span class="lineNum">     772 </span><span class="lineNoCov">          0 :     if ( g-&gt;r.width==0 )</span>
+<span class="lineNum">     773 </span><span class="lineNoCov">          0 :         g-&gt;r.width = outer-&gt;width;</span>
+<span class="lineNum">     774 </span><span class="lineNoCov">          0 :     if ( g-&gt;r.height==0 )</span>
+<span class="lineNum">     775 </span><span class="lineNoCov">          0 :         g-&gt;r.height = outer-&gt;height;</span>
+<span class="lineNum">     776 </span>            : 
+<span class="lineNum">     777 </span><span class="lineNoCov">          0 :     if ( g-&gt;inner.width==0 ) {</span>
+<span class="lineNum">     778 </span><span class="lineNoCov">          0 :         if ( inner-&gt;width&lt;g-&gt;r.width ) {</span>
+<span class="lineNum">     779 </span><span class="lineNoCov">          0 :             g-&gt;inner.width = g-&gt;r.width - 2*bp;</span>
+<span class="lineNum">     780 </span><span class="lineNoCov">          0 :             if ( xjust==-1 )</span>
+<span class="lineNum">     781 </span><span class="lineNoCov">          0 :                 g-&gt;inner.x = g-&gt;r.x + bp;</span>
+<span class="lineNum">     782 </span><span class="lineNoCov">          0 :             else if ( xjust==0 ) {</span>
+<span class="lineNum">     783 </span><span class="lineNoCov">          0 :                 g-&gt;inner.x = g-&gt;r.x + (g-&gt;r.width-inner-&gt;width)/2;</span>
+<span class="lineNum">     784 </span><span class="lineNoCov">          0 :                 g-&gt;inner.width = inner-&gt;width;</span>
+<span class="lineNum">     785 </span>            :             } else
+<span class="lineNum">     786 </span><span class="lineNoCov">          0 :                 g-&gt;inner.x = g-&gt;r.x + (g-&gt;r.width-bp-g-&gt;inner.width);</span>
+<span class="lineNum">     787 </span>            :         } else {
+<span class="lineNum">     788 </span><span class="lineNoCov">          0 :             g-&gt;inner.x = g-&gt;r.x;</span>
+<span class="lineNum">     789 </span><span class="lineNoCov">          0 :             g-&gt;inner.width = g-&gt;r.width;</span>
+<span class="lineNum">     790 </span>            :         }
+<span class="lineNum">     791 </span>            :     }
+<span class="lineNum">     792 </span><span class="lineNoCov">          0 :     if ( g-&gt;inner.height==0 ) {</span>
+<span class="lineNum">     793 </span><span class="lineNoCov">          0 :         if ( inner-&gt;height&lt;g-&gt;r.height ) {</span>
+<span class="lineNum">     794 </span><span class="lineNoCov">          0 :             if ( yjust==-1 )</span>
+<span class="lineNum">     795 </span><span class="lineNoCov">          0 :                 g-&gt;inner.y = g-&gt;r.y + bp;</span>
+<span class="lineNum">     796 </span><span class="lineNoCov">          0 :             else if ( yjust==0 )</span>
+<span class="lineNum">     797 </span><span class="lineNoCov">          0 :                 g-&gt;inner.y = g-&gt;r.y + (g-&gt;r.height-inner-&gt;height)/2;</span>
+<span class="lineNum">     798 </span>            :             else
+<span class="lineNum">     799 </span><span class="lineNoCov">          0 :                 g-&gt;inner.y = g-&gt;r.y + (g-&gt;r.height-bp-inner-&gt;height);</span>
+<span class="lineNum">     800 </span><span class="lineNoCov">          0 :             g-&gt;inner.height = inner-&gt;height;</span>
+<span class="lineNum">     801 </span>            :         } else {
+<span class="lineNum">     802 </span><span class="lineNoCov">          0 :             g-&gt;inner.y = g-&gt;r.y;</span>
+<span class="lineNum">     803 </span><span class="lineNoCov">          0 :             g-&gt;inner.height = g-&gt;r.height;</span>
+<span class="lineNum">     804 </span>            :         }
+<span class="lineNum">     805 </span>            :     }
+<a name="806"><span class="lineNum">     806 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     807 </span>            : 
+<span class="lineNum">     808 </span><span class="lineNoCov">          0 : static GGadget *GGadgetFindLastOpenGroup(GGadget *g) {</span>
+<span class="lineNum">     809 </span><span class="lineNoCov">          0 :     for ( g=g-&gt;prev; g!=NULL &amp;&amp; !g-&gt;opengroup; g = g-&gt;prev );</span>
+<span class="lineNum">     810 </span><span class="lineNoCov">          0 : return( g );</span>
+<a name="811"><span class="lineNum">     811 </span>            : }</a>
+<span class="lineNum">     812 </span>            : 
+<span class="lineNum">     813 </span><span class="lineNoCov">          0 : static int GGadgetLMargin(GGadget *sigh, GGadget *lastOpenGroup) {</span>
+<span class="lineNum">     814 </span><span class="lineNoCov">          0 :     if ( lastOpenGroup==NULL )</span>
+<span class="lineNum">     815 </span><span class="lineNoCov">          0 : return( GDrawPointsToPixels(sigh-&gt;base,_GGadget_LeftMargin));</span>
+<span class="lineNum">     816 </span>            :     else
+<span class="lineNum">     817 </span><span class="lineNoCov">          0 : return( lastOpenGroup-&gt;r.x + GDrawPointsToPixels(lastOpenGroup-&gt;base,_GGadget_Skip));</span>
+<a name="818"><span class="lineNum">     818 </span>            : }</a>
+<span class="lineNum">     819 </span>            : 
+<span class="lineNum">     820 </span><span class="lineNoCov">          0 : int GGadgetScale(int xpos) {</span>
+<span class="lineNum">     821 </span><span class="lineNoCov">          0 : return( xpos*GIntGetResource(_NUM_ScaleFactor)/100 );</span>
+<a name="822"><span class="lineNum">     822 </span>            : }</a>
+<span class="lineNum">     823 </span>            : 
+<span class="lineNum">     824 </span><span class="lineNoCov">          0 : GGadget *_GGadget_Create(GGadget *g, struct gwindow *base, GGadgetData *gd,void *data, GBox *def) {</span>
+<span class="lineNum">     825 </span>            :     GGadget *last, *lastopengroup;
+<span class="lineNum">     826 </span>            : 
+<span class="lineNum">     827 </span><span class="lineNoCov">          0 :     g-&gt;desired_width = g-&gt;desired_height = -1;</span>
+<span class="lineNum">     828 </span><span class="lineNoCov">          0 :     _GWidget_AddGGadget(base,g);</span>
+<span class="lineNum">     829 </span><span class="lineNoCov">          0 :     g-&gt;r = gd-&gt;pos;</span>
+<span class="lineNum">     830 </span><span class="lineNoCov">          0 :     if ( !(gd-&gt;flags&amp;gg_pos_in_pixels) ) {</span>
+<span class="lineNum">     831 </span><span class="lineNoCov">          0 :         g-&gt;r.x = GDrawPointsToPixels(base,g-&gt;r.x);</span>
+<span class="lineNum">     832 </span><span class="lineNoCov">          0 :         g-&gt;r.y = GDrawPointsToPixels(base,g-&gt;r.y);</span>
+<span class="lineNum">     833 </span><span class="lineNoCov">          0 :         if ( g-&gt;r.width!=-1 )</span>
+<span class="lineNum">     834 </span><span class="lineNoCov">          0 :             g-&gt;r.width = GDrawPointsToPixels(base,g-&gt;r.width);</span>
+<span class="lineNum">     835 </span><span class="lineNoCov">          0 :         if ( !(gd-&gt;flags&amp;gg_pos_use0)) {</span>
+<span class="lineNum">     836 </span><span class="lineNoCov">          0 :             g-&gt;r.x = GGadgetScale(g-&gt;r.x);</span>
+<span class="lineNum">     837 </span><span class="lineNoCov">          0 :             if ( g-&gt;r.width!=-1 )</span>
+<span class="lineNum">     838 </span><span class="lineNoCov">          0 :                 g-&gt;r.width = GGadgetScale(g-&gt;r.width);</span>
+<span class="lineNum">     839 </span>            :         }
+<span class="lineNum">     840 </span><span class="lineNoCov">          0 :         g-&gt;r.height = GDrawPointsToPixels(base,g-&gt;r.height);</span>
+<span class="lineNum">     841 </span>            :     }
+<span class="lineNum">     842 </span><span class="lineNoCov">          0 :     if ( gd-&gt;pos.width&gt;0 ) g-&gt;desired_width = g-&gt;r.width;</span>
+<span class="lineNum">     843 </span><span class="lineNoCov">          0 :     if ( gd-&gt;pos.height&gt;0 ) g-&gt;desired_height = g-&gt;r.height;</span>
+<span class="lineNum">     844 </span><span class="lineNoCov">          0 :     last = g-&gt;prev;</span>
+<span class="lineNum">     845 </span><span class="lineNoCov">          0 :     lastopengroup = GGadgetFindLastOpenGroup(g);</span>
+<span class="lineNum">     846 </span><span class="lineNoCov">          0 :     if ( g-&gt;r.y==0 &amp;&amp; !(gd-&gt;flags &amp; gg_pos_use0)) {</span>
+<span class="lineNum">     847 </span><span class="lineNoCov">          0 :         if ( last==NULL ) {</span>
+<span class="lineNum">     848 </span><span class="lineNoCov">          0 :             g-&gt;r.y = GDrawPointsToPixels(base,_GGadget_FirstLine);</span>
+<span class="lineNum">     849 </span><span class="lineNoCov">          0 :             if ( g-&gt;r.x==0 )</span>
+<span class="lineNum">     850 </span><span class="lineNoCov">          0 :                 g-&gt;r.x = GGadgetLMargin(g,lastopengroup);</span>
+<span class="lineNum">     851 </span><span class="lineNoCov">          0 :         } else if ( gd-&gt;flags &amp; gg_pos_newline ) {</span>
+<span class="lineNum">     852 </span><span class="lineNoCov">          0 :             int temp, y = last-&gt;r.y, nexty = last-&gt;r.y+last-&gt;r.height;</span>
+<span class="lineNum">     853 </span><span class="lineNoCov">          0 :             while ( last!=NULL &amp;&amp; last-&gt;r.y==y ) {</span>
+<span class="lineNum">     854 </span><span class="lineNoCov">          0 :                 temp = last-&gt;r.y+last-&gt;r.height;</span>
+<span class="lineNum">     855 </span><span class="lineNoCov">          0 :                 if ( temp&gt;nexty ) nexty = temp;</span>
+<span class="lineNum">     856 </span><span class="lineNoCov">          0 :                 last = last-&gt;prev;</span>
+<span class="lineNum">     857 </span>            :             }
+<span class="lineNum">     858 </span><span class="lineNoCov">          0 :             g-&gt;r.y = nexty + GDrawPointsToPixels(base,_GGadget_LineSkip);</span>
+<span class="lineNum">     859 </span><span class="lineNoCov">          0 :             if ( g-&gt;r.x==0 )</span>
+<span class="lineNum">     860 </span><span class="lineNoCov">          0 :                 g-&gt;r.x = GGadgetLMargin(g,lastopengroup);</span>
+<span class="lineNum">     861 </span>            :         } else {
+<span class="lineNum">     862 </span><span class="lineNoCov">          0 :             g-&gt;r.y = last-&gt;r.y;</span>
+<span class="lineNum">     863 </span>            :         }
+<span class="lineNum">     864 </span>            :     }
+<span class="lineNum">     865 </span><span class="lineNoCov">          0 :     if ( g-&gt;r.x == 0 &amp;&amp; !(gd-&gt;flags &amp; gg_pos_use0)) {</span>
+<span class="lineNum">     866 </span><span class="lineNoCov">          0 :         last = g-&gt;prev;</span>
+<span class="lineNum">     867 </span><span class="lineNoCov">          0 :         if ( last==NULL )</span>
+<span class="lineNum">     868 </span><span class="lineNoCov">          0 :             g-&gt;r.x = GGadgetLMargin(g,lastopengroup);</span>
+<span class="lineNum">     869 </span><span class="lineNoCov">          0 :         else if ( gd-&gt;flags &amp; gg_pos_under ) {</span>
+<span class="lineNum">     870 </span><span class="lineNoCov">          0 :             int onthisline=0, onprev=0, i;</span>
+<span class="lineNum">     871 </span>            :             GGadget *prev, *prevline;
+<span class="lineNum">     872 </span>            :             /* see if we can find a gadget on the previous line that has the */
+<span class="lineNum">     873 </span>            :             /*  same number of gadgets between it and the start of the line  */
+<span class="lineNum">     874 </span>            :             /*  as this one has from the start of its line, then put at the  */
+<span class="lineNum">     875 </span>            :             /*  same x offset */
+<span class="lineNum">     876 </span><span class="lineNoCov">          0 :             for ( prev = last; prev!=NULL &amp;&amp; prev-&gt;r.y==g-&gt;r.y; prev = prev-&gt;prev )</span>
+<span class="lineNum">     877 </span><span class="lineNoCov">          0 :                 ++onthisline;</span>
+<span class="lineNum">     878 </span><span class="lineNoCov">          0 :             prevline = prev;</span>
+<span class="lineNum">     879 </span><span class="lineNoCov">          0 :             for ( ; prev!=NULL &amp;&amp; prev-&gt;r.y==prevline-&gt;r.y ; prev = prev-&gt;prev )</span>
+<span class="lineNum">     880 </span><span class="lineNoCov">          0 :                 onprev++;</span>
+<span class="lineNum">     881 </span><span class="lineNoCov">          0 :             for ( prev = prevline, i=0; prev!=NULL &amp;&amp; i&lt;onprev-onthisline; prev = prev-&gt;prev);</span>
+<span class="lineNum">     882 </span><span class="lineNoCov">          0 :             if ( prev!=NULL )</span>
+<span class="lineNum">     883 </span><span class="lineNoCov">          0 :                 g-&gt;r.x = prev-&gt;r.x;</span>
+<span class="lineNum">     884 </span>            :         }
+<span class="lineNum">     885 </span><span class="lineNoCov">          0 :         if ( g-&gt;r.x==0 )</span>
+<span class="lineNum">     886 </span><span class="lineNoCov">          0 :             g-&gt;r.x = last-&gt;r.x + last-&gt;r.width + GDrawPointsToPixels(base,_GGadget_Skip);</span>
+<span class="lineNum">     887 </span>            :     }
+<span class="lineNum">     888 </span>            : 
+<span class="lineNum">     889 </span><span class="lineNoCov">          0 :     g-&gt;mnemonic = islower(gd-&gt;mnemonic)?toupper(gd-&gt;mnemonic):gd-&gt;mnemonic;</span>
+<span class="lineNum">     890 </span><span class="lineNoCov">          0 :     g-&gt;shortcut = islower(gd-&gt;shortcut)?toupper(gd-&gt;shortcut):gd-&gt;shortcut;</span>
+<span class="lineNum">     891 </span><span class="lineNoCov">          0 :     g-&gt;short_mask = gd-&gt;short_mask;</span>
+<span class="lineNum">     892 </span><span class="lineNoCov">          0 :     g-&gt;cid = gd-&gt;cid;</span>
+<span class="lineNum">     893 </span><span class="lineNoCov">          0 :     g-&gt;data = data;</span>
+<span class="lineNum">     894 </span><span class="lineNoCov">          0 :     g-&gt;popup_msg = (gd-&gt;flags&amp;gg_utf8_popup)</span>
+<span class="lineNum">     895 </span><span class="lineNoCov">          0 :             ? utf82u_copy((char *) gd-&gt;popup_msg)</span>
+<span class="lineNum">     896 </span><span class="lineNoCov">          0 :             : u_copy(gd-&gt;popup_msg);</span>
+<span class="lineNum">     897 </span><span class="lineNoCov">          0 :     g-&gt;handle_controlevent = gd-&gt;handle_controlevent;</span>
+<span class="lineNum">     898 </span><span class="lineNoCov">          0 :     if ( gd-&gt;box == NULL )</span>
+<span class="lineNum">     899 </span><span class="lineNoCov">          0 :         g-&gt;box = def;</span>
+<span class="lineNum">     900 </span><span class="lineNoCov">          0 :     else if ( gd-&gt;flags &amp; gg_dontcopybox )</span>
+<span class="lineNum">     901 </span><span class="lineNoCov">          0 :         g-&gt;box = gd-&gt;box;</span>
+<span class="lineNum">     902 </span>            :     else {
+<span class="lineNum">     903 </span><span class="lineNoCov">          0 :         g-&gt;free_box = true;</span>
+<span class="lineNum">     904 </span><span class="lineNoCov">          0 :         g-&gt;box = malloc(sizeof(GBox));</span>
+<span class="lineNum">     905 </span><span class="lineNoCov">          0 :         *g-&gt;box = *gd-&gt;box;</span>
+<span class="lineNum">     906 </span>            :     }
+<span class="lineNum">     907 </span><span class="lineNoCov">          0 :     g-&gt;state = !(gd-&gt;flags&amp;gg_visible) ? gs_invisible :</span>
+<span class="lineNum">     908 </span><span class="lineNoCov">          0 :                   !(gd-&gt;flags&amp;gg_enabled) ? gs_disabled :</span>
+<span class="lineNum">     909 </span>            :                   gs_enabled;
+<span class="lineNum">     910 </span><span class="lineNoCov">          0 :     if ( !(gd-&gt;flags&amp;gg_enabled) ) g-&gt;was_disabled = true;</span>
+<span class="lineNum">     911 </span><span class="lineNoCov">          0 : return( g );</span>
+<a name="912"><span class="lineNum">     912 </span>            : }</a>
+<span class="lineNum">     913 </span>            : 
+<span class="lineNum">     914 </span><span class="lineNoCov">          0 : void _GGadget_FinalPosition(GGadget *g, struct gwindow *base, GGadgetData *gd) {</span>
+<span class="lineNum">     915 </span><span class="lineNoCov">          0 :     if ( g-&gt;r.x&lt;0 &amp;&amp; !(gd-&gt;flags&amp;gg_pos_use0)) {</span>
+<span class="lineNum">     916 </span>            :         GRect size;
+<span class="lineNum">     917 </span><span class="lineNoCov">          0 :         GDrawGetSize(base,&amp;size);</span>
+<span class="lineNum">     918 </span><span class="lineNoCov">          0 :         g-&gt;r.x += size.width-g-&gt;r.width;</span>
+<span class="lineNum">     919 </span><span class="lineNoCov">          0 :         g-&gt;inner.x += size.width-g-&gt;r.width;</span>
+<span class="lineNum">     920 </span>            :     }
+<a name="921"><span class="lineNum">     921 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     922 </span>            : 
+<span class="lineNum">     923 </span><span class="lineNoCov">          0 : void _ggadget_destroy(GGadget *g) {</span>
+<span class="lineNum">     924 </span><span class="lineNoCov">          0 :     if ( g==NULL )</span>
+<span class="lineNum">     925 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     926 </span><span class="lineNoCov">          0 :     _GWidget_RemoveGadget(g);</span>
+<span class="lineNum">     927 </span><span class="lineNoCov">          0 :     GGadgetEndPopup();</span>
+<span class="lineNum">     928 </span><span class="lineNoCov">          0 :     if ( g-&gt;free_box )</span>
+<span class="lineNum">     929 </span><span class="lineNoCov">          0 :         free( g-&gt;box );</span>
+<span class="lineNum">     930 </span><span class="lineNoCov">          0 :     free(g-&gt;popup_msg);</span>
+<span class="lineNum">     931 </span><span class="lineNoCov">          0 :     free(g);</span>
+<a name="932"><span class="lineNum">     932 </span>            : }</a>
+<span class="lineNum">     933 </span>            : 
+<span class="lineNum">     934 </span><span class="lineNoCov">          0 : void _GGadgetCloseGroup(GGadget *g) {</span>
+<span class="lineNum">     935 </span><span class="lineNoCov">          0 :     GGadget *group = GGadgetFindLastOpenGroup(g);</span>
+<span class="lineNum">     936 </span>            :     GGadget *prev;
+<span class="lineNum">     937 </span><span class="lineNoCov">          0 :     int maxx=0, maxy=0, temp;</span>
+<span class="lineNum">     938 </span><span class="lineNoCov">          0 :     int bp = GBoxBorderWidth(g-&gt;base,g-&gt;box);</span>
+<span class="lineNum">     939 </span>            : 
+<span class="lineNum">     940 </span><span class="lineNoCov">          0 :     if ( group==NULL )</span>
+<span class="lineNum">     941 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     942 </span><span class="lineNoCov">          0 :     for ( prev=g ; prev!=group; prev = prev-&gt;prev ) {</span>
+<span class="lineNum">     943 </span><span class="lineNoCov">          0 :         temp = prev-&gt;r.x + prev-&gt;r.width;</span>
+<span class="lineNum">     944 </span><span class="lineNoCov">          0 :         if ( temp&gt;maxx ) maxx = temp;</span>
+<span class="lineNum">     945 </span><span class="lineNoCov">          0 :         temp = prev-&gt;r.y + prev-&gt;r.height;</span>
+<span class="lineNum">     946 </span><span class="lineNoCov">          0 :         if ( temp&gt;maxy ) maxy = temp;</span>
+<span class="lineNum">     947 </span>            :     }
+<span class="lineNum">     948 </span><span class="lineNoCov">          0 :     if ( group-&gt;prevlabel ) {</span>
+<span class="lineNum">     949 </span><span class="lineNoCov">          0 :         prev = group-&gt;prev;</span>
+<span class="lineNum">     950 </span><span class="lineNoCov">          0 :         temp = prev-&gt;r.x + prev-&gt;r.width;</span>
+<span class="lineNum">     951 </span><span class="lineNoCov">          0 :         if ( temp&gt;maxx ) maxx = temp;</span>
+<span class="lineNum">     952 </span><span class="lineNoCov">          0 :         temp = prev-&gt;r.y + prev-&gt;r.height/2 ;</span>
+<span class="lineNum">     953 </span><span class="lineNoCov">          0 :         if ( temp&gt;maxy ) maxy = temp;</span>
+<span class="lineNum">     954 </span>            :     }
+<span class="lineNum">     955 </span><span class="lineNoCov">          0 :     maxx += GDrawPointsToPixels(g-&gt;base,_GGadget_Skip);</span>
+<span class="lineNum">     956 </span><span class="lineNoCov">          0 :     maxy += GDrawPointsToPixels(g-&gt;base,_GGadget_LineSkip);</span>
+<span class="lineNum">     957 </span>            : 
+<span class="lineNum">     958 </span><span class="lineNoCov">          0 :     if ( group-&gt;r.width==0 ) {</span>
+<span class="lineNum">     959 </span><span class="lineNoCov">          0 :         group-&gt;r.width = maxx - group-&gt;r.x;</span>
+<span class="lineNum">     960 </span><span class="lineNoCov">          0 :         group-&gt;inner.width = group-&gt;r.width - 2*bp;</span>
+<span class="lineNum">     961 </span>            :     }
+<span class="lineNum">     962 </span><span class="lineNoCov">          0 :     if ( group-&gt;r.height==0 ) {</span>
+<span class="lineNum">     963 </span><span class="lineNoCov">          0 :         group-&gt;r.height = maxy - group-&gt;r.y;</span>
+<span class="lineNum">     964 </span><span class="lineNoCov">          0 :         group-&gt;inner.height = group-&gt;r.y + group-&gt;r.height - bp -</span>
+<span class="lineNum">     965 </span><span class="lineNoCov">          0 :                 group-&gt;inner.y;</span>
+<span class="lineNum">     966 </span>            :     }
+<span class="lineNum">     967 </span><span class="lineNoCov">          0 :     group-&gt;opengroup = false;</span>
+<a name="968"><span class="lineNum">     968 </span>            : }</a>
+<span class="lineNum">     969 </span>            : 
+<span class="lineNum">     970 </span><span class="lineNoCov">          0 : int GGadgetWithin(GGadget *g, int x, int y) {</span>
+<span class="lineNum">     971 </span><span class="lineNoCov">          0 :     register GRect *r = &amp;g-&gt;r;</span>
+<span class="lineNum">     972 </span>            : 
+<span class="lineNum">     973 </span><span class="lineNoCov">          0 :     if ( x&lt;r-&gt;x || y&lt;r-&gt;y || x&gt;=r-&gt;x+r-&gt;width || y&gt;=r-&gt;y+r-&gt;height )</span>
+<span class="lineNum">     974 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     975 </span>            : 
+<span class="lineNum">     976 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="977"><span class="lineNum">     977 </span>            : }</a>
+<span class="lineNum">     978 </span>            : 
+<span class="lineNum">     979 </span><span class="lineNoCov">          0 : int GGadgetInnerWithin(GGadget *g, int x, int y) {</span>
+<span class="lineNum">     980 </span><span class="lineNoCov">          0 :     register GRect *r = &amp;g-&gt;inner;</span>
+<span class="lineNum">     981 </span>            : 
+<span class="lineNum">     982 </span><span class="lineNoCov">          0 :     if ( x&lt;r-&gt;x || y&lt;r-&gt;y || x&gt;=r-&gt;x+r-&gt;width || y&gt;=r-&gt;y+r-&gt;height )</span>
+<span class="lineNum">     983 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     984 </span>            : 
+<span class="lineNum">     985 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="986"><span class="lineNum">     986 </span>            : }</a>
+<span class="lineNum">     987 </span>            : 
+<span class="lineNum">     988 </span><span class="lineNoCov">          0 : void _ggadget_underlineMnemonic(GWindow gw,int32 x,int32 y,unichar_t *label,</span>
+<span class="lineNum">     989 </span>            :         unichar_t mnemonic, Color fg, int maxy) {
+<span class="lineNum">     990 </span><span class="lineNoCov">          0 :     int point = GDrawPointsToPixels(gw,1);</span>
+<span class="lineNum">     991 </span>            :     int width;
+<span class="lineNum">     992 </span>            :     /*GRect clip;*/
+<span class="lineNum">     993 </span>            : 
+<span class="lineNum">     994 </span><span class="lineNoCov">          0 :     if ( mnemonic=='\0' )</span>
+<span class="lineNum">     995 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     996 </span><span class="lineNoCov">          0 :     char *ctext = u2utf8_copy(label);</span>
+<span class="lineNum">     997 </span><span class="lineNoCov">          0 :     char *cpt = utf8_strchr(ctext,mnemonic);</span>
+<span class="lineNum">     998 </span>            :     GRect space;
+<span class="lineNum">     999 </span><span class="lineNoCov">          0 :     if ( cpt==NULL &amp;&amp; isupper(mnemonic))</span>
+<span class="lineNum">    1000 </span><span class="lineNoCov">          0 :         cpt = strchr(ctext,tolower(mnemonic));</span>
+<span class="lineNum">    1001 </span><span class="lineNoCov">          0 :     if ( cpt==NULL )</span>
+<span class="lineNum">    1002 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">    1003 </span><span class="lineNoCov">          0 :     GDrawLayoutInit(gw,ctext,-1,NULL);</span>
+<span class="lineNum">    1004 </span><span class="lineNoCov">          0 :     GDrawLayoutIndexToPos(gw, cpt-ctext, &amp;space);</span>
+<span class="lineNum">    1005 </span><span class="lineNoCov">          0 :     free(ctext);</span>
+<span class="lineNum">    1006 </span><span class="lineNoCov">          0 :     x += space.x;</span>
+<span class="lineNum">    1007 </span><span class="lineNoCov">          0 :     width = space.width;</span>
+<span class="lineNum">    1008 </span><span class="lineNoCov">          0 :     GDrawSetLineWidth(gw,point);</span>
+<span class="lineNum">    1009 </span><span class="lineNoCov">          0 :     y += 2*point;</span>
+<span class="lineNum">    1010 </span><span class="lineNoCov">          0 :     if ( y+point-1 &gt;= maxy )</span>
+<span class="lineNum">    1011 </span><span class="lineNoCov">          0 :         y = maxy-point;</span>
+<span class="lineNum">    1012 </span><span class="lineNoCov">          0 :     GDrawDrawLine(gw,x,y,x+width,y,fg);</span>
+<span class="lineNum">    1013 </span><span class="lineNoCov">          0 :     GDrawSetLineWidth(gw,0);</span>
+<a name="1014"><span class="lineNum">    1014 </span>            : }</a>
+<span class="lineNum">    1015 </span>            : 
+<span class="lineNum">    1016 </span><span class="lineNoCov">          0 : void _ggadget_move(GGadget *g, int32 x, int32 y ) {</span>
+<span class="lineNum">    1017 </span><span class="lineNoCov">          0 :     g-&gt;inner.x = x+(g-&gt;inner.x-g-&gt;r.x);</span>
+<span class="lineNum">    1018 </span><span class="lineNoCov">          0 :     g-&gt;inner.y = y+(g-&gt;inner.y-g-&gt;r.y);</span>
+<span class="lineNum">    1019 </span><span class="lineNoCov">          0 :     g-&gt;r.x = x;</span>
+<span class="lineNum">    1020 </span><span class="lineNoCov">          0 :     g-&gt;r.y = y;</span>
+<a name="1021"><span class="lineNum">    1021 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1022 </span>            : 
+<span class="lineNum">    1023 </span><span class="lineNoCov">          0 : void _ggadget_resize(GGadget *g, int32 width, int32 height ) {</span>
+<span class="lineNum">    1024 </span><span class="lineNoCov">          0 :     g-&gt;inner.width = width-(g-&gt;r.width-g-&gt;inner.width);</span>
+<span class="lineNum">    1025 </span><span class="lineNoCov">          0 :     g-&gt;inner.height = height-(g-&gt;r.height-g-&gt;inner.height);</span>
+<span class="lineNum">    1026 </span><span class="lineNoCov">          0 :     g-&gt;r.width = width;</span>
+<span class="lineNum">    1027 </span><span class="lineNoCov">          0 :     g-&gt;r.height = height;</span>
+<a name="1028"><span class="lineNum">    1028 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1029 </span>            : 
+<span class="lineNum">    1030 </span><span class="lineNoCov">          0 : void _ggadget_getDesiredSize(GGadget *g, GRect *outer, GRect *inner) {</span>
+<span class="lineNum">    1031 </span>            : 
+<span class="lineNum">    1032 </span><span class="lineNoCov">          0 :     if ( inner!=NULL ) {</span>
+<span class="lineNum">    1033 </span><span class="lineNoCov">          0 :         inner-&gt;x = inner-&gt;y = 0;</span>
+<span class="lineNum">    1034 </span><span class="lineNoCov">          0 :         inner-&gt;width = g-&gt;desired_width;</span>
+<span class="lineNum">    1035 </span><span class="lineNoCov">          0 :         inner-&gt;height = g-&gt;desired_height;</span>
+<span class="lineNum">    1036 </span>            :     }
+<span class="lineNum">    1037 </span><span class="lineNoCov">          0 :     if ( outer!=NULL ) {</span>
+<span class="lineNum">    1038 </span><span class="lineNoCov">          0 :         outer-&gt;x = outer-&gt;y = 0;</span>
+<span class="lineNum">    1039 </span><span class="lineNoCov">          0 :         outer-&gt;width = g-&gt;desired_width;</span>
+<span class="lineNum">    1040 </span><span class="lineNoCov">          0 :         outer-&gt;height = g-&gt;desired_height;</span>
+<span class="lineNum">    1041 </span>            :     }
+<a name="1042"><span class="lineNum">    1042 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1043 </span>            : 
+<span class="lineNum">    1044 </span><span class="lineNoCov">          0 : void _ggadget_setDesiredSize(GGadget *g,GRect *outer, GRect *inner) {</span>
+<span class="lineNum">    1045 </span><span class="lineNoCov">          0 :     int bp = GBoxBorderWidth(g-&gt;base,g-&gt;box);</span>
+<span class="lineNum">    1046 </span>            : 
+<span class="lineNum">    1047 </span><span class="lineNoCov">          0 :     if ( outer!=NULL ) {</span>
+<span class="lineNum">    1048 </span><span class="lineNoCov">          0 :         g-&gt;desired_width = outer-&gt;width;</span>
+<span class="lineNum">    1049 </span><span class="lineNoCov">          0 :         g-&gt;desired_height = outer-&gt;height;</span>
+<span class="lineNum">    1050 </span><span class="lineNoCov">          0 :     } else if ( inner!=NULL ) {</span>
+<span class="lineNum">    1051 </span><span class="lineNoCov">          0 :         g-&gt;desired_width = inner-&gt;width&lt;=0 ? -1 : inner-&gt;width+2*bp;</span>
+<span class="lineNum">    1052 </span><span class="lineNoCov">          0 :         g-&gt;desired_height = inner-&gt;height&lt;=0 ? -1 : inner-&gt;height+2*bp;</span>
+<span class="lineNum">    1053 </span>            :     }
+<a name="1054"><span class="lineNum">    1054 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1055 </span>            : 
+<span class="lineNum">    1056 </span><span class="lineNoCov">          0 : GRect *_ggadget_getsize(GGadget *g,GRect *rct) {</span>
+<span class="lineNum">    1057 </span><span class="lineNoCov">          0 :     *rct = g-&gt;r;</span>
+<span class="lineNum">    1058 </span><span class="lineNoCov">          0 : return( rct );</span>
+<a name="1059"><span class="lineNum">    1059 </span>            : }</a>
+<span class="lineNum">    1060 </span>            : 
+<span class="lineNum">    1061 </span><span class="lineNoCov">          0 : GRect *_ggadget_getinnersize(GGadget *g,GRect *rct) {</span>
+<span class="lineNum">    1062 </span><span class="lineNoCov">          0 :     *rct = g-&gt;inner;</span>
+<span class="lineNum">    1063 </span><span class="lineNoCov">          0 : return( rct );</span>
+<a name="1064"><span class="lineNum">    1064 </span>            : }</a>
+<span class="lineNum">    1065 </span>            : 
+<span class="lineNum">    1066 </span><span class="lineNoCov">          0 : void _ggadget_setvisible(GGadget *g,int visible) {</span>
+<span class="lineNum">    1067 </span><span class="lineNoCov">          0 :     g-&gt;state = !visible ? gs_invisible :</span>
+<span class="lineNum">    1068 </span><span class="lineNoCov">          0 :                 g-&gt;was_disabled ? gs_disabled :</span>
+<span class="lineNum">    1069 </span>            :                 gs_enabled;
+<span class="lineNum">    1070 </span>            :     /* Make sure it isn't the focused _ggadget in the container !!!! */
+<span class="lineNum">    1071 </span><span class="lineNoCov">          0 :     _ggadget_redraw(g);</span>
+<a name="1072"><span class="lineNum">    1072 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1073 </span>            : 
+<span class="lineNum">    1074 </span><span class="lineNoCov">          0 : void _ggadget_setenabled(GGadget *g,int enabled) {</span>
+<span class="lineNum">    1075 </span><span class="lineNoCov">          0 :     g-&gt;was_disabled = !enabled;</span>
+<span class="lineNum">    1076 </span><span class="lineNoCov">          0 :     if ( g-&gt;state!=gs_invisible ) {</span>
+<span class="lineNum">    1077 </span><span class="lineNoCov">          0 :         g-&gt;state = enabled? gs_enabled : gs_disabled;</span>
+<span class="lineNum">    1078 </span><span class="lineNoCov">          0 :         _ggadget_redraw(g);</span>
+<span class="lineNum">    1079 </span>            :     }
+<span class="lineNum">    1080 </span>            :     /* Make sure it isn't the focused _ggadget in the container !!!! */
+<a name="1081"><span class="lineNum">    1081 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1082 </span>            : 
+<span class="lineNum">    1083 </span><span class="lineNoCov">          0 : void GGadgetDestroy(GGadget *g) {</span>
+<span class="lineNum">    1084 </span><span class="lineNoCov">          0 :     (g-&gt;funcs-&gt;destroy)(g);</span>
+<a name="1085"><span class="lineNum">    1085 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1086 </span>            : 
+<span class="lineNum">    1087 </span><span class="lineNoCov">          0 : void GGadgetRedraw(GGadget *g) {</span>
+<span class="lineNum">    1088 </span><span class="lineNoCov">          0 :     (g-&gt;funcs-&gt;redraw)(g);</span>
+<a name="1089"><span class="lineNum">    1089 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1090 </span>            : 
+<span class="lineNum">    1091 </span><span class="lineNoCov">          0 : void GGadgetMove(GGadget *g,int32 x, int32 y ) {</span>
+<span class="lineNum">    1092 </span><span class="lineNoCov">          0 :     (g-&gt;funcs-&gt;move)(g,x,y);</span>
+<a name="1093"><span class="lineNum">    1093 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1094 </span>            : 
+<span class="lineNum">    1095 </span><span class="lineNoCov">          0 : void GGadgetMoveAddToY(GGadget *g, int32 yoffset )</span>
+<span class="lineNum">    1096 </span>            : {
+<span class="lineNum">    1097 </span>            :     GRect sz;
+<span class="lineNum">    1098 </span><span class="lineNoCov">          0 :     GGadgetGetSize( g, &amp;sz );</span>
+<span class="lineNum">    1099 </span><span class="lineNoCov">          0 :     GGadgetMove( g, sz.x, sz.y + yoffset );</span>
+<span class="lineNum">    1100 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">    1101 </span>            : 
+<a name="1102"><span class="lineNum">    1102 </span>            : </a>
+<span class="lineNum">    1103 </span>            : 
+<span class="lineNum">    1104 </span><span class="lineNoCov">          0 : int32 GGadgetGetX(GGadget *g)</span>
+<span class="lineNum">    1105 </span>            : {
+<span class="lineNum">    1106 </span><span class="lineNoCov">          0 :     return g-&gt;r.x;</span>
+<a name="1107"><span class="lineNum">    1107 </span>            : }</a>
+<span class="lineNum">    1108 </span>            : 
+<span class="lineNum">    1109 </span><span class="lineNoCov">          0 : int32 GGadgetGetY(GGadget *g)</span>
+<span class="lineNum">    1110 </span>            : {
+<span class="lineNum">    1111 </span><span class="lineNoCov">          0 :     return g-&gt;r.y;</span>
+<a name="1112"><span class="lineNum">    1112 </span>            : }</a>
+<span class="lineNum">    1113 </span>            : 
+<span class="lineNum">    1114 </span><span class="lineNoCov">          0 : void  GGadgetSetY(GGadget *g, int32 y )</span>
+<span class="lineNum">    1115 </span>            : {
+<span class="lineNum">    1116 </span><span class="lineNoCov">          0 :     int32 x = GGadgetGetX(g);</span>
+<span class="lineNum">    1117 </span><span class="lineNoCov">          0 :     GGadgetMove( g, x, y );</span>
+<span class="lineNum">    1118 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">    1119 </span>            : 
+<a name="1120"><span class="lineNum">    1120 </span>            : </a>
+<span class="lineNum">    1121 </span>            : 
+<span class="lineNum">    1122 </span><span class="lineNoCov">          0 : void GGadgetResize(GGadget *g,int32 width, int32 height ) {</span>
+<span class="lineNum">    1123 </span><span class="lineNoCov">          0 :     (g-&gt;funcs-&gt;resize)(g,width,height);</span>
+<a name="1124"><span class="lineNum">    1124 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1125 </span>            : 
+<span class="lineNum">    1126 </span><span class="lineNoCov">          0 : GRect *GGadgetGetSize(GGadget *g,GRect *rct) {</span>
+<span class="lineNum">    1127 </span><span class="lineNoCov">          0 : return( (g-&gt;funcs-&gt;getsize)(g,rct) );</span>
+<a name="1128"><span class="lineNum">    1128 </span>            : }</a>
+<span class="lineNum">    1129 </span>            : 
+<span class="lineNum">    1130 </span><span class="lineNoCov">          0 : void GGadgetSetSize(GGadget *g,GRect *rct)</span>
+<span class="lineNum">    1131 </span>            : {
+<span class="lineNum">    1132 </span><span class="lineNoCov">          0 :     GGadgetResize(g,rct-&gt;width,rct-&gt;height);</span>
+<span class="lineNum">    1133 </span><span class="lineNoCov">          0 : }</span>
+<a name="1134"><span class="lineNum">    1134 </span>            : </a>
+<span class="lineNum">    1135 </span>            : 
+<span class="lineNum">    1136 </span><span class="lineNoCov">          0 : int GGadgetContainsEventLocation(GGadget *g, GEvent* e )</span>
+<span class="lineNum">    1137 </span>            : {
+<span class="lineNum">    1138 </span><span class="lineNoCov">          0 :     switch( e-&gt;type )</span>
+<span class="lineNum">    1139 </span>            :     {
+<span class="lineNum">    1140 </span>            :         case et_mousemove:
+<span class="lineNum">    1141 </span>            :         case et_mouseup: case et_mousedown:
+<span class="lineNum">    1142 </span><span class="lineNoCov">          0 :             return( GGadgetContains( g, e-&gt;u.mouse.x, e-&gt;u.mouse.y ));</span>
+<span class="lineNum">    1143 </span>            :     }
+<span class="lineNum">    1144 </span>            :     
+<span class="lineNum">    1145 </span><span class="lineNoCov">          0 :     return 0;</span>
+<a name="1146"><span class="lineNum">    1146 </span>            : }</a>
+<span class="lineNum">    1147 </span>            : 
+<span class="lineNum">    1148 </span><span class="lineNoCov">          0 : int GGadgetContains(GGadget *g, int x, int y )</span>
+<span class="lineNum">    1149 </span>            : {
+<span class="lineNum">    1150 </span>            :     GRect r;
+<span class="lineNum">    1151 </span><span class="lineNoCov">          0 :     GGadgetGetSize( g, &amp;r );</span>
+<span class="lineNum">    1152 </span><span class="lineNoCov">          0 :     return r.x &lt; x &amp;&amp; r.x+r.width &gt; x</span>
+<span class="lineNum">    1153 </span><span class="lineNoCov">          0 :         &amp;&amp; r.y &lt; y &amp;&amp; r.y+r.height &gt; y;</span>
+<a name="1154"><span class="lineNum">    1154 </span>            : }</a>
+<span class="lineNum">    1155 </span>            : 
+<span class="lineNum">    1156 </span><span class="lineNoCov">          0 : GRect *GGadgetGetInnerSize(GGadget *g,GRect *rct) {</span>
+<span class="lineNum">    1157 </span><span class="lineNoCov">          0 : return( (g-&gt;funcs-&gt;getinnersize)(g,rct) );</span>
+<a name="1158"><span class="lineNum">    1158 </span>            : }</a>
+<span class="lineNum">    1159 </span>            : 
+<span class="lineNum">    1160 </span><span class="lineNoCov">          0 : void GGadgetSetVisible(GGadget *g,int visible) {</span>
+<span class="lineNum">    1161 </span><span class="lineNoCov">          0 :     (g-&gt;funcs-&gt;setvisible)(g,visible);</span>
+<a name="1162"><span class="lineNum">    1162 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1163 </span>            : 
+<span class="lineNum">    1164 </span><span class="lineNoCov">          0 : int GGadgetIsVisible(GGadget *g) {</span>
+<span class="lineNum">    1165 </span><span class="lineNoCov">          0 : return( g-&gt;state!=gs_invisible );</span>
+<a name="1166"><span class="lineNum">    1166 </span>            : }</a>
+<span class="lineNum">    1167 </span>            : 
+<span class="lineNum">    1168 </span><span class="lineNoCov">          0 : void GGadgetSetEnabled(GGadget *g,int enabled) {</span>
+<span class="lineNum">    1169 </span><span class="lineNoCov">          0 :     if(g)</span>
+<span class="lineNum">    1170 </span><span class="lineNoCov">          0 :         (g-&gt;funcs-&gt;setenabled)(g,enabled);</span>
+<a name="1171"><span class="lineNum">    1171 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1172 </span>            : 
+<span class="lineNum">    1173 </span><span class="lineNoCov">          0 : int GGadgetIsEnabled(GGadget *g) {</span>
+<span class="lineNum">    1174 </span><span class="lineNoCov">          0 :     if ( g-&gt;state==gs_invisible )</span>
+<span class="lineNum">    1175 </span><span class="lineNoCov">          0 : return( !g-&gt;was_disabled );</span>
+<span class="lineNum">    1176 </span><span class="lineNoCov">          0 : return( g-&gt;state==gs_enabled );</span>
+<a name="1177"><span class="lineNum">    1177 </span>            : }</a>
+<span class="lineNum">    1178 </span>            : 
+<span class="lineNum">    1179 </span><span class="lineNoCov">          0 : void GGadgetSetUserData(GGadget *g,void *data) {</span>
+<span class="lineNum">    1180 </span><span class="lineNoCov">          0 :     g-&gt;data = data;</span>
+<a name="1181"><span class="lineNum">    1181 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1182 </span>            : 
+<span class="lineNum">    1183 </span><span class="lineNoCov">          0 : void GGadgetSetPopupMsg(GGadget *g,const unichar_t *msg) {</span>
+<span class="lineNum">    1184 </span><span class="lineNoCov">          0 :     free(g-&gt;popup_msg);</span>
+<span class="lineNum">    1185 </span><span class="lineNoCov">          0 :     g-&gt;popup_msg = u_copy(msg);</span>
+<a name="1186"><span class="lineNum">    1186 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1187 </span>            : 
+<span class="lineNum">    1188 </span><span class="lineNoCov">          0 : GWindow GGadgetGetWindow(GGadget *g) {</span>
+<span class="lineNum">    1189 </span><span class="lineNoCov">          0 : return( g-&gt;base );</span>
+<a name="1190"><span class="lineNum">    1190 </span>            : }</a>
+<span class="lineNum">    1191 </span>            : 
+<span class="lineNum">    1192 </span><span class="lineNoCov">          0 : int GGadgetGetCid(GGadget *g) {</span>
+<span class="lineNum">    1193 </span><span class="lineNoCov">          0 : return( g-&gt;cid );</span>
+<a name="1194"><span class="lineNum">    1194 </span>            : }</a>
+<span class="lineNum">    1195 </span>            : 
+<span class="lineNum">    1196 </span><span class="lineNoCov">          0 : void *GGadgetGetUserData(GGadget *g) {</span>
+<span class="lineNum">    1197 </span><span class="lineNoCov">          0 : return( g-&gt;data );</span>
+<a name="1198"><span class="lineNum">    1198 </span>            : }</a>
+<span class="lineNum">    1199 </span>            : 
+<span class="lineNum">    1200 </span><span class="lineNoCov">          0 : int GGadgetEditCmd(GGadget *g,enum editor_commands cmd) {</span>
+<span class="lineNum">    1201 </span><span class="lineNoCov">          0 :     if ( g-&gt;funcs-&gt;handle_editcmd!=NULL )</span>
+<span class="lineNum">    1202 </span><span class="lineNoCov">          0 : return(g-&gt;funcs-&gt;handle_editcmd)(g,cmd);</span>
+<span class="lineNum">    1203 </span><span class="lineNoCov">          0 : return( false );</span>
+<a name="1204"><span class="lineNum">    1204 </span>            : }</a>
+<span class="lineNum">    1205 </span>            : 
+<span class="lineNum">    1206 </span><span class="lineNoCov">          0 : void GGadgetSetTitle(GGadget *g,const unichar_t *title) {</span>
+<span class="lineNum">    1207 </span><span class="lineNoCov">          0 :     if ( g-&gt;funcs-&gt;set_title!=NULL )</span>
+<span class="lineNum">    1208 </span><span class="lineNoCov">          0 :         (g-&gt;funcs-&gt;set_title)(g,title);</span>
+<a name="1209"><span class="lineNum">    1209 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1210 </span>            : 
+<span class="lineNum">    1211 </span><span class="lineNoCov">          0 : void GGadgetSetTitle8(GGadget *g,const char *title) {</span>
+<span class="lineNum">    1212 </span><span class="lineNoCov">          0 :     if ( g-&gt;funcs-&gt;set_title!=NULL ) {</span>
+<span class="lineNum">    1213 </span><span class="lineNoCov">          0 :         unichar_t *temp = utf82u_copy(title);</span>
+<span class="lineNum">    1214 </span><span class="lineNoCov">          0 :         (g-&gt;funcs-&gt;set_title)(g,temp);</span>
+<span class="lineNum">    1215 </span><span class="lineNoCov">          0 :         free(temp);</span>
+<span class="lineNum">    1216 </span>            :     }
+<a name="1217"><span class="lineNum">    1217 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1218 </span>            : 
+<span class="lineNum">    1219 </span><span class="lineNoCov">          0 : void GGadgetSetTitle8WithMn(GGadget *g,const char *title) {</span>
+<span class="lineNum">    1220 </span><span class="lineNoCov">          0 :     char *pt = strchr(title,'_');</span>
+<span class="lineNum">    1221 </span><span class="lineNoCov">          0 :     char *freeme=NULL;</span>
+<span class="lineNum">    1222 </span>            :     int mnc;
+<span class="lineNum">    1223 </span>            : 
+<span class="lineNum">    1224 </span><span class="lineNoCov">          0 :     if ( pt!=NULL ) {</span>
+<span class="lineNum">    1225 </span><span class="lineNoCov">          0 :         char *pos = pt+1;</span>
+<span class="lineNum">    1226 </span><span class="lineNoCov">          0 :         mnc = utf8_ildb((const char **) &amp;pos);</span>
+<span class="lineNum">    1227 </span><span class="lineNoCov">          0 :         g-&gt;mnemonic = mnc;</span>
+<span class="lineNum">    1228 </span><span class="lineNoCov">          0 :         freeme = copy(title);</span>
+<span class="lineNum">    1229 </span><span class="lineNoCov">          0 :         for ( pt = freeme + (pt-title); *pt; ++pt )</span>
+<span class="lineNum">    1230 </span><span class="lineNoCov">          0 :             *pt = pt[1];</span>
+<span class="lineNum">    1231 </span><span class="lineNoCov">          0 :         title = freeme;</span>
+<span class="lineNum">    1232 </span>            :     } else
+<span class="lineNum">    1233 </span><span class="lineNoCov">          0 :         g-&gt;mnemonic = 0;</span>
+<span class="lineNum">    1234 </span><span class="lineNoCov">          0 :     GGadgetSetTitle8(g,title);</span>
+<span class="lineNum">    1235 </span><span class="lineNoCov">          0 :     free(freeme);</span>
+<a name="1236"><span class="lineNum">    1236 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1237 </span>            : 
+<span class="lineNum">    1238 </span><span class="lineNoCov">          0 : const unichar_t *_GGadgetGetTitle(GGadget *g) {</span>
+<span class="lineNum">    1239 </span><span class="lineNoCov">          0 :     if ( g &amp;&amp; g-&gt;funcs-&gt;_get_title!=NULL ) return( (g-&gt;funcs-&gt;_get_title)(g) );</span>
+<span class="lineNum">    1240 </span>            : 
+<span class="lineNum">    1241 </span><span class="lineNoCov">          0 :     return( NULL );</span>
+<a name="1242"><span class="lineNum">    1242 </span>            : }</a>
+<span class="lineNum">    1243 </span>            : 
+<span class="lineNum">    1244 </span><span class="lineNoCov">          0 : unichar_t *GGadgetGetTitle(GGadget *g) {</span>
+<span class="lineNum">    1245 </span><span class="lineNoCov">          0 :     if ( g ) {</span>
+<span class="lineNum">    1246 </span><span class="lineNoCov">          0 :         if ( g-&gt;funcs-&gt;get_title!=NULL )</span>
+<span class="lineNum">    1247 </span><span class="lineNoCov">          0 :             return( (g-&gt;funcs-&gt;get_title)(g) );</span>
+<span class="lineNum">    1248 </span><span class="lineNoCov">          0 :         else if ( g-&gt;funcs-&gt;_get_title!=NULL )</span>
+<span class="lineNum">    1249 </span><span class="lineNoCov">          0 :             return( u_copy( (g-&gt;funcs-&gt;_get_title)(g) ));</span>
+<span class="lineNum">    1250 </span>            :     }
+<span class="lineNum">    1251 </span>            : 
+<span class="lineNum">    1252 </span><span class="lineNoCov">          0 :     return( NULL );</span>
+<a name="1253"><span class="lineNum">    1253 </span>            : }</a>
+<span class="lineNum">    1254 </span>            : 
+<span class="lineNum">    1255 </span><span class="lineNoCov">          0 : char *GGadgetGetTitle8(GGadget *g) {</span>
+<span class="lineNum">    1256 </span><span class="lineNoCov">          0 :     if ( g-&gt;funcs-&gt;_get_title!=NULL )</span>
+<span class="lineNum">    1257 </span><span class="lineNoCov">          0 : return( u2utf8_copy( (g-&gt;funcs-&gt;_get_title)(g) ));</span>
+<span class="lineNum">    1258 </span><span class="lineNoCov">          0 :     else if ( g-&gt;funcs-&gt;get_title!=NULL ) {</span>
+<span class="lineNum">    1259 </span><span class="lineNoCov">          0 :         unichar_t *temp = (g-&gt;funcs-&gt;get_title)(g);</span>
+<span class="lineNum">    1260 </span><span class="lineNoCov">          0 :         char *ret = u2utf8_copy(temp);</span>
+<span class="lineNum">    1261 </span><span class="lineNoCov">          0 :         free(temp);</span>
+<span class="lineNum">    1262 </span><span class="lineNoCov">          0 : return( ret );</span>
+<span class="lineNum">    1263 </span>            :     }
+<span class="lineNum">    1264 </span>            : 
+<span class="lineNum">    1265 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<a name="1266"><span class="lineNum">    1266 </span>            : }</a>
+<span class="lineNum">    1267 </span>            : 
+<span class="lineNum">    1268 </span><span class="lineNoCov">          0 : void GGadgetSetFont(GGadget *g,GFont *font) {</span>
+<span class="lineNum">    1269 </span><span class="lineNoCov">          0 :     if ( g-&gt;funcs-&gt;set_font!=NULL )</span>
+<span class="lineNum">    1270 </span><span class="lineNoCov">          0 :         (g-&gt;funcs-&gt;set_font)(g,font);</span>
+<a name="1271"><span class="lineNum">    1271 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1272 </span>            : 
+<span class="lineNum">    1273 </span><span class="lineNoCov">          0 : GFont *GGadgetGetFont(GGadget *g) {</span>
+<span class="lineNum">    1274 </span><span class="lineNoCov">          0 :     if ( g==NULL )</span>
+<span class="lineNum">    1275 </span><span class="lineNoCov">          0 : return( _ggadget_default_font );</span>
+<span class="lineNum">    1276 </span><span class="lineNoCov">          0 :     if ( g-&gt;funcs-&gt;get_font!=NULL )</span>
+<span class="lineNum">    1277 </span><span class="lineNoCov">          0 : return( (g-&gt;funcs-&gt;get_font)(g) );</span>
+<span class="lineNum">    1278 </span>            : 
+<span class="lineNum">    1279 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<a name="1280"><span class="lineNum">    1280 </span>            : }</a>
+<span class="lineNum">    1281 </span>            : 
+<span class="lineNum">    1282 </span><span class="lineNoCov">          0 : void GGadgetSetHandler(GGadget *g, GGadgetHandler handler) {</span>
+<span class="lineNum">    1283 </span><span class="lineNoCov">          0 :     g-&gt;handle_controlevent = handler;</span>
+<a name="1284"><span class="lineNum">    1284 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1285 </span>            : 
+<span class="lineNum">    1286 </span><span class="lineNoCov">          0 : GGadgetHandler GGadgetGetHandler(GGadget *g) {</span>
+<span class="lineNum">    1287 </span><span class="lineNoCov">          0 : return( g-&gt;handle_controlevent );</span>
+<a name="1288"><span class="lineNum">    1288 </span>            : }</a>
+<span class="lineNum">    1289 </span>            : 
+<span class="lineNum">    1290 </span><span class="lineNoCov">          0 : void GGadgetClearList(GGadget *g) {</span>
+<span class="lineNum">    1291 </span><span class="lineNoCov">          0 :     if ( g-&gt;funcs-&gt;clear_list!=NULL )</span>
+<span class="lineNum">    1292 </span><span class="lineNoCov">          0 :         (g-&gt;funcs-&gt;clear_list)(g);</span>
+<a name="1293"><span class="lineNum">    1293 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1294 </span>            : 
+<span class="lineNum">    1295 </span><span class="lineNoCov">          0 : void GGadgetSetList(GGadget *g, GTextInfo **ti, int32 copyit) {</span>
+<span class="lineNum">    1296 </span><span class="lineNoCov">          0 :     if ( g-&gt;funcs-&gt;set_list!=NULL )</span>
+<span class="lineNum">    1297 </span><span class="lineNoCov">          0 :         (g-&gt;funcs-&gt;set_list)(g,ti,copyit);</span>
+<a name="1298"><span class="lineNum">    1298 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1299 </span>            : 
+<span class="lineNum">    1300 </span><span class="lineNoCov">          0 : GTextInfo **GGadgetGetList(GGadget *g,int32 *len) {</span>
+<span class="lineNum">    1301 </span><span class="lineNoCov">          0 :     if ( g-&gt;funcs-&gt;get_list!=NULL )</span>
+<span class="lineNum">    1302 </span><span class="lineNoCov">          0 : return((g-&gt;funcs-&gt;get_list)(g,len));</span>
+<span class="lineNum">    1303 </span>            : 
+<span class="lineNum">    1304 </span><span class="lineNoCov">          0 :     if ( len!=NULL ) *len = 0;</span>
+<span class="lineNum">    1305 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<a name="1306"><span class="lineNum">    1306 </span>            : }</a>
+<span class="lineNum">    1307 </span>            : 
+<span class="lineNum">    1308 </span><span class="lineNoCov">          0 : GTextInfo *GGadgetGetListItem(GGadget *g,int32 pos) {</span>
+<span class="lineNum">    1309 </span><span class="lineNoCov">          0 :     if ( g-&gt;funcs-&gt;get_list_item!=NULL )</span>
+<span class="lineNum">    1310 </span><span class="lineNoCov">          0 : return((g-&gt;funcs-&gt;get_list_item)(g,pos));</span>
+<span class="lineNum">    1311 </span>            : 
+<span class="lineNum">    1312 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<a name="1313"><span class="lineNum">    1313 </span>            : }</a>
+<span class="lineNum">    1314 </span>            : 
+<span class="lineNum">    1315 </span><span class="lineNoCov">          0 : GTextInfo *GGadgetGetListItemSelected(GGadget *g) {</span>
+<span class="lineNum">    1316 </span><span class="lineNoCov">          0 :     int pos = GGadgetGetFirstListSelectedItem(g);</span>
+<span class="lineNum">    1317 </span>            : 
+<span class="lineNum">    1318 </span><span class="lineNoCov">          0 :     if ( pos!=-1 &amp;&amp; g-&gt;funcs-&gt;get_list_item!=NULL )</span>
+<span class="lineNum">    1319 </span><span class="lineNoCov">          0 : return((g-&gt;funcs-&gt;get_list_item)(g,pos));</span>
+<span class="lineNum">    1320 </span>            : 
+<span class="lineNum">    1321 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<a name="1322"><span class="lineNum">    1322 </span>            : }</a>
+<span class="lineNum">    1323 </span>            : 
+<span class="lineNum">    1324 </span><span class="lineNoCov">          0 : void GGadgetSelectListItem(GGadget *g,int32 pos,int32 sel) {</span>
+<span class="lineNum">    1325 </span><span class="lineNoCov">          0 :     if ( g-&gt;funcs-&gt;select_list_item!=NULL )</span>
+<span class="lineNum">    1326 </span><span class="lineNoCov">          0 :         (g-&gt;funcs-&gt;select_list_item)(g,pos,sel);</span>
+<a name="1327"><span class="lineNum">    1327 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1328 </span>            : 
+<span class="lineNum">    1329 </span><span class="lineNoCov">          0 : void GGadgetSelectOneListItem(GGadget *g,int32 pos) {</span>
+<span class="lineNum">    1330 </span><span class="lineNoCov">          0 :     if ( g-&gt;funcs-&gt;select_one_list_item!=NULL )</span>
+<span class="lineNum">    1331 </span><span class="lineNoCov">          0 :         (g-&gt;funcs-&gt;select_one_list_item)(g,pos);</span>
+<a name="1332"><span class="lineNum">    1332 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1333 </span>            : 
+<span class="lineNum">    1334 </span><span class="lineNoCov">          0 : int32 GGadgetIsListItemSelected(GGadget *g,int32 pos) {</span>
+<span class="lineNum">    1335 </span><span class="lineNoCov">          0 :     if ( g-&gt;funcs-&gt;is_list_item_selected!=NULL )</span>
+<span class="lineNum">    1336 </span><span class="lineNoCov">          0 : return((g-&gt;funcs-&gt;is_list_item_selected)(g,pos));</span>
+<span class="lineNum">    1337 </span>            : 
+<span class="lineNum">    1338 </span><span class="lineNoCov">          0 : return( 0 );</span>
+<a name="1339"><span class="lineNum">    1339 </span>            : }</a>
+<span class="lineNum">    1340 </span>            : 
+<span class="lineNum">    1341 </span><span class="lineNoCov">          0 : int32 GGadgetGetFirstListSelectedItem(GGadget *g) {</span>
+<span class="lineNum">    1342 </span><span class="lineNoCov">          0 :     if ( g-&gt;funcs-&gt;get_first_selection!=NULL )</span>
+<span class="lineNum">    1343 </span><span class="lineNoCov">          0 : return((g-&gt;funcs-&gt;get_first_selection)(g));</span>
+<span class="lineNum">    1344 </span><span class="lineNoCov">          0 : return( -1 );</span>
+<a name="1345"><span class="lineNum">    1345 </span>            : }</a>
+<span class="lineNum">    1346 </span>            : 
+<span class="lineNum">    1347 </span><span class="lineNoCov">          0 : void GGadgetScrollListToPos(GGadget *g,int32 pos) {</span>
+<span class="lineNum">    1348 </span><span class="lineNoCov">          0 :     if ( g-&gt;funcs-&gt;scroll_list_to_pos!=NULL )</span>
+<span class="lineNum">    1349 </span><span class="lineNoCov">          0 :         (g-&gt;funcs-&gt;scroll_list_to_pos)(g,pos);</span>
+<a name="1350"><span class="lineNum">    1350 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1351 </span>            : 
+<span class="lineNum">    1352 </span><span class="lineNoCov">          0 : void GGadgetScrollListToText(GGadget *g,const unichar_t *lab,int32 sel) {</span>
+<span class="lineNum">    1353 </span><span class="lineNoCov">          0 :     if ( g-&gt;funcs-&gt;scroll_list_to_text!=NULL )</span>
+<span class="lineNum">    1354 </span><span class="lineNoCov">          0 :         (g-&gt;funcs-&gt;scroll_list_to_text)(g,lab,sel);</span>
+<a name="1355"><span class="lineNum">    1355 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1356 </span>            : 
+<span class="lineNum">    1357 </span><span class="lineNoCov">          0 : void GGadgetSetListOrderer(GGadget *g,int (*orderer)(const void *, const void *)) {</span>
+<span class="lineNum">    1358 </span><span class="lineNoCov">          0 :     if ( g-&gt;funcs-&gt;set_list_orderer!=NULL )</span>
+<span class="lineNum">    1359 </span><span class="lineNoCov">          0 :         (g-&gt;funcs-&gt;set_list_orderer)(g,orderer);</span>
+<a name="1360"><span class="lineNum">    1360 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1361 </span>            : 
+<span class="lineNum">    1362 </span><span class="lineNoCov">          0 : void GGadgetGetDesiredSize(GGadget *g,GRect *outer, GRect *inner) {</span>
+<span class="lineNum">    1363 </span><span class="lineNoCov">          0 :     if ( g-&gt;state==gs_invisible ) {</span>
+<span class="lineNum">    1364 </span><span class="lineNoCov">          0 :         if ( outer!=NULL )</span>
+<span class="lineNum">    1365 </span><span class="lineNoCov">          0 :             memset(outer,0,sizeof(*outer));</span>
+<span class="lineNum">    1366 </span><span class="lineNoCov">          0 :         if ( inner!=NULL )</span>
+<span class="lineNum">    1367 </span><span class="lineNoCov">          0 :             memset(inner,0,sizeof(*inner));</span>
+<span class="lineNum">    1368 </span><span class="lineNoCov">          0 :     } else if ( ((char *) &amp;g-&gt;funcs-&gt;get_desired_size) - ((char *) g-&gt;funcs) &lt; g-&gt;funcs-&gt;size &amp;&amp;</span>
+<span class="lineNum">    1369 </span><span class="lineNoCov">          0 :             g-&gt;funcs-&gt;get_desired_size!=NULL )</span>
+<span class="lineNum">    1370 </span><span class="lineNoCov">          0 :         (g-&gt;funcs-&gt;get_desired_size)(g,outer,inner);</span>
+<span class="lineNum">    1371 </span>            :     else {
+<span class="lineNum">    1372 </span><span class="lineNoCov">          0 :         if ( outer!=NULL )</span>
+<span class="lineNum">    1373 </span><span class="lineNoCov">          0 :             *outer = g-&gt;r;</span>
+<span class="lineNum">    1374 </span><span class="lineNoCov">          0 :         if ( inner!=NULL )</span>
+<span class="lineNum">    1375 </span><span class="lineNoCov">          0 :             *inner = g-&gt;inner;</span>
+<span class="lineNum">    1376 </span>            :     }
+<a name="1377"><span class="lineNum">    1377 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1378 </span>            : 
+<span class="lineNum">    1379 </span><span class="lineNoCov">          0 : void GGadgetGetDesiredVisibleSize(GGadget *g,GRect *outer, GRect *inner) {</span>
+<span class="lineNum">    1380 </span><span class="lineNoCov">          0 :     if ( ((char *) &amp;g-&gt;funcs-&gt;get_desired_size) - ((char *) g-&gt;funcs) &lt; g-&gt;funcs-&gt;size &amp;&amp;</span>
+<span class="lineNum">    1381 </span><span class="lineNoCov">          0 :             g-&gt;funcs-&gt;get_desired_size!=NULL )</span>
+<span class="lineNum">    1382 </span><span class="lineNoCov">          0 :         (g-&gt;funcs-&gt;get_desired_size)(g,outer,inner);</span>
+<span class="lineNum">    1383 </span>            :     else {
+<span class="lineNum">    1384 </span><span class="lineNoCov">          0 :         if ( outer!=NULL )</span>
+<span class="lineNum">    1385 </span><span class="lineNoCov">          0 :             *outer = g-&gt;r;</span>
+<span class="lineNum">    1386 </span><span class="lineNoCov">          0 :         if ( inner!=NULL )</span>
+<span class="lineNum">    1387 </span><span class="lineNoCov">          0 :             *inner = g-&gt;inner;</span>
+<span class="lineNum">    1388 </span>            :     }
+<a name="1389"><span class="lineNum">    1389 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1390 </span>            : 
+<span class="lineNum">    1391 </span><span class="lineNoCov">          0 : void GGadgetSetDesiredSize(GGadget *g,GRect *outer, GRect *inner) {</span>
+<span class="lineNum">    1392 </span><span class="lineNoCov">          0 :     if ( ((char *) &amp;g-&gt;funcs-&gt;set_desired_size) - ((char *) g-&gt;funcs) &lt; g-&gt;funcs-&gt;size &amp;&amp;</span>
+<span class="lineNum">    1393 </span><span class="lineNoCov">          0 :             g-&gt;funcs-&gt;set_desired_size!=NULL )</span>
+<span class="lineNum">    1394 </span><span class="lineNoCov">          0 :         (g-&gt;funcs-&gt;set_desired_size)(g,outer,inner);</span>
+<a name="1395"><span class="lineNum">    1395 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1396 </span>            : 
+<span class="lineNum">    1397 </span><span class="lineNoCov">          0 : int GGadgetFillsWindow(GGadget *g) {</span>
+<span class="lineNum">    1398 </span><span class="lineNoCov">          0 :     if ( ((char *) &amp;g-&gt;funcs-&gt;fills_window) - ((char *) g-&gt;funcs) &lt; g-&gt;funcs-&gt;size &amp;&amp;</span>
+<span class="lineNum">    1399 </span><span class="lineNoCov">          0 :             g-&gt;funcs-&gt;fills_window!=NULL )</span>
+<span class="lineNum">    1400 </span><span class="lineNoCov">          0 : return( (g-&gt;funcs-&gt;fills_window)(g) );</span>
+<span class="lineNum">    1401 </span>            : 
+<span class="lineNum">    1402 </span><span class="lineNoCov">          0 : return( false );</span>
+<a name="1403"><span class="lineNum">    1403 </span>            : }</a>
+<span class="lineNum">    1404 </span>            : 
+<span class="lineNum">    1405 </span><span class="lineNoCov">          0 : int GGadgetIsDefault(GGadget *g) {</span>
+<span class="lineNum">    1406 </span><span class="lineNoCov">          0 :     if ( ((char *) &amp;g-&gt;funcs-&gt;is_default) - ((char *) g-&gt;funcs) &lt; g-&gt;funcs-&gt;size &amp;&amp;</span>
+<span class="lineNum">    1407 </span><span class="lineNoCov">          0 :             g-&gt;funcs-&gt;is_default!=NULL )</span>
+<span class="lineNum">    1408 </span><span class="lineNoCov">          0 : return( (g-&gt;funcs-&gt;is_default)(g) );</span>
+<span class="lineNum">    1409 </span>            : 
+<span class="lineNum">    1410 </span><span class="lineNoCov">          0 : return( false );</span>
+<a name="1411"><span class="lineNum">    1411 </span>            : }</a>
+<span class="lineNum">    1412 </span>            : 
+<span class="lineNum">    1413 </span><span class="lineNoCov">          0 : void GGadgetsCreate(GWindow base, GGadgetCreateData *gcd) {</span>
+<span class="lineNum">    1414 </span>            :     int i;
+<span class="lineNum">    1415 </span>            : 
+<span class="lineNum">    1416 </span><span class="lineNoCov">          0 :     for ( i=0; gcd[i].creator!=NULL; ++i )</span>
+<span class="lineNum">    1417 </span><span class="lineNoCov">          0 :         gcd[i].ret = (gcd[i].creator)(base,&amp;gcd[i].gd,gcd[i].data);</span>
+<a name="1418"><span class="lineNum">    1418 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1419 </span>            : 
+<span class="lineNum">    1420 </span><span class="lineNoCov">          0 : int GGadgetDispatchEvent(GGadget *g, GEvent *event) {</span>
+<span class="lineNum">    1421 </span>            : 
+<span class="lineNum">    1422 </span><span class="lineNoCov">          0 :     if ( g==NULL || event==NULL )</span>
+<span class="lineNum">    1423 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">    1424 </span><span class="lineNoCov">          0 :     switch ( event-&gt;type ) {</span>
+<span class="lineNum">    1425 </span>            :       case et_expose:
+<span class="lineNum">    1426 </span><span class="lineNoCov">          0 :           if ( g-&gt;funcs-&gt;handle_expose )</span>
+<span class="lineNum">    1427 </span><span class="lineNoCov">          0 : return( (g-&gt;funcs-&gt;handle_expose)(g-&gt;base,g,event) );</span>
+<span class="lineNum">    1428 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">    1429 </span>            :       case et_mouseup: case et_mousedown: case et_mousemove: case et_crossing:
+<span class="lineNum">    1430 </span><span class="lineNoCov">          0 :           if ( g-&gt;funcs-&gt;handle_mouse )</span>
+<span class="lineNum">    1431 </span><span class="lineNoCov">          0 : return( (g-&gt;funcs-&gt;handle_mouse)(g,event) );</span>
+<span class="lineNum">    1432 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">    1433 </span>            :       case et_char: case et_charup:
+<span class="lineNum">    1434 </span><span class="lineNoCov">          0 :         if ( g-&gt;funcs-&gt;handle_key ) {</span>
+<span class="lineNum">    1435 </span>            :             int ret;
+<span class="lineNum">    1436 </span><span class="lineNoCov">          0 :             int old = g-&gt;takes_keyboard;</span>
+<span class="lineNum">    1437 </span><span class="lineNoCov">          0 :             g-&gt;takes_keyboard = true;</span>
+<span class="lineNum">    1438 </span><span class="lineNoCov">          0 :             ret =(g-&gt;funcs-&gt;handle_key)(g,event);</span>
+<span class="lineNum">    1439 </span><span class="lineNoCov">          0 :             g-&gt;takes_keyboard = old;</span>
+<span class="lineNum">    1440 </span><span class="lineNoCov">          0 : return( ret );</span>
+<span class="lineNum">    1441 </span>            :         }
+<span class="lineNum">    1442 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">    1443 </span>            :       case et_drag: case et_dragout: case et_drop: case et_selclear:
+<span class="lineNum">    1444 </span><span class="lineNoCov">          0 :           if ( g-&gt;funcs-&gt;handle_sel )</span>
+<span class="lineNum">    1445 </span><span class="lineNoCov">          0 : return( (g-&gt;funcs-&gt;handle_sel)(g,event) );</span>
+<span class="lineNum">    1446 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">    1447 </span>            :       case et_timer:
+<span class="lineNum">    1448 </span><span class="lineNoCov">          0 :           if ( g-&gt;funcs-&gt;handle_timer )</span>
+<span class="lineNum">    1449 </span><span class="lineNoCov">          0 : return( (g-&gt;funcs-&gt;handle_timer)(g,event) );</span>
+<span class="lineNum">    1450 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">    1451 </span>            :       case et_controlevent:
+<span class="lineNum">    1452 </span><span class="lineNoCov">          0 :         if ( g-&gt;handle_controlevent!=NULL )</span>
+<span class="lineNum">    1453 </span><span class="lineNoCov">          0 : return( (g-&gt;handle_controlevent)(g,event) );</span>
+<span class="lineNum">    1454 </span>            :         else
+<span class="lineNum">    1455 </span><span class="lineNoCov">          0 :             GDrawPostEvent(event);</span>
+<span class="lineNum">    1456 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">    1457 </span>            :     }
+<span class="lineNum">    1458 </span><span class="lineNoCov">          0 : return( false );</span>
+<a name="1459"><span class="lineNum">    1459 </span>            : }</a>
+<span class="lineNum">    1460 </span>            : 
+<span class="lineNum">    1461 </span><span class="lineNoCov">          0 : void GGadgetTakesKeyboard(GGadget *g, int takes_keyboard) {</span>
+<span class="lineNum">    1462 </span><span class="lineNoCov">          0 :     g-&gt;takes_keyboard = takes_keyboard;</span>
+<a name="1463"><span class="lineNum">    1463 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1464 </span>            : 
+<span class="lineNum">    1465 </span><span class="lineNoCov">          0 : GResInfo *_GGadgetRIHead(void) {</span>
+<span class="lineNum">    1466 </span>            : 
+<span class="lineNum">    1467 </span><span class="lineNoCov">          0 :     if ( !_ggadget_inited )</span>
+<span class="lineNum">    1468 </span><span class="lineNoCov">          0 :         GGadgetInit();</span>
+<span class="lineNum">    1469 </span><span class="lineNoCov">          0 : return( &amp;popup_ri );</span>
+<a name="1470"><span class="lineNum">    1470 </span>            : }</a>
+<span class="lineNum">    1471 </span>            : 
+<span class="lineNum">    1472 </span><span class="lineNoCov">          0 : void GGadgetSetSkipHotkeyProcessing( GGadget *g, int v )</span>
+<span class="lineNum">    1473 </span>            : {
+<span class="lineNum">    1474 </span><span class="lineNoCov">          0 :     if( !g )</span>
+<span class="lineNum">    1475 </span><span class="lineNoCov">          0 :         return;</span>
+<span class="lineNum">    1476 </span>            : 
+<span class="lineNum">    1477 </span><span class="lineNoCov">          0 :     printf(&quot;GGadgetSetSkipHotkeyProcessing1 %d\n&quot;, g-&gt;state );</span>
+<span class="lineNum">    1478 </span><span class="lineNoCov">          0 :     g-&gt;gg_skip_hotkey_processing = v;</span>
+<span class="lineNum">    1479 </span><span class="lineNoCov">          0 :     printf(&quot;GGadgetSetSkipHotkeyProcessing2 %d\n&quot;, g-&gt;state );</span>
+<a name="1480"><span class="lineNum">    1480 </span>            : }</a>
+<span class="lineNum">    1481 </span>            : 
+<span class="lineNum">    1482 </span><span class="lineNoCov">          0 : int GGadgetGetSkipHotkeyProcessing( GGadget *g )</span>
+<span class="lineNum">    1483 </span>            : {
+<span class="lineNum">    1484 </span><span class="lineNoCov">          0 :     if( !g )</span>
+<span class="lineNum">    1485 </span><span class="lineNoCov">          0 :         return 0;</span>
+<span class="lineNum">    1486 </span>            : 
+<span class="lineNum">    1487 </span><span class="lineNoCov">          0 :     return (g-&gt;gg_skip_hotkey_processing);</span>
+<a name="1488"><span class="lineNum">    1488 </span>            : }</a>
+<span class="lineNum">    1489 </span>            : 
+<span class="lineNum">    1490 </span><span class="lineNoCov">          0 : void GGadgetSetSkipUnQualifiedHotkeyProcessing( GGadget *g, int v )</span>
+<span class="lineNum">    1491 </span>            : {
+<span class="lineNum">    1492 </span><span class="lineNoCov">          0 :     if( !g )</span>
+<span class="lineNum">    1493 </span><span class="lineNoCov">          0 :         return;</span>
+<span class="lineNum">    1494 </span><span class="lineNoCov">          0 :     g-&gt;gg_skip_unqualified_hotkey_processing = v;</span>
+<a name="1495"><span class="lineNum">    1495 </span>            : }</a>
+<span class="lineNum">    1496 </span>            : 
+<span class="lineNum">    1497 </span><span class="lineNoCov">          0 : int GGadgetGetSkipUnQualifiedHotkeyProcessing( GGadget *g )</span>
+<span class="lineNum">    1498 </span>            : {
+<span class="lineNum">    1499 </span><span class="lineNoCov">          0 :     if( !g )</span>
+<span class="lineNum">    1500 </span><span class="lineNoCov">          0 :         return 0;</span>
+<span class="lineNum">    1501 </span>            : 
+<span class="lineNum">    1502 </span><span class="lineNoCov">          0 :     return (g-&gt;gg_skip_unqualified_hotkey_processing);</span>
+<span class="lineNum">    1503 </span>            : }
+<span class="lineNum">    1504 </span>            : 
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

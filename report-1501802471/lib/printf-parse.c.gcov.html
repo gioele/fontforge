@@ -1,0 +1,714 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - lib/printf-parse.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">lib</a> - printf-parse.c<span style="font-size: 80%;"> (source / <a href="printf-parse.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">235</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Formatted output to strings.</a>
+<span class="lineNum">       2 </span>            :    Copyright (C) 1999-2000, 2002-2003, 2006-2016 Free Software Foundation, Inc.
+<span class="lineNum">       3 </span>            : 
+<span class="lineNum">       4 </span>            :    This program is free software; you can redistribute it and/or modify
+<span class="lineNum">       5 </span>            :    it under the terms of the GNU General Public License as published by
+<span class="lineNum">       6 </span>            :    the Free Software Foundation; either version 3, or (at your option)
+<span class="lineNum">       7 </span>            :    any later version.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :    This program is distributed in the hope that it will be useful,
+<span class="lineNum">      10 </span>            :    but WITHOUT ANY WARRANTY; without even the implied warranty of
+<span class="lineNum">      11 </span>            :    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+<span class="lineNum">      12 </span>            :    GNU General Public License for more details.
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            :    You should have received a copy of the GNU General Public License along
+<span class="lineNum">      15 </span>            :    with this program; if not, see &lt;http://www.gnu.org/licenses/&gt;.  */
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            : /* This file can be parametrized with the following macros:
+<span class="lineNum">      18 </span>            :      CHAR_T             The element type of the format string.
+<span class="lineNum">      19 </span>            :      CHAR_T_ONLY_ASCII  Set to 1 to enable verification that all characters
+<span class="lineNum">      20 </span>            :                         in the format string are ASCII.
+<span class="lineNum">      21 </span>            :      DIRECTIVE          Structure denoting a format directive.
+<span class="lineNum">      22 </span>            :                         Depends on CHAR_T.
+<span class="lineNum">      23 </span>            :      DIRECTIVES         Structure denoting the set of format directives of a
+<span class="lineNum">      24 </span>            :                         format string.  Depends on CHAR_T.
+<span class="lineNum">      25 </span>            :      PRINTF_PARSE       Function that parses a format string.
+<span class="lineNum">      26 </span>            :                         Depends on CHAR_T.
+<span class="lineNum">      27 </span>            :      STATIC             Set to 'static' to declare the function static.
+<span class="lineNum">      28 </span>            :      ENABLE_UNISTDIO    Set to 1 to enable the unistdio extensions.  */
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            : #ifndef PRINTF_PARSE
+<span class="lineNum">      31 </span>            : # include &lt;config.h&gt;
+<span class="lineNum">      32 </span>            : #endif
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span>            : /* Specification.  */
+<span class="lineNum">      35 </span>            : #ifndef PRINTF_PARSE
+<span class="lineNum">      36 </span>            : # include &quot;printf-parse.h&quot;
+<span class="lineNum">      37 </span>            : #endif
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            : /* Default parameters.  */
+<span class="lineNum">      40 </span>            : #ifndef PRINTF_PARSE
+<span class="lineNum">      41 </span>            : # define PRINTF_PARSE printf_parse
+<span class="lineNum">      42 </span>            : # define CHAR_T char
+<span class="lineNum">      43 </span>            : # define DIRECTIVE char_directive
+<span class="lineNum">      44 </span>            : # define DIRECTIVES char_directives
+<span class="lineNum">      45 </span>            : #endif
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span>            : /* Get size_t, NULL.  */
+<span class="lineNum">      48 </span>            : #include &lt;stddef.h&gt;
+<span class="lineNum">      49 </span>            : 
+<span class="lineNum">      50 </span>            : /* Get intmax_t.  */
+<span class="lineNum">      51 </span>            : #if defined IN_LIBINTL || defined IN_LIBASPRINTF
+<span class="lineNum">      52 </span>            : # if HAVE_STDINT_H_WITH_UINTMAX
+<span class="lineNum">      53 </span>            : #  include &lt;stdint.h&gt;
+<span class="lineNum">      54 </span>            : # endif
+<span class="lineNum">      55 </span>            : # if HAVE_INTTYPES_H_WITH_UINTMAX
+<span class="lineNum">      56 </span>            : #  include &lt;inttypes.h&gt;
+<span class="lineNum">      57 </span>            : # endif
+<span class="lineNum">      58 </span>            : #else
+<span class="lineNum">      59 </span>            : # include &lt;stdint.h&gt;
+<span class="lineNum">      60 </span>            : #endif
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span>            : /* malloc(), realloc(), free().  */
+<span class="lineNum">      63 </span>            : #include &lt;stdlib.h&gt;
+<span class="lineNum">      64 </span>            : 
+<span class="lineNum">      65 </span>            : /* memcpy().  */
+<span class="lineNum">      66 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">      67 </span>            : 
+<span class="lineNum">      68 </span>            : /* errno.  */
+<span class="lineNum">      69 </span>            : #include &lt;errno.h&gt;
+<span class="lineNum">      70 </span>            : 
+<span class="lineNum">      71 </span>            : /* Checked size_t computations.  */
+<span class="lineNum">      72 </span>            : #include &quot;xsize.h&quot;
+<span class="lineNum">      73 </span>            : 
+<span class="lineNum">      74 </span>            : #if CHAR_T_ONLY_ASCII
+<span class="lineNum">      75 </span>            : /* c_isascii().  */
+<span class="lineNum">      76 </span>            : # include &quot;c-ctype.h&quot;
+<span class="lineNum">      77 </span>            : #endif
+<span class="lineNum">      78 </span>            : 
+<span class="lineNum">      79 </span>            : #ifdef STATIC
+<span class="lineNum">      80 </span>            : STATIC
+<a name="81"><span class="lineNum">      81 </span>            : #endif</a>
+<span class="lineNum">      82 </span>            : int
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 : PRINTF_PARSE (const CHAR_T *format, DIRECTIVES *d, arguments *a)</span>
+<span class="lineNum">      84 </span>            : {
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :   const CHAR_T *cp = format;    /* pointer into format */</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :   size_t arg_posn = 0;          /* number of regular arguments consumed */</span>
+<span class="lineNum">      87 </span>            :   size_t d_allocated;           /* allocated elements of d-&gt;dir */
+<span class="lineNum">      88 </span>            :   size_t a_allocated;           /* allocated elements of a-&gt;arg */
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :   size_t max_width_length = 0;</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :   size_t max_precision_length = 0;</span>
+<span class="lineNum">      91 </span>            : 
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :   d-&gt;count = 0;</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :   d_allocated = N_DIRECT_ALLOC_DIRECTIVES;</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :   d-&gt;dir = d-&gt;direct_alloc_dir;</span>
+<span class="lineNum">      95 </span>            : 
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :   a-&gt;count = 0;</span>
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :   a_allocated = N_DIRECT_ALLOC_ARGUMENTS;</span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :   a-&gt;arg = a-&gt;direct_alloc_arg;</span>
+<span class="lineNum">      99 </span>            : 
+<span class="lineNum">     100 </span>            : #define REGISTER_ARG(_index_,_type_) \
+<span class="lineNum">     101 </span>            :   {                                                                     \
+<span class="lineNum">     102 </span>            :     size_t n = (_index_);                                               \
+<span class="lineNum">     103 </span>            :     if (n &gt;= a_allocated)                                               \
+<span class="lineNum">     104 </span>            :       {                                                                 \
+<span class="lineNum">     105 </span>            :         size_t memory_size;                                             \
+<span class="lineNum">     106 </span>            :         argument *memory;                                               \
+<span class="lineNum">     107 </span>            :                                                                         \
+<span class="lineNum">     108 </span>            :         a_allocated = xtimes (a_allocated, 2);                          \
+<span class="lineNum">     109 </span>            :         if (a_allocated &lt;= n)                                           \
+<span class="lineNum">     110 </span>            :           a_allocated = xsum (n, 1);                                    \
+<span class="lineNum">     111 </span>            :         memory_size = xtimes (a_allocated, sizeof (argument));          \
+<span class="lineNum">     112 </span>            :         if (size_overflow_p (memory_size))                              \
+<span class="lineNum">     113 </span>            :           /* Overflow, would lead to out of memory.  */                 \
+<span class="lineNum">     114 </span>            :           goto out_of_memory;                                           \
+<span class="lineNum">     115 </span>            :         memory = (argument *) (a-&gt;arg != a-&gt;direct_alloc_arg            \
+<span class="lineNum">     116 </span>            :                                ? realloc (a-&gt;arg, memory_size)          \
+<span class="lineNum">     117 </span>            :                                : malloc (memory_size));                 \
+<span class="lineNum">     118 </span>            :         if (memory == NULL)                                             \
+<span class="lineNum">     119 </span>            :           /* Out of memory.  */                                         \
+<span class="lineNum">     120 </span>            :           goto out_of_memory;                                           \
+<span class="lineNum">     121 </span>            :         if (a-&gt;arg == a-&gt;direct_alloc_arg)                              \
+<span class="lineNum">     122 </span>            :           memcpy (memory, a-&gt;arg, a-&gt;count * sizeof (argument));        \
+<span class="lineNum">     123 </span>            :         a-&gt;arg = memory;                                                \
+<span class="lineNum">     124 </span>            :       }                                                                 \
+<span class="lineNum">     125 </span>            :     while (a-&gt;count &lt;= n)                                               \
+<span class="lineNum">     126 </span>            :       a-&gt;arg[a-&gt;count++].type = TYPE_NONE;                              \
+<span class="lineNum">     127 </span>            :     if (a-&gt;arg[n].type == TYPE_NONE)                                    \
+<span class="lineNum">     128 </span>            :       a-&gt;arg[n].type = (_type_);                                        \
+<span class="lineNum">     129 </span>            :     else if (a-&gt;arg[n].type != (_type_))                                \
+<span class="lineNum">     130 </span>            :       /* Ambiguous type for positional argument.  */                    \
+<span class="lineNum">     131 </span>            :       goto error;                                                       \
+<span class="lineNum">     132 </span>            :   }
+<span class="lineNum">     133 </span>            : 
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :   while (*cp != '\0')</span>
+<span class="lineNum">     135 </span>            :     {
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :       CHAR_T c = *cp++;</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :       if (c == '%')</span>
+<span class="lineNum">     138 </span>            :         {
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :           size_t arg_index = ARG_NONE;</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :           DIRECTIVE *dp = &amp;d-&gt;dir[d-&gt;count]; /* pointer to next directive */</span>
+<span class="lineNum">     141 </span>            : 
+<span class="lineNum">     142 </span>            :           /* Initialize the next directive.  */
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :           dp-&gt;dir_start = cp - 1;</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :           dp-&gt;flags = 0;</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :           dp-&gt;width_start = NULL;</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :           dp-&gt;width_end = NULL;</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :           dp-&gt;width_arg_index = ARG_NONE;</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :           dp-&gt;precision_start = NULL;</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :           dp-&gt;precision_end = NULL;</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :           dp-&gt;precision_arg_index = ARG_NONE;</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :           dp-&gt;arg_index = ARG_NONE;</span>
+<span class="lineNum">     152 </span>            : 
+<span class="lineNum">     153 </span>            :           /* Test for positional argument.  */
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :           if (*cp &gt;= '0' &amp;&amp; *cp &lt;= '9')</span>
+<span class="lineNum">     155 </span>            :             {
+<span class="lineNum">     156 </span>            :               const CHAR_T *np;
+<span class="lineNum">     157 </span>            : 
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :               for (np = cp; *np &gt;= '0' &amp;&amp; *np &lt;= '9'; np++)</span>
+<span class="lineNum">     159 </span>            :                 ;
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :               if (*np == '$')</span>
+<span class="lineNum">     161 </span>            :                 {
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :                   size_t n = 0;</span>
+<span class="lineNum">     163 </span>            : 
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :                   for (np = cp; *np &gt;= '0' &amp;&amp; *np &lt;= '9'; np++)</span>
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :                     n = xsum (xtimes (n, 10), *np - '0');</span>
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :                   if (n == 0)</span>
+<span class="lineNum">     167 </span>            :                     /* Positional argument 0.  */
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :                     goto error;</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :                   if (size_overflow_p (n))</span>
+<span class="lineNum">     170 </span>            :                     /* n too large, would lead to out of memory later.  */
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :                     goto error;</span>
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :                   arg_index = n - 1;</span>
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :                   cp = np + 1;</span>
+<span class="lineNum">     174 </span>            :                 }
+<span class="lineNum">     175 </span>            :             }
+<span class="lineNum">     176 </span>            : 
+<span class="lineNum">     177 </span>            :           /* Read the flags.  */
+<span class="lineNum">     178 </span>            :           for (;;)
+<span class="lineNum">     179 </span>            :             {
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :               if (*cp == '\'')</span>
+<span class="lineNum">     181 </span>            :                 {
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :                   dp-&gt;flags |= FLAG_GROUP;</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :                   cp++;</span>
+<span class="lineNum">     184 </span>            :                 }
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :               else if (*cp == '-')</span>
+<span class="lineNum">     186 </span>            :                 {
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :                   dp-&gt;flags |= FLAG_LEFT;</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :                   cp++;</span>
+<span class="lineNum">     189 </span>            :                 }
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :               else if (*cp == '+')</span>
+<span class="lineNum">     191 </span>            :                 {
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :                   dp-&gt;flags |= FLAG_SHOWSIGN;</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :                   cp++;</span>
+<span class="lineNum">     194 </span>            :                 }
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :               else if (*cp == ' ')</span>
+<span class="lineNum">     196 </span>            :                 {
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :                   dp-&gt;flags |= FLAG_SPACE;</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :                   cp++;</span>
+<span class="lineNum">     199 </span>            :                 }
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :               else if (*cp == '#')</span>
+<span class="lineNum">     201 </span>            :                 {
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :                   dp-&gt;flags |= FLAG_ALT;</span>
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :                   cp++;</span>
+<span class="lineNum">     204 </span>            :                 }
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :               else if (*cp == '0')</span>
+<span class="lineNum">     206 </span>            :                 {
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :                   dp-&gt;flags |= FLAG_ZERO;</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :                   cp++;</span>
+<span class="lineNum">     209 </span>            :                 }
+<span class="lineNum">     210 </span>            : #if __GLIBC__ &gt;= 2 &amp;&amp; !defined __UCLIBC__
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :               else if (*cp == 'I')</span>
+<span class="lineNum">     212 </span>            :                 {
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :                   dp-&gt;flags |= FLAG_LOCALIZED;</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :                   cp++;</span>
+<span class="lineNum">     215 </span>            :                 }
+<span class="lineNum">     216 </span>            : #endif
+<span class="lineNum">     217 </span>            :               else
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :                 break;</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     220 </span>            : 
+<span class="lineNum">     221 </span>            :           /* Parse the field width.  */
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :           if (*cp == '*')</span>
+<span class="lineNum">     223 </span>            :             {
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :               dp-&gt;width_start = cp;</span>
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 :               cp++;</span>
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :               dp-&gt;width_end = cp;</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :               if (max_width_length &lt; 1)</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :                 max_width_length = 1;</span>
+<span class="lineNum">     229 </span>            : 
+<span class="lineNum">     230 </span>            :               /* Test for positional argument.  */
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :               if (*cp &gt;= '0' &amp;&amp; *cp &lt;= '9')</span>
+<span class="lineNum">     232 </span>            :                 {
+<span class="lineNum">     233 </span>            :                   const CHAR_T *np;
+<span class="lineNum">     234 </span>            : 
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :                   for (np = cp; *np &gt;= '0' &amp;&amp; *np &lt;= '9'; np++)</span>
+<span class="lineNum">     236 </span>            :                     ;
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :                   if (*np == '$')</span>
+<span class="lineNum">     238 </span>            :                     {
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :                       size_t n = 0;</span>
+<span class="lineNum">     240 </span>            : 
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :                       for (np = cp; *np &gt;= '0' &amp;&amp; *np &lt;= '9'; np++)</span>
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :                         n = xsum (xtimes (n, 10), *np - '0');</span>
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :                       if (n == 0)</span>
+<span class="lineNum">     244 </span>            :                         /* Positional argument 0.  */
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :                         goto error;</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :                       if (size_overflow_p (n))</span>
+<span class="lineNum">     247 </span>            :                         /* n too large, would lead to out of memory later.  */
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :                         goto error;</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :                       dp-&gt;width_arg_index = n - 1;</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :                       cp = np + 1;</span>
+<span class="lineNum">     251 </span>            :                     }
+<span class="lineNum">     252 </span>            :                 }
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :               if (dp-&gt;width_arg_index == ARG_NONE)</span>
+<span class="lineNum">     254 </span>            :                 {
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :                   dp-&gt;width_arg_index = arg_posn++;</span>
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :                   if (dp-&gt;width_arg_index == ARG_NONE)</span>
+<span class="lineNum">     257 </span>            :                     /* arg_posn wrapped around.  */
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :                     goto error;</span>
+<span class="lineNum">     259 </span>            :                 }
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :               REGISTER_ARG (dp-&gt;width_arg_index, TYPE_INT);</span>
+<span class="lineNum">     261 </span>            :             }
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :           else if (*cp &gt;= '0' &amp;&amp; *cp &lt;= '9')</span>
+<span class="lineNum">     263 </span>            :             {
+<span class="lineNum">     264 </span>            :               size_t width_length;
+<span class="lineNum">     265 </span>            : 
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :               dp-&gt;width_start = cp;</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :               for (; *cp &gt;= '0' &amp;&amp; *cp &lt;= '9'; cp++)</span>
+<span class="lineNum">     268 </span>            :                 ;
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :               dp-&gt;width_end = cp;</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :               width_length = dp-&gt;width_end - dp-&gt;width_start;</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :               if (max_width_length &lt; width_length)</span>
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :                 max_width_length = width_length;</span>
+<span class="lineNum">     273 </span>            :             }
+<span class="lineNum">     274 </span>            : 
+<span class="lineNum">     275 </span>            :           /* Parse the precision.  */
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :           if (*cp == '.')</span>
+<span class="lineNum">     277 </span>            :             {
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :               cp++;</span>
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 :               if (*cp == '*')</span>
+<span class="lineNum">     280 </span>            :                 {
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :                   dp-&gt;precision_start = cp - 1;</span>
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :                   cp++;</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :                   dp-&gt;precision_end = cp;</span>
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :                   if (max_precision_length &lt; 2)</span>
+<span class="lineNum">     285 </span><span class="lineNoCov">          0 :                     max_precision_length = 2;</span>
+<span class="lineNum">     286 </span>            : 
+<span class="lineNum">     287 </span>            :                   /* Test for positional argument.  */
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :                   if (*cp &gt;= '0' &amp;&amp; *cp &lt;= '9')</span>
+<span class="lineNum">     289 </span>            :                     {
+<span class="lineNum">     290 </span>            :                       const CHAR_T *np;
+<span class="lineNum">     291 </span>            : 
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :                       for (np = cp; *np &gt;= '0' &amp;&amp; *np &lt;= '9'; np++)</span>
+<span class="lineNum">     293 </span>            :                         ;
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :                       if (*np == '$')</span>
+<span class="lineNum">     295 </span>            :                         {
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :                           size_t n = 0;</span>
+<span class="lineNum">     297 </span>            : 
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :                           for (np = cp; *np &gt;= '0' &amp;&amp; *np &lt;= '9'; np++)</span>
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :                             n = xsum (xtimes (n, 10), *np - '0');</span>
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :                           if (n == 0)</span>
+<span class="lineNum">     301 </span>            :                             /* Positional argument 0.  */
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 :                             goto error;</span>
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :                           if (size_overflow_p (n))</span>
+<span class="lineNum">     304 </span>            :                             /* n too large, would lead to out of memory
+<span class="lineNum">     305 </span>            :                                later.  */
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :                             goto error;</span>
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :                           dp-&gt;precision_arg_index = n - 1;</span>
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 :                           cp = np + 1;</span>
+<span class="lineNum">     309 </span>            :                         }
+<span class="lineNum">     310 </span>            :                     }
+<span class="lineNum">     311 </span><span class="lineNoCov">          0 :                   if (dp-&gt;precision_arg_index == ARG_NONE)</span>
+<span class="lineNum">     312 </span>            :                     {
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :                       dp-&gt;precision_arg_index = arg_posn++;</span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :                       if (dp-&gt;precision_arg_index == ARG_NONE)</span>
+<span class="lineNum">     315 </span>            :                         /* arg_posn wrapped around.  */
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :                         goto error;</span>
+<span class="lineNum">     317 </span>            :                     }
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :                   REGISTER_ARG (dp-&gt;precision_arg_index, TYPE_INT);</span>
+<span class="lineNum">     319 </span>            :                 }
+<span class="lineNum">     320 </span>            :               else
+<span class="lineNum">     321 </span>            :                 {
+<span class="lineNum">     322 </span>            :                   size_t precision_length;
+<span class="lineNum">     323 </span>            : 
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :                   dp-&gt;precision_start = cp - 1;</span>
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :                   for (; *cp &gt;= '0' &amp;&amp; *cp &lt;= '9'; cp++)</span>
+<span class="lineNum">     326 </span>            :                     ;
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :                   dp-&gt;precision_end = cp;</span>
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :                   precision_length = dp-&gt;precision_end - dp-&gt;precision_start;</span>
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :                   if (max_precision_length &lt; precision_length)</span>
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 :                     max_precision_length = precision_length;</span>
+<span class="lineNum">     331 </span>            :                 }
+<span class="lineNum">     332 </span>            :             }
+<span class="lineNum">     333 </span>            : 
+<span class="lineNum">     334 </span>            :           {
+<span class="lineNum">     335 </span>            :             arg_type type;
+<span class="lineNum">     336 </span>            : 
+<span class="lineNum">     337 </span>            :             /* Parse argument type/size specifiers.  */
+<span class="lineNum">     338 </span>            :             {
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 :               int flags = 0;</span>
+<span class="lineNum">     340 </span>            : 
+<span class="lineNum">     341 </span>            :               for (;;)
+<span class="lineNum">     342 </span>            :                 {
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :                   if (*cp == 'h')</span>
+<span class="lineNum">     344 </span>            :                     {
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 :                       flags |= (1 &lt;&lt; (flags &amp; 1));</span>
+<span class="lineNum">     346 </span><span class="lineNoCov">          0 :                       cp++;</span>
+<span class="lineNum">     347 </span>            :                     }
+<span class="lineNum">     348 </span><span class="lineNoCov">          0 :                   else if (*cp == 'L')</span>
+<span class="lineNum">     349 </span>            :                     {
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :                       flags |= 4;</span>
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :                       cp++;</span>
+<span class="lineNum">     352 </span>            :                     }
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 :                   else if (*cp == 'l')</span>
+<span class="lineNum">     354 </span>            :                     {
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :                       flags += 8;</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :                       cp++;</span>
+<span class="lineNum">     357 </span>            :                     }
+<span class="lineNum">     358 </span><span class="lineNoCov">          0 :                   else if (*cp == 'j')</span>
+<span class="lineNum">     359 </span>            :                     {
+<span class="lineNum">     360 </span>            :                       if (sizeof (intmax_t) &gt; sizeof (long))
+<span class="lineNum">     361 </span>            :                         {
+<span class="lineNum">     362 </span>            :                           /* intmax_t = long long */
+<span class="lineNum">     363 </span>            :                           flags += 16;
+<span class="lineNum">     364 </span>            :                         }
+<span class="lineNum">     365 </span>            :                       else if (sizeof (intmax_t) &gt; sizeof (int))
+<span class="lineNum">     366 </span>            :                         {
+<span class="lineNum">     367 </span>            :                           /* intmax_t = long */
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :                           flags += 8;</span>
+<span class="lineNum">     369 </span>            :                         }
+<span class="lineNum">     370 </span><span class="lineNoCov">          0 :                       cp++;</span>
+<span class="lineNum">     371 </span>            :                     }
+<span class="lineNum">     372 </span><span class="lineNoCov">          0 :                   else if (*cp == 'z' || *cp == 'Z')</span>
+<span class="lineNum">     373 </span>            :                     {
+<span class="lineNum">     374 </span>            :                       /* 'z' is standardized in ISO C 99, but glibc uses 'Z'
+<span class="lineNum">     375 </span>            :                          because the warning facility in gcc-2.95.2 understands
+<span class="lineNum">     376 </span>            :                          only 'Z' (see gcc-2.95.2/gcc/c-common.c:1784).  */
+<span class="lineNum">     377 </span>            :                       if (sizeof (size_t) &gt; sizeof (long))
+<span class="lineNum">     378 </span>            :                         {
+<span class="lineNum">     379 </span>            :                           /* size_t = long long */
+<span class="lineNum">     380 </span>            :                           flags += 16;
+<span class="lineNum">     381 </span>            :                         }
+<span class="lineNum">     382 </span>            :                       else if (sizeof (size_t) &gt; sizeof (int))
+<span class="lineNum">     383 </span>            :                         {
+<span class="lineNum">     384 </span>            :                           /* size_t = long */
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :                           flags += 8;</span>
+<span class="lineNum">     386 </span>            :                         }
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :                       cp++;</span>
+<span class="lineNum">     388 </span>            :                     }
+<span class="lineNum">     389 </span><span class="lineNoCov">          0 :                   else if (*cp == 't')</span>
+<span class="lineNum">     390 </span>            :                     {
+<span class="lineNum">     391 </span>            :                       if (sizeof (ptrdiff_t) &gt; sizeof (long))
+<span class="lineNum">     392 </span>            :                         {
+<span class="lineNum">     393 </span>            :                           /* ptrdiff_t = long long */
+<span class="lineNum">     394 </span>            :                           flags += 16;
+<span class="lineNum">     395 </span>            :                         }
+<span class="lineNum">     396 </span>            :                       else if (sizeof (ptrdiff_t) &gt; sizeof (int))
+<span class="lineNum">     397 </span>            :                         {
+<span class="lineNum">     398 </span>            :                           /* ptrdiff_t = long */
+<span class="lineNum">     399 </span><span class="lineNoCov">          0 :                           flags += 8;</span>
+<span class="lineNum">     400 </span>            :                         }
+<span class="lineNum">     401 </span><span class="lineNoCov">          0 :                       cp++;</span>
+<span class="lineNum">     402 </span>            :                     }
+<span class="lineNum">     403 </span>            : #if defined __APPLE__ &amp;&amp; defined __MACH__
+<span class="lineNum">     404 </span>            :                   /* On Mac OS X 10.3, PRIdMAX is defined as &quot;qd&quot;.
+<span class="lineNum">     405 </span>            :                      We cannot change it to &quot;lld&quot; because PRIdMAX must also
+<span class="lineNum">     406 </span>            :                      be understood by the system's printf routines.  */
+<span class="lineNum">     407 </span>            :                   else if (*cp == 'q')
+<span class="lineNum">     408 </span>            :                     {
+<span class="lineNum">     409 </span>            :                       if (64 / 8 &gt; sizeof (long))
+<span class="lineNum">     410 </span>            :                         {
+<span class="lineNum">     411 </span>            :                           /* int64_t = long long */
+<span class="lineNum">     412 </span>            :                           flags += 16;
+<span class="lineNum">     413 </span>            :                         }
+<span class="lineNum">     414 </span>            :                       else
+<span class="lineNum">     415 </span>            :                         {
+<span class="lineNum">     416 </span>            :                           /* int64_t = long */
+<span class="lineNum">     417 </span>            :                           flags += 8;
+<span class="lineNum">     418 </span>            :                         }
+<span class="lineNum">     419 </span>            :                       cp++;
+<span class="lineNum">     420 </span>            :                     }
+<span class="lineNum">     421 </span>            : #endif
+<span class="lineNum">     422 </span>            : #if (defined _WIN32 || defined __WIN32__) &amp;&amp; ! defined __CYGWIN__
+<span class="lineNum">     423 </span>            :                   /* On native Windows, PRIdMAX is defined as &quot;I64d&quot;.
+<span class="lineNum">     424 </span>            :                      We cannot change it to &quot;lld&quot; because PRIdMAX must also
+<span class="lineNum">     425 </span>            :                      be understood by the system's printf routines.  */
+<span class="lineNum">     426 </span>            :                   else if (*cp == 'I' &amp;&amp; cp[1] == '6' &amp;&amp; cp[2] == '4')
+<span class="lineNum">     427 </span>            :                     {
+<span class="lineNum">     428 </span>            :                       if (64 / 8 &gt; sizeof (long))
+<span class="lineNum">     429 </span>            :                         {
+<span class="lineNum">     430 </span>            :                           /* __int64 = long long */
+<span class="lineNum">     431 </span>            :                           flags += 16;
+<span class="lineNum">     432 </span>            :                         }
+<span class="lineNum">     433 </span>            :                       else
+<span class="lineNum">     434 </span>            :                         {
+<span class="lineNum">     435 </span>            :                           /* __int64 = long */
+<span class="lineNum">     436 </span>            :                           flags += 8;
+<span class="lineNum">     437 </span>            :                         }
+<span class="lineNum">     438 </span>            :                       cp += 3;
+<span class="lineNum">     439 </span>            :                     }
+<span class="lineNum">     440 </span>            : #endif
+<span class="lineNum">     441 </span>            :                   else
+<span class="lineNum">     442 </span><span class="lineNoCov">          0 :                     break;</span>
+<span class="lineNum">     443 </span><span class="lineNoCov">          0 :                 }</span>
+<span class="lineNum">     444 </span>            : 
+<span class="lineNum">     445 </span>            :               /* Read the conversion character.  */
+<span class="lineNum">     446 </span><span class="lineNoCov">          0 :               c = *cp++;</span>
+<span class="lineNum">     447 </span><span class="lineNoCov">          0 :               switch (c)</span>
+<span class="lineNum">     448 </span>            :                 {
+<span class="lineNum">     449 </span>            :                 case 'd': case 'i':
+<span class="lineNum">     450 </span>            : #if HAVE_LONG_LONG_INT
+<span class="lineNum">     451 </span>            :                   /* If 'long long' exists and is larger than 'long':  */
+<span class="lineNum">     452 </span><span class="lineNoCov">          0 :                   if (flags &gt;= 16 || (flags &amp; 4))</span>
+<span class="lineNum">     453 </span><span class="lineNoCov">          0 :                     type = TYPE_LONGLONGINT;</span>
+<span class="lineNum">     454 </span>            :                   else
+<span class="lineNum">     455 </span>            : #endif
+<span class="lineNum">     456 </span>            :                   /* If 'long long' exists and is the same as 'long', we parse
+<span class="lineNum">     457 </span>            :                      &quot;lld&quot; into TYPE_LONGINT.  */
+<span class="lineNum">     458 </span><span class="lineNoCov">          0 :                   if (flags &gt;= 8)</span>
+<span class="lineNum">     459 </span><span class="lineNoCov">          0 :                     type = TYPE_LONGINT;</span>
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 :                   else if (flags &amp; 2)</span>
+<span class="lineNum">     461 </span><span class="lineNoCov">          0 :                     type = TYPE_SCHAR;</span>
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 :                   else if (flags &amp; 1)</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :                     type = TYPE_SHORT;</span>
+<span class="lineNum">     464 </span>            :                   else
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 :                     type = TYPE_INT;</span>
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">     467 </span>            :                 case 'o': case 'u': case 'x': case 'X':
+<span class="lineNum">     468 </span>            : #if HAVE_LONG_LONG_INT
+<span class="lineNum">     469 </span>            :                   /* If 'long long' exists and is larger than 'long':  */
+<span class="lineNum">     470 </span><span class="lineNoCov">          0 :                   if (flags &gt;= 16 || (flags &amp; 4))</span>
+<span class="lineNum">     471 </span><span class="lineNoCov">          0 :                     type = TYPE_ULONGLONGINT;</span>
+<span class="lineNum">     472 </span>            :                   else
+<span class="lineNum">     473 </span>            : #endif
+<span class="lineNum">     474 </span>            :                   /* If 'unsigned long long' exists and is the same as
+<span class="lineNum">     475 </span>            :                      'unsigned long', we parse &quot;llu&quot; into TYPE_ULONGINT.  */
+<span class="lineNum">     476 </span><span class="lineNoCov">          0 :                   if (flags &gt;= 8)</span>
+<span class="lineNum">     477 </span><span class="lineNoCov">          0 :                     type = TYPE_ULONGINT;</span>
+<span class="lineNum">     478 </span><span class="lineNoCov">          0 :                   else if (flags &amp; 2)</span>
+<span class="lineNum">     479 </span><span class="lineNoCov">          0 :                     type = TYPE_UCHAR;</span>
+<span class="lineNum">     480 </span><span class="lineNoCov">          0 :                   else if (flags &amp; 1)</span>
+<span class="lineNum">     481 </span><span class="lineNoCov">          0 :                     type = TYPE_USHORT;</span>
+<span class="lineNum">     482 </span>            :                   else
+<span class="lineNum">     483 </span><span class="lineNoCov">          0 :                     type = TYPE_UINT;</span>
+<span class="lineNum">     484 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">     485 </span>            :                 case 'f': case 'F': case 'e': case 'E': case 'g': case 'G':
+<span class="lineNum">     486 </span>            :                 case 'a': case 'A':
+<span class="lineNum">     487 </span><span class="lineNoCov">          0 :                   if (flags &gt;= 16 || (flags &amp; 4))</span>
+<span class="lineNum">     488 </span><span class="lineNoCov">          0 :                     type = TYPE_LONGDOUBLE;</span>
+<span class="lineNum">     489 </span>            :                   else
+<span class="lineNum">     490 </span><span class="lineNoCov">          0 :                     type = TYPE_DOUBLE;</span>
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">     492 </span>            :                 case 'c':
+<span class="lineNum">     493 </span><span class="lineNoCov">          0 :                   if (flags &gt;= 8)</span>
+<span class="lineNum">     494 </span>            : #if HAVE_WINT_T
+<span class="lineNum">     495 </span><span class="lineNoCov">          0 :                     type = TYPE_WIDE_CHAR;</span>
+<span class="lineNum">     496 </span>            : #else
+<span class="lineNum">     497 </span>            :                     goto error;
+<span class="lineNum">     498 </span>            : #endif
+<span class="lineNum">     499 </span>            :                   else
+<span class="lineNum">     500 </span><span class="lineNoCov">          0 :                     type = TYPE_CHAR;</span>
+<span class="lineNum">     501 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">     502 </span>            : #if HAVE_WINT_T
+<span class="lineNum">     503 </span>            :                 case 'C':
+<span class="lineNum">     504 </span><span class="lineNoCov">          0 :                   type = TYPE_WIDE_CHAR;</span>
+<span class="lineNum">     505 </span><span class="lineNoCov">          0 :                   c = 'c';</span>
+<span class="lineNum">     506 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">     507 </span>            : #endif
+<span class="lineNum">     508 </span>            :                 case 's':
+<span class="lineNum">     509 </span><span class="lineNoCov">          0 :                   if (flags &gt;= 8)</span>
+<span class="lineNum">     510 </span>            : #if HAVE_WCHAR_T
+<span class="lineNum">     511 </span><span class="lineNoCov">          0 :                     type = TYPE_WIDE_STRING;</span>
+<span class="lineNum">     512 </span>            : #else
+<span class="lineNum">     513 </span>            :                     goto error;
+<span class="lineNum">     514 </span>            : #endif
+<span class="lineNum">     515 </span>            :                   else
+<span class="lineNum">     516 </span><span class="lineNoCov">          0 :                     type = TYPE_STRING;</span>
+<span class="lineNum">     517 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">     518 </span>            : #if HAVE_WCHAR_T
+<span class="lineNum">     519 </span>            :                 case 'S':
+<span class="lineNum">     520 </span><span class="lineNoCov">          0 :                   type = TYPE_WIDE_STRING;</span>
+<span class="lineNum">     521 </span><span class="lineNoCov">          0 :                   c = 's';</span>
+<span class="lineNum">     522 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">     523 </span>            : #endif
+<span class="lineNum">     524 </span>            :                 case 'p':
+<span class="lineNum">     525 </span><span class="lineNoCov">          0 :                   type = TYPE_POINTER;</span>
+<span class="lineNum">     526 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">     527 </span>            :                 case 'n':
+<span class="lineNum">     528 </span>            : #if HAVE_LONG_LONG_INT
+<span class="lineNum">     529 </span>            :                   /* If 'long long' exists and is larger than 'long':  */
+<span class="lineNum">     530 </span><span class="lineNoCov">          0 :                   if (flags &gt;= 16 || (flags &amp; 4))</span>
+<span class="lineNum">     531 </span><span class="lineNoCov">          0 :                     type = TYPE_COUNT_LONGLONGINT_POINTER;</span>
+<span class="lineNum">     532 </span>            :                   else
+<span class="lineNum">     533 </span>            : #endif
+<span class="lineNum">     534 </span>            :                   /* If 'long long' exists and is the same as 'long', we parse
+<span class="lineNum">     535 </span>            :                      &quot;lln&quot; into TYPE_COUNT_LONGINT_POINTER.  */
+<span class="lineNum">     536 </span><span class="lineNoCov">          0 :                   if (flags &gt;= 8)</span>
+<span class="lineNum">     537 </span><span class="lineNoCov">          0 :                     type = TYPE_COUNT_LONGINT_POINTER;</span>
+<span class="lineNum">     538 </span><span class="lineNoCov">          0 :                   else if (flags &amp; 2)</span>
+<span class="lineNum">     539 </span><span class="lineNoCov">          0 :                     type = TYPE_COUNT_SCHAR_POINTER;</span>
+<span class="lineNum">     540 </span><span class="lineNoCov">          0 :                   else if (flags &amp; 1)</span>
+<span class="lineNum">     541 </span><span class="lineNoCov">          0 :                     type = TYPE_COUNT_SHORT_POINTER;</span>
+<span class="lineNum">     542 </span>            :                   else
+<span class="lineNum">     543 </span><span class="lineNoCov">          0 :                     type = TYPE_COUNT_INT_POINTER;</span>
+<span class="lineNum">     544 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">     545 </span>            : #if ENABLE_UNISTDIO
+<span class="lineNum">     546 </span>            :                 /* The unistdio extensions.  */
+<span class="lineNum">     547 </span>            :                 case 'U':
+<span class="lineNum">     548 </span>            :                   if (flags &gt;= 16)
+<span class="lineNum">     549 </span>            :                     type = TYPE_U32_STRING;
+<span class="lineNum">     550 </span>            :                   else if (flags &gt;= 8)
+<span class="lineNum">     551 </span>            :                     type = TYPE_U16_STRING;
+<span class="lineNum">     552 </span>            :                   else
+<span class="lineNum">     553 </span>            :                     type = TYPE_U8_STRING;
+<span class="lineNum">     554 </span>            :                   break;
+<span class="lineNum">     555 </span>            : #endif
+<span class="lineNum">     556 </span>            :                 case '%':
+<span class="lineNum">     557 </span><span class="lineNoCov">          0 :                   type = TYPE_NONE;</span>
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">     559 </span>            :                 default:
+<span class="lineNum">     560 </span>            :                   /* Unknown conversion character.  */
+<span class="lineNum">     561 </span><span class="lineNoCov">          0 :                   goto error;</span>
+<span class="lineNum">     562 </span>            :                 }
+<span class="lineNum">     563 </span>            :             }
+<span class="lineNum">     564 </span>            : 
+<span class="lineNum">     565 </span><span class="lineNoCov">          0 :             if (type != TYPE_NONE)</span>
+<span class="lineNum">     566 </span>            :               {
+<span class="lineNum">     567 </span><span class="lineNoCov">          0 :                 dp-&gt;arg_index = arg_index;</span>
+<span class="lineNum">     568 </span><span class="lineNoCov">          0 :                 if (dp-&gt;arg_index == ARG_NONE)</span>
+<span class="lineNum">     569 </span>            :                   {
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 :                     dp-&gt;arg_index = arg_posn++;</span>
+<span class="lineNum">     571 </span><span class="lineNoCov">          0 :                     if (dp-&gt;arg_index == ARG_NONE)</span>
+<span class="lineNum">     572 </span>            :                       /* arg_posn wrapped around.  */
+<span class="lineNum">     573 </span><span class="lineNoCov">          0 :                       goto error;</span>
+<span class="lineNum">     574 </span>            :                   }
+<span class="lineNum">     575 </span><span class="lineNoCov">          0 :                 REGISTER_ARG (dp-&gt;arg_index, type);</span>
+<span class="lineNum">     576 </span>            :               }
+<span class="lineNum">     577 </span><span class="lineNoCov">          0 :             dp-&gt;conversion = c;</span>
+<span class="lineNum">     578 </span><span class="lineNoCov">          0 :             dp-&gt;dir_end = cp;</span>
+<span class="lineNum">     579 </span>            :           }
+<span class="lineNum">     580 </span>            : 
+<span class="lineNum">     581 </span><span class="lineNoCov">          0 :           d-&gt;count++;</span>
+<span class="lineNum">     582 </span><span class="lineNoCov">          0 :           if (d-&gt;count &gt;= d_allocated)</span>
+<span class="lineNum">     583 </span>            :             {
+<span class="lineNum">     584 </span>            :               size_t memory_size;
+<span class="lineNum">     585 </span>            :               DIRECTIVE *memory;
+<span class="lineNum">     586 </span>            : 
+<span class="lineNum">     587 </span><span class="lineNoCov">          0 :               d_allocated = xtimes (d_allocated, 2);</span>
+<span class="lineNum">     588 </span><span class="lineNoCov">          0 :               memory_size = xtimes (d_allocated, sizeof (DIRECTIVE));</span>
+<span class="lineNum">     589 </span><span class="lineNoCov">          0 :               if (size_overflow_p (memory_size))</span>
+<span class="lineNum">     590 </span>            :                 /* Overflow, would lead to out of memory.  */
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 :                 goto out_of_memory;</span>
+<span class="lineNum">     592 </span><span class="lineNoCov">          0 :               memory = (DIRECTIVE *) (d-&gt;dir != d-&gt;direct_alloc_dir</span>
+<span class="lineNum">     593 </span><span class="lineNoCov">          0 :                                       ? realloc (d-&gt;dir, memory_size)</span>
+<span class="lineNum">     594 </span>            :                                       : malloc (memory_size));
+<span class="lineNum">     595 </span><span class="lineNoCov">          0 :               if (memory == NULL)</span>
+<span class="lineNum">     596 </span>            :                 /* Out of memory.  */
+<span class="lineNum">     597 </span><span class="lineNoCov">          0 :                 goto out_of_memory;</span>
+<span class="lineNum">     598 </span><span class="lineNoCov">          0 :               if (d-&gt;dir == d-&gt;direct_alloc_dir)</span>
+<span class="lineNum">     599 </span><span class="lineNoCov">          0 :                 memcpy (memory, d-&gt;dir, d-&gt;count * sizeof (DIRECTIVE));</span>
+<span class="lineNum">     600 </span><span class="lineNoCov">          0 :               d-&gt;dir = memory;</span>
+<span class="lineNum">     601 </span>            :             }
+<span class="lineNum">     602 </span>            :         }
+<span class="lineNum">     603 </span>            : #if CHAR_T_ONLY_ASCII
+<span class="lineNum">     604 </span>            :       else if (!c_isascii (c))
+<span class="lineNum">     605 </span>            :         {
+<span class="lineNum">     606 </span>            :           /* Non-ASCII character.  Not supported.  */
+<span class="lineNum">     607 </span>            :           goto error;
+<span class="lineNum">     608 </span>            :         }
+<span class="lineNum">     609 </span>            : #endif
+<span class="lineNum">     610 </span>            :     }
+<span class="lineNum">     611 </span><span class="lineNoCov">          0 :   d-&gt;dir[d-&gt;count].dir_start = cp;</span>
+<span class="lineNum">     612 </span>            : 
+<span class="lineNum">     613 </span><span class="lineNoCov">          0 :   d-&gt;max_width_length = max_width_length;</span>
+<span class="lineNum">     614 </span><span class="lineNoCov">          0 :   d-&gt;max_precision_length = max_precision_length;</span>
+<span class="lineNum">     615 </span><span class="lineNoCov">          0 :   return 0;</span>
+<span class="lineNum">     616 </span>            : 
+<span class="lineNum">     617 </span>            : error:
+<span class="lineNum">     618 </span><span class="lineNoCov">          0 :   if (a-&gt;arg != a-&gt;direct_alloc_arg)</span>
+<span class="lineNum">     619 </span><span class="lineNoCov">          0 :     free (a-&gt;arg);</span>
+<span class="lineNum">     620 </span><span class="lineNoCov">          0 :   if (d-&gt;dir != d-&gt;direct_alloc_dir)</span>
+<span class="lineNum">     621 </span><span class="lineNoCov">          0 :     free (d-&gt;dir);</span>
+<span class="lineNum">     622 </span><span class="lineNoCov">          0 :   errno = EINVAL;</span>
+<span class="lineNum">     623 </span><span class="lineNoCov">          0 :   return -1;</span>
+<span class="lineNum">     624 </span>            : 
+<span class="lineNum">     625 </span>            : out_of_memory:
+<span class="lineNum">     626 </span><span class="lineNoCov">          0 :   if (a-&gt;arg != a-&gt;direct_alloc_arg)</span>
+<span class="lineNum">     627 </span><span class="lineNoCov">          0 :     free (a-&gt;arg);</span>
+<span class="lineNum">     628 </span><span class="lineNoCov">          0 :   if (d-&gt;dir != d-&gt;direct_alloc_dir)</span>
+<span class="lineNum">     629 </span><span class="lineNoCov">          0 :     free (d-&gt;dir);</span>
+<span class="lineNum">     630 </span><span class="lineNoCov">          0 :   errno = ENOMEM;</span>
+<span class="lineNum">     631 </span><span class="lineNoCov">          0 :   return -1;</span>
+<span class="lineNum">     632 </span>            : }
+<span class="lineNum">     633 </span>            : 
+<span class="lineNum">     634 </span>            : #undef PRINTF_PARSE
+<span class="lineNum">     635 </span>            : #undef DIRECTIVES
+<span class="lineNum">     636 </span>            : #undef DIRECTIVE
+<span class="lineNum">     637 </span>            : #undef CHAR_T_ONLY_ASCII
+<span class="lineNum">     638 </span>            : #undef CHAR_T
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

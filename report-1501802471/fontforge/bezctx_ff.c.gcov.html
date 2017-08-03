@@ -1,0 +1,264 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforge/bezctx_ff.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforge</a> - bezctx_ff.c<span style="font-size: 80%;"> (source / <a href="bezctx_ff.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">92</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">7</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            : Copyright: 2007 Raph Levien
+<span class="lineNum">       3 </span>            : License: GPL-2+
+<span class="lineNum">       4 </span>            :     bezctx_ps.c - ppedit - A pattern plate editor for Spiro splines.
+<span class="lineNum">       5 </span>            : Copyright: 2007 George Williams
+<span class="lineNum">       6 </span>            :     bezctx_ff.c - Provide a gateway into FontForge with added modification.
+<span class="lineNum">       7 </span>            : Contributions: Yuri Chornoivan, Jonathan Hanna, Joe Da Silva, Reuben Thomas,
+<span class="lineNum">       8 </span>            :     Frank Trampe
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            : This program is free software; you can redistribute it and/or
+<span class="lineNum">      11 </span>            : modify it under the terms of the GNU General Public License
+<span class="lineNum">      12 </span>            : as published by the Free Software Foundation; either version 2
+<span class="lineNum">      13 </span>            : of the License, or (at your option) any later version.
+<span class="lineNum">      14 </span>            : 
+<span class="lineNum">      15 </span>            : This program is distributed in the hope that it will be useful,
+<span class="lineNum">      16 </span>            : but WITHOUT ANY WARRANTY; without even the implied warranty of
+<span class="lineNum">      17 </span>            : MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+<span class="lineNum">      18 </span>            : GNU General Public License for more details.
+<span class="lineNum">      19 </span>            : 
+<span class="lineNum">      20 </span>            : You should have received a copy of the GNU General Public License
+<span class="lineNum">      21 </span>            : along with this program; if not, write to the Free Software
+<span class="lineNum">      22 </span>            : Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+<span class="lineNum">      23 </span>            : 02110-1301, USA.
+<span class="lineNum">      24 </span>            : 
+<span class="lineNum">      25 </span>            : */
+<span class="lineNum">      26 </span>            : 
+<span class="lineNum">      27 </span>            : #include &lt;basics.h&gt;
+<span class="lineNum">      28 </span>            : #include &lt;stdio.h&gt;
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            : #include &quot;splineutil.h&quot;
+<span class="lineNum">      31 </span>            : 
+<span class="lineNum">      32 </span>            : #ifndef _NO_LIBSPIRO
+<span class="lineNum">      33 </span>            : #include &quot;bezctx_ff.h&quot;
+<span class="lineNum">      34 </span>            : #include &quot;fontforgevw.h&quot;      /* For LogError, else splinefont.h */
+<span class="lineNum">      35 </span>            : #ifdef HAVE_IEEEFP_H
+<span class="lineNum">      36 </span>            : # include &lt;ieeefp.h&gt;              /* Solaris defines isnan in ieeefp rather than math.h */
+<span class="lineNum">      37 </span>            : #endif
+<span class="lineNum">      38 </span>            : #include &lt;math.h&gt;
+<span class="lineNum">      39 </span>            : 
+<span class="lineNum">      40 </span>            : typedef struct {
+<span class="lineNum">      41 </span>            :     bezctx base;                /* This is a superclass of bezctx, and this is the entry for the base */
+<span class="lineNum">      42 </span>            :     int is_open;
+<span class="lineNum">      43 </span>            :     int gotnans;                /* Sometimes spiro fails to converge and we get NaNs. */
+<span class="lineNum">      44 </span>            :                                 /* Complain the first time this happens, but not thereafter */
+<span class="lineNum">      45 </span>            :     SplineSet *ss;              /* The fontforge contour which we build up as we go along */
+<span class="lineNum">      46 </span>            : } bezctx_ff;
+<a name="47"><span class="lineNum">      47 </span>            : </a>
+<span class="lineNum">      48 </span>            : static void
+<span class="lineNum">      49 </span><span class="lineNoCov">          0 : nancheck(bezctx_ff *bc) {</span>
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 :     if ( !bc-&gt;gotnans ) {    /* Called when we get passed a NaN. Complain the first time that happens */</span>
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 :         LogError(_(&quot;Spiros did not converge&quot;) );</span>
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :         bc-&gt;gotnans = true;</span>
+<span class="lineNum">      54 </span>            :     }
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">      56 </span>            : 
+<a name="57"><span class="lineNum">      57 </span>            : /* This routine starts a new contour */</a>
+<span class="lineNum">      58 </span>            : /* So we allocate a new SplineSet, and then add the first point to it */
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 : static void bezctx_ff_moveto(bezctx *z, double x, double y, int is_open) {</span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 :     bezctx_ff *bc = (bezctx_ff *)z;</span>
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :     if ( !isfinite(x) || !isfinite(y)) {        /* Protection against NaNs */</span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :         nancheck(bc);</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :         x = y = 0;</span>
+<span class="lineNum">      65 </span>            :     }
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :     if (!bc-&gt;is_open) {</span>
+<span class="lineNum">      67 </span>            :         SplineSet *ss;
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :         if ( (ss=(SplineSet *)calloc(1,sizeof(SplineSet)))==NULL )</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :             return;</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :         ss-&gt;next = bc-&gt;ss;</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :         bc-&gt;ss = ss;</span>
+<span class="lineNum">      72 </span>            :     }
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :     bc-&gt;ss-&gt;first = bc-&gt;ss-&gt;last = SplinePointCreate(x,y);</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :     bc-&gt;ss-&gt;start_offset = 0;</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :     bc-&gt;is_open = is_open;</span>
+<span class="lineNum">      76 </span>            : }
+<a name="77"><span class="lineNum">      77 </span>            : </a>
+<span class="lineNum">      78 </span>            : /* This routine creates a linear spline from the previous point specified to this one */
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 : static void bezctx_ff_lineto(bezctx *z, double x, double y) {</span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :     bezctx_ff *bc = (bezctx_ff *)z;</span>
+<span class="lineNum">      81 </span>            :     SplinePoint *sp;
+<span class="lineNum">      82 </span>            : 
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :     if ( !isfinite(x) || !isfinite(y)) {</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :         nancheck(bc);</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :         x = y = 0;</span>
+<span class="lineNum">      86 </span>            :     }
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :     sp = SplinePointCreate(x,y);</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :     if ( sp!=NULL &amp;&amp; SplineMake3(bc-&gt;ss-&gt;last,sp)!=NULL )</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :         bc-&gt;ss-&gt;last = sp;</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">      91 </span>            : 
+<span class="lineNum">      92 </span>            : /* This could create a quadratic spline, except FontForge only is prepared */
+<a name="93"><span class="lineNum">      93 </span>            : /* to deal with cubics, so convert the quadratic into the equivalent cubic */</a>
+<span class="lineNum">      94 </span>            : static void
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 : bezctx_ff_quadto(bezctx *z, double xm, double ym, double x3, double y3) {</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :     bezctx_ff *bc = (bezctx_ff *)z;</span>
+<span class="lineNum">      97 </span>            :     double x0, y0;
+<span class="lineNum">      98 </span>            :     double x1, y1;
+<span class="lineNum">      99 </span>            :     double x2, y2;
+<span class="lineNum">     100 </span>            :     SplinePoint *sp;
+<span class="lineNum">     101 </span>            : 
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :     if ( !isfinite(xm) || !isfinite(ym) || !isfinite(x3) || !isfinite(y3)) {</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :         nancheck(bc);</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :         xm = ym = x3 = y3 = 0;</span>
+<span class="lineNum">     105 </span>            :     }
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :     if ( (sp=SplinePointCreate(x3,y3))!=NULL ) {</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :         x0 = bc-&gt;ss-&gt;last-&gt;me.x;</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :         y0 = bc-&gt;ss-&gt;last-&gt;me.y;</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :         x1 = xm + (1./3) * (x0 - xm);</span>
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :         y1 = ym + (1./3) * (y0 - ym);</span>
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :         x2 = xm + (1./3) * (x3 - xm);</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :         y2 = ym + (1./3) * (y3 - ym);</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :         bc-&gt;ss-&gt;last-&gt;nextcp.x = x1;</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :         bc-&gt;ss-&gt;last-&gt;nextcp.y = y1;</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :         bc-&gt;ss-&gt;last-&gt;nonextcp = false;</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :         sp-&gt;prevcp.x = x2;</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :         sp-&gt;prevcp.y = y2;</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :         sp-&gt;noprevcp = false;</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :         if ( SplineMake3(bc-&gt;ss-&gt;last,sp)!=NULL )</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :             bc-&gt;ss-&gt;last = sp;</span>
+<span class="lineNum">     121 </span>            :     }
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     123 </span>            : 
+<a name="124"><span class="lineNum">     124 </span>            : /* And this creates a cubic */</a>
+<span class="lineNum">     125 </span>            : static void
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 : bezctx_ff_curveto(bezctx *z, double x1, double y1, double x2, double y2,</span>
+<span class="lineNum">     127 </span>            :                   double x3, double y3) {
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :     bezctx_ff *bc = (bezctx_ff *)z;</span>
+<span class="lineNum">     129 </span>            :     SplinePoint *sp;
+<span class="lineNum">     130 </span>            : 
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :     if ( !isfinite(x1) || !isfinite(y1) || !isfinite(x2) || !isfinite(y2) || !isfinite(x3) || !isfinite(y3)) {</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :         nancheck(bc);</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :         x1 = y1 = x2 = y2 = x3 = y3 = 0;</span>
+<span class="lineNum">     134 </span>            :     }
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :     if ( (sp=SplinePointCreate(x3,y3))!=NULL ) {</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :         bc-&gt;ss-&gt;last-&gt;nextcp.x = x1;</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :         bc-&gt;ss-&gt;last-&gt;nextcp.y = y1;</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :         bc-&gt;ss-&gt;last-&gt;nonextcp = false;</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :         sp-&gt;prevcp.x = x2;</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :         sp-&gt;prevcp.y = y2;</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :         sp-&gt;noprevcp = false;</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :         if ( SplineMake3(bc-&gt;ss-&gt;last,sp)!=NULL )</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :             bc-&gt;ss-&gt;last = sp;</span>
+<span class="lineNum">     144 </span>            :     }
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 : }</span>
+<a name="146"><span class="lineNum">     146 </span>            : </a>
+<span class="lineNum">     147 </span>            : /* Allocates and initializes a new FontForge bezier context */
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 : bezctx *new_bezctx_ff(void) {</span>
+<span class="lineNum">     149 </span>            :     bezctx_ff *result;
+<span class="lineNum">     150 </span>            : 
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :     if ( (result=(bezctx_ff *)calloc(1,sizeof(bezctx_ff)))==NULL )</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :         return NULL;</span>
+<span class="lineNum">     153 </span>            : 
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :     result-&gt;base.moveto = bezctx_ff_moveto;</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :     result-&gt;base.lineto = bezctx_ff_lineto;</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :     result-&gt;base.quadto = bezctx_ff_quadto;</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :     result-&gt;base.curveto = bezctx_ff_curveto;</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :     result-&gt;base.mark_knot = NULL;</span>
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :     result-&gt;is_open = 0;</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :     result-&gt;gotnans = 0;</span>
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :     result-&gt;ss = NULL;</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :     return &amp;result-&gt;base;</span>
+<span class="lineNum">     163 </span>            : }
+<a name="164"><span class="lineNum">     164 </span>            : </a>
+<span class="lineNum">     165 </span>            : /* Finishes an old FontForge bezier context, and returns the contour which was created */
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 : struct splinepointlist *bezctx_ff_close(bezctx *z) {</span>
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :     bezctx_ff *bc = (bezctx_ff *)z;</span>
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :     SplineSet *ss = bc-&gt;ss;</span>
+<span class="lineNum">     169 </span>            : 
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :     if (!bc-&gt;is_open &amp;&amp; ss!=NULL ) {</span>
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :         if ( ss-&gt;first!=ss-&gt;last &amp;&amp;</span>
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :                 RealNear(ss-&gt;first-&gt;me.x,ss-&gt;last-&gt;me.x) &amp;&amp;</span>
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :                 RealNear(ss-&gt;first-&gt;me.y,ss-&gt;last-&gt;me.y)) {</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :             ss-&gt;first-&gt;prevcp = ss-&gt;last-&gt;prevcp;</span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :             ss-&gt;first-&gt;noprevcp = ss-&gt;last-&gt;noprevcp;</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :             ss-&gt;first-&gt;prev = ss-&gt;last-&gt;prev;</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :             ss-&gt;first-&gt;prev-&gt;to = ss-&gt;first;</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :             SplinePointFree(ss-&gt;last);</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :             ss-&gt;last = ss-&gt;first;</span>
+<span class="lineNum">     180 </span>            :         } else {
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 :             if ( SplineMake3(ss-&gt;last,ss-&gt;first)!=NULL )</span>
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :                 ss-&gt;last = ss-&gt;first;</span>
+<span class="lineNum">     183 </span>            :         }
+<span class="lineNum">     184 </span>            :     }
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :     free(bc);</span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :     return( ss );</span>
+<span class="lineNum">     187 </span>            : }
+<span class="lineNum">     188 </span>            : #endif
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

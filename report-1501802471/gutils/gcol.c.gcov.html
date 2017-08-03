@@ -1,0 +1,287 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - gutils/gcol.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gutils</a> - gcol.c<span style="font-size: 80%;"> (source / <a href="gcol.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">134</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">8</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2008-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &lt;gimage.h&gt;
+<span class="lineNum">      28 </span>            : #include &lt;math.h&gt;
+<a name="29"><span class="lineNum">      29 </span>            : #include &lt;string.h&gt;</a>
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span><span class="lineNoCov">          0 : void gRGB2HSL(struct hslrgb *col) {</span>
+<span class="lineNum">      32 </span>            :     double mx, mn;
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span>            :     /* Algorithm from http://en.wikipedia.org/wiki/HSL_color_space */
+<span class="lineNum">      35 </span><span class="lineNoCov">          0 :     if ( col-&gt;r&gt;col-&gt;g ) {</span>
+<span class="lineNum">      36 </span><span class="lineNoCov">          0 :         mx = ( col-&gt;r&gt;col-&gt;b ) ? col-&gt;r : col-&gt;b;</span>
+<span class="lineNum">      37 </span><span class="lineNoCov">          0 :         mn = ( col-&gt;g&lt;col-&gt;b ) ? col-&gt;g : col-&gt;b;</span>
+<span class="lineNum">      38 </span>            :     } else {
+<span class="lineNum">      39 </span><span class="lineNoCov">          0 :         mx = ( col-&gt;g&gt;col-&gt;b ) ? col-&gt;g : col-&gt;b;</span>
+<span class="lineNum">      40 </span><span class="lineNoCov">          0 :         mn = ( col-&gt;r&lt;col-&gt;b ) ? col-&gt;r : col-&gt;b;</span>
+<span class="lineNum">      41 </span>            :     }
+<span class="lineNum">      42 </span><span class="lineNoCov">          0 :     if ( mx==mn )</span>
+<span class="lineNum">      43 </span><span class="lineNoCov">          0 :         col-&gt;h = 0;</span>
+<span class="lineNum">      44 </span><span class="lineNoCov">          0 :     else if ( mx==col-&gt;r ) {</span>
+<span class="lineNum">      45 </span><span class="lineNoCov">          0 :         col-&gt;h = fmod(60*(col-&gt;g-col-&gt;b)/(mx-mn),360);</span>
+<span class="lineNum">      46 </span><span class="lineNoCov">          0 :     } else if ( mx==col-&gt;g ) {</span>
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 :         col-&gt;h = 60*(col-&gt;b-col-&gt;r)/(mx-mn) + 120;</span>
+<span class="lineNum">      48 </span>            :     } else {
+<span class="lineNum">      49 </span><span class="lineNoCov">          0 :         col-&gt;h = 60*(col-&gt;r-col-&gt;g)/(mx-mn) + 240;</span>
+<span class="lineNum">      50 </span>            :     }
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 :     col-&gt;l = (mx+mn)/2;</span>
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 :     if ( mx==mn )</span>
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :         col-&gt;s = 0;</span>
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :     else if ( col-&gt;l&lt;=.5 )</span>
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :         col-&gt;s = (mx-mn)/(mx+mn);</span>
+<span class="lineNum">      56 </span>            :     else
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :         col-&gt;s = (mx-mn)/(2-(mx+mn));</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :     col-&gt;hsl = true; col-&gt;hsv = false;</span>
+<a name="59"><span class="lineNum">      59 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 : void gHSL2RGB(struct hslrgb *col) {</span>
+<span class="lineNum">      62 </span>            :     double q,p,hk, ts[3], cs[3];
+<span class="lineNum">      63 </span>            :     int i;
+<span class="lineNum">      64 </span>            : 
+<span class="lineNum">      65 </span>            :     /* Algorithm from http://en.wikipedia.org/wiki/HSL_color_space */
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :     if ( col-&gt;l&lt;.5 )</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :         q = col-&gt;l*(1 + col-&gt;s);</span>
+<span class="lineNum">      68 </span>            :     else
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :         q = col-&gt;l+col-&gt;s - (col-&gt;l*col-&gt;s);</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :     p = 2*col-&gt;l - q;</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :     hk = fmod(col-&gt;h,360)/360;</span>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :     if ( hk&lt;0 ) hk += 1.0;</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :     ts[0] = hk + 1./3.;</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :     ts[1] = hk;</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :     ts[2] = hk - 1./3.;</span>
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;3; ++i ) {</span>
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :         if ( ts[i]&lt;0 ) ts[i] += 1.0;</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :         else if ( ts[i]&gt;1 ) ts[i] -= 1.0;</span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :         if ( ts[i]&lt;1./6. )</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :             cs[i] = p + ((q-p)*6*ts[i]);</span>
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :         else if ( ts[i]&lt;.5 )</span>
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :             cs[i] = q;</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :         else if ( ts[i]&lt;2./3. )</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :             cs[i] = p + ((q-p)*6*(2./3.-ts[i]));</span>
+<span class="lineNum">      86 </span>            :         else
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :             cs[i] = p;</span>
+<span class="lineNum">      88 </span>            :     }
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :     col-&gt;r = cs[0];</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :     col-&gt;g = cs[1];</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :     col-&gt;b = cs[2];</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :     col-&gt;rgb = true;</span>
+<a name="93"><span class="lineNum">      93 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      94 </span>            : 
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 : void gRGB2HSV(struct hslrgb *col) {</span>
+<span class="lineNum">      96 </span>            :     double mx, mn;
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span>            :     /* Algorithm from http://en.wikipedia.org/wiki/HSL_color_space */
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :     if ( col-&gt;r&gt;col-&gt;g ) {</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :         mx = ( col-&gt;r&gt;col-&gt;b ) ? col-&gt;r : col-&gt;b;</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :         mn = ( col-&gt;g&lt;col-&gt;b ) ? col-&gt;g : col-&gt;b;</span>
+<span class="lineNum">     102 </span>            :     } else {
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :         mx = ( col-&gt;g&gt;col-&gt;b ) ? col-&gt;g : col-&gt;b;</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :         mn = ( col-&gt;r&lt;col-&gt;b ) ? col-&gt;r : col-&gt;b;</span>
+<span class="lineNum">     105 </span>            :     }
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :     if ( mx==mn )</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :         col-&gt;h = 0;</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :     else if ( mx==col-&gt;r ) {</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :         col-&gt;h = fmod(60*(col-&gt;g-col-&gt;b)/(mx-mn),360);</span>
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :     } else if ( mx==col-&gt;g ) {</span>
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :         col-&gt;h = 60*(col-&gt;b-col-&gt;r)/(mx-mn) + 120;</span>
+<span class="lineNum">     112 </span>            :     } else {
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :         col-&gt;h = 60*(col-&gt;r-col-&gt;g)/(mx-mn) + 240;</span>
+<span class="lineNum">     114 </span>            :     }
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :     col-&gt;v = mx;</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :     if ( mx==0 )</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :         col-&gt;s = 0;</span>
+<span class="lineNum">     118 </span>            :     else 
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :         col-&gt;s = (mx-mn)/mx;</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :     col-&gt;hsv = true; col-&gt;hsl = false;</span>
+<a name="121"><span class="lineNum">     121 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     122 </span>            : 
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 : void gHSV2RGB(struct hslrgb *col) {</span>
+<span class="lineNum">     124 </span>            :     double q,p,t,f;
+<span class="lineNum">     125 </span>            :     int h;
+<span class="lineNum">     126 </span>            : 
+<span class="lineNum">     127 </span>            :     /* Algorithm from http://en.wikipedia.org/wiki/HSL_color_space */
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :     h = ((int) floor(col-&gt;h/60)) % 6;</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :     if ( h&lt;0 ) h+=6;</span>
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :     f = col-&gt;h/60 - floor(col-&gt;h/60);</span>
+<span class="lineNum">     131 </span>            : 
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :     p = col-&gt;v*(1-col-&gt;s);</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :     q = col-&gt;v*(1-f*col-&gt;s);</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :     t = col-&gt;v*(1-(1-f)*col-&gt;s);</span>
+<span class="lineNum">     135 </span>            : 
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :     if ( h==0 ) {</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :         col-&gt;r = col-&gt;v; col-&gt;g = t; col-&gt;b = p;</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :     } else if ( h==1 ) {</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :         col-&gt;r = q; col-&gt;g = col-&gt;v; col-&gt;b = p;</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :     } else if ( h==2 ) {</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :         col-&gt;r = p; col-&gt;g = col-&gt;v; col-&gt;b = t;</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :     } else if ( h==3 ) {</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :         col-&gt;r = p; col-&gt;g = q; col-&gt;b = col-&gt;v;</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :     } else if ( h==4 ) {</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :         col-&gt;r = t; col-&gt;g = p; col-&gt;b = col-&gt;v;</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :     } else if ( h==5 ) {</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :         col-&gt;r = col-&gt;v; col-&gt;g = p; col-&gt;b = q;</span>
+<span class="lineNum">     148 </span>            :     }
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :     col-&gt;rgb = true;</span>
+<a name="150"><span class="lineNum">     150 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     151 </span>            : 
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 : Color gHslrgb2Color(struct hslrgb *col) {</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :     if ( !col-&gt;rgb ) {</span>
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :         if ( col-&gt;hsv )</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :             gHSV2RGB(col);</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :         else if ( col-&gt;hsl )</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :             gHSL2RGB(col);</span>
+<span class="lineNum">     158 </span>            :         else
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :             return( COLOR_UNKNOWN );</span>
+<span class="lineNum">     160 </span>            :     }
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :     return( (((int) rint(255.*col-&gt;r))&lt;&lt;16 ) | \</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :             (((int) rint(255.*col-&gt;g))&lt;&lt;8 )  | \</span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :             (((int) rint(255.*col-&gt;b)) ) );</span>
+<a name="164"><span class="lineNum">     164 </span>            : }</a>
+<span class="lineNum">     165 </span>            : 
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 : Color gHslrgba2Color(struct hslrgba *col) {</span>
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :     if ( !col-&gt;rgb ) {</span>
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :         if ( col-&gt;hsv )</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :             gHSV2RGB((struct hslrgb *) col);</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :         else if ( col-&gt;hsl )</span>
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :             gHSL2RGB((struct hslrgb *) col);</span>
+<span class="lineNum">     172 </span>            :         else
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :             return( COLOR_UNKNOWN );</span>
+<span class="lineNum">     174 </span>            :     }
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :     if ( !col-&gt;has_alpha || col-&gt;alpha==1.0 )</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :         return( (((int) rint(255.*col-&gt;r))&lt;&lt;16 ) | \</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :                 (((int) rint(255.*col-&gt;g))&lt;&lt;8 )  | \</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :                 (((int) rint(255.*col-&gt;b)) ) );</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :     else if ( col-&gt;alpha==0.0 )</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :         return( COLOR_TRANSPARENT );</span>
+<span class="lineNum">     181 </span>            :     else
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :         return( (((int) rint(255.*col-&gt;alpha))&lt;&lt;24 ) | \</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :                 (((int) rint(255.*col-&gt;r))&lt;&lt;16) | \</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :                 (((int) rint(255.*col-&gt;g))&lt;&lt;8 ) | \</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :                 (((int) rint(255.*col-&gt;b)) ) );</span>
+<a name="186"><span class="lineNum">     186 </span>            : }</a>
+<span class="lineNum">     187 </span>            : 
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 : void gColor2Hslrgb(struct hslrgb *col,Color from) {</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :     col-&gt;rgb = true;</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :     col-&gt;r = ((from&gt;&gt;16)&amp;0xff)/255.0;</span>
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :     col-&gt;g = ((from&gt;&gt;8 )&amp;0xff)/255.0;</span>
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :     col-&gt;b = ((from    )&amp;0xff)/255.0;</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :     col-&gt;hsl = col-&gt;hsv = false;</span>
+<a name="194"><span class="lineNum">     194 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     195 </span>            : 
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 : void gColor2Hslrgba(struct hslrgba *col,Color from) {</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :     if ( from == COLOR_TRANSPARENT ) {</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :         memset(col,0,sizeof(*col));</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :         col-&gt;has_alpha = 1;</span>
+<span class="lineNum">     200 </span>            :     } else {
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :         col-&gt;alpha = ((from&gt;&gt;24)&amp;0xff)/255.0;</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :         col-&gt;r = ((from&gt;&gt;16)&amp;0xff)/255.0;</span>
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :         col-&gt;g = ((from&gt;&gt;8 )&amp;0xff)/255.0;</span>
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :         col-&gt;b = ((from    )&amp;0xff)/255.0;</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :         col-&gt;hsl = col-&gt;hsv = false;</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :         col-&gt;has_alpha = col-&gt;alpha!=0;</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :         if ( !col-&gt;has_alpha )</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :             col-&gt;alpha = 1.0;</span>
+<span class="lineNum">     209 </span>            :     }
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :     col-&gt;rgb = true;</span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

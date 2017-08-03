@@ -1,0 +1,1227 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforge/freetype.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforge</a> - freetype.c<span style="font-size: 80%;"> (source / <a href="freetype.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">702</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">32</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &quot;autohint.h&quot;
+<span class="lineNum">      28 </span>            : #include &quot;dumppfa.h&quot;
+<span class="lineNum">      29 </span>            : #include &quot;fontforgevw.h&quot;
+<span class="lineNum">      30 </span>            : #include &quot;fffreetype.h&quot;
+<span class="lineNum">      31 </span>            : #include &quot;fvfonts.h&quot;
+<span class="lineNum">      32 </span>            : #include &quot;splinefill.h&quot;
+<span class="lineNum">      33 </span>            : #include &quot;splineorder2.h&quot;
+<span class="lineNum">      34 </span>            : #include &quot;splinesaveafm.h&quot;
+<span class="lineNum">      35 </span>            : #include &quot;splinestroke.h&quot;
+<span class="lineNum">      36 </span>            : #include &quot;splineutil.h&quot;
+<span class="lineNum">      37 </span>            : #include &quot;tottf.h&quot;
+<span class="lineNum">      38 </span>            : #include &lt;math.h&gt;
+<span class="lineNum">      39 </span>            : 
+<a name="40"><span class="lineNum">      40 </span>            : FT_Library ff_ft_context;</a>
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span><span class="lineNoCov">          0 : int hasFreeType(void) {</span>
+<span class="lineNum">      43 </span>            :     static int done=false;
+<span class="lineNum">      44 </span>            :     static int ok=false;
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span><span class="lineNoCov">          0 :     if ( done )</span>
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 : return(ok);</span>
+<span class="lineNum">      48 </span><span class="lineNoCov">          0 :     done = true;</span>
+<span class="lineNum">      49 </span>            : 
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 :     if ( FT_Init_FreeType( &amp;ff_ft_context ))</span>
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">      52 </span>            : 
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :     ok = true;</span>
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="55"><span class="lineNum">      55 </span>            : }</a>
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 : void doneFreeType(void) {</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :     if ( ff_ft_context!=NULL )</span>
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :         FT_Done_FreeType(ff_ft_context);</span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 :     ff_ft_context = NULL;</span>
+<a name="61"><span class="lineNum">      61 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 : int hasFreeTypeByteCode(void) {</span>
+<span class="lineNum">      64 </span>            :     static int complained = 0;
+<span class="lineNum">      65 </span>            : 
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :     if ( !hasFreeType())</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">      68 </span>            : 
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :     if ( !FreeTypeAtLeast(2,3,7)) {</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :         if ( !complained ) {</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :             LogError(_(&quot;This version of FontForge expects freetype 2.3.7 or more.&quot;));</span>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :             complained = true;</span>
+<span class="lineNum">      73 </span>            :         }
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">      75 </span>            :     }
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span>            : # ifdef TT_CONFIG_OPTION_BYTECODE_INTERPRETER
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">      79 </span>            : # else
+<span class="lineNum">      80 </span>            : return( false );
+<span class="lineNum">      81 </span>            : # endif
+<a name="82"><span class="lineNum">      82 </span>            : }</a>
+<span class="lineNum">      83 </span>            : 
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 : int hasFreeTypeDebugger(void) {</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :     if ( !hasFreeTypeByteCode())</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">      87 </span>            : #if FREETYPE_HAS_DEBUGGER
+<span class="lineNum">      88 </span>            :     if ( FT_Set_Debug_Hook!=NULL &amp;&amp; TT_RunIns!=NULL )
+<span class="lineNum">      89 </span>            : return( true );
+<span class="lineNum">      90 </span>            : #endif
+<span class="lineNum">      91 </span>            : 
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 : return( false );</span>
+<a name="93"><span class="lineNum">      93 </span>            : }</a>
+<span class="lineNum">      94 </span>            : 
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 : int FreeTypeAtLeast(int major, int minor, int patch) {</span>
+<span class="lineNum">      96 </span>            :     int ma, mi, pa;
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :     if ( !hasFreeType())</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :     FT_Library_Version(ff_ft_context,&amp;ma,&amp;mi,&amp;pa);</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :     if ( ma&gt;major || (ma==major &amp;&amp; (mi&gt;=minor || (mi==minor &amp;&amp; pa&gt;=patch))))</span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     103 </span>            : 
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 : return( false );</span>
+<a name="105"><span class="lineNum">     105 </span>            : }</a>
+<span class="lineNum">     106 </span>            : 
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 : char *FreeTypeStringVersion(void) {</span>
+<span class="lineNum">     108 </span>            :     int ma, mi, pa;
+<span class="lineNum">     109 </span>            :     static char buffer[60];
+<span class="lineNum">     110 </span>            : 
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :     if ( !hasFreeType())</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 : return( &quot;&quot; );</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :     FT_Library_Version(ff_ft_context,&amp;ma,&amp;mi,&amp;pa);</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :     sprintf( buffer, &quot;FreeType %d.%d.%d&quot;, ma, mi, pa );</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 : return( buffer );</span>
+<a name="116"><span class="lineNum">     116 </span>            : }</a>
+<span class="lineNum">     117 </span>            : 
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 : static void TransitiveClosureAdd(SplineChar **new,SplineChar **old,SplineChar *sc,int layer) {</span>
+<span class="lineNum">     119 </span>            :     RefChar *ref;
+<span class="lineNum">     120 </span>            : 
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :     if ( new[sc-&gt;orig_pos]!=NULL )   /* already done */</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :     new[sc-&gt;orig_pos] = sc;</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :     for ( ref=sc-&gt;layers[layer].refs; ref!=NULL; ref = ref-&gt;next )</span>
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 :         TransitiveClosureAdd(new,old,ref-&gt;sc,layer);</span>
+<a name="126"><span class="lineNum">     126 </span>            : }</a>
+<span class="lineNum">     127 </span>            : 
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 : static void AddIf(SplineFont *sf,SplineChar **new,SplineChar **old,int unienc,int layer) {</span>
+<span class="lineNum">     129 </span>            :     SplineChar *sc;
+<span class="lineNum">     130 </span>            : 
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :     sc = SFGetChar(sf,unienc,NULL);</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :     if ( sc!=NULL &amp;&amp; SCWorthOutputting(sc))</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :         TransitiveClosureAdd(new,old,sc,layer);</span>
+<a name="134"><span class="lineNum">     134 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     135 </span>            : 
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 : void FreeTypeFreeContext(void *freetypecontext) {</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :     FTC *ftc = freetypecontext;</span>
+<span class="lineNum">     138 </span>            : 
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :     if ( ftc==NULL )</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     141 </span>            : 
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :     if ( ftc-&gt;face!=NULL )</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :         FT_Done_Face(ftc-&gt;face);</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :     if ( ftc-&gt;shared_ftc )</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :     if ( ftc-&gt;mappedfile )</span>
+<span class="lineNum">     147 </span>            : #if defined(__MINGW32__)
+<span class="lineNum">     148 </span>            :                 UnmapViewOfFile(ftc-&gt;mappedfile);
+<span class="lineNum">     149 </span>            : #else
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :                 munmap(ftc-&gt;mappedfile,ftc-&gt;len);</span>
+<span class="lineNum">     151 </span>            : #endif
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :     if ( ftc-&gt;file!=NULL )</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :         fclose(ftc-&gt;file);</span>
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :     free(ftc-&gt;glyph_indeces);</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :     free(ftc);</span>
+<a name="156"><span class="lineNum">     156 </span>            : }</a>
+<span class="lineNum">     157 </span>            :     
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 : void *__FreeTypeFontContext(FT_Library context,</span>
+<span class="lineNum">     159 </span>            :         SplineFont *sf,SplineChar *sc,FontViewBase *fv,
+<span class="lineNum">     160 </span>            :         int layer,
+<span class="lineNum">     161 </span>            :         enum fontformat ff,int flags,void *shared_ftc) {
+<span class="lineNum">     162 </span>            :     /* build up a temporary font consisting of:
+<span class="lineNum">     163 </span>            :      *  sc!=NULL   =&gt; Just that character (and its references)
+<span class="lineNum">     164 </span>            :      *  fv!=NULL   =&gt; selected characters
+<span class="lineNum">     165 </span>            :      *  else       =&gt; the entire font
+<span class="lineNum">     166 </span>            :      */
+<span class="lineNum">     167 </span>            :     FTC *ftc;
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :     SplineChar **old=sf-&gt;glyphs, **new;</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :     uint8 *selected = fv!=NULL ? fv-&gt;selected : NULL;</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :     EncMap *map = fv!=NULL ? fv-&gt;map : sf-&gt;fv!=NULL ? sf-&gt;fv-&gt;map : sf-&gt;map;</span>
+<span class="lineNum">     171 </span>            :     int i,cnt, notdefpos;
+<span class="lineNum">     172 </span>            : 
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :     if ( context==NULL )</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :     if ( sf-&gt;multilayer || sf-&gt;strokedfont )</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     177 </span>            : 
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :     ftc = calloc(1,sizeof(FTC));</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :     if ( shared_ftc!=NULL ) {</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :         *ftc = *(FTC *) shared_ftc;</span>
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 :         ftc-&gt;face = NULL;</span>
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :         ftc-&gt;shared_ftc = shared_ftc;</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :         ftc-&gt;em = ((FTC *) shared_ftc)-&gt;em;</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :         ftc-&gt;layer = layer;</span>
+<span class="lineNum">     185 </span>            :     } else {
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :         ftc-&gt;sf = sf;</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :         ftc-&gt;em = sf-&gt;ascent+sf-&gt;descent;</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :         ftc-&gt;file = NULL;</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :         ftc-&gt;layer = layer;</span>
+<span class="lineNum">     190 </span>            : 
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :         ftc-&gt;file = tmpfile();</span>
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :         if ( ftc-&gt;file==NULL ) {</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :             free(ftc);</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     195 </span>            :         }
+<span class="lineNum">     196 </span>            : 
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :         old = sf-&gt;glyphs;</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :         notdefpos = SFFindNotdef(sf,-2);        /* Do this early */</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :         if ( sc!=NULL || selected!=NULL ) {</span>
+<span class="lineNum">     200 </span>            :             /* Build up a font consisting of those characters we actually use */
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :             new = calloc(sf-&gt;glyphcnt,sizeof(SplineChar *));</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :             if ( sc!=NULL )</span>
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :                 TransitiveClosureAdd(new,old,sc,layer);</span>
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :             else for ( i=0; i&lt;map-&gt;enccount; ++i )</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :                 if ( selected[i] &amp;&amp; map-&gt;map[i]!=-1 &amp;&amp;</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :                         SCWorthOutputting(old[map-&gt;map[i]]))</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :                     TransitiveClosureAdd(new,old,old[map-&gt;map[i]],layer);</span>
+<span class="lineNum">     208 </span>            :             /* Add these guys so we'll get reasonable blue values */
+<span class="lineNum">     209 </span>            :             /* we won't rasterize them */
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :             if ( PSDictHasEntry(sf-&gt;private,&quot;BlueValues&quot;)==NULL ) {</span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :                 AddIf(sf,new,old,'I',layer);</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :                 AddIf(sf,new,old,'O',layer);</span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :                 AddIf(sf,new,old,'x',layer);</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :                 AddIf(sf,new,old,'o',layer);</span>
+<span class="lineNum">     215 </span>            :             }
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :             if ( notdefpos!=-1 )</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :                 TransitiveClosureAdd(new,old,sf-&gt;glyphs[notdefpos],layer);</span>
+<span class="lineNum">     218 </span>            :                 /* If there's a .notdef use it so that we don't generate our own .notdef (which can add cvt entries) */
+<span class="lineNum">     219 </span>            :             /* Nifty bug. We might want to autohint some of the glyphs */
+<span class="lineNum">     220 </span>            :             /* now that's going to cause various things to be remetricked */
+<span class="lineNum">     221 </span>            :             /* like the metricsview, which may expect the full glyph set */
+<span class="lineNum">     222 </span>            :             /* available, and will crash if that is not the case */
+<span class="lineNum">     223 </span>            :             /* So if anything needs autohinting, do it now */
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :             if ( (ff==ff_pfb || ff==ff_pfa || ff==ff_otf || ff==ff_otfcid || ff==ff_cff) &amp;&amp;</span>
+<span class="lineNum">     225 </span>            :                     autohint_before_generate ) {
+<span class="lineNum">     226 </span>            :                 extern int preserve_hint_undoes;        /* users don't expect that rasterizing the glyph will cause an undo */
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :                 int phu = preserve_hint_undoes;         /* if metrics view &amp; char view are open, and a change is made in */</span>
+<span class="lineNum">     228 </span>            :                                                         /*  the char view, then metrics view rasterize glyph, changes hints, */
+<span class="lineNum">     229 </span>            :                                                         /*  adds a hint undo. And suddenly Undo does the wrong thing. It */
+<span class="lineNum">     230 </span>            :                                                         /*  undoes the hint change (which the user probably hasn't noticed) */
+<span class="lineNum">     231 </span>            :                                                         /*  and leaves the change the user did intact. And that will force */
+<span class="lineNum">     232 </span>            :                                                         /*  another rasterize and perhaps another hint undo... */
+<span class="lineNum">     233 </span>            :                 SplineChar *sc;
+<span class="lineNum">     234 </span>            :                 BlueData bd;
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :                 preserve_hint_undoes = false;</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :                 QuickBlues(sf,layer,&amp;bd);</span>
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :                 for ( i=0; i&lt;sf-&gt;glyphcnt; ++i ) {</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :                     if ( (sc=new[i])!=NULL &amp;&amp; sc-&gt;changedsincelasthinted &amp;&amp;</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :                             !sc-&gt;manualhints )</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :                         SplineCharAutoHint(sc,layer,&amp;bd);</span>
+<span class="lineNum">     241 </span>            :                 }
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :                 preserve_hint_undoes = phu;</span>
+<span class="lineNum">     243 </span>            :             }
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :             sf-&gt;glyphs = new;</span>
+<span class="lineNum">     245 </span>            :         }
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :         sf-&gt;internal_temp = true;</span>
+<span class="lineNum">     247 </span>            : 
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :     if (ff == ff_cff) {</span>
+<span class="lineNum">     249 </span>            :         /* FT_New_Memory_Face does not like PS-wrapped CFF */
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :         flags |= ps_flag_nocffsugar;</span>
+<span class="lineNum">     251 </span>            :     }
+<span class="lineNum">     252 </span>            : 
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :         switch ( ff ) {</span>
+<span class="lineNum">     254 </span>            :           case ff_pfb: case ff_pfa:
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :             if ( !_WritePSFont(ftc-&gt;file,sf,ff,0,map,NULL,layer))</span>
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :  goto fail;</span>
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">     258 </span>            :           case ff_ttf: case ff_ttfsym:
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :             ftc-&gt;isttf = true;</span>
+<span class="lineNum">     260 </span>            :             /* Fall through.... */
+<span class="lineNum">     261 </span>            :           case ff_otf: case ff_otfcid: case ff_cff:
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :             if ( !_WriteTTFFont(ftc-&gt;file,sf,ff,NULL,bf_none,flags,map,layer))</span>
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :  goto fail;</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">     265 </span>            :           default:
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :  goto fail;</span>
+<span class="lineNum">     267 </span>            :         }
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :         sf-&gt;internal_temp = false;</span>
+<span class="lineNum">     269 </span>            : 
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :         if ( sf-&gt;subfontcnt!=0 ) {</span>
+<span class="lineNum">     271 </span>            :             /* can only be an otfcid */
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :             int k, max=0;</span>
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :             for ( k=0; k&lt;sf-&gt;subfontcnt; ++k )</span>
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :                 if ( sf-&gt;subfonts[k]-&gt;glyphcnt&gt;max )</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :                     max = sf-&gt;subfonts[k]-&gt;glyphcnt;</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :             ftc-&gt;glyph_indeces = malloc(max*sizeof(int));</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :             memset(ftc-&gt;glyph_indeces,-1,max*sizeof(int));</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;max; ++i ) {</span>
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 :                 for ( k=0; k&lt;sf-&gt;subfontcnt; ++k ) {</span>
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 :                     if ( i&lt;sf-&gt;subfonts[k]-&gt;glyphcnt &amp;&amp;</span>
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :                             SCWorthOutputting(sf-&gt;subfonts[k]-&gt;glyphs[i]) ) {</span>
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :                         ftc-&gt;glyph_indeces[i] = sf-&gt;subfonts[k]-&gt;glyphs[i]-&gt;ttf_glyph;</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :                 break;</span>
+<span class="lineNum">     284 </span>            :                     }
+<span class="lineNum">     285 </span>            :                 }
+<span class="lineNum">     286 </span>            :             }
+<span class="lineNum">     287 </span>            :         } else {
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :             ftc-&gt;glyph_indeces = malloc(sf-&gt;glyphcnt*sizeof(int));</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :             memset(ftc-&gt;glyph_indeces,-1,sf-&gt;glyphcnt*sizeof(int));</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :             cnt = 1;</span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :             if ( notdefpos!=-1 )</span>
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :                 ftc-&gt;glyph_indeces[notdefpos] = 0;</span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :             if ( ff==ff_pfa || ff==ff_pfb ) {</span>
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :                 for ( i=0 ; i&lt;sf-&gt;glyphcnt; ++i ) {</span>
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :                     if ( i!=notdefpos &amp;&amp; SCWorthOutputting(sf-&gt;glyphs[i]))</span>
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :                         ftc-&gt;glyph_indeces[i] = cnt++;</span>
+<span class="lineNum">     297 </span>            :                 }
+<span class="lineNum">     298 </span>            :             } else {
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :                 for ( i=0 ; i&lt;sf-&gt;glyphcnt; ++i ) {</span>
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :                     if ( SCWorthOutputting(sf-&gt;glyphs[i]) ) {</span>
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :                         ftc-&gt;glyph_indeces[i] = sf-&gt;glyphs[i]-&gt;ttf_glyph;</span>
+<span class="lineNum">     302 </span>            :                     }
+<span class="lineNum">     303 </span>            :                 }
+<span class="lineNum">     304 </span>            :             }
+<span class="lineNum">     305 </span>            :         }
+<span class="lineNum">     306 </span>            : 
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :         fseek(ftc-&gt;file,0,SEEK_END);</span>
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 :         ftc-&gt;len = ftell(ftc-&gt;file);</span>
+<span class="lineNum">     309 </span>            : #if defined (__MINGW32__)
+<span class="lineNum">     310 </span>            :         ftc-&gt;mappedfile = NULL;
+<span class="lineNum">     311 </span>            :         {
+<span class="lineNum">     312 </span>            :             int fd = _fileno(ftc-&gt;file);
+<span class="lineNum">     313 </span>            :             if (fd != -1) {
+<span class="lineNum">     314 </span>            :                 HANDLE handle = CreateFileMapping((HANDLE)_get_osfhandle(fd), 
+<span class="lineNum">     315 </span>            :                                     NULL, PAGE_READONLY, 0, ftc-&gt;len, NULL);
+<span class="lineNum">     316 </span>            :                 if (handle != NULL) {
+<span class="lineNum">     317 </span>            :                     ftc-&gt;mappedfile = MapViewOfFile(handle, FILE_MAP_READ,
+<span class="lineNum">     318 </span>            :                                         0, 0, ftc-&gt;len);
+<span class="lineNum">     319 </span>            :                     CloseHandle(handle);
+<span class="lineNum">     320 </span>            :                 }
+<span class="lineNum">     321 </span>            :             }
+<span class="lineNum">     322 </span>            :             if (ftc-&gt;mappedfile == NULL)
+<span class="lineNum">     323 </span>            :                 goto fail;
+<span class="lineNum">     324 </span>            :         }
+<span class="lineNum">     325 </span>            : #else
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :         ftc-&gt;mappedfile = mmap(NULL,ftc-&gt;len,PROT_READ,MAP_PRIVATE,fileno(ftc-&gt;file),0);</span>
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :         if ( ftc-&gt;mappedfile==MAP_FAILED )</span>
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :  goto fail;</span>
+<span class="lineNum">     329 </span>            : #endif
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 :         if ( sf-&gt;glyphs!=old ) {</span>
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :             free(sf-&gt;glyphs);</span>
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 :             sf-&gt;glyphs = old;</span>
+<span class="lineNum">     333 </span>            :         }
+<span class="lineNum">     334 </span>            :     }
+<span class="lineNum">     335 </span>            : 
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :     if ( FT_New_Memory_Face(context,ftc-&gt;mappedfile,ftc-&gt;len,0,&amp;ftc-&gt;face))</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :  goto fail;</span>
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 :     GlyphHashFree(sf);          /* If we created a tiny font, our hash table may reflect that */</span>
+<span class="lineNum">     339 </span>            :     
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 : return( ftc );</span>
+<span class="lineNum">     341 </span>            : 
+<span class="lineNum">     342 </span>            :  fail:
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :     sf-&gt;internal_temp = false;</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :     GlyphHashFree(sf);</span>
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 :     FreeTypeFreeContext(ftc);</span>
+<span class="lineNum">     346 </span><span class="lineNoCov">          0 :     if ( sf-&gt;glyphs!=old ) {</span>
+<span class="lineNum">     347 </span><span class="lineNoCov">          0 :         free(sf-&gt;glyphs);</span>
+<span class="lineNum">     348 </span><span class="lineNoCov">          0 :         sf-&gt;glyphs = old;</span>
+<span class="lineNum">     349 </span>            :     }
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<a name="351"><span class="lineNum">     351 </span>            : }</a>
+<span class="lineNum">     352 </span>            : 
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 : void *_FreeTypeFontContext(SplineFont *sf,SplineChar *sc,FontViewBase *fv,</span>
+<span class="lineNum">     354 </span>            :         int layer, enum fontformat ff,int flags,void *shared_ftc) {
+<span class="lineNum">     355 </span>            : 
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :     if ( !hasFreeType())</span>
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     358 </span>            : 
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 : return( __FreeTypeFontContext(ff_ft_context,sf,sc,fv,</span>
+<span class="lineNum">     360 </span>            :         layer, ff,flags,shared_ftc));
+<a name="361"><span class="lineNum">     361 </span>            : }</a>
+<span class="lineNum">     362 </span>            : 
+<span class="lineNum">     363 </span><span class="lineNoCov">          0 : static void BCTruncateToDepth(BDFChar *bdfc,int depth) {</span>
+<span class="lineNum">     364 </span><span class="lineNoCov">          0 :     int div = 255/((1&lt;&lt;depth)-1);</span>
+<span class="lineNum">     365 </span>            :     int i,j;
+<span class="lineNum">     366 </span>            : 
+<span class="lineNum">     367 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;=bdfc-&gt;ymax-bdfc-&gt;ymin; ++i ) {</span>
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :         for ( j=0; j&lt;bdfc-&gt;bytes_per_line; ++j )</span>
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 :             bdfc-&gt;bitmap[i*bdfc-&gt;bytes_per_line+j] =</span>
+<span class="lineNum">     370 </span><span class="lineNoCov">          0 :                     (bdfc-&gt;bitmap[i*bdfc-&gt;bytes_per_line+j]+div/2) / div;</span>
+<span class="lineNum">     371 </span>            :     }
+<a name="372"><span class="lineNum">     372 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     373 </span>            : 
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 : static BDFChar *BdfCFromBitmap(FT_Bitmap *bitmap, int bitmap_left,</span>
+<span class="lineNum">     375 </span>            :         int bitmap_top, int pixelsize, int depth, SplineChar *sc,
+<span class="lineNum">     376 </span>            :         FT_Glyph_Metrics *metrics) {
+<span class="lineNum">     377 </span>            :     BDFChar *bdfc;
+<span class="lineNum">     378 </span>            : 
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :     bdfc = chunkalloc(sizeof(BDFChar));</span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :     bdfc-&gt;sc = sc;</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :     bdfc-&gt;ymax = bitmap_top-1;</span>
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :     bdfc-&gt;ymin = bitmap_top-bitmap-&gt;rows;</span>
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :     if ( bitmap-&gt;rows==0 )</span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :         bdfc-&gt;ymax = bdfc-&gt;ymin;</span>
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :     bdfc-&gt;xmin = bitmap_left;</span>
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :     bdfc-&gt;xmax = bitmap_left+bitmap-&gt;width-1;</span>
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :     if ( bitmap-&gt;width==0 )</span>
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 :         bdfc-&gt;xmax = bdfc-&gt;xmin;</span>
+<span class="lineNum">     389 </span><span class="lineNoCov">          0 :     bdfc-&gt;byte_data = (depth!=1);</span>
+<span class="lineNum">     390 </span><span class="lineNoCov">          0 :     bdfc-&gt;depth = depth;</span>
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 :     if ( sc!=NULL ) {</span>
+<span class="lineNum">     392 </span><span class="lineNoCov">          0 :         bdfc-&gt;width = rint(sc-&gt;width*pixelsize / (real) (sc-&gt;parent-&gt;ascent+sc-&gt;parent-&gt;descent));</span>
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 :         bdfc-&gt;vwidth = rint(sc-&gt;vwidth*pixelsize / (real) (sc-&gt;parent-&gt;ascent+sc-&gt;parent-&gt;descent));</span>
+<span class="lineNum">     394 </span><span class="lineNoCov">          0 :         bdfc-&gt;orig_pos = sc-&gt;orig_pos;</span>
+<span class="lineNum">     395 </span>            :     }
+<span class="lineNum">     396 </span><span class="lineNoCov">          0 :     if ( metrics!=NULL ) {</span>
+<span class="lineNum">     397 </span><span class="lineNoCov">          0 :         bdfc-&gt;width = rint( metrics-&gt;horiAdvance/64.0 );</span>
+<span class="lineNum">     398 </span><span class="lineNoCov">          0 :         bdfc-&gt;vwidth = rint( metrics-&gt;vertAdvance/64.0 );</span>
+<span class="lineNum">     399 </span>            :     }
+<span class="lineNum">     400 </span><span class="lineNoCov">          0 :     bdfc-&gt;bytes_per_line = bitmap-&gt;pitch;</span>
+<span class="lineNum">     401 </span><span class="lineNoCov">          0 :     bdfc-&gt;refs = NULL; bdfc-&gt;dependents = NULL;</span>
+<span class="lineNum">     402 </span><span class="lineNoCov">          0 :     if ( bdfc-&gt;bytes_per_line==0 ) bdfc-&gt;bytes_per_line = 1;</span>
+<span class="lineNum">     403 </span><span class="lineNoCov">          0 :     bdfc-&gt;bitmap = malloc((bdfc-&gt;ymax-bdfc-&gt;ymin+1)*bdfc-&gt;bytes_per_line);</span>
+<span class="lineNum">     404 </span><span class="lineNoCov">          0 :     if ( bitmap-&gt;rows==0 || bitmap-&gt;width==0 )</span>
+<span class="lineNum">     405 </span><span class="lineNoCov">          0 :         memset(bdfc-&gt;bitmap,0,(bdfc-&gt;ymax-bdfc-&gt;ymin+1)*bdfc-&gt;bytes_per_line);</span>
+<span class="lineNum">     406 </span>            :     else
+<span class="lineNum">     407 </span><span class="lineNoCov">          0 :         memcpy(bdfc-&gt;bitmap,bitmap-&gt;buffer,bitmap-&gt;rows*bdfc-&gt;bytes_per_line);</span>
+<span class="lineNum">     408 </span><span class="lineNoCov">          0 :     BCCompressBitmap(bdfc);</span>
+<span class="lineNum">     409 </span><span class="lineNoCov">          0 :     if ( depth!=1 &amp;&amp; depth!=8 )</span>
+<span class="lineNum">     410 </span><span class="lineNoCov">          0 :         BCTruncateToDepth(bdfc,depth);</span>
+<span class="lineNum">     411 </span><span class="lineNoCov">          0 : return( bdfc );</span>
+<a name="412"><span class="lineNum">     412 </span>            : }</a>
+<span class="lineNum">     413 </span>            : 
+<span class="lineNum">     414 </span><span class="lineNoCov">          0 : static BDFChar *BDFCReClut(BDFChar *bdfc) {</span>
+<span class="lineNum">     415 </span>            :     /* Made for something with a bit depth of 4, but we use 8 here */
+<span class="lineNum">     416 </span>            :     uint8 *pt, *end;
+<span class="lineNum">     417 </span>            : 
+<span class="lineNum">     418 </span><span class="lineNoCov">          0 :     if ( bdfc==NULL )</span>
+<span class="lineNum">     419 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     420 </span><span class="lineNoCov">          0 :     pt = bdfc-&gt;bitmap;</span>
+<span class="lineNum">     421 </span><span class="lineNoCov">          0 :     end = pt + bdfc-&gt;bytes_per_line*(bdfc-&gt;ymax-bdfc-&gt;ymin+1);</span>
+<span class="lineNum">     422 </span><span class="lineNoCov">          0 :     while ( pt&lt;end )</span>
+<span class="lineNum">     423 </span><span class="lineNoCov">          0 :         *pt++ *= 17;</span>
+<span class="lineNum">     424 </span><span class="lineNoCov">          0 : return( bdfc );</span>
+<a name="425"><span class="lineNum">     425 </span>            : }</a>
+<span class="lineNum">     426 </span>            : 
+<span class="lineNum">     427 </span><span class="lineNoCov">          0 : BDFChar *SplineCharFreeTypeRasterize(void *freetypecontext,int gid,</span>
+<span class="lineNum">     428 </span>            :         int ptsize, int dpi,int depth) {
+<span class="lineNum">     429 </span><span class="lineNoCov">          0 :     FTC *ftc = freetypecontext;</span>
+<span class="lineNum">     430 </span>            :     BDFChar *bdfc;
+<span class="lineNum">     431 </span>            :     SplineChar *sc;
+<span class="lineNum">     432 </span>            :     FT_GlyphSlot slot;
+<span class="lineNum">     433 </span><span class="lineNoCov">          0 :     int pixelsize = (int) rint( (ptsize*dpi)/72.0 );</span>
+<span class="lineNum">     434 </span>            : 
+<span class="lineNum">     435 </span><span class="lineNoCov">          0 :     if ( ftc-&gt;glyph_indeces[gid]==-1 )</span>
+<span class="lineNum">     436 </span><span class="lineNoCov">          0 :  goto fail;</span>
+<span class="lineNum">     437 </span><span class="lineNoCov">          0 :     if ( FT_Set_Char_Size(ftc-&gt;face,(int) (ptsize*64),(int) (ptsize*64), dpi, dpi))</span>
+<span class="lineNum">     438 </span><span class="lineNoCov">          0 :  goto fail;</span>
+<span class="lineNum">     439 </span><span class="lineNoCov">          0 :     if ( FT_Load_Glyph(ftc-&gt;face,ftc-&gt;glyph_indeces[gid],</span>
+<span class="lineNum">     440 </span>            :             depth==1?(FT_LOAD_NO_AUTOHINT|FT_LOAD_RENDER|FT_LOAD_TARGET_MONO):(FT_LOAD_NO_AUTOHINT|FT_LOAD_RENDER)))
+<span class="lineNum">     441 </span><span class="lineNoCov">          0 :  goto fail;</span>
+<span class="lineNum">     442 </span>            : 
+<span class="lineNum">     443 </span><span class="lineNoCov">          0 :     slot = ftc-&gt;face-&gt;glyph;</span>
+<span class="lineNum">     444 </span><span class="lineNoCov">          0 :     sc = ftc-&gt;sf-&gt;glyphs[gid];</span>
+<span class="lineNum">     445 </span><span class="lineNoCov">          0 :     bdfc = BdfCFromBitmap(&amp;slot-&gt;bitmap, slot-&gt;bitmap_left, slot-&gt;bitmap_top,</span>
+<span class="lineNum">     446 </span>            :             pixelsize, depth, sc, &amp;slot-&gt;metrics);
+<span class="lineNum">     447 </span><span class="lineNoCov">          0 : return( bdfc );</span>
+<span class="lineNum">     448 </span>            : 
+<span class="lineNum">     449 </span>            :  fail:
+<span class="lineNum">     450 </span><span class="lineNoCov">          0 :     if ( depth==1 )</span>
+<span class="lineNum">     451 </span><span class="lineNoCov">          0 : return( SplineCharRasterize(ftc-&gt;sf-&gt;glyphs[gid],ftc-&gt;layer,pixelsize) );</span>
+<span class="lineNum">     452 </span>            :     else
+<span class="lineNum">     453 </span><span class="lineNoCov">          0 : return( BDFCReClut(SplineCharAntiAlias(ftc-&gt;sf-&gt;glyphs[gid],ftc-&gt;layer,pixelsize,4)));</span>
+<a name="454"><span class="lineNum">     454 </span>            : }</a>
+<span class="lineNum">     455 </span>            : 
+<span class="lineNum">     456 </span><span class="lineNoCov">          0 : BDFFont *SplineFontFreeTypeRasterize(void *freetypecontext,int pixelsize,int depth) {</span>
+<span class="lineNum">     457 </span><span class="lineNoCov">          0 :     FTC *ftc = freetypecontext, *subftc=NULL;</span>
+<span class="lineNum">     458 </span><span class="lineNoCov">          0 :     SplineFont *sf = ftc-&gt;sf, *subsf;</span>
+<span class="lineNum">     459 </span>            :     int i,k;
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 :     BDFFont *bdf = SplineFontToBDFHeader(sf,pixelsize,true);</span>
+<span class="lineNum">     461 </span>            : 
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 :     if ( depth!=1 )</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :         BDFClut(bdf, 1&lt;&lt;(depth/2) );</span>
+<span class="lineNum">     464 </span>            : 
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 :     k=0;</span>
+<span class="lineNum">     466 </span>            :     do {
+<span class="lineNum">     467 </span><span class="lineNoCov">          0 :         if ( sf-&gt;subfontcnt==0 ) {</span>
+<span class="lineNum">     468 </span><span class="lineNoCov">          0 :             subsf = sf;</span>
+<span class="lineNum">     469 </span><span class="lineNoCov">          0 :             subftc = ftc;</span>
+<span class="lineNum">     470 </span>            :         } else {
+<span class="lineNum">     471 </span><span class="lineNoCov">          0 :             subsf = sf-&gt;subfonts[k];</span>
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 :             subftc = FreeTypeFontContext(subsf,NULL,NULL,ftc-&gt;layer);</span>
+<span class="lineNum">     473 </span>            :         }
+<span class="lineNum">     474 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;subsf-&gt;glyphcnt; ++i )</span>
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 :             if ( SCWorthOutputting(subsf-&gt;glyphs[i] ) ) {</span>
+<span class="lineNum">     476 </span>            :                 /* If we could not allocate an ftc for this subfont, the revert to*/
+<span class="lineNum">     477 </span>            :                 /*  our own rasterizer */
+<span class="lineNum">     478 </span><span class="lineNoCov">          0 :                 if ( subftc!=NULL )</span>
+<span class="lineNum">     479 </span><span class="lineNoCov">          0 :                     bdf-&gt;glyphs[i] = SplineCharFreeTypeRasterize(subftc,i,pixelsize,72,depth);</span>
+<span class="lineNum">     480 </span><span class="lineNoCov">          0 :                 else if ( depth==1 )</span>
+<span class="lineNum">     481 </span><span class="lineNoCov">          0 :                     bdf-&gt;glyphs[i] = SplineCharRasterize(subsf-&gt;glyphs[i],ftc-&gt;layer,pixelsize);</span>
+<span class="lineNum">     482 </span>            :                 else
+<span class="lineNum">     483 </span><span class="lineNoCov">          0 :                     bdf-&gt;glyphs[i] = SplineCharAntiAlias(subsf-&gt;glyphs[i],ftc-&gt;layer,pixelsize,(1&lt;&lt;(depth/2)));</span>
+<span class="lineNum">     484 </span><span class="lineNoCov">          0 :                 ff_progress_next();</span>
+<span class="lineNum">     485 </span>            :             } else
+<span class="lineNum">     486 </span><span class="lineNoCov">          0 :                 bdf-&gt;glyphs[i] = NULL;</span>
+<span class="lineNum">     487 </span><span class="lineNoCov">          0 :         if ( subftc!=NULL &amp;&amp; subftc!=ftc )</span>
+<span class="lineNum">     488 </span><span class="lineNoCov">          0 :             FreeTypeFreeContext(subftc);</span>
+<span class="lineNum">     489 </span><span class="lineNoCov">          0 :         subftc = NULL;</span>
+<span class="lineNum">     490 </span><span class="lineNoCov">          0 :         ++k;</span>
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 :     } while ( k&lt;sf-&gt;subfontcnt );</span>
+<span class="lineNum">     492 </span><span class="lineNoCov">          0 :     ff_progress_end_indicator();</span>
+<span class="lineNum">     493 </span><span class="lineNoCov">          0 : return( bdf );</span>
+<span class="lineNum">     494 </span>            : }
+<span class="lineNum">     495 </span>            : 
+<span class="lineNum">     496 </span>            : /* ************************************************************************** */
+<span class="lineNum">     497 </span>            : struct ft_context {
+<span class="lineNum">     498 </span>            :     SplinePointList *hcpl, *lcpl, *cpl;
+<span class="lineNum">     499 </span>            :     SplinePoint *last;
+<span class="lineNum">     500 </span>            :     double scalex, scaley;
+<span class="lineNum">     501 </span>            :     SplinePointList *orig_cpl;
+<span class="lineNum">     502 </span>            :     SplinePoint *orig_sp;
+<span class="lineNum">     503 </span>            :     RefChar *orig_ref;
+<span class="lineNum">     504 </span>            :     int order2;
+<a name="505"><span class="lineNum">     505 </span>            : };</a>
+<span class="lineNum">     506 </span>            : 
+<span class="lineNum">     507 </span><span class="lineNoCov">          0 : static void FT_ClosePath(struct ft_context *context) {</span>
+<span class="lineNum">     508 </span><span class="lineNoCov">          0 :     if ( context-&gt;cpl!=NULL ) {</span>
+<span class="lineNum">     509 </span><span class="lineNoCov">          0 :         if ( context-&gt;cpl-&gt;first-&gt;me.x != context-&gt;last-&gt;me.x ||</span>
+<span class="lineNum">     510 </span><span class="lineNoCov">          0 :                 context-&gt;cpl-&gt;first-&gt;me.y != context-&gt;last-&gt;me.y )</span>
+<span class="lineNum">     511 </span><span class="lineNoCov">          0 :             SplineMake(context-&gt;last,context-&gt;cpl-&gt;first,context-&gt;order2);</span>
+<span class="lineNum">     512 </span>            :         else {
+<span class="lineNum">     513 </span><span class="lineNoCov">          0 :             context-&gt;cpl-&gt;first-&gt;prevcp = context-&gt;last-&gt;prevcp;</span>
+<span class="lineNum">     514 </span><span class="lineNoCov">          0 :             context-&gt;last-&gt;prev-&gt;to = context-&gt;cpl-&gt;first;</span>
+<span class="lineNum">     515 </span><span class="lineNoCov">          0 :             context-&gt;cpl-&gt;first-&gt;prev = context-&gt;last-&gt;prev;</span>
+<span class="lineNum">     516 </span><span class="lineNoCov">          0 :             SplinePointFree(context-&gt;last);</span>
+<span class="lineNum">     517 </span>            :         }
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 :         context-&gt;cpl-&gt;last = context-&gt;cpl-&gt;first;</span>
+<span class="lineNum">     519 </span><span class="lineNoCov">          0 :         context-&gt;last = NULL;</span>
+<span class="lineNum">     520 </span><span class="lineNoCov">          0 :         if ( context-&gt;orig_cpl!=NULL )</span>
+<span class="lineNum">     521 </span><span class="lineNoCov">          0 :             context-&gt;orig_cpl = context-&gt;orig_cpl-&gt;next;</span>
+<span class="lineNum">     522 </span><span class="lineNoCov">          0 :         while ( context-&gt;orig_cpl==NULL ) {</span>
+<span class="lineNum">     523 </span><span class="lineNoCov">          0 :             if ( context-&gt;orig_ref==NULL )</span>
+<span class="lineNum">     524 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     525 </span><span class="lineNoCov">          0 :             context-&gt;orig_cpl = context-&gt;orig_ref-&gt;layers[0].splines;</span>
+<span class="lineNum">     526 </span><span class="lineNoCov">          0 :             context-&gt;orig_ref = context-&gt;orig_ref-&gt;next;</span>
+<span class="lineNum">     527 </span>            :         }
+<span class="lineNum">     528 </span><span class="lineNoCov">          0 :         while ( !context-&gt;order2 &amp;&amp; context-&gt;orig_cpl!=NULL &amp;&amp;</span>
+<span class="lineNum">     529 </span><span class="lineNoCov">          0 :                 context-&gt;orig_cpl-&gt;first-&gt;next==NULL )</span>
+<span class="lineNum">     530 </span><span class="lineNoCov">          0 :             context-&gt;orig_cpl = context-&gt;orig_cpl-&gt;next;</span>
+<span class="lineNum">     531 </span>            :             /* free type skips open contours with a single point in pfbs */
+<span class="lineNum">     532 </span><span class="lineNoCov">          0 :         context-&gt;orig_sp = NULL;</span>
+<span class="lineNum">     533 </span>            :     }
+<a name="534"><span class="lineNum">     534 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     535 </span>            : 
+<span class="lineNum">     536 </span><span class="lineNoCov">          0 : static int FT_MoveTo(const FT_Vector *to,void *user) {</span>
+<span class="lineNum">     537 </span><span class="lineNoCov">          0 :     struct ft_context *context = user;</span>
+<span class="lineNum">     538 </span>            : 
+<span class="lineNum">     539 </span><span class="lineNoCov">          0 :     FT_ClosePath(context);</span>
+<span class="lineNum">     540 </span>            : 
+<span class="lineNum">     541 </span><span class="lineNoCov">          0 :     context-&gt;cpl = chunkalloc(sizeof(SplinePointList));</span>
+<span class="lineNum">     542 </span><span class="lineNoCov">          0 :     if ( context-&gt;lcpl==NULL )</span>
+<span class="lineNum">     543 </span><span class="lineNoCov">          0 :         context-&gt;hcpl = context-&gt;cpl;</span>
+<span class="lineNum">     544 </span>            :     else
+<span class="lineNum">     545 </span><span class="lineNoCov">          0 :         context-&gt;lcpl-&gt;next = context-&gt;cpl;</span>
+<span class="lineNum">     546 </span><span class="lineNoCov">          0 :     context-&gt;lcpl = context-&gt;cpl;</span>
+<span class="lineNum">     547 </span>            : 
+<span class="lineNum">     548 </span><span class="lineNoCov">          0 :     if ( context-&gt;orig_cpl!=NULL )</span>
+<span class="lineNum">     549 </span><span class="lineNoCov">          0 :         context-&gt;orig_sp = context-&gt;orig_cpl-&gt;first;</span>
+<span class="lineNum">     550 </span>            : 
+<span class="lineNum">     551 </span><span class="lineNoCov">          0 :     context-&gt;last = context-&gt;cpl-&gt;first = chunkalloc(sizeof(SplinePoint));</span>
+<span class="lineNum">     552 </span><span class="lineNoCov">          0 :     context-&gt;last-&gt;me.x = to-&gt;x*context-&gt;scalex;</span>
+<span class="lineNum">     553 </span><span class="lineNoCov">          0 :     context-&gt;last-&gt;me.y = to-&gt;y*context-&gt;scaley;</span>
+<span class="lineNum">     554 </span><span class="lineNoCov">          0 :     if ( context-&gt;orig_sp==NULL )</span>
+<span class="lineNum">     555 </span><span class="lineNoCov">          0 :         context-&gt;last-&gt;ttfindex = -2;</span>
+<span class="lineNum">     556 </span>            :     else {
+<span class="lineNum">     557 </span><span class="lineNoCov">          0 :         context-&gt;last-&gt;ttfindex = context-&gt;orig_sp-&gt;ttfindex;</span>
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :         context-&gt;last-&gt;nextcpindex = context-&gt;orig_sp-&gt;nextcpindex;</span>
+<span class="lineNum">     559 </span>            :     }
+<span class="lineNum">     560 </span><span class="lineNoCov">          0 : return( 0 );</span>
+<a name="561"><span class="lineNum">     561 </span>            : }</a>
+<span class="lineNum">     562 </span>            : 
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 : static int FT_LineTo(const FT_Vector *to,void *user) {</span>
+<span class="lineNum">     564 </span><span class="lineNoCov">          0 :     struct ft_context *context = user;</span>
+<span class="lineNum">     565 </span>            :     SplinePoint *sp;
+<span class="lineNum">     566 </span>            : 
+<span class="lineNum">     567 </span><span class="lineNoCov">          0 :     sp = SplinePointCreate( to-&gt;x*context-&gt;scalex, to-&gt;y*context-&gt;scaley );</span>
+<span class="lineNum">     568 </span><span class="lineNoCov">          0 :     sp-&gt;ttfindex = -1;</span>
+<span class="lineNum">     569 </span><span class="lineNoCov">          0 :     SplineMake(context-&gt;last,sp,context-&gt;order2);</span>
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 :     context-&gt;last = sp;</span>
+<span class="lineNum">     571 </span>            : 
+<span class="lineNum">     572 </span><span class="lineNoCov">          0 :     if ( context-&gt;orig_sp!=NULL &amp;&amp; context-&gt;orig_sp-&gt;next!=NULL ) {</span>
+<span class="lineNum">     573 </span><span class="lineNoCov">          0 :         context-&gt;orig_sp = context-&gt;orig_sp-&gt;next-&gt;to;</span>
+<span class="lineNum">     574 </span><span class="lineNoCov">          0 :         if ( context-&gt;orig_sp!=NULL ) {</span>
+<span class="lineNum">     575 </span><span class="lineNoCov">          0 :             sp-&gt;ttfindex = context-&gt;orig_sp-&gt;ttfindex;</span>
+<span class="lineNum">     576 </span><span class="lineNoCov">          0 :             sp-&gt;nextcpindex = context-&gt;orig_sp-&gt;nextcpindex;</span>
+<span class="lineNum">     577 </span>            :         }
+<span class="lineNum">     578 </span>            :     }
+<span class="lineNum">     579 </span><span class="lineNoCov">          0 : return( 0 );</span>
+<a name="580"><span class="lineNum">     580 </span>            : }</a>
+<span class="lineNum">     581 </span>            : 
+<span class="lineNum">     582 </span><span class="lineNoCov">          0 : static int FT_ConicTo(const FT_Vector *_cp, const FT_Vector *to,void *user) {</span>
+<span class="lineNum">     583 </span><span class="lineNoCov">          0 :     struct ft_context *context = user;</span>
+<span class="lineNum">     584 </span>            :     SplinePoint *sp;
+<span class="lineNum">     585 </span>            : 
+<span class="lineNum">     586 </span><span class="lineNoCov">          0 :     sp = SplinePointCreate( to-&gt;x*context-&gt;scalex, to-&gt;y*context-&gt;scaley );</span>
+<span class="lineNum">     587 </span><span class="lineNoCov">          0 :     sp-&gt;noprevcp = false;</span>
+<span class="lineNum">     588 </span><span class="lineNoCov">          0 :     sp-&gt;prevcp.x = _cp-&gt;x*context-&gt;scalex;</span>
+<span class="lineNum">     589 </span><span class="lineNoCov">          0 :     sp-&gt;prevcp.y = _cp-&gt;y*context-&gt;scaley;</span>
+<span class="lineNum">     590 </span><span class="lineNoCov">          0 :     context-&gt;last-&gt;nextcp = sp-&gt;prevcp;</span>
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 :     context-&gt;last-&gt;nonextcp = false;</span>
+<span class="lineNum">     592 </span><span class="lineNoCov">          0 :     SplineMake2(context-&gt;last,sp);</span>
+<span class="lineNum">     593 </span><span class="lineNoCov">          0 :     context-&gt;last = sp;</span>
+<span class="lineNum">     594 </span>            : 
+<span class="lineNum">     595 </span><span class="lineNoCov">          0 :     if ( context-&gt;orig_sp!=NULL ) {</span>
+<span class="lineNum">     596 </span><span class="lineNoCov">          0 :         context-&gt;orig_sp = context-&gt;orig_sp-&gt;next-&gt;to;</span>
+<span class="lineNum">     597 </span><span class="lineNoCov">          0 :         if ( context-&gt;orig_sp!=NULL ) {</span>
+<span class="lineNum">     598 </span><span class="lineNoCov">          0 :             sp-&gt;ttfindex = context-&gt;orig_sp-&gt;ttfindex;</span>
+<span class="lineNum">     599 </span><span class="lineNoCov">          0 :             sp-&gt;nextcpindex = context-&gt;orig_sp-&gt;nextcpindex;</span>
+<span class="lineNum">     600 </span>            :         }
+<span class="lineNum">     601 </span>            :     }
+<span class="lineNum">     602 </span><span class="lineNoCov">          0 :     if ( sp-&gt;ttfindex==0xfffe ) sp-&gt;ttfindex = 0xffff;</span>
+<span class="lineNum">     603 </span><span class="lineNoCov">          0 : return( 0 );</span>
+<a name="604"><span class="lineNum">     604 </span>            : }</a>
+<span class="lineNum">     605 </span>            : 
+<span class="lineNum">     606 </span><span class="lineNoCov">          0 : static int FT_CubicTo(const FT_Vector *cp1, const FT_Vector *cp2,</span>
+<span class="lineNum">     607 </span>            :         const FT_Vector *to,void *user) {
+<span class="lineNum">     608 </span><span class="lineNoCov">          0 :     struct ft_context *context = user;</span>
+<span class="lineNum">     609 </span>            :     SplinePoint *sp;
+<span class="lineNum">     610 </span>            : 
+<span class="lineNum">     611 </span><span class="lineNoCov">          0 :     sp = SplinePointCreate( to-&gt;x*context-&gt;scalex, to-&gt;y*context-&gt;scaley );</span>
+<span class="lineNum">     612 </span><span class="lineNoCov">          0 :     sp-&gt;noprevcp = false;</span>
+<span class="lineNum">     613 </span><span class="lineNoCov">          0 :     sp-&gt;prevcp.x = cp2-&gt;x*context-&gt;scalex;</span>
+<span class="lineNum">     614 </span><span class="lineNoCov">          0 :     sp-&gt;prevcp.y = cp2-&gt;y*context-&gt;scaley;</span>
+<span class="lineNum">     615 </span><span class="lineNoCov">          0 :     context-&gt;last-&gt;nextcp.x = cp1-&gt;x*context-&gt;scalex;</span>
+<span class="lineNum">     616 </span><span class="lineNoCov">          0 :     context-&gt;last-&gt;nextcp.y = cp1-&gt;y*context-&gt;scaley;</span>
+<span class="lineNum">     617 </span><span class="lineNoCov">          0 :     SplineMake3(context-&gt;last,sp);</span>
+<span class="lineNum">     618 </span><span class="lineNoCov">          0 :     context-&gt;last = sp;</span>
+<span class="lineNum">     619 </span>            : 
+<span class="lineNum">     620 </span><span class="lineNoCov">          0 :     if ( context-&gt;orig_sp!=NULL ) {</span>
+<span class="lineNum">     621 </span><span class="lineNoCov">          0 :         context-&gt;orig_sp = context-&gt;orig_sp-&gt;next-&gt;to;</span>
+<span class="lineNum">     622 </span><span class="lineNoCov">          0 :         if ( context-&gt;orig_sp!=NULL )</span>
+<span class="lineNum">     623 </span><span class="lineNoCov">          0 :             sp-&gt;ttfindex = context-&gt;orig_sp-&gt;ttfindex;</span>
+<span class="lineNum">     624 </span>            :     }
+<span class="lineNum">     625 </span><span class="lineNoCov">          0 : return( 0 );</span>
+<span class="lineNum">     626 </span>            : }
+<span class="lineNum">     627 </span>            : 
+<span class="lineNum">     628 </span>            : static FT_Outline_Funcs outlinefuncs = {
+<span class="lineNum">     629 </span>            :     FT_MoveTo,
+<span class="lineNum">     630 </span>            :     FT_LineTo,
+<span class="lineNum">     631 </span>            :     FT_ConicTo,
+<span class="lineNum">     632 </span>            :     FT_CubicTo,
+<span class="lineNum">     633 </span>            :     0,0         /* I don't understand shift and delta */
+<a name="634"><span class="lineNum">     634 </span>            : };</a>
+<span class="lineNum">     635 </span>            : 
+<span class="lineNum">     636 </span><span class="lineNoCov">          0 : SplineSet *FreeType_GridFitChar(void *single_glyph_context, int enc,</span>
+<span class="lineNum">     637 </span>            :         real ptsizey, real ptsizex, int dpi, uint16 *width, SplineChar *sc,
+<span class="lineNum">     638 </span>            :         int depth, int scaled) {
+<span class="lineNum">     639 </span>            :     FT_GlyphSlot slot;
+<span class="lineNum">     640 </span><span class="lineNoCov">          0 :     FTC *ftc = (FTC *) single_glyph_context;</span>
+<span class="lineNum">     641 </span>            :     struct ft_context outline_context;
+<span class="lineNum">     642 </span>            :     static int bc_checked = false;
+<span class="lineNum">     643 </span>            : 
+<span class="lineNum">     644 </span><span class="lineNoCov">          0 :     if ( ftc-&gt;face==(void *) -1 )</span>
+<span class="lineNum">     645 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     646 </span>            : 
+<span class="lineNum">     647 </span><span class="lineNoCov">          0 :     if ( !bc_checked &amp;&amp; ftc-&gt;isttf ) {</span>
+<span class="lineNum">     648 </span><span class="lineNoCov">          0 :         bc_checked = true;</span>
+<span class="lineNum">     649 </span><span class="lineNoCov">          0 :         if ( !hasFreeTypeByteCode())</span>
+<span class="lineNum">     650 </span><span class="lineNoCov">          0 :             ff_post_notice(_(&quot;No ByteCode Interpreter&quot;),_(&quot;These results are those of the freetype autohinter. They do not reflect the truetype instructions.&quot;));</span>
+<span class="lineNum">     651 </span>            :     }
+<span class="lineNum">     652 </span>            : 
+<span class="lineNum">     653 </span><span class="lineNoCov">          0 :     if ( FT_Set_Char_Size(ftc-&gt;face,(int) (ptsizex*64),(int) (ptsizey*64), dpi, dpi))</span>
+<span class="lineNum">     654 </span><span class="lineNoCov">          0 : return( NULL ); /* Error Return */</span>
+<span class="lineNum">     655 </span>            : 
+<span class="lineNum">     656 </span><span class="lineNoCov">          0 :     if ( FT_Load_Glyph(ftc-&gt;face,ftc-&gt;glyph_indeces[enc],</span>
+<span class="lineNum">     657 </span>            :         depth==1 ? (FT_LOAD_NO_AUTOHINT|FT_LOAD_NO_BITMAP|FT_LOAD_TARGET_MONO) : (FT_LOAD_NO_AUTOHINT|FT_LOAD_NO_BITMAP)))
+<span class="lineNum">     658 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     659 </span>            : 
+<span class="lineNum">     660 </span><span class="lineNoCov">          0 :     slot = ftc-&gt;face-&gt;glyph;</span>
+<span class="lineNum">     661 </span><span class="lineNoCov">          0 :     memset(&amp;outline_context,'\0',sizeof(outline_context));</span>
+<span class="lineNum">     662 </span><span class="lineNoCov">          0 :     if ( scaled ) {</span>
+<span class="lineNum">     663 </span>            :         /* The outline's position is expressed in 24.6 fixed numbers representing */
+<span class="lineNum">     664 </span>            :         /*  pixels. I want to scale it back to the original coordinate system */
+<span class="lineNum">     665 </span><span class="lineNoCov">          0 :         outline_context.scalex = ftc-&gt;em/(64.0*rint(ptsizex*dpi/72.0));</span>
+<span class="lineNum">     666 </span><span class="lineNoCov">          0 :         outline_context.scaley = ftc-&gt;em/(64.0*rint(ptsizey*dpi/72.0));</span>
+<span class="lineNum">     667 </span>            :     } else {
+<span class="lineNum">     668 </span>            :         /* leave as pixels */
+<span class="lineNum">     669 </span><span class="lineNoCov">          0 :         outline_context.scalex = 1.0/64.0;</span>
+<span class="lineNum">     670 </span><span class="lineNoCov">          0 :         outline_context.scaley = 1.0/64.0;</span>
+<span class="lineNum">     671 </span>            :     }
+<span class="lineNum">     672 </span><span class="lineNoCov">          0 :     outline_context.orig_ref = sc-&gt;layers[ftc-&gt;layer].refs;</span>
+<span class="lineNum">     673 </span><span class="lineNoCov">          0 :     outline_context.orig_cpl = sc-&gt;layers[ftc-&gt;layer].splines;</span>
+<span class="lineNum">     674 </span><span class="lineNoCov">          0 :     while ( outline_context.orig_cpl==NULL &amp;&amp; outline_context.orig_ref != NULL ) {</span>
+<span class="lineNum">     675 </span><span class="lineNoCov">          0 :         outline_context.orig_cpl = outline_context.orig_ref-&gt;layers[0].splines;</span>
+<span class="lineNum">     676 </span><span class="lineNoCov">          0 :         outline_context.orig_ref = outline_context.orig_ref-&gt;next;</span>
+<span class="lineNum">     677 </span>            :     }
+<span class="lineNum">     678 </span><span class="lineNoCov">          0 :     while ( !ftc-&gt;isttf &amp;&amp; outline_context.orig_cpl!=NULL &amp;&amp;</span>
+<span class="lineNum">     679 </span><span class="lineNoCov">          0 :             outline_context.orig_cpl-&gt;first-&gt;next==NULL )</span>
+<span class="lineNum">     680 </span><span class="lineNoCov">          0 :         outline_context.orig_cpl = outline_context.orig_cpl-&gt;next;</span>
+<span class="lineNum">     681 </span>            :         /* free type skips open contours with a single point in pfbs */
+<span class="lineNum">     682 </span><span class="lineNoCov">          0 :     outline_context.orig_sp = NULL;</span>
+<span class="lineNum">     683 </span><span class="lineNoCov">          0 :     outline_context.order2 = ftc-&gt;isttf;</span>
+<span class="lineNum">     684 </span><span class="lineNoCov">          0 :     if ( !FT_Outline_Decompose(&amp;slot-&gt;outline,&amp;outlinefuncs,&amp;outline_context)) {</span>
+<span class="lineNum">     685 </span><span class="lineNoCov">          0 :         FT_ClosePath(&amp;outline_context);</span>
+<span class="lineNum">     686 </span><span class="lineNoCov">          0 :         *width = outline_context.scalex*slot-&gt;advance.x;</span>
+<span class="lineNum">     687 </span><span class="lineNoCov">          0 : return( outline_context.hcpl );</span>
+<span class="lineNum">     688 </span>            :     }
+<span class="lineNum">     689 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<a name="690"><span class="lineNum">     690 </span>            : }</a>
+<span class="lineNum">     691 </span>            : 
+<span class="lineNum">     692 </span><span class="lineNoCov">          0 : struct freetype_raster *FreeType_GetRaster(void *single_glyph_context,</span>
+<span class="lineNum">     693 </span>            :         int enc, real ptsizey, real ptsizex, int dpi, int depth) {
+<span class="lineNum">     694 </span>            :     FT_GlyphSlot slot;
+<span class="lineNum">     695 </span>            :     struct freetype_raster *ret;
+<span class="lineNum">     696 </span><span class="lineNoCov">          0 :     FTC *ftc = (FTC *) single_glyph_context;</span>
+<span class="lineNum">     697 </span>            : 
+<span class="lineNum">     698 </span><span class="lineNoCov">          0 :     if ( ftc-&gt;face==(void *) -1 )</span>
+<span class="lineNum">     699 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     700 </span>            : 
+<span class="lineNum">     701 </span><span class="lineNoCov">          0 :     if ( FT_Set_Char_Size(ftc-&gt;face,(int) (ptsizex*64) ,(int) (ptsizey*64), dpi, dpi))</span>
+<span class="lineNum">     702 </span><span class="lineNoCov">          0 : return( NULL ); /* Error Return */</span>
+<span class="lineNum">     703 </span>            : 
+<span class="lineNum">     704 </span><span class="lineNoCov">          0 :     if ( FT_Load_Glyph(ftc-&gt;face,ftc-&gt;glyph_indeces[enc],</span>
+<span class="lineNum">     705 </span>            :         depth==1? (FT_LOAD_NO_AUTOHINT|FT_LOAD_NO_BITMAP|FT_LOAD_TARGET_MONO) : (FT_LOAD_NO_AUTOHINT|FT_LOAD_NO_BITMAP)))
+<span class="lineNum">     706 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     707 </span>            : 
+<span class="lineNum">     708 </span><span class="lineNoCov">          0 :     slot = ((FT_Face) (ftc-&gt;face))-&gt;glyph;</span>
+<span class="lineNum">     709 </span><span class="lineNoCov">          0 :     if ( FT_Render_Glyph(slot,depth==1 ? ft_render_mode_mono :ft_render_mode_normal ))</span>
+<span class="lineNum">     710 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     711 </span>            : 
+<span class="lineNum">     712 </span><span class="lineNoCov">          0 :     if ( slot-&gt;bitmap.pixel_mode!=ft_pixel_mode_mono &amp;&amp;</span>
+<span class="lineNum">     713 </span><span class="lineNoCov">          0 :             slot-&gt;bitmap.pixel_mode!=ft_pixel_mode_grays )</span>
+<span class="lineNum">     714 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     715 </span><span class="lineNoCov">          0 :     ret = malloc(sizeof(struct freetype_raster));</span>
+<span class="lineNum">     716 </span>            : 
+<span class="lineNum">     717 </span><span class="lineNoCov">          0 :     ret-&gt;rows = slot-&gt;bitmap.rows;</span>
+<span class="lineNum">     718 </span><span class="lineNoCov">          0 :     ret-&gt;cols = slot-&gt;bitmap.width;</span>
+<span class="lineNum">     719 </span><span class="lineNoCov">          0 :     ret-&gt;bytes_per_row = slot-&gt;bitmap.pitch;</span>
+<span class="lineNum">     720 </span><span class="lineNoCov">          0 :     ret-&gt;as = slot-&gt;bitmap_top;</span>
+<span class="lineNum">     721 </span><span class="lineNoCov">          0 :     ret-&gt;lb = slot-&gt;bitmap_left;</span>
+<span class="lineNum">     722 </span><span class="lineNoCov">          0 :     ret-&gt;num_greys = slot-&gt;bitmap.num_grays;</span>
+<span class="lineNum">     723 </span>            :         /* Can't find any description of freetype's bitendianness */
+<span class="lineNum">     724 </span>            :         /* But the obvious seems to work */
+<span class="lineNum">     725 </span><span class="lineNoCov">          0 :     ret-&gt;bitmap = malloc(ret-&gt;rows*ret-&gt;bytes_per_row);</span>
+<span class="lineNum">     726 </span><span class="lineNoCov">          0 :     memcpy(ret-&gt;bitmap,slot-&gt;bitmap.buffer,ret-&gt;rows*ret-&gt;bytes_per_row);</span>
+<span class="lineNum">     727 </span><span class="lineNoCov">          0 : return( ret );</span>
+<a name="728"><span class="lineNum">     728 </span>            : }</a>
+<span class="lineNum">     729 </span>            : 
+<span class="lineNum">     730 </span><span class="lineNoCov">          0 : static void FillOutline(SplineSet *spl,FT_Outline *outline,int *pmax,int *cmax,</span>
+<span class="lineNum">     731 </span>            :         real scale, DBounds *bb, int order2, int ignore_clip) {
+<span class="lineNum">     732 </span>            :     int k;
+<span class="lineNum">     733 </span>            :     int pcnt,ccnt;
+<span class="lineNum">     734 </span>            :     SplinePoint *sp;
+<span class="lineNum">     735 </span>            :     SplineSet *ss;
+<span class="lineNum">     736 </span>            : 
+<span class="lineNum">     737 </span><span class="lineNoCov">          0 :     if ( order2 ) {</span>
+<span class="lineNum">     738 </span><span class="lineNoCov">          0 :         for ( k=0; k&lt;2; ++k ) {</span>
+<span class="lineNum">     739 </span><span class="lineNoCov">          0 :             pcnt = ccnt = 0;</span>
+<span class="lineNum">     740 </span><span class="lineNoCov">          0 :             for ( ss = spl ; ss!=NULL; ss=ss-&gt;next ) if ( ss-&gt;first-&gt;prev!=NULL ) {</span>
+<span class="lineNum">     741 </span><span class="lineNoCov">          0 :                 if (( ignore_clip==1 &amp;&amp; ss-&gt;is_clip_path ) || ( ignore_clip==2 &amp;&amp; !ss-&gt;is_clip_path ))</span>
+<span class="lineNum">     742 </span><span class="lineNoCov">          0 :             continue;</span>
+<span class="lineNum">     743 </span><span class="lineNoCov">          0 :                 for ( sp=ss-&gt;first; ; ) {</span>
+<span class="lineNum">     744 </span><span class="lineNoCov">          0 :                     if ( k ) {</span>
+<span class="lineNum">     745 </span><span class="lineNoCov">          0 :                         outline-&gt;points[pcnt].x = rint(sp-&gt;me.x*scale)-bb-&gt;minx;</span>
+<span class="lineNum">     746 </span><span class="lineNoCov">          0 :                         outline-&gt;points[pcnt].y = rint(sp-&gt;me.y*scale)-bb-&gt;miny;</span>
+<span class="lineNum">     747 </span><span class="lineNoCov">          0 :                         outline-&gt;tags[pcnt] = 1;     /* On curve */</span>
+<span class="lineNum">     748 </span>            :                     }
+<span class="lineNum">     749 </span><span class="lineNoCov">          0 :                     ++pcnt;</span>
+<span class="lineNum">     750 </span><span class="lineNoCov">          0 :                     if ( sp-&gt;next==NULL )</span>
+<span class="lineNum">     751 </span><span class="lineNoCov">          0 :                 break;</span>
+<span class="lineNum">     752 </span><span class="lineNoCov">          0 :                     if ( !sp-&gt;nonextcp ) {</span>
+<span class="lineNum">     753 </span><span class="lineNoCov">          0 :                         if ( k ) {</span>
+<span class="lineNum">     754 </span><span class="lineNoCov">          0 :                             outline-&gt;points[pcnt].x = rint(sp-&gt;nextcp.x*scale)-bb-&gt;minx;</span>
+<span class="lineNum">     755 </span><span class="lineNoCov">          0 :                             outline-&gt;points[pcnt].y = rint(sp-&gt;nextcp.y*scale)-bb-&gt;miny;</span>
+<span class="lineNum">     756 </span>            :                         }
+<span class="lineNum">     757 </span><span class="lineNoCov">          0 :                         ++pcnt;</span>
+<span class="lineNum">     758 </span>            :                     }
+<span class="lineNum">     759 </span><span class="lineNoCov">          0 :                     sp = sp-&gt;next-&gt;to;</span>
+<span class="lineNum">     760 </span><span class="lineNoCov">          0 :                     if ( sp==ss-&gt;first )</span>
+<span class="lineNum">     761 </span><span class="lineNoCov">          0 :                 break;</span>
+<span class="lineNum">     762 </span><span class="lineNoCov">          0 :                 }</span>
+<span class="lineNum">     763 </span><span class="lineNoCov">          0 :                 if ( k )</span>
+<span class="lineNum">     764 </span><span class="lineNoCov">          0 :                     outline-&gt;contours[ccnt] = pcnt-1;</span>
+<span class="lineNum">     765 </span><span class="lineNoCov">          0 :                 ++ccnt;</span>
+<span class="lineNum">     766 </span>            :             }
+<span class="lineNum">     767 </span><span class="lineNoCov">          0 :             if ( !k ) {</span>
+<span class="lineNum">     768 </span><span class="lineNoCov">          0 :                 outline-&gt;n_contours = ccnt;</span>
+<span class="lineNum">     769 </span><span class="lineNoCov">          0 :                 outline-&gt;n_points = pcnt;</span>
+<span class="lineNum">     770 </span><span class="lineNoCov">          0 :                 if ( pcnt &gt; *pmax || *pmax==0 ) {</span>
+<span class="lineNum">     771 </span><span class="lineNoCov">          0 :                     *pmax = pcnt==0 ? 1 : pcnt;</span>
+<span class="lineNum">     772 </span><span class="lineNoCov">          0 :                     outline-&gt;points = realloc(outline-&gt;points,*pmax*sizeof(FT_Vector));</span>
+<span class="lineNum">     773 </span><span class="lineNoCov">          0 :                     outline-&gt;tags = realloc(outline-&gt;tags,*pmax*sizeof(char));</span>
+<span class="lineNum">     774 </span>            :                 }
+<span class="lineNum">     775 </span><span class="lineNoCov">          0 :                 memset(outline-&gt;tags,0,pcnt);</span>
+<span class="lineNum">     776 </span><span class="lineNoCov">          0 :                 if ( ccnt &gt; *cmax || *cmax==0 ) {</span>
+<span class="lineNum">     777 </span><span class="lineNoCov">          0 :                     *cmax = ccnt==0 ? 1 : ccnt;</span>
+<span class="lineNum">     778 </span><span class="lineNoCov">          0 :                     outline-&gt;contours = realloc(outline-&gt;contours,*cmax*sizeof(short));</span>
+<span class="lineNum">     779 </span>            :                 }
+<span class="lineNum">     780 </span><span class="lineNoCov">          0 :                 outline-&gt;flags = ft_outline_none;</span>
+<span class="lineNum">     781 </span>            :             }
+<span class="lineNum">     782 </span>            :         }
+<span class="lineNum">     783 </span>            :     } else {
+<span class="lineNum">     784 </span><span class="lineNoCov">          0 :         for ( k=0; k&lt;2; ++k ) {</span>
+<span class="lineNum">     785 </span><span class="lineNoCov">          0 :             pcnt = ccnt = 0;</span>
+<span class="lineNum">     786 </span><span class="lineNoCov">          0 :             for ( ss = spl ; ss!=NULL; ss=ss-&gt;next ) if ( ss-&gt;first-&gt;prev!=NULL ) {</span>
+<span class="lineNum">     787 </span><span class="lineNoCov">          0 :                 for ( sp=ss-&gt;first; ; ) {</span>
+<span class="lineNum">     788 </span><span class="lineNoCov">          0 :                     if ( k ) {</span>
+<span class="lineNum">     789 </span><span class="lineNoCov">          0 :                         outline-&gt;points[pcnt].x = rint(sp-&gt;me.x*scale)-bb-&gt;minx;</span>
+<span class="lineNum">     790 </span><span class="lineNoCov">          0 :                         outline-&gt;points[pcnt].y = rint(sp-&gt;me.y*scale)-bb-&gt;miny;</span>
+<span class="lineNum">     791 </span><span class="lineNoCov">          0 :                         outline-&gt;tags[pcnt] = 1;     /* On curve */</span>
+<span class="lineNum">     792 </span>            :                     }
+<span class="lineNum">     793 </span><span class="lineNoCov">          0 :                     ++pcnt;</span>
+<span class="lineNum">     794 </span><span class="lineNoCov">          0 :                     if ( sp-&gt;next==NULL )</span>
+<span class="lineNum">     795 </span><span class="lineNoCov">          0 :                 break;</span>
+<span class="lineNum">     796 </span><span class="lineNoCov">          0 :                     if ( !sp-&gt;nonextcp || !sp-&gt;next-&gt;to-&gt;noprevcp ) {</span>
+<span class="lineNum">     797 </span><span class="lineNoCov">          0 :                         if ( k ) {</span>
+<span class="lineNum">     798 </span><span class="lineNoCov">          0 :                             outline-&gt;points[pcnt].x = rint(sp-&gt;nextcp.x*scale)-bb-&gt;minx;</span>
+<span class="lineNum">     799 </span><span class="lineNoCov">          0 :                             outline-&gt;points[pcnt].y = rint(sp-&gt;nextcp.y*scale)-bb-&gt;miny;</span>
+<span class="lineNum">     800 </span><span class="lineNoCov">          0 :                             outline-&gt;tags[pcnt] = 2; /* cubic control */</span>
+<span class="lineNum">     801 </span><span class="lineNoCov">          0 :                             outline-&gt;points[pcnt+1].x = rint(sp-&gt;next-&gt;to-&gt;prevcp.x*scale)-bb-&gt;minx;</span>
+<span class="lineNum">     802 </span><span class="lineNoCov">          0 :                             outline-&gt;points[pcnt+1].y = rint(sp-&gt;next-&gt;to-&gt;prevcp.y*scale)-bb-&gt;miny;</span>
+<span class="lineNum">     803 </span><span class="lineNoCov">          0 :                             outline-&gt;tags[pcnt+1] = 2;       /* cubic control */</span>
+<span class="lineNum">     804 </span>            :                         }
+<span class="lineNum">     805 </span><span class="lineNoCov">          0 :                         pcnt += 2;</span>
+<span class="lineNum">     806 </span>            :                     }
+<span class="lineNum">     807 </span><span class="lineNoCov">          0 :                     sp = sp-&gt;next-&gt;to;</span>
+<span class="lineNum">     808 </span><span class="lineNoCov">          0 :                     if ( sp==ss-&gt;first )</span>
+<span class="lineNum">     809 </span><span class="lineNoCov">          0 :                 break;</span>
+<span class="lineNum">     810 </span><span class="lineNoCov">          0 :                 }</span>
+<span class="lineNum">     811 </span><span class="lineNoCov">          0 :                 if ( k )</span>
+<span class="lineNum">     812 </span><span class="lineNoCov">          0 :                     outline-&gt;contours[ccnt] = pcnt-1;</span>
+<span class="lineNum">     813 </span><span class="lineNoCov">          0 :                 ++ccnt;</span>
+<span class="lineNum">     814 </span>            :             }
+<span class="lineNum">     815 </span><span class="lineNoCov">          0 :             if ( !k ) {</span>
+<span class="lineNum">     816 </span><span class="lineNoCov">          0 :                 outline-&gt;n_contours = ccnt;</span>
+<span class="lineNum">     817 </span><span class="lineNoCov">          0 :                 outline-&gt;n_points = pcnt;</span>
+<span class="lineNum">     818 </span><span class="lineNoCov">          0 :                 if ( pcnt &gt; *pmax || *pmax==0 ) {</span>
+<span class="lineNum">     819 </span><span class="lineNoCov">          0 :                     *pmax = pcnt==0 ? 1 : pcnt;</span>
+<span class="lineNum">     820 </span><span class="lineNoCov">          0 :                     outline-&gt;points = realloc(outline-&gt;points,*pmax*sizeof(FT_Vector));</span>
+<span class="lineNum">     821 </span><span class="lineNoCov">          0 :                     outline-&gt;tags = realloc(outline-&gt;tags,*pmax*sizeof(char));</span>
+<span class="lineNum">     822 </span>            :                 }
+<span class="lineNum">     823 </span><span class="lineNoCov">          0 :                 memset(outline-&gt;tags,0,pcnt);</span>
+<span class="lineNum">     824 </span><span class="lineNoCov">          0 :                 if ( ccnt &gt; *cmax || *cmax==0 ) {</span>
+<span class="lineNum">     825 </span><span class="lineNoCov">          0 :                     *cmax = ccnt==0 ? 1 : ccnt;</span>
+<span class="lineNum">     826 </span><span class="lineNoCov">          0 :                     outline-&gt;contours = realloc(outline-&gt;contours,*cmax*sizeof(short));</span>
+<span class="lineNum">     827 </span>            :                 }
+<span class="lineNum">     828 </span>            :                 /* You might think we should set ft_outline_reverse_fill here */
+<span class="lineNum">     829 </span>            :                 /*  because this is a postscript font. But ff stores fonts */
+<span class="lineNum">     830 </span>            :                 /*  internally in truetype order, and we didn't reverse it */
+<span class="lineNum">     831 </span>            :                 /*  above (the way we would if we were really generating PS) */
+<span class="lineNum">     832 </span><span class="lineNoCov">          0 :                 outline-&gt;flags = ft_outline_none;</span>
+<span class="lineNum">     833 </span>            :             }
+<span class="lineNum">     834 </span>            :         }
+<span class="lineNum">     835 </span>            :     }
+<a name="836"><span class="lineNum">     836 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     837 </span>            : 
+<span class="lineNum">     838 </span><span class="lineNoCov">          0 : static SplineSet *LayerAllOutlines(Layer *layer) {</span>
+<span class="lineNum">     839 </span>            :     SplineSet *head, *last, *cur;
+<span class="lineNum">     840 </span>            :     RefChar *r;
+<span class="lineNum">     841 </span>            : 
+<span class="lineNum">     842 </span><span class="lineNoCov">          0 :     if ( layer-&gt;refs==NULL )</span>
+<span class="lineNum">     843 </span><span class="lineNoCov">          0 : return( layer-&gt;splines );</span>
+<span class="lineNum">     844 </span><span class="lineNoCov">          0 :     head = SplinePointListCopy(layer-&gt;splines);</span>
+<span class="lineNum">     845 </span><span class="lineNoCov">          0 :     if ( head!=NULL )</span>
+<span class="lineNum">     846 </span><span class="lineNoCov">          0 :         for ( last=head; last-&gt;next!=NULL; last=last-&gt;next );</span>
+<span class="lineNum">     847 </span><span class="lineNoCov">          0 :     for ( r=layer-&gt;refs; r!=NULL; r=r-&gt;next ) {</span>
+<span class="lineNum">     848 </span><span class="lineNoCov">          0 :         cur = SplinePointListCopy(r-&gt;layers[0].splines);</span>
+<span class="lineNum">     849 </span><span class="lineNoCov">          0 :         if ( cur==NULL )</span>
+<span class="lineNum">     850 </span>            :             /* Do Nothing */;
+<span class="lineNum">     851 </span><span class="lineNoCov">          0 :         else if ( head==NULL ) {</span>
+<span class="lineNum">     852 </span><span class="lineNoCov">          0 :             head = cur;</span>
+<span class="lineNum">     853 </span><span class="lineNoCov">          0 :             for ( last=head; last-&gt;next!=NULL; last=last-&gt;next );</span>
+<span class="lineNum">     854 </span>            :         } else {
+<span class="lineNum">     855 </span><span class="lineNoCov">          0 :             last-&gt;next = cur;</span>
+<span class="lineNum">     856 </span><span class="lineNoCov">          0 :             for ( ; last-&gt;next!=NULL; last=last-&gt;next );</span>
+<span class="lineNum">     857 </span>            :         }
+<span class="lineNum">     858 </span>            :     }
+<span class="lineNum">     859 </span><span class="lineNoCov">          0 : return( head );</span>
+<a name="860"><span class="lineNum">     860 </span>            : }</a>
+<span class="lineNum">     861 </span>            : 
+<span class="lineNum">     862 </span><span class="lineNoCov">          0 : static SplineSet *StrokeOutline(Layer *layer,SplineChar *sc) {</span>
+<span class="lineNum">     863 </span>            :     StrokeInfo si;
+<span class="lineNum">     864 </span>            :     RefChar *r;
+<span class="lineNum">     865 </span><span class="lineNoCov">          0 :     SplineSet *head=NULL, *tail=NULL, *c;</span>
+<span class="lineNum">     866 </span>            : 
+<span class="lineNum">     867 </span><span class="lineNoCov">          0 :     memset(&amp;si,0,sizeof(si));</span>
+<span class="lineNum">     868 </span><span class="lineNoCov">          0 :     if ( sc-&gt;parent-&gt;strokedfont ) {</span>
+<span class="lineNum">     869 </span><span class="lineNoCov">          0 :         si.radius = sc-&gt;parent-&gt;strokewidth/2;</span>
+<span class="lineNum">     870 </span><span class="lineNoCov">          0 :         si.join = lj_bevel;</span>
+<span class="lineNum">     871 </span><span class="lineNoCov">          0 :         si.cap = lc_butt;</span>
+<span class="lineNum">     872 </span><span class="lineNoCov">          0 :         si.stroke_type = si_std;</span>
+<span class="lineNum">     873 </span><span class="lineNoCov">          0 :         head = SplineSetStroke(layer-&gt;splines,&amp;si,layer-&gt;order2);</span>
+<span class="lineNum">     874 </span><span class="lineNoCov">          0 :         if ( head!=NULL )</span>
+<span class="lineNum">     875 </span><span class="lineNoCov">          0 :             for ( tail=head; tail-&gt;next!=NULL; tail=tail-&gt;next );</span>
+<span class="lineNum">     876 </span><span class="lineNoCov">          0 :         for ( r=layer-&gt;refs; r!=NULL; r=r-&gt;next ) {</span>
+<span class="lineNum">     877 </span><span class="lineNoCov">          0 :             c = SplineSetStroke(r-&gt;layers[0].splines,&amp;si,r-&gt;layers[0].order2);</span>
+<span class="lineNum">     878 </span><span class="lineNoCov">          0 :             if ( c==NULL )</span>
+<span class="lineNum">     879 </span>            :                 /* Do Nothing */;
+<span class="lineNum">     880 </span><span class="lineNoCov">          0 :             else if ( head==NULL ) {</span>
+<span class="lineNum">     881 </span><span class="lineNoCov">          0 :                 head = c;</span>
+<span class="lineNum">     882 </span><span class="lineNoCov">          0 :                 for ( tail=head; tail-&gt;next!=NULL; tail=tail-&gt;next );</span>
+<span class="lineNum">     883 </span>            :             } else {
+<span class="lineNum">     884 </span><span class="lineNoCov">          0 :                 tail-&gt;next = c;</span>
+<span class="lineNum">     885 </span><span class="lineNoCov">          0 :                 for ( ; tail-&gt;next!=NULL; tail=tail-&gt;next );</span>
+<span class="lineNum">     886 </span>            :             }
+<span class="lineNum">     887 </span>            :         }
+<span class="lineNum">     888 </span><span class="lineNoCov">          0 : return( head );</span>
+<span class="lineNum">     889 </span>            :     } else
+<span class="lineNum">     890 </span>            :     {
+<span class="lineNum">     891 </span><span class="lineNoCov">          0 :         si.radius = layer-&gt;stroke_pen.width/2;</span>
+<span class="lineNum">     892 </span><span class="lineNoCov">          0 :         si.join = layer-&gt;stroke_pen.linejoin;</span>
+<span class="lineNum">     893 </span><span class="lineNoCov">          0 :         si.cap = layer-&gt;stroke_pen.linecap;</span>
+<span class="lineNum">     894 </span><span class="lineNoCov">          0 :         si.stroke_type = si_std;</span>
+<span class="lineNum">     895 </span><span class="lineNoCov">          0 : return( SplineSetStroke(layer-&gt;splines,&amp;si,layer-&gt;order2));</span>
+<span class="lineNum">     896 </span>            :     }
+<a name="897"><span class="lineNum">     897 </span>            : }</a>
+<span class="lineNum">     898 </span>            : 
+<span class="lineNum">     899 </span><span class="lineNoCov">          0 : static SplineSet *RStrokeOutline(struct reflayer *layer) {</span>
+<span class="lineNum">     900 </span>            :     StrokeInfo si;
+<span class="lineNum">     901 </span>            : 
+<span class="lineNum">     902 </span><span class="lineNoCov">          0 :     memset(&amp;si,0,sizeof(si));</span>
+<span class="lineNum">     903 </span><span class="lineNoCov">          0 :     si.radius = layer-&gt;stroke_pen.width/2;</span>
+<span class="lineNum">     904 </span><span class="lineNoCov">          0 :     si.join = layer-&gt;stroke_pen.linejoin;</span>
+<span class="lineNum">     905 </span><span class="lineNoCov">          0 :     si.cap = layer-&gt;stroke_pen.linecap;</span>
+<span class="lineNum">     906 </span><span class="lineNoCov">          0 :     si.stroke_type = si_std;</span>
+<span class="lineNum">     907 </span><span class="lineNoCov">          0 : return( SplineSetStroke(layer-&gt;splines,&amp;si,layer-&gt;order2));</span>
+<a name="908"><span class="lineNum">     908 </span>            : }</a>
+<span class="lineNum">     909 </span>            : 
+<span class="lineNum">     910 </span><span class="lineNoCov">          0 : static void MergeBitmaps(FT_Bitmap *bitmap,FT_Bitmap *newstuff,struct brush *brush,</span>
+<span class="lineNum">     911 </span>            :         uint8 *clipmask,double scale,DBounds *bbox,SplineChar *sc) {
+<span class="lineNum">     912 </span>            :     int i, j;
+<span class="lineNum">     913 </span><span class="lineNoCov">          0 :     uint32 col = brush-&gt;col;</span>
+<span class="lineNum">     914 </span>            : 
+<span class="lineNum">     915 </span><span class="lineNoCov">          0 :     if ( col == COLOR_INHERITED ) col = 0x000000;</span>
+<span class="lineNum">     916 </span><span class="lineNoCov">          0 :     col = 3*((col&gt;&gt;16)&amp;0xff) + 6*((col&gt;&gt;8)&amp;0xff) + 1*(col&amp;0xff);</span>
+<span class="lineNum">     917 </span><span class="lineNoCov">          0 :     col = 0xff - col;</span>
+<span class="lineNum">     918 </span>            : 
+<span class="lineNum">     919 </span><span class="lineNoCov">          0 :     if ( bitmap-&gt;num_grays == 256 ) {</span>
+<span class="lineNum">     920 </span><span class="lineNoCov">          0 :         if ( clipmask!=NULL ) {</span>
+<span class="lineNum">     921 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;bitmap-&gt;rows; ++i ) for ( j=0; j&lt;bitmap-&gt;pitch; ++j )</span>
+<span class="lineNum">     922 </span><span class="lineNoCov">          0 :                 newstuff-&gt;buffer[i*bitmap-&gt;pitch+j] *= clipmask[i*bitmap-&gt;pitch+j];</span>
+<span class="lineNum">     923 </span>            :         }
+<span class="lineNum">     924 </span><span class="lineNoCov">          0 :         PatternPrep(sc,brush,scale);</span>
+<span class="lineNum">     925 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;bitmap-&gt;rows; ++i ) for ( j=0; j&lt;bitmap-&gt;pitch; ++j ) {</span>
+<span class="lineNum">     926 </span><span class="lineNoCov">          0 :             bitmap-&gt;buffer[i*bitmap-&gt;pitch+j] =</span>
+<span class="lineNum">     927 </span><span class="lineNoCov">          0 :                     (newstuff-&gt;buffer[i*bitmap-&gt;pitch+j]*GradientHere(scale,bbox,i,j,brush-&gt;gradient,brush-&gt;pattern,col) +</span>
+<span class="lineNum">     928 </span><span class="lineNoCov">          0 :                      (255-newstuff-&gt;buffer[i*bitmap-&gt;pitch+j])*bitmap-&gt;buffer[i*bitmap-&gt;pitch+j] +</span>
+<span class="lineNum">     929 </span><span class="lineNoCov">          0 :                      127)/255;</span>
+<span class="lineNum">     930 </span>            :         }
+<span class="lineNum">     931 </span><span class="lineNoCov">          0 :         if ( brush-&gt;pattern!=NULL ) {</span>
+<span class="lineNum">     932 </span><span class="lineNoCov">          0 :             BDFCharFree(brush-&gt;pattern-&gt;pat);</span>
+<span class="lineNum">     933 </span><span class="lineNoCov">          0 :             brush-&gt;pattern-&gt;pat = NULL;</span>
+<span class="lineNum">     934 </span>            :         }
+<span class="lineNum">     935 </span>            :     } else {
+<span class="lineNum">     936 </span><span class="lineNoCov">          0 :         if ( clipmask!=NULL ) {</span>
+<span class="lineNum">     937 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;bitmap-&gt;rows; ++i ) for ( j=0; j&lt;bitmap-&gt;pitch; ++j )</span>
+<span class="lineNum">     938 </span><span class="lineNoCov">          0 :                 newstuff-&gt;buffer[i*bitmap-&gt;pitch+j] &amp;= clipmask[i*bitmap-&gt;pitch+j];</span>
+<span class="lineNum">     939 </span>            :         }
+<span class="lineNum">     940 </span>            :         /* A gradient makes no sense on a bitmap, so don't even check */
+<span class="lineNum">     941 </span>            :         /*  (unless we were doing dithering, which we aren't) */
+<span class="lineNum">     942 </span><span class="lineNoCov">          0 :         if ( col&gt;=0x80 ) {</span>
+<span class="lineNum">     943 </span>            :             /* Bitmap set */
+<span class="lineNum">     944 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;bitmap-&gt;rows; ++i ) for ( j=0; j&lt;bitmap-&gt;pitch; ++j ) {</span>
+<span class="lineNum">     945 </span><span class="lineNoCov">          0 :                 bitmap-&gt;buffer[i*bitmap-&gt;pitch+j] |=  newstuff-&gt;buffer[i*bitmap-&gt;pitch+j];</span>
+<span class="lineNum">     946 </span>            :             }
+<span class="lineNum">     947 </span>            :         } else {
+<span class="lineNum">     948 </span>            :             /* Bitmap clear */
+<span class="lineNum">     949 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;bitmap-&gt;rows; ++i ) for ( j=0; j&lt;bitmap-&gt;pitch; ++j ) {</span>
+<span class="lineNum">     950 </span><span class="lineNoCov">          0 :                 bitmap-&gt;buffer[i*bitmap-&gt;pitch+j] &amp;= ~newstuff-&gt;buffer[i*bitmap-&gt;pitch+j];</span>
+<span class="lineNum">     951 </span>            :             }
+<span class="lineNum">     952 </span>            :         }
+<span class="lineNum">     953 </span>            :     }
+<a name="954"><span class="lineNum">     954 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     955 </span>            : 
+<span class="lineNum">     956 </span><span class="lineNoCov">          0 : BDFChar *SplineCharFreeTypeRasterizeNoHints(SplineChar *sc,int layer,</span>
+<span class="lineNum">     957 </span>            :         int ptsize, int dpi,int depth) {
+<span class="lineNum">     958 </span>            :     FT_Outline outline;
+<span class="lineNum">     959 </span>            :     FT_Bitmap bitmap, temp;
+<span class="lineNum">     960 </span>            :     int i;
+<span class="lineNum">     961 </span>            :     int cmax, pmax;
+<span class="lineNum">     962 </span><span class="lineNoCov">          0 :     real rscale = (ptsize*dpi)/72.0/(double) (sc-&gt;parent-&gt;ascent+sc-&gt;parent-&gt;descent);</span>
+<span class="lineNum">     963 </span><span class="lineNoCov">          0 :     real scale = rscale*(1&lt;&lt;6);</span>
+<span class="lineNum">     964 </span>            :     BDFChar *bdfc;
+<span class="lineNum">     965 </span><span class="lineNoCov">          0 :     int err = 0;</span>
+<span class="lineNum">     966 </span>            :     DBounds b;
+<span class="lineNum">     967 </span>            :     SplineSet *all;
+<span class="lineNum">     968 </span>            : 
+<span class="lineNum">     969 </span><span class="lineNoCov">          0 :     if ( !hasFreeType())</span>
+<span class="lineNum">     970 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     971 </span><span class="lineNoCov">          0 :     if ( sc-&gt;parent-&gt;strokedfont &amp;&amp;</span>
+<span class="lineNum">     972 </span><span class="lineNoCov">          0 :         ( sc-&gt;layers[layer].order2 || (int)sc-&gt;parent-&gt;strokewidth == 0 ) )</span>
+<span class="lineNum">     973 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     974 </span><span class="lineNoCov">          0 :     if ( sc-&gt;layers[layer].order2 &amp;&amp; sc-&gt;parent-&gt;multilayer ) {</span>
+<span class="lineNum">     975 </span>            :         /* I don't support stroking of order2 splines */
+<span class="lineNum">     976 </span><span class="lineNoCov">          0 :         for ( i=ly_fore; i&lt;sc-&gt;layer_cnt; ++i ) {</span>
+<span class="lineNum">     977 </span><span class="lineNoCov">          0 :             if ( sc-&gt;layers[i].dostroke )</span>
+<span class="lineNum">     978 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     979 </span>            :         }
+<span class="lineNum">     980 </span>            :     }
+<span class="lineNum">     981 </span><span class="lineNoCov">          0 :     if ( sc-&gt;parent-&gt;multilayer ) {</span>
+<span class="lineNum">     982 </span>            :         /* I don't support images here */
+<span class="lineNum">     983 </span><span class="lineNoCov">          0 :         for ( i=ly_fore; i&lt;sc-&gt;layer_cnt; ++i ) {</span>
+<span class="lineNum">     984 </span><span class="lineNoCov">          0 :             if ( sc-&gt;layers[i].images!=NULL )</span>
+<span class="lineNum">     985 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     986 </span>            :         }
+<span class="lineNum">     987 </span>            :     }
+<span class="lineNum">     988 </span>            : 
+<span class="lineNum">     989 </span><span class="lineNoCov">          0 :     SplineCharLayerFindBounds(sc,layer,&amp;b);</span>
+<span class="lineNum">     990 </span><span class="lineNoCov">          0 :     if ( b.maxx-b.minx &gt; 32767 ) b.maxx = b.minx+32767;</span>
+<span class="lineNum">     991 </span><span class="lineNoCov">          0 :     if ( b.maxy-b.miny &gt; 32767 ) b.maxy = b.miny+32767;</span>
+<span class="lineNum">     992 </span><span class="lineNoCov">          0 :     b.minx *= scale; b.maxx *= scale;</span>
+<span class="lineNum">     993 </span><span class="lineNoCov">          0 :     b.miny *= scale; b.maxy *= scale;</span>
+<span class="lineNum">     994 </span>            : 
+<span class="lineNum">     995 </span><span class="lineNoCov">          0 :     b.minx = (1&lt;&lt;6) * floor( b.minx * (1.0 / (1&lt;&lt;6)) );</span>
+<span class="lineNum">     996 </span><span class="lineNoCov">          0 :     b.miny = (1&lt;&lt;6) * floor( b.miny * (1.0 / (1&lt;&lt;6)) );</span>
+<span class="lineNum">     997 </span><span class="lineNoCov">          0 :     b.maxx = (1&lt;&lt;6) * ceil( b.maxx * (1.0 / (1&lt;&lt;6)) );</span>
+<span class="lineNum">     998 </span><span class="lineNoCov">          0 :     b.maxy = (1&lt;&lt;6) * ceil( b.maxy * (1.0 / (1&lt;&lt;6)) );</span>
+<span class="lineNum">     999 </span>            : 
+<span class="lineNum">    1000 </span><span class="lineNoCov">          0 :     memset(&amp;bitmap,0,sizeof(bitmap));</span>
+<span class="lineNum">    1001 </span><span class="lineNoCov">          0 :     bitmap.rows = (((int) (b.maxy-b.miny))&gt;&gt;6);</span>
+<span class="lineNum">    1002 </span><span class="lineNoCov">          0 :     bitmap.width = (((int) (b.maxx-b.minx))&gt;&gt;6);</span>
+<span class="lineNum">    1003 </span><span class="lineNoCov">          0 :     if ( depth==1 ) {</span>
+<span class="lineNum">    1004 </span><span class="lineNoCov">          0 :         bitmap.pitch = (bitmap.width+7)&gt;&gt;3;</span>
+<span class="lineNum">    1005 </span><span class="lineNoCov">          0 :         bitmap.num_grays = 2;</span>
+<span class="lineNum">    1006 </span><span class="lineNoCov">          0 :         bitmap.pixel_mode = ft_pixel_mode_mono;</span>
+<span class="lineNum">    1007 </span>            :     } else {
+<span class="lineNum">    1008 </span><span class="lineNoCov">          0 :         bitmap.pitch = bitmap.width;</span>
+<span class="lineNum">    1009 </span><span class="lineNoCov">          0 :         bitmap.num_grays = 256;</span>
+<span class="lineNum">    1010 </span><span class="lineNoCov">          0 :         bitmap.pixel_mode = ft_pixel_mode_grays;</span>
+<span class="lineNum">    1011 </span>            :     }
+<span class="lineNum">    1012 </span><span class="lineNoCov">          0 :     bitmap.buffer = calloc(bitmap.pitch*bitmap.rows,sizeof(uint8));</span>
+<span class="lineNum">    1013 </span><span class="lineNoCov">          0 :     memset(&amp;temp,0,sizeof(temp));</span>
+<span class="lineNum">    1014 </span><span class="lineNoCov">          0 :     if ( sc-&gt;parent-&gt;multilayer &amp;&amp; !(sc-&gt;layer_cnt==2 &amp;&amp;</span>
+<span class="lineNum">    1015 </span><span class="lineNoCov">          0 :             !sc-&gt;layers[ly_fore].dostroke &amp;&amp;</span>
+<span class="lineNum">    1016 </span><span class="lineNoCov">          0 :             sc-&gt;layers[ly_fore].dofill &amp;&amp;</span>
+<span class="lineNum">    1017 </span><span class="lineNoCov">          0 :             sc-&gt;layers[ly_fore].refs==NULL &amp;&amp;</span>
+<span class="lineNum">    1018 </span><span class="lineNoCov">          0 :             (sc-&gt;layers[ly_fore].fill_brush.col==COLOR_INHERITED ||</span>
+<span class="lineNum">    1019 </span><span class="lineNoCov">          0 :              sc-&gt;layers[ly_fore].fill_brush.col==0x000000)) ) {</span>
+<span class="lineNum">    1020 </span><span class="lineNoCov">          0 :         temp = bitmap;</span>
+<span class="lineNum">    1021 </span><span class="lineNoCov">          0 :         temp.buffer = malloc(bitmap.pitch*bitmap.rows);</span>
+<span class="lineNum">    1022 </span>            :     }
+<span class="lineNum">    1023 </span>            : 
+<span class="lineNum">    1024 </span><span class="lineNoCov">          0 :     memset(&amp;outline,0,sizeof(outline));</span>
+<span class="lineNum">    1025 </span><span class="lineNoCov">          0 :     pmax = cmax = 0;</span>
+<span class="lineNum">    1026 </span>            : 
+<span class="lineNum">    1027 </span><span class="lineNoCov">          0 :     if ( sc-&gt;parent-&gt;strokedfont ) {</span>
+<span class="lineNum">    1028 </span><span class="lineNoCov">          0 :         SplineSet *stroked = StrokeOutline(&amp;sc-&gt;layers[layer],sc);</span>
+<span class="lineNum">    1029 </span><span class="lineNoCov">          0 :         FillOutline(stroked,&amp;outline,&amp;pmax,&amp;cmax,</span>
+<span class="lineNum">    1030 </span><span class="lineNoCov">          0 :                 scale,&amp;b,sc-&gt;layers[layer].order2,false);</span>
+<span class="lineNum">    1031 </span><span class="lineNoCov">          0 :         err |= (FT_Outline_Get_Bitmap)(ff_ft_context,&amp;outline,&amp;bitmap);</span>
+<span class="lineNum">    1032 </span><span class="lineNoCov">          0 :         SplinePointListsFree(stroked);</span>
+<span class="lineNum">    1033 </span><span class="lineNoCov">          0 :     } else if ( temp.buffer==NULL ) {</span>
+<span class="lineNum">    1034 </span><span class="lineNoCov">          0 :         all = LayerAllOutlines(&amp;sc-&gt;layers[layer]);</span>
+<span class="lineNum">    1035 </span><span class="lineNoCov">          0 :         FillOutline(all,&amp;outline,&amp;pmax,&amp;cmax,</span>
+<span class="lineNum">    1036 </span><span class="lineNoCov">          0 :                 scale,&amp;b,sc-&gt;layers[layer].order2,false);</span>
+<span class="lineNum">    1037 </span><span class="lineNoCov">          0 :         err = (FT_Outline_Get_Bitmap)(ff_ft_context,&amp;outline,&amp;bitmap);</span>
+<span class="lineNum">    1038 </span><span class="lineNoCov">          0 :         if ( sc-&gt;layers[layer].splines!=all )</span>
+<span class="lineNum">    1039 </span><span class="lineNoCov">          0 :             SplinePointListsFree(all);</span>
+<span class="lineNum">    1040 </span>            :     } else {
+<span class="lineNum">    1041 </span>            :         int j; RefChar *r;
+<span class="lineNum">    1042 </span>            :         /* Can only get here if multilayer */
+<span class="lineNum">    1043 </span><span class="lineNoCov">          0 :         err = 0;</span>
+<span class="lineNum">    1044 </span><span class="lineNoCov">          0 :         for ( i=ly_fore; i&lt;sc-&gt;layer_cnt; ++i ) {</span>
+<span class="lineNum">    1045 </span><span class="lineNoCov">          0 :             uint8 *clipmask = NULL;</span>
+<span class="lineNum">    1046 </span><span class="lineNoCov">          0 :             if ( SSHasClip(sc-&gt;layers[i].splines)) {</span>
+<span class="lineNum">    1047 </span><span class="lineNoCov">          0 :                 memset(temp.buffer,0,temp.pitch*temp.rows);</span>
+<span class="lineNum">    1048 </span><span class="lineNoCov">          0 :                 FillOutline(sc-&gt;layers[i].splines,&amp;outline,&amp;pmax,&amp;cmax,</span>
+<span class="lineNum">    1049 </span><span class="lineNoCov">          0 :                         scale,&amp;b,sc-&gt;layers[i].order2,2);</span>
+<span class="lineNum">    1050 </span><span class="lineNoCov">          0 :                 err |= (FT_Outline_Get_Bitmap)(ff_ft_context,&amp;outline,&amp;temp);</span>
+<span class="lineNum">    1051 </span><span class="lineNoCov">          0 :                 clipmask = malloc(bitmap.pitch*bitmap.rows);</span>
+<span class="lineNum">    1052 </span><span class="lineNoCov">          0 :                 memcpy(clipmask,temp.buffer,bitmap.pitch*bitmap.rows);</span>
+<span class="lineNum">    1053 </span>            :             }
+<span class="lineNum">    1054 </span><span class="lineNoCov">          0 :             if ( sc-&gt;layers[i].dofill ) {</span>
+<span class="lineNum">    1055 </span><span class="lineNoCov">          0 :                 memset(temp.buffer,0,temp.pitch*temp.rows);</span>
+<span class="lineNum">    1056 </span><span class="lineNoCov">          0 :                 FillOutline(sc-&gt;layers[i].splines,&amp;outline,&amp;pmax,&amp;cmax,</span>
+<span class="lineNum">    1057 </span><span class="lineNoCov">          0 :                         scale,&amp;b,sc-&gt;layers[i].order2,true);</span>
+<span class="lineNum">    1058 </span><span class="lineNoCov">          0 :                 err |= (FT_Outline_Get_Bitmap)(ff_ft_context,&amp;outline,&amp;temp);</span>
+<span class="lineNum">    1059 </span><span class="lineNoCov">          0 :                 MergeBitmaps(&amp;bitmap,&amp;temp,&amp;sc-&gt;layers[i].fill_brush,clipmask,rscale,&amp;b,sc);</span>
+<span class="lineNum">    1060 </span>            :             }
+<span class="lineNum">    1061 </span><span class="lineNoCov">          0 :             if ( sc-&gt;layers[i].dostroke ) {</span>
+<span class="lineNum">    1062 </span><span class="lineNoCov">          0 :                 SplineSet *stroked = StrokeOutline(&amp;sc-&gt;layers[i],sc);</span>
+<span class="lineNum">    1063 </span><span class="lineNoCov">          0 :                 memset(temp.buffer,0,temp.pitch*temp.rows);</span>
+<span class="lineNum">    1064 </span><span class="lineNoCov">          0 :                 FillOutline(stroked,&amp;outline,&amp;pmax,&amp;cmax,</span>
+<span class="lineNum">    1065 </span><span class="lineNoCov">          0 :                         scale,&amp;b,sc-&gt;layers[i].order2,true);</span>
+<span class="lineNum">    1066 </span><span class="lineNoCov">          0 :                 err |= (FT_Outline_Get_Bitmap)(ff_ft_context,&amp;outline,&amp;temp);</span>
+<span class="lineNum">    1067 </span><span class="lineNoCov">          0 :                 MergeBitmaps(&amp;bitmap,&amp;temp,&amp;sc-&gt;layers[i].stroke_pen.brush,clipmask,rscale,&amp;b,sc);</span>
+<span class="lineNum">    1068 </span><span class="lineNoCov">          0 :                 SplinePointListsFree(stroked);</span>
+<span class="lineNum">    1069 </span>            :             }
+<span class="lineNum">    1070 </span><span class="lineNoCov">          0 :             for ( r = sc-&gt;layers[i].refs; r!=NULL; r=r-&gt;next ) {</span>
+<span class="lineNum">    1071 </span><span class="lineNoCov">          0 :                 for ( j=0; j&lt;r-&gt;layer_cnt; ++j ) {</span>
+<span class="lineNum">    1072 </span><span class="lineNoCov">          0 :                     if ( r-&gt;layers[j].dofill ) {</span>
+<span class="lineNum">    1073 </span><span class="lineNoCov">          0 :                         memset(temp.buffer,0,temp.pitch*temp.rows);</span>
+<span class="lineNum">    1074 </span><span class="lineNoCov">          0 :                         FillOutline(r-&gt;layers[j].splines,&amp;outline,&amp;pmax,&amp;cmax,</span>
+<span class="lineNum">    1075 </span><span class="lineNoCov">          0 :                                 scale,&amp;b,sc-&gt;layers[i].order2,true);</span>
+<span class="lineNum">    1076 </span><span class="lineNoCov">          0 :                         err |= (FT_Outline_Get_Bitmap)(ff_ft_context,&amp;outline,&amp;temp);</span>
+<span class="lineNum">    1077 </span><span class="lineNoCov">          0 :                         MergeBitmaps(&amp;bitmap,&amp;temp,&amp;r-&gt;layers[j].fill_brush,clipmask,rscale,&amp;b,sc);</span>
+<span class="lineNum">    1078 </span>            :                     }
+<span class="lineNum">    1079 </span><span class="lineNoCov">          0 :                     if ( r-&gt;layers[j].dostroke ) {</span>
+<span class="lineNum">    1080 </span><span class="lineNoCov">          0 :                         SplineSet *stroked = RStrokeOutline(&amp;r-&gt;layers[j]);</span>
+<span class="lineNum">    1081 </span><span class="lineNoCov">          0 :                         memset(temp.buffer,0,temp.pitch*temp.rows);</span>
+<span class="lineNum">    1082 </span><span class="lineNoCov">          0 :                         FillOutline(stroked,&amp;outline,&amp;pmax,&amp;cmax,</span>
+<span class="lineNum">    1083 </span><span class="lineNoCov">          0 :                                 scale,&amp;b,sc-&gt;layers[i].order2,true);</span>
+<span class="lineNum">    1084 </span><span class="lineNoCov">          0 :                         err |= (FT_Outline_Get_Bitmap)(ff_ft_context,&amp;outline,&amp;temp);</span>
+<span class="lineNum">    1085 </span><span class="lineNoCov">          0 :                         MergeBitmaps(&amp;bitmap,&amp;temp,&amp;r-&gt;layers[j].stroke_pen.brush,clipmask,rscale,&amp;b,sc);</span>
+<span class="lineNum">    1086 </span><span class="lineNoCov">          0 :                         SplinePointListsFree(stroked);</span>
+<span class="lineNum">    1087 </span>            :                     }
+<span class="lineNum">    1088 </span>            :                 }
+<span class="lineNum">    1089 </span>            :             }
+<span class="lineNum">    1090 </span><span class="lineNoCov">          0 :             free(clipmask);</span>
+<span class="lineNum">    1091 </span>            :         }
+<span class="lineNum">    1092 </span>            :     }
+<span class="lineNum">    1093 </span>            : 
+<span class="lineNum">    1094 </span><span class="lineNoCov">          0 :     free(temp.buffer);</span>
+<span class="lineNum">    1095 </span>            : 
+<span class="lineNum">    1096 </span><span class="lineNoCov">          0 :     free(outline.points);</span>
+<span class="lineNum">    1097 </span><span class="lineNoCov">          0 :     free(outline.tags);</span>
+<span class="lineNum">    1098 </span><span class="lineNoCov">          0 :     free(outline.contours);</span>
+<span class="lineNum">    1099 </span><span class="lineNoCov">          0 :     bdfc = NULL;</span>
+<span class="lineNum">    1100 </span><span class="lineNoCov">          0 :     if ( !err ) {</span>
+<span class="lineNum">    1101 </span><span class="lineNoCov">          0 :         bdfc = BdfCFromBitmap(&amp;bitmap, (((int) b.minx)+0x20)&gt;&gt;6, (((int) b.maxy)+0x20)&gt;&gt;6,</span>
+<span class="lineNum">    1102 </span><span class="lineNoCov">          0 :                 (int) rint( (ptsize*dpi)/72.0 ), depth, sc, NULL);</span>
+<span class="lineNum">    1103 </span>            :     }
+<span class="lineNum">    1104 </span><span class="lineNoCov">          0 :     free( bitmap.buffer );</span>
+<span class="lineNum">    1105 </span><span class="lineNoCov">          0 : return( bdfc );</span>
+<a name="1106"><span class="lineNum">    1106 </span>            : }</a>
+<span class="lineNum">    1107 </span>            : 
+<span class="lineNum">    1108 </span><span class="lineNoCov">          0 : BDFFont *SplineFontFreeTypeRasterizeNoHints(SplineFont *sf,int layer,int pixelsize,int depth) {</span>
+<span class="lineNum">    1109 </span>            :     SplineFont *subsf;
+<span class="lineNum">    1110 </span>            :     int i,k;
+<span class="lineNum">    1111 </span><span class="lineNoCov">          0 :     BDFFont *bdf = SplineFontToBDFHeader(sf,pixelsize,true);</span>
+<span class="lineNum">    1112 </span>            : 
+<span class="lineNum">    1113 </span><span class="lineNoCov">          0 :     if ( depth!=1 )</span>
+<span class="lineNum">    1114 </span><span class="lineNoCov">          0 :         BDFClut(bdf, 1&lt;&lt;(depth/2) );</span>
+<span class="lineNum">    1115 </span>            : 
+<span class="lineNum">    1116 </span><span class="lineNoCov">          0 :     k=0;</span>
+<span class="lineNum">    1117 </span>            :     do {
+<span class="lineNum">    1118 </span><span class="lineNoCov">          0 :         if ( sf-&gt;subfontcnt==0 ) {</span>
+<span class="lineNum">    1119 </span><span class="lineNoCov">          0 :             subsf = sf;</span>
+<span class="lineNum">    1120 </span>            :         } else {
+<span class="lineNum">    1121 </span><span class="lineNoCov">          0 :             subsf = sf-&gt;subfonts[k];</span>
+<span class="lineNum">    1122 </span>            :         }
+<span class="lineNum">    1123 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;subsf-&gt;glyphcnt; ++i )</span>
+<span class="lineNum">    1124 </span><span class="lineNoCov">          0 :             if ( SCWorthOutputting(subsf-&gt;glyphs[i] ) ) {</span>
+<span class="lineNum">    1125 </span><span class="lineNoCov">          0 :                 bdf-&gt;glyphs[i] = SplineCharFreeTypeRasterizeNoHints(subsf-&gt;glyphs[i],layer,pixelsize,72,depth);</span>
+<span class="lineNum">    1126 </span><span class="lineNoCov">          0 :                 if ( bdf-&gt;glyphs[i]!=NULL )</span>
+<span class="lineNum">    1127 </span>            :                     /* Done */;
+<span class="lineNum">    1128 </span><span class="lineNoCov">          0 :                 else if ( depth==1 )</span>
+<span class="lineNum">    1129 </span><span class="lineNoCov">          0 :                     bdf-&gt;glyphs[i] = SplineCharRasterize(subsf-&gt;glyphs[i],layer,pixelsize);</span>
+<span class="lineNum">    1130 </span>            :                 else
+<span class="lineNum">    1131 </span><span class="lineNoCov">          0 :                     bdf-&gt;glyphs[i] = SplineCharAntiAlias(subsf-&gt;glyphs[i],layer,pixelsize,(1&lt;&lt;(depth/2)));</span>
+<span class="lineNum">    1132 </span><span class="lineNoCov">          0 :                 ff_progress_next();</span>
+<span class="lineNum">    1133 </span>            :             } else
+<span class="lineNum">    1134 </span><span class="lineNoCov">          0 :                 bdf-&gt;glyphs[i] = NULL;</span>
+<span class="lineNum">    1135 </span><span class="lineNoCov">          0 :         ++k;</span>
+<span class="lineNum">    1136 </span><span class="lineNoCov">          0 :     } while ( k&lt;sf-&gt;subfontcnt );</span>
+<span class="lineNum">    1137 </span><span class="lineNoCov">          0 :     ff_progress_end_indicator();</span>
+<span class="lineNum">    1138 </span><span class="lineNoCov">          0 : return( bdf );</span>
+<a name="1139"><span class="lineNum">    1139 </span>            : }</a>
+<span class="lineNum">    1140 </span>            : 
+<span class="lineNum">    1141 </span><span class="lineNoCov">          0 : void *FreeTypeFontContext(SplineFont *sf,SplineChar *sc,FontViewBase *fv,int layer) {</span>
+<span class="lineNum">    1142 </span><span class="lineNoCov">          0 : return( _FreeTypeFontContext(sf,sc,fv,layer,sf-&gt;subfontcnt!=0?ff_otfcid:</span>
+<span class="lineNum">    1143 </span><span class="lineNoCov">          0 :         sf-&gt;layers[layer].order2?ff_ttf:ff_cff,0,NULL) );</span>
+<a name="1144"><span class="lineNum">    1144 </span>            : }</a>
+<span class="lineNum">    1145 </span>            : 
+<span class="lineNum">    1146 </span><span class="lineNoCov">          0 : void FreeType_FreeRaster(struct freetype_raster *raster) {</span>
+<span class="lineNum">    1147 </span><span class="lineNoCov">          0 :     if ( raster==NULL || raster==(void *) -1 )</span>
+<span class="lineNum">    1148 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">    1149 </span><span class="lineNoCov">          0 :     free(raster-&gt;bitmap);</span>
+<span class="lineNum">    1150 </span><span class="lineNoCov">          0 :     free(raster);</span>
+<span class="lineNum">    1151 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

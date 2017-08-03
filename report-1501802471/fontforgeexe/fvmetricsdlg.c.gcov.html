@@ -1,0 +1,441 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforgeexe/fvmetricsdlg.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforgeexe</a> - fvmetricsdlg.c<span style="font-size: 80%;"> (source / <a href="fvmetricsdlg.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">235</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">11</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &quot;bvedit.h&quot;
+<span class="lineNum">      28 </span>            : #include &quot;splineutil.h&quot;
+<span class="lineNum">      29 </span>            : #include &quot;fontforgeui.h&quot;
+<span class="lineNum">      30 </span>            : #include &lt;math.h&gt;
+<span class="lineNum">      31 </span>            : #include &lt;ustring.h&gt;
+<span class="lineNum">      32 </span>            : #include &quot;fvmetrics.h&quot;
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span>            : typedef struct createwidthdlg {
+<span class="lineNum">      35 </span>            :     CreateWidthData wd;
+<span class="lineNum">      36 </span>            :     GWindow gw;
+<span class="lineNum">      37 </span>            : } CreateWidthDlg;
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            : #define CID_Set         1001
+<span class="lineNum">      40 </span>            : #define CID_Incr        1002
+<span class="lineNum">      41 </span>            : #define CID_Scale       1003
+<span class="lineNum">      42 </span>            : #define CID_SetVal      1011
+<span class="lineNum">      43 </span>            : #define CID_IncrVal     1012
+<span class="lineNum">      44 </span>            : #define CID_ScaleVal    1013
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span>            : static char *rb1[] = { N_(&quot;Set Width To:&quot;), N_(&quot;Set LBearing To:&quot;), N_(&quot;Set RBearing To:&quot;), N_(&quot;Set Bearings To:&quot;), N_(&quot;Set Vert. Advance To:&quot;) };
+<span class="lineNum">      47 </span>            : static char *rb2[] = { N_(&quot;Increment Width By:&quot;), N_(&quot;Increment LBearing By:&quot;), N_(&quot;Increment RBearing By:&quot;), N_(&quot;Increment Bearings By:&quot;), N_(&quot;Increment V. Adv. By:&quot;) };
+<span class="lineNum">      48 </span>            : static char *rb3[] = { N_(&quot;Scale Width By:&quot;), N_(&quot;Scale LBearing By:&quot;), N_(&quot;Scale RBearing By:&quot;), N_(&quot;Scale Bearings By:&quot;), N_(&quot;Scale VAdvance By:&quot;) };
+<a name="49"><span class="lineNum">      49 </span>            : static char *info[] = { N_(&quot;Left Side Bearing does not change.&quot;), N_(&quot;Advance Width does not change.&quot;), N_(&quot;Left Side Bearing does not change.&quot;), N_(&quot;ThisSpaceIntentionallyLeftBlank-PleaseDoNotTranslate-LeaveThisOut|&quot;), N_(&quot;Top Bearing does not change.&quot;) };</a>
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 : static int CW_OK(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">      52 </span>            : 
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :         int err = false;</span>
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :         CreateWidthDlg *wd = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :         if ( GGadgetIsChecked(GWidgetGetControl(wd-&gt;gw,CID_Set)) ) {</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :             wd-&gt;wd.type = st_set;</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :             wd-&gt;wd.setto = GetReal8(wd-&gt;gw,CID_SetVal,rb1[wd-&gt;wd.wtype],&amp;err);</span>
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :             if ( wd-&gt;wd.setto&lt;0 &amp;&amp; wd-&gt;wd.wtype==wt_width ) {</span>
+<span class="lineNum">      60 </span>            :                 char *yesno[3];
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :                 yesno[0] = _(&quot;_Yes&quot;);</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :                 yesno[1] = _(&quot;_No&quot;);</span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :                 yesno[2] = NULL;</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :                 if ( gwwv_ask(_(&quot;Negative Width&quot;), (const char **) yesno, 0, 1, _(&quot;Negative glyph widths are not allowed in TrueType\nDo you really want a negative width?&quot;) )==1 )</span>
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">      66 </span>            :             }
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :         } else if ( GGadgetIsChecked(GWidgetGetControl(wd-&gt;gw,CID_Incr)) ) {</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :             wd-&gt;wd.type = st_incr;</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :             wd-&gt;wd.increment = GetReal8(wd-&gt;gw,CID_IncrVal,rb2[wd-&gt;wd.wtype],&amp;err);</span>
+<span class="lineNum">      70 </span>            :         } else {
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :             wd-&gt;wd.type = st_scale;</span>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :             wd-&gt;wd.scale = GetReal8(wd-&gt;gw,CID_ScaleVal,rb2[wd-&gt;wd.wtype],&amp;err);</span>
+<span class="lineNum">      73 </span>            :         }
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :         if ( err )</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 : return(true);</span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :         (wd-&gt;wd.doit)((CreateWidthData *) wd);</span>
+<span class="lineNum">      77 </span>            :     }
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="79"><span class="lineNum">      79 </span>            : }</a>
+<span class="lineNum">      80 </span>            : 
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 : static int CW_Cancel(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :         CreateWidthDlg *wd = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :         wd-&gt;wd.done = true;</span>
+<span class="lineNum">      85 </span>            :     }
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="87"><span class="lineNum">      87 </span>            : }</a>
+<span class="lineNum">      88 </span>            : 
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 : static int CW_FocusChange(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_textfocuschanged ) {</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :         CreateWidthDlg *wd = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :         int cid = (intpt) GGadgetGetUserData(g);</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :         GGadgetSetChecked(GWidgetGetControl(wd-&gt;gw,cid),true);</span>
+<span class="lineNum">      94 </span>            :     }
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="96"><span class="lineNum">      96 </span>            : }</a>
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 : static int CW_RadioChange(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_radiochanged ) {</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :         CreateWidthDlg *wd = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :         int cid = (intpt) GGadgetGetUserData(g);</span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :         GWidgetIndicateFocusGadget(GWidgetGetControl(wd-&gt;gw,cid));</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :         GTextFieldSelect(GWidgetGetControl(wd-&gt;gw,cid),0,-1);</span>
+<span class="lineNum">     104 </span>            :     }
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="106"><span class="lineNum">     106 </span>            : }</a>
+<span class="lineNum">     107 </span>            : 
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 : static int cwd_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :     if ( event-&gt;type==et_close ) {</span>
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :         CreateWidthDlg *wd = GDrawGetUserData(gw);</span>
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :         wd-&gt;wd.done = true;</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_char ) {</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_map ) {</span>
+<span class="lineNum">     115 </span>            :         /* Above palettes */
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :         GDrawRaise(gw);</span>
+<span class="lineNum">     117 </span>            :     }
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="119"><span class="lineNum">     119 </span>            : }</a>
+<span class="lineNum">     120 </span>            : 
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 : static void FVCreateWidth( void *_fv,SplineChar* _sc,void (*doit)(CreateWidthData *),</span>
+<span class="lineNum">     122 </span>            :                            enum widthtype wtype, char *def) {
+<span class="lineNum">     123 </span>            :     GRect pos;
+<span class="lineNum">     124 </span>            :     GWindowAttrs wattrs;
+<span class="lineNum">     125 </span>            :     GGadgetCreateData gcd[11], boxes[2], topbox[2], *hvs[17], *varray[8], *buttons[6];
+<span class="lineNum">     126 </span>            :     GTextInfo label[11];
+<span class="lineNum">     127 </span>            :     static CreateWidthDlg cwd;
+<span class="lineNum">     128 </span>            :     static GWindow winds[5];
+<span class="lineNum">     129 </span>            :     static char *title[] = { N_(&quot;Set Width...&quot;), N_(&quot;Set LBearing...&quot;), N_(&quot;Set RBearing...&quot;), N_(&quot;Set Both Side Bearings...&quot;), N_(&quot;Set Vertical Advance...&quot;) };
+<span class="lineNum">     130 </span>            : 
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :     cwd.wd.done = false;</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :     cwd.wd._fv = _fv;</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :     cwd.wd._sc = _sc;</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :     cwd.wd.wtype = wtype;</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :     cwd.wd.doit = doit;</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :     cwd.gw = winds[wtype];</span>
+<span class="lineNum">     137 </span>            : 
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :     if ( cwd.gw==NULL ) {</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :         memset(&amp;wattrs,0,sizeof(wattrs));</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :         wattrs.mask = wam_events|wam_cursor|wam_utf8_wtitle|wam_undercursor|wam_isdlg|wam_restrict;</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :         wattrs.event_masks = ~(1&lt;&lt;et_charup);</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :         wattrs.restrict_input_to_me = 1;</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :         wattrs.undercursor = 1;</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :         wattrs.cursor = ct_pointer;</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :         wattrs.utf8_window_title = _(title[wtype]);</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :         wattrs.is_dlg = true;</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :         pos.x = pos.y = 0;</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :         pos.width = GGadgetScale(GDrawPointsToPixels(NULL,180));</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :         pos.height = GDrawPointsToPixels(NULL,100);</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :         cwd.gw = winds[wtype] = GDrawCreateTopWindow(NULL,&amp;pos,cwd_e_h,&amp;cwd,&amp;wattrs);</span>
+<span class="lineNum">     151 </span>            : 
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :         memset(&amp;label,0,sizeof(label));</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :         memset(&amp;gcd,0,sizeof(gcd));</span>
+<span class="lineNum">     154 </span>            : 
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :         label[0].text = (unichar_t *) _(rb1[wtype]);</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :         label[0].text_is_1byte = true;</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :         gcd[0].gd.label = &amp;label[0];</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :         gcd[0].gd.flags = gg_enabled|gg_visible|gg_cb_on;</span>
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :         gcd[0].gd.cid = CID_Set;</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :         gcd[0].gd.handle_controlevent = CW_RadioChange;</span>
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :         gcd[0].data = (void *) CID_SetVal;</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :         gcd[0].creator = GRadioCreate;</span>
+<span class="lineNum">     163 </span>            : 
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :         label[1].text = (unichar_t *) _(rb2[wtype]);</span>
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :         label[1].text_is_1byte = true;</span>
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :         gcd[1].gd.label = &amp;label[1];</span>
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :         gcd[1].gd.flags = gg_enabled|gg_visible|gg_rad_continueold ;</span>
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :         gcd[1].gd.cid = CID_Incr;</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :         gcd[1].gd.handle_controlevent = CW_RadioChange;</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :         gcd[1].data = (void *) CID_IncrVal;</span>
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :         gcd[1].creator = GRadioCreate;</span>
+<span class="lineNum">     172 </span>            : 
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :         label[2].text = (unichar_t *) _(rb3[wtype]);</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :         label[2].text_is_1byte = true;</span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :         gcd[2].gd.label = &amp;label[2];</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :         gcd[2].gd.flags = gg_enabled|gg_visible|gg_rad_continueold ;</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :         gcd[2].gd.cid = CID_Scale;</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :         gcd[2].gd.handle_controlevent = CW_RadioChange;</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :         gcd[2].data = (void *) CID_ScaleVal;</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :         gcd[2].creator = GRadioCreate;</span>
+<span class="lineNum">     181 </span>            : 
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :         label[3].text = (unichar_t *) def;</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :         label[3].text_is_1byte = true;</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :         gcd[3].gd.label = &amp;label[3];</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :         gcd[3].gd.pos.width = 60;</span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :         gcd[3].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :         gcd[3].gd.cid = CID_SetVal;</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :         gcd[3].gd.handle_controlevent = CW_FocusChange;</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :         gcd[3].data = (void *) CID_Set;</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :         gcd[3].creator = GTextFieldCreate;</span>
+<span class="lineNum">     191 </span>            : 
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :         label[4].text = (unichar_t *) &quot;0&quot;;</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :         label[4].text_is_1byte = true;</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :         gcd[4].gd.label = &amp;label[4];</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :         gcd[4].gd.pos.width = 60;</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :         gcd[4].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :         gcd[4].gd.cid = CID_IncrVal;</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :         gcd[4].gd.handle_controlevent = CW_FocusChange;</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :         gcd[4].data = (void *) CID_Incr;</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :         gcd[4].creator = GTextFieldCreate;</span>
+<span class="lineNum">     201 </span>            : 
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :         label[5].text = (unichar_t *) &quot;100&quot;;</span>
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :         label[5].text_is_1byte = true;</span>
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :         gcd[5].gd.label = &amp;label[5];</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :         gcd[5].gd.pos.width = 60;</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :         gcd[5].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :         gcd[5].gd.cid = CID_ScaleVal;</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :         gcd[5].gd.handle_controlevent = CW_FocusChange;</span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :         gcd[5].data = (void *) CID_Scale;</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :         gcd[5].creator = GTextFieldCreate;</span>
+<span class="lineNum">     211 </span>            : 
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :         gcd[6].gd.flags = gg_visible | gg_enabled | gg_but_default;</span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :         label[6].text = (unichar_t *) _(&quot;_OK&quot;);</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :         label[6].text_is_1byte = true;</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :         label[6].text_in_resource = true;</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :         gcd[6].gd.mnemonic = 'O';</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :         gcd[6].gd.label = &amp;label[6];</span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :         gcd[6].gd.handle_controlevent = CW_OK;</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :         gcd[6].creator = GButtonCreate;</span>
+<span class="lineNum">     220 </span>            : 
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :         gcd[7].gd.flags = gg_visible | gg_enabled | gg_but_cancel;</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :         label[7].text = (unichar_t *) _(&quot;_Cancel&quot;);</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :         label[7].text_is_1byte = true;</span>
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :         label[7].text_in_resource = true;</span>
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 :         gcd[7].gd.label = &amp;label[7];</span>
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :         gcd[7].gd.mnemonic = 'C';</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :         gcd[7].gd.handle_controlevent = CW_Cancel;</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :         gcd[7].creator = GButtonCreate;</span>
+<span class="lineNum">     229 </span>            : 
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :         label[8].text = (unichar_t *) S_(info[wtype]);</span>
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :         label[8].text_is_1byte = true;</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :         gcd[8].gd.label = &amp;label[8];</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :         gcd[8].gd.pos.x = 5; gcd[8].gd.pos.y = 59; </span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :         gcd[8].gd.flags = gg_enabled|gg_visible ;</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :         gcd[8].creator = GLabelCreate;</span>
+<span class="lineNum">     236 </span>            : 
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :         label[9].text = (unichar_t *) &quot;%&quot;;</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :         label[9].text_is_1byte = true;</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :         gcd[9].gd.label = &amp;label[9];</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :         gcd[9].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :         gcd[9].creator = GLabelCreate;</span>
+<span class="lineNum">     242 </span>            : 
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :         hvs[0] = &amp;gcd[0]; hvs[1] = &amp;gcd[3]; hvs[2] = GCD_Glue; hvs[3] = NULL;</span>
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :         hvs[4] = &amp;gcd[1]; hvs[5] = &amp;gcd[4]; hvs[6] = GCD_Glue; hvs[7] = NULL;</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :         hvs[8] = &amp;gcd[2]; hvs[9] = &amp;gcd[5]; hvs[10] = &amp;gcd[9]; hvs[11] = NULL;</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :         hvs[12] = &amp;gcd[8]; hvs[13] = GCD_ColSpan; hvs[14] = GCD_Glue; hvs[15] = NULL;</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :         hvs[16] = NULL;</span>
+<span class="lineNum">     248 </span>            : 
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :         buttons[0] = buttons[2] = buttons[4] = GCD_Glue; buttons[5] = NULL;</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :         buttons[1] = &amp;gcd[6]; buttons[3] = &amp;gcd[7];</span>
+<span class="lineNum">     251 </span>            : 
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :         varray[0] = &amp;boxes[1]; varray[1] = NULL;</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :         varray[2] = GCD_Glue; varray[3] = NULL;</span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :         varray[4] = &amp;boxes[0]; varray[5] = NULL;</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :         varray[6] = NULL;</span>
+<span class="lineNum">     256 </span>            : 
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :         memset(boxes,0,sizeof(boxes));</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :         boxes[0].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :         boxes[0].gd.u.boxelements = buttons;</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :         boxes[0].creator = GHBoxCreate;</span>
+<span class="lineNum">     261 </span>            : 
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :         boxes[1].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :         boxes[1].gd.u.boxelements = hvs;</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :         boxes[1].creator = GHVBoxCreate;</span>
+<span class="lineNum">     265 </span>            : 
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :         memset(topbox,0,sizeof(topbox));</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :         topbox[0].gd.pos.x = topbox[0].gd.pos.y = 2;</span>
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :         topbox[0].gd.pos.width = pos.width-4; topbox[0].gd.pos.height = pos.height-4;</span>
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :         topbox[0].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :         topbox[0].gd.u.boxelements = varray;</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :         topbox[0].creator = GHVGroupCreate;</span>
+<span class="lineNum">     272 </span>            : 
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :         GGadgetsCreate(cwd.gw,topbox);</span>
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :         GHVBoxSetExpandableRow(topbox[0].ret,1);</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :         GHVBoxSetExpandableCol(boxes[0].ret,gb_expandgluesame);</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :         GHVBoxSetExpandableCol(boxes[1].ret,1);</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :         GWidgetIndicateFocusGadget(GWidgetGetControl(cwd.gw,CID_SetVal));</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :         GTextFieldSelect(GWidgetGetControl(cwd.gw,CID_SetVal),0,-1);</span>
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 :         GHVBoxFitWindow(topbox[0].ret);</span>
+<span class="lineNum">     280 </span>            :     } else {
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :         unichar_t *temp = uc_copy(def);</span>
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :         GGadgetSetTitle(GWidgetGetControl(cwd.gw,CID_SetVal),temp);</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :         free( temp );</span>
+<span class="lineNum">     284 </span>            :     }
+<span class="lineNum">     285 </span>            : 
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :     GWidgetHidePalettes();</span>
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :     GDrawSetVisible(cwd.gw,true);</span>
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :     while ( !cwd.wd.done )</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :         GDrawProcessOneEvent(NULL);</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :     GDrawSetVisible(cwd.gw,false);</span>
+<a name="291"><span class="lineNum">     291 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     292 </span>            : 
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 : static void BCDefWidthVal(char *buf,BDFChar *bc, FontView *fv, enum widthtype wtype) {</span>
+<span class="lineNum">     294 </span>            :     IBounds bb;
+<span class="lineNum">     295 </span>            : 
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :     if ( wtype==wt_width )</span>
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 :         sprintf( buf, &quot;%d&quot;, bc-&gt;width );</span>
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :     else if ( wtype==wt_vwidth )</span>
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :         sprintf( buf, &quot;%d&quot;, fv-&gt;show-&gt;pixelsize );</span>
+<span class="lineNum">     300 </span>            :     else {
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :         BDFCharFindBounds(bc,&amp;bb);</span>
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 :         if ( wtype==wt_lbearing )</span>
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :             sprintf( buf, &quot;%d&quot;, bb.minx );</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :         else if ( wtype==wt_rbearing )</span>
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 :             sprintf( buf, &quot;%d&quot;, bc-&gt;width-bb.maxx-1 );</span>
+<span class="lineNum">     306 </span>            :         else
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :             sprintf( buf, &quot;%d&quot;, (int) rint( (bc-&gt;width-bb.maxx-1 + bb.minx)/2 ));</span>
+<span class="lineNum">     308 </span>            :     }
+<a name="309"><span class="lineNum">     309 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     310 </span>            : 
+<span class="lineNum">     311 </span><span class="lineNoCov">          0 : static void SCDefWidthVal(char *buf,SplineChar *sc, enum widthtype wtype) {</span>
+<span class="lineNum">     312 </span>            :     DBounds bb;
+<span class="lineNum">     313 </span>            : 
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :     if ( wtype==wt_width )</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :         sprintf( buf, &quot;%d&quot;, sc-&gt;width );</span>
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :     else if ( wtype==wt_vwidth )</span>
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :         sprintf( buf, &quot;%d&quot;, sc-&gt;vwidth );</span>
+<span class="lineNum">     318 </span>            :     else {
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :         SplineCharFindBounds(sc,&amp;bb);</span>
+<span class="lineNum">     320 </span><span class="lineNoCov">          0 :         if ( wtype==wt_lbearing )</span>
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 :             sprintf( buf, &quot;%.4g&quot;, (double) bb.minx );</span>
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 :         else if ( wtype==wt_rbearing )</span>
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :             sprintf( buf, &quot;%.4g&quot;, sc-&gt;width-(double) bb.maxx );</span>
+<span class="lineNum">     324 </span>            :         else
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :             sprintf( buf, &quot;%.4g&quot;, rint( (sc-&gt;width-(double) bb.maxx + (double) bb.minx)/2 ) );</span>
+<span class="lineNum">     326 </span>            :     }
+<a name="327"><span class="lineNum">     327 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     328 </span>            : 
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 : void FVSetWidth(FontView *fv,enum widthtype wtype) {</span>
+<span class="lineNum">     330 </span>            :     char buffer[12];
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :     int em = fv-&gt;b.sf-&gt;ascent + fv-&gt;b.sf-&gt;descent;</span>
+<span class="lineNum">     332 </span>            :     int i, gid;
+<span class="lineNum">     333 </span>            : 
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :     if ( !fv-&gt;b.sf-&gt;onlybitmaps || fv-&gt;b.sf-&gt;bitmaps==NULL ) {</span>
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 :         sprintf(buffer,&quot;%d&quot;,wtype==wt_width?6*em/10:wtype==wt_vwidth?em: em/10 );</span>
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;fv-&gt;b.map-&gt;enccount; ++i ) if ( fv-&gt;b.selected[i] &amp;&amp; (gid=fv-&gt;b.map-&gt;map[i])!=-1 &amp;&amp; fv-&gt;b.sf-&gt;glyphs[gid]!=NULL ) {</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :             SCDefWidthVal(buffer,fv-&gt;b.sf-&gt;glyphs[gid],wtype);</span>
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     339 </span>            :         }
+<span class="lineNum">     340 </span>            :     } else {
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :         int size = fv-&gt;show-&gt;pixelsize;</span>
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :         sprintf(buffer,&quot;%d&quot;,wtype==wt_width?6*size/10:wtype==wt_vwidth?size: size/10 );</span>
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;fv-&gt;b.map-&gt;enccount; ++i ) if ( fv-&gt;b.selected[i] &amp;&amp; (gid=fv-&gt;b.map-&gt;map[i])!=-1 &amp;&amp; fv-&gt;show-&gt;glyphs[gid]!=NULL ) {</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :             BCDefWidthVal(buffer,fv-&gt;show-&gt;glyphs[gid],fv,wtype);</span>
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     346 </span>            :         }
+<span class="lineNum">     347 </span>            :     }
+<span class="lineNum">     348 </span><span class="lineNoCov">          0 :     FVCreateWidth(fv,0,FVDoit,wtype,buffer);</span>
+<a name="349"><span class="lineNum">     349 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     350 </span>            : 
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 : void CVSetWidth(CharView *cv,enum widthtype wtype) {</span>
+<span class="lineNum">     352 </span>            :     char buf[10];
+<span class="lineNum">     353 </span>            : 
+<span class="lineNum">     354 </span><span class="lineNoCov">          0 :     SCDefWidthVal(buf,cv-&gt;b.sc,wtype);</span>
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :     FVCreateWidth(cv,cv-&gt;b.sc,CVDoit,wtype,buf);</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 : }</span>
+<a name="357"><span class="lineNum">     357 </span>            : </a>
+<span class="lineNum">     358 </span>            : 
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 : void GenericVSetWidth(FontView *fv,SplineChar* sc,enum widthtype wtype) {</span>
+<span class="lineNum">     360 </span>            :     char buf[10];
+<span class="lineNum">     361 </span>            : 
+<span class="lineNum">     362 </span><span class="lineNoCov">          0 :     SCDefWidthVal(buf,sc,wtype);</span>
+<span class="lineNum">     363 </span><span class="lineNoCov">          0 :     FVCreateWidth(fv,sc,GenericVDoit,wtype,buf);</span>
+<span class="lineNum">     364 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     365 </span>            : 
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

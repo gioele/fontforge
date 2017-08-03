@@ -1,0 +1,985 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforgeexe/searchview.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforgeexe</a> - searchview.c<span style="font-size: 80%;"> (source / <a href="searchview.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">618</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">29</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &quot;cvundoes.h&quot;
+<span class="lineNum">      28 </span>            : #include &quot;fontforgeui.h&quot;
+<span class="lineNum">      29 </span>            : #include &quot;fvfonts.h&quot;
+<span class="lineNum">      30 </span>            : #include &quot;splineutil.h&quot;
+<span class="lineNum">      31 </span>            : #include &lt;math.h&gt;
+<span class="lineNum">      32 </span>            : #include &lt;ustring.h&gt;
+<span class="lineNum">      33 </span>            : #include &lt;utype.h&gt;
+<span class="lineNum">      34 </span>            : #include &lt;gkeysym.h&gt;
+<span class="lineNum">      35 </span>            : #include &quot;search.h&quot;
+<span class="lineNum">      36 </span>            : 
+<span class="lineNum">      37 </span>            : static SearchView *searcher=NULL;
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            : #define CID_Allow       1000
+<span class="lineNum">      40 </span>            : #define CID_Flipping    1001
+<span class="lineNum">      41 </span>            : #define CID_Scaling     1002
+<span class="lineNum">      42 </span>            : #define CID_Rotating    1003
+<span class="lineNum">      43 </span>            : #define CID_Selected    1004
+<span class="lineNum">      44 </span>            : #define CID_Find        1005
+<span class="lineNum">      45 </span>            : #define CID_FindAll     1006
+<span class="lineNum">      46 </span>            : #define CID_Replace     1007
+<span class="lineNum">      47 </span>            : #define CID_ReplaceAll  1008
+<span class="lineNum">      48 </span>            : #define CID_Cancel      1009
+<span class="lineNum">      49 </span>            : #define CID_TopBox      1010
+<span class="lineNum">      50 </span>            : #define CID_Fuzzy       1011
+<span class="lineNum">      51 </span>            : #define CID_Endpoints   1012
+<span class="lineNum">      52 </span>            : 
+<a name="53"><span class="lineNum">      53 </span>            : static double old_fudge = .001;</a>
+<span class="lineNum">      54 </span>            : 
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 : static void SVSelectSC(SearchView *sv) {</span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :     SplineChar *sc = sv-&gt;sd.curchar;</span>
+<span class="lineNum">      57 </span>            :     SplinePointList *spl;
+<span class="lineNum">      58 </span>            :     SplinePoint *sp;
+<span class="lineNum">      59 </span>            :     RefChar *rf;
+<span class="lineNum">      60 </span>            :     int i;
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :     int layer = sv-&gt;sd.fv-&gt;active_layer;</span>
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span>            :     /* Deselect all */;
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :     for ( spl = sc-&gt;layers[layer].splines; spl!=NULL; spl = spl-&gt;next ) {</span>
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :         for ( sp=spl-&gt;first ;; ) {</span>
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :             sp-&gt;selected = false;</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :             if ( sp-&gt;next == NULL )</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :             sp = sp-&gt;next-&gt;to;</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :             if ( sp==spl-&gt;first )</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">      73 </span>            :     }
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :     for ( rf=sc-&gt;layers[layer].refs; rf!=NULL; rf = rf-&gt;next )</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :         if ( rf-&gt;selected ) rf-&gt;selected = false;</span>
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :     if ( sv-&gt;sd.subpatternsearch ) {</span>
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :         spl = sv-&gt;sd.matched_spl;</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :         for ( sp = sv-&gt;sd.matched_sp; ; ) {</span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :             sp-&gt;selected = true;</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :             if ( sp-&gt;next == NULL || sv-&gt;sd.last_sp==NULL || sp==sv-&gt;sd.last_sp )</span>
+<span class="lineNum">      82 </span>            :         break;
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :             sp = sp-&gt;next-&gt;to;</span>
+<span class="lineNum">      84 </span>            :             /* Ok to wrap back to first */
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">      86 </span>            :     } else {
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :         for ( rf=sc-&gt;layers[layer].refs, i=0; rf!=NULL; rf=rf-&gt;next, ++i )</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :             if ( sv-&gt;sd.matched_refs&amp;(1&lt;&lt;i) )</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :                 rf-&gt;selected = true;</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :         for ( spl = sc-&gt;layers[layer].splines,i=0; spl!=NULL; spl = spl-&gt;next, ++i ) {</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :             if ( sv-&gt;sd.matched_ss&amp;(1&lt;&lt;i) ) {</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :                 for ( sp=spl-&gt;first ;; ) {</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :                     sp-&gt;selected = true;</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :                     if ( sp-&gt;next == NULL )</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :                 break;</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :                     sp = sp-&gt;next-&gt;to;</span>
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :                     if ( sp==spl-&gt;first )</span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :                 break;</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :                 }</span>
+<span class="lineNum">     100 </span>            :             }
+<span class="lineNum">     101 </span>            :         }
+<span class="lineNum">     102 </span>            :     }
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :     SCUpdateAll(sc);</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :     sc-&gt;changed_since_search = false;</span>
+<a name="105"><span class="lineNum">     105 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     106 </span>            : 
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 : static int DoFindOne(SearchView *sv,int startafter) {</span>
+<span class="lineNum">     108 </span>            :     int i, gid;
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :     SplineChar *startcur = sv-&gt;sd.curchar;</span>
+<span class="lineNum">     110 </span>            : 
+<span class="lineNum">     111 </span>            :     /* It is possible that some idiot deleted the current character since */
+<span class="lineNum">     112 </span>            :     /*  the last search... do some mild checks */
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :     if ( sv-&gt;sd.curchar!=NULL &amp;&amp;</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :             sv-&gt;sd.curchar-&gt;parent == sv-&gt;sd.fv-&gt;sf &amp;&amp;</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :             sv-&gt;sd.curchar-&gt;orig_pos&gt;=0 &amp;&amp; sv-&gt;sd.curchar-&gt;orig_pos&lt;sv-&gt;sd.fv-&gt;sf-&gt;glyphcnt &amp;&amp;</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :             sv-&gt;sd.curchar==sv-&gt;sd.fv-&gt;sf-&gt;glyphs[sv-&gt;sd.curchar-&gt;orig_pos] )</span>
+<span class="lineNum">     117 </span>            :         /* Looks ok */;
+<span class="lineNum">     118 </span>            :     else
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :         sv-&gt;sd.curchar=startcur=NULL;</span>
+<span class="lineNum">     120 </span>            : 
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :     if ( !sv-&gt;sd.subpatternsearch ) startafter = false;</span>
+<span class="lineNum">     122 </span>            : 
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :     if ( sv-&gt;showsfindnext &amp;&amp; sv-&gt;sd.curchar!=NULL )</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :         i = sv-&gt;sd.fv-&gt;map-&gt;backmap[sv-&gt;sd.curchar-&gt;orig_pos]+1-startafter;</span>
+<span class="lineNum">     125 </span>            :     else {
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :         startafter = false;</span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :         if ( !sv-&gt;sd.onlyselected )</span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :             i = 0;</span>
+<span class="lineNum">     129 </span>            :         else {
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;sv-&gt;sd.fv-&gt;map-&gt;enccount; ++i )</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :                 if ( sv-&gt;sd.fv-&gt;selected[i] &amp;&amp; (gid=sv-&gt;sd.fv-&gt;map-&gt;map[i])!=-1 &amp;&amp;</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :                         sv-&gt;sd.fv-&gt;sf-&gt;glyphs[gid]!=NULL )</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :             break;</span>
+<span class="lineNum">     134 </span>            :         }
+<span class="lineNum">     135 </span>            :     }
+<span class="lineNum">     136 </span>            :  
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :     for ( ; i&lt;sv-&gt;sd.fv-&gt;map-&gt;enccount; ++i ) {</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :         if (( !sv-&gt;sd.onlyselected || sv-&gt;sd.fv-&gt;selected[i]) &amp;&amp; (gid=sv-&gt;sd.fv-&gt;map-&gt;map[i])!=-1 &amp;&amp;</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :                 sv-&gt;sd.fv-&gt;sf-&gt;glyphs[gid]!=NULL ) {</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :             SCSplinePointsUntick(sv-&gt;sd.fv-&gt;sf-&gt;glyphs[gid],sv-&gt;sd.fv-&gt;active_layer);</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :             if ( SearchChar(&amp;sv-&gt;sd,gid,startafter) )</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     143 </span>            :         }
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :         startafter = false;</span>
+<span class="lineNum">     145 </span>            :     }
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :     if ( i&gt;=sv-&gt;sd.fv-&gt;map-&gt;enccount ) {</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :         ff_post_notice(_(&quot;Not Found&quot;),sv-&gt;showsfindnext?_(&quot;The search pattern was not found again in the font %.100s&quot;):_(&quot;The search pattern was not found in the font %.100s&quot;),sv-&gt;sd.fv-&gt;sf-&gt;fontname);</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :         sv-&gt;sd.curchar = startcur;</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :         GGadgetSetTitle8(GWidgetGetControl(sv-&gt;gw,CID_Find),_(&quot;Find&quot;));</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :         sv-&gt;showsfindnext = false;</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     152 </span>            :     }
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :     SVSelectSC(sv);</span>
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :     if ( sv-&gt;lastcv!=NULL &amp;&amp; sv-&gt;lastcv-&gt;b.sc==startcur &amp;&amp; sv-&gt;lastcv-&gt;b.fv== sv-&gt;sd.fv ) {</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :         CVChangeSC(sv-&gt;lastcv,sv-&gt;sd.curchar);</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :         GDrawSetVisible(sv-&gt;lastcv-&gt;gw,true);</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :         GDrawRaise(sv-&gt;lastcv-&gt;gw);</span>
+<span class="lineNum">     158 </span>            :     } else
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :         sv-&gt;lastcv = CharViewCreate(sv-&gt;sd.curchar,(FontView *) sv-&gt;sd.fv,-1);</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :     GGadgetSetTitle8(GWidgetGetControl(sv-&gt;gw,CID_Find),_(&quot;Find Next&quot;));</span>
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :     sv-&gt;showsfindnext = true;</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="163"><span class="lineNum">     163 </span>            : }</a>
+<span class="lineNum">     164 </span>            : 
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 : static void DoFindAll(SearchView *sv) {</span>
+<span class="lineNum">     166 </span>            :     int any;
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :     any = _DoFindAll(&amp;sv-&gt;sd);</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(((FontView *) (sv-&gt;sd.fv))-&gt;v,NULL,false);</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :     if ( !any )</span>
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :         ff_post_notice(_(&quot;Not Found&quot;),_(&quot;The search pattern was not found in the font %.100s&quot;),sv-&gt;sd.fv-&gt;sf-&gt;fontname);</span>
+<a name="172"><span class="lineNum">     172 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     173 </span>            : 
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 : static int pathpointcnt(SplineSet *ss) {</span>
+<span class="lineNum">     175 </span>            :     SplinePoint *sp;
+<span class="lineNum">     176 </span>            :     int cnt;
+<span class="lineNum">     177 </span>            : 
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :     if ( ss==NULL )             /* No paths */</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 : return( 0 );</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :     if ( ss-&gt;next!=NULL )    /* more than one path */</span>
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 : return( -1 );</span>
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :     if ( ss-&gt;first-&gt;prev!=NULL )/* single path, but it is closed */</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 : return( -2 );</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :     for ( sp=ss-&gt;first, cnt=1; sp-&gt;next!=NULL; sp=sp-&gt;next-&gt;to, ++cnt );</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 : return( cnt );</span>
+<a name="186"><span class="lineNum">     186 </span>            : }</a>
+<span class="lineNum">     187 </span>            : 
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 : static int SVParseDlg(SearchView *sv, int check_replace ) {</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :     int err=false;</span>
+<span class="lineNum">     190 </span>            :     double fudge;
+<span class="lineNum">     191 </span>            : 
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :     fudge = GetReal8(sv-&gt;gw,CID_Fuzzy,_(&quot;Match Fuzziness:&quot;),&amp;err);</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :     if ( err )</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :     old_fudge = fudge;</span>
+<span class="lineNum">     196 </span>            : 
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :     sv-&gt;sd.tryreverse = true;</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :     sv-&gt;sd.tryflips = GGadgetIsChecked(GWidgetGetControl(sv-&gt;gw,CID_Flipping));</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :     sv-&gt;sd.tryscale = GGadgetIsChecked(GWidgetGetControl(sv-&gt;gw,CID_Scaling));</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :     sv-&gt;sd.tryrotate = GGadgetIsChecked(GWidgetGetControl(sv-&gt;gw,CID_Rotating));</span>
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :     sv-&gt;sd.endpoints = GGadgetIsChecked(GWidgetGetControl(sv-&gt;gw,CID_Endpoints));</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :     sv-&gt;sd.onlyselected = GGadgetIsChecked(GWidgetGetControl(sv-&gt;gw,CID_Selected));</span>
+<span class="lineNum">     203 </span>            : 
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :     SVResetPaths(&amp;sv-&gt;sd);</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :     if ( pathpointcnt(sv-&gt;sd.path)==0 )</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :         ff_post_error(_(&quot;Bad search pattern&quot;),_(&quot;Nothing to match.&quot;));</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :     else if ( sv-&gt;sd.endpoints ) {</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :         if ( pathpointcnt(sv-&gt;sd.path)&lt;3 ||</span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :                 (check_replace &amp;&amp; pathpointcnt(sv-&gt;sd.replacepath)&lt;3 &amp;&amp; pathpointcnt(sv-&gt;sd.replacepath)!=0 )) {</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :             if ( pathpointcnt(sv-&gt;sd.path)&lt;0 )</span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :                 ff_post_error(_(&quot;Bad search pattern&quot;),_(&quot;When \&quot;Endpoints specify minimum length and direction only\&quot; is checked, the search pattern must be a single open contour.&quot;));</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :             else if ( pathpointcnt(sv-&gt;sd.path)&lt;3 )</span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :                 ff_post_error(_(&quot;Bad search pattern&quot;),_(&quot;When \&quot;Endpoints specify minimum length and direction only\&quot; is checked, the search pattern must be a single open contour with at least 3 points on it (otherwise there is nothing to match).&quot;));</span>
+<span class="lineNum">     214 </span>            :             else
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :                 ff_post_error(_(&quot;Bad replace pattern&quot;),_(&quot;When \&quot;Endpoints specify minimum length and direction only\&quot; is checked, the replace pattern must be a single open contour with at least 3 points on it.&quot;));</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     217 </span>            :         }
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :     } else if ( pathpointcnt(sv-&gt;sd.path)&gt;0 ) {</span>
+<span class="lineNum">     219 </span>            :         /* It might make sense not to do a sub-pattern search if the */
+<span class="lineNum">     220 </span>            :         /*  replace pattern is closed... but that's kind of weird */
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :         if ( check_replace &amp;&amp; pathpointcnt(sv-&gt;sd.replacepath)&lt;0 ) {</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :             ff_post_error(_(&quot;Bad replace pattern&quot;),_(&quot;When the search path is a single open contour, the replace pattern must also be.&quot;));</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     224 </span>            :         }
+<span class="lineNum">     225 </span>            :     }
+<span class="lineNum">     226 </span>            : 
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :     sv-&gt;sd.fudge = fudge;</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :     sv-&gt;sd.fudge_percent = sv-&gt;sd.tryrotate ? .01 : .001;</span>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="230"><span class="lineNum">     230 </span>            : }</a>
+<span class="lineNum">     231 </span>            : 
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 : static int SV_Find(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :         SearchView *sv = (SearchView *) ((CharViewBase *) GDrawGetUserData(GGadgetGetWindow(g)))-&gt;container;</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :         if ( !SVParseDlg(sv,false))</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :         sv-&gt;sd.findall = sv-&gt;sd.replaceall = false;</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :         DoFindOne(sv,false);</span>
+<span class="lineNum">     239 </span>            :     }
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="241"><span class="lineNum">     241 </span>            : }</a>
+<span class="lineNum">     242 </span>            : 
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 : static int SV_FindAll(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :         SearchView *sv = (SearchView *) ((CharViewBase *) GDrawGetUserData(GGadgetGetWindow(g)))-&gt;container;</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :         if ( !SVParseDlg(sv,false))</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :         sv-&gt;sd.findall = true;</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :         sv-&gt;sd.replaceall = false;</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :         DoFindAll(sv);</span>
+<span class="lineNum">     251 </span>            :     }
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="253"><span class="lineNum">     253 </span>            : }</a>
+<span class="lineNum">     254 </span>            : 
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 : static int SV_RplFind(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :         SearchView *sv = (SearchView *) ((CharViewBase *) GDrawGetUserData(GGadgetGetWindow(g)))-&gt;container;</span>
+<span class="lineNum">     258 </span>            :         RefChar *rf;
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :         if ( !SVParseDlg(sv,true))</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :         sv-&gt;sd.findall = sv-&gt;sd.replaceall = false;</span>
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :         for ( rf=sv-&gt;sd.sc_rpl.layers[ly_fore].refs; rf!=NULL; rf = rf-&gt;next ) {</span>
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :             if ( SCDependsOnSC(rf-&gt;sc,sv-&gt;sd.curchar)) {</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :                 ff_post_error(_(&quot;Self-referential glyph&quot;),_(&quot;Attempt to make a glyph that refers to itself&quot;));</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     266 </span>            :             }
+<span class="lineNum">     267 </span>            :         }
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :         DoRpl(&amp;sv-&gt;sd);</span>
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :         DoFindOne(sv,sv-&gt;sd.subpatternsearch);</span>
+<span class="lineNum">     270 </span>            :     }
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="272"><span class="lineNum">     272 </span>            : }</a>
+<span class="lineNum">     273 </span>            : 
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 : static int SV_RplAll(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :         SearchView *sv = (SearchView *) ((CharViewBase *) GDrawGetUserData(GGadgetGetWindow(g)))-&gt;container;</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :         if ( !SVParseDlg(sv,true))</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 :         sv-&gt;sd.findall = false;</span>
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 :         sv-&gt;sd.replaceall = true;</span>
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :         DoFindAll(sv);</span>
+<span class="lineNum">     282 </span>            :     }
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     284 </span>            : }
+<span class="lineNum">     285 </span>            : 
+<a name="286"><span class="lineNum">     286 </span>            : /* ************************************************************************** */</a>
+<span class="lineNum">     287 </span>            : 
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 : void SV_DoClose(struct cvcontainer *cvc) {</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :     GDrawSetVisible(((SearchView *) cvc)-&gt;gw,false);</span>
+<a name="290"><span class="lineNum">     290 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     291 </span>            : 
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 : static int SV_Cancel(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate )</span>
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :         SV_DoClose(((CharViewBase *) GDrawGetUserData(GGadgetGetWindow(g)))-&gt;container);</span>
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="296"><span class="lineNum">     296 </span>            : }</a>
+<span class="lineNum">     297 </span>            : 
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 : static void SVResize(SearchView *sv, GEvent *event) {</span>
+<span class="lineNum">     299 </span>            :     int width, height;
+<span class="lineNum">     300 </span>            : 
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :     if ( !event-&gt;u.resize.sized )</span>
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     303 </span>            : 
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :     GGadgetMove(GWidgetGetControl(sv-&gt;gw,CID_TopBox),4,4);</span>
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 :     GGadgetResize(GWidgetGetControl(sv-&gt;gw,CID_TopBox),</span>
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :             event-&gt;u.resize.size.width-8,</span>
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :             event-&gt;u.resize.size.height-12);</span>
+<span class="lineNum">     308 </span>            :     
+<span class="lineNum">     309 </span><span class="lineNoCov">          0 :     width = (event-&gt;u.resize.size.width-40)/2;</span>
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 :     height = (event-&gt;u.resize.size.height-sv-&gt;cv_y-sv-&gt;button_height-8);</span>
+<span class="lineNum">     311 </span><span class="lineNoCov">          0 :     if ( width&lt;70 || height&lt;80 ) {</span>
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 :         if ( width&lt;70 ) width = 70;</span>
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :         width = 2*width+40;</span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :         if ( height&lt;80 ) height = 80;</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :         height += sv-&gt;cv_y+sv-&gt;button_height+8;</span>
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :         GDrawResize(sv-&gt;gw,width,height);</span>
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     318 </span>            :     }
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :     if ( width!=sv-&gt;cv_width || height!=sv-&gt;cv_height ) {</span>
+<span class="lineNum">     320 </span><span class="lineNoCov">          0 :         GDrawResize(sv-&gt;cv_srch.gw,width,height);</span>
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 :         GDrawResize(sv-&gt;cv_rpl.gw,width,height);</span>
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 :         sv-&gt;cv_width = width; sv-&gt;cv_height = height;</span>
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :         sv-&gt;rpl_x = 30+width;</span>
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :         GDrawMove(sv-&gt;cv_rpl.gw,sv-&gt;rpl_x,sv-&gt;cv_y);</span>
+<span class="lineNum">     325 </span>            :     }
+<span class="lineNum">     326 </span>            : 
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :     GDrawSync(NULL);</span>
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :     GDrawProcessPendingEvents(NULL);</span>
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(sv-&gt;gw,NULL,false);</span>
+<a name="330"><span class="lineNum">     330 </span>            : }</a>
+<span class="lineNum">     331 </span>            : 
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 : void SVMakeActive(SearchView *sv,CharView *cv) {</span>
+<span class="lineNum">     333 </span>            :     GRect r;
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :     if ( sv==NULL )</span>
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :     sv-&gt;cv_srch.inactive = sv-&gt;cv_rpl.inactive = true;</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :     cv-&gt;inactive = false;</span>
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 :     GDrawSetUserData(sv-&gt;gw,cv);</span>
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(sv-&gt;cv_srch.v,NULL,false);</span>
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(sv-&gt;cv_rpl.v,NULL,false);</span>
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :     GDrawGetSize(sv-&gt;gw,&amp;r);</span>
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :     r.x = 0;</span>
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :     r.y = sv-&gt;mbh;</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :     r.height = sv-&gt;fh+10;</span>
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(sv-&gt;gw,&amp;r,false);</span>
+<a name="346"><span class="lineNum">     346 </span>            : }</a>
+<span class="lineNum">     347 </span>            : 
+<span class="lineNum">     348 </span><span class="lineNoCov">          0 : static void SVChar(SearchView *sv, GEvent *event) {</span>
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :     if ( event-&gt;u.chr.keysym==GK_Tab || event-&gt;u.chr.keysym==GK_BackTab )</span>
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :         SVMakeActive(sv,sv-&gt;cv_srch.inactive ? &amp;sv-&gt;cv_srch : &amp;sv-&gt;cv_rpl);</span>
+<span class="lineNum">     351 </span>            :     else
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :         CVChar(sv-&gt;cv_srch.inactive ? &amp;sv-&gt;cv_rpl : &amp;sv-&gt;cv_srch,event);</span>
+<a name="353"><span class="lineNum">     353 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     354 </span>            : 
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 : static void SVDraw(SearchView *sv, GWindow pixmap, GEvent *event) {</span>
+<span class="lineNum">     356 </span>            :     GRect r;
+<span class="lineNum">     357 </span>            : 
+<span class="lineNum">     358 </span><span class="lineNoCov">          0 :     GDrawSetLineWidth(pixmap,0);</span>
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 :     if ( sv-&gt;cv_srch.inactive )</span>
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :         GDrawSetFont(pixmap,sv-&gt;plain);</span>
+<span class="lineNum">     361 </span>            :     else
+<span class="lineNum">     362 </span><span class="lineNoCov">          0 :         GDrawSetFont(pixmap,sv-&gt;bold);</span>
+<span class="lineNum">     363 </span><span class="lineNoCov">          0 :     GDrawDrawText8(pixmap,10,sv-&gt;mbh+5+sv-&gt;as,</span>
+<span class="lineNum">     364 </span><span class="lineNoCov">          0 :             _(&quot;Search Pattern:&quot;),-1,0);</span>
+<span class="lineNum">     365 </span><span class="lineNoCov">          0 :     if ( sv-&gt;cv_rpl.inactive )</span>
+<span class="lineNum">     366 </span><span class="lineNoCov">          0 :         GDrawSetFont(pixmap,sv-&gt;plain);</span>
+<span class="lineNum">     367 </span>            :     else
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :         GDrawSetFont(pixmap,sv-&gt;bold);</span>
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 :     GDrawDrawText8(pixmap,sv-&gt;rpl_x,sv-&gt;mbh+5+sv-&gt;as,</span>
+<span class="lineNum">     370 </span><span class="lineNoCov">          0 :             _(&quot;Replace Pattern:&quot;),-1,0);</span>
+<span class="lineNum">     371 </span><span class="lineNoCov">          0 :     r.x = 10-1; r.y=sv-&gt;cv_y-1;</span>
+<span class="lineNum">     372 </span><span class="lineNoCov">          0 :     r.width = sv-&gt;cv_width+1; r.height = sv-&gt;cv_height+1;</span>
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 :     GDrawDrawRect(pixmap,&amp;r,0);</span>
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 :     r.x = sv-&gt;rpl_x-1;</span>
+<span class="lineNum">     375 </span><span class="lineNoCov">          0 :     GDrawDrawRect(pixmap,&amp;r,0);</span>
+<a name="376"><span class="lineNum">     376 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     377 </span>            : 
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 : static void SVCheck(SearchView *sv) {</span>
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :     int show = ( sv-&gt;sd.sc_srch.layers[ly_fore].splines!=NULL || sv-&gt;sd.sc_srch.layers[ly_fore].refs!=NULL );</span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :     int showrplall=show, showrpl;</span>
+<span class="lineNum">     381 </span>            : 
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :     if ( sv-&gt;sd.sc_srch.changed_since_autosave &amp;&amp; sv-&gt;showsfindnext ) {</span>
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :         GGadgetSetTitle8(GWidgetGetControl(sv-&gt;gw,CID_Find),_(&quot;Find&quot;));</span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :         sv-&gt;showsfindnext = false;</span>
+<span class="lineNum">     385 </span>            :     }
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :     if ( showrplall ) {</span>
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :         if ( sv-&gt;sd.sc_srch.layers[ly_fore].splines!=NULL &amp;&amp; sv-&gt;sd.sc_srch.layers[ly_fore].splines-&gt;next==NULL &amp;&amp;</span>
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 :                 sv-&gt;sd.sc_srch.layers[ly_fore].splines-&gt;first-&gt;prev==NULL &amp;&amp;</span>
+<span class="lineNum">     389 </span><span class="lineNoCov">          0 :                 sv-&gt;sd.sc_rpl.layers[ly_fore].splines==NULL &amp;&amp; sv-&gt;sd.sc_rpl.layers[ly_fore].refs==NULL )</span>
+<span class="lineNum">     390 </span><span class="lineNoCov">          0 :             showrplall = false;</span>
+<span class="lineNum">     391 </span>            :     }
+<span class="lineNum">     392 </span><span class="lineNoCov">          0 :     showrpl = showrplall;</span>
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 :     if ( !sv-&gt;showsfindnext || sv-&gt;sd.curchar==NULL || sv-&gt;sd.curchar-&gt;parent!=sv-&gt;sd.fv-&gt;sf ||</span>
+<span class="lineNum">     394 </span><span class="lineNoCov">          0 :             sv-&gt;sd.curchar-&gt;orig_pos&lt;0 || sv-&gt;sd.curchar-&gt;orig_pos&gt;=sv-&gt;sd.fv-&gt;sf-&gt;glyphcnt ||</span>
+<span class="lineNum">     395 </span><span class="lineNoCov">          0 :             sv-&gt;sd.curchar!=sv-&gt;sd.fv-&gt;sf-&gt;glyphs[sv-&gt;sd.curchar-&gt;orig_pos] ||</span>
+<span class="lineNum">     396 </span><span class="lineNoCov">          0 :             sv-&gt;sd.curchar-&gt;changed_since_search )</span>
+<span class="lineNum">     397 </span><span class="lineNoCov">          0 :         showrpl = false;</span>
+<span class="lineNum">     398 </span>            : 
+<span class="lineNum">     399 </span><span class="lineNoCov">          0 :     if ( sv-&gt;findenabled != show ) {</span>
+<span class="lineNum">     400 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(sv-&gt;gw,CID_Find),show);</span>
+<span class="lineNum">     401 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(sv-&gt;gw,CID_FindAll),show);</span>
+<span class="lineNum">     402 </span><span class="lineNoCov">          0 :         sv-&gt;findenabled = show;</span>
+<span class="lineNum">     403 </span>            :     }
+<span class="lineNum">     404 </span><span class="lineNoCov">          0 :     if ( sv-&gt;rplallenabled != showrplall ) {</span>
+<span class="lineNum">     405 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(sv-&gt;gw,CID_ReplaceAll),showrplall);</span>
+<span class="lineNum">     406 </span><span class="lineNoCov">          0 :         sv-&gt;rplallenabled = showrplall;</span>
+<span class="lineNum">     407 </span>            :     }
+<span class="lineNum">     408 </span><span class="lineNoCov">          0 :     if ( sv-&gt;rplenabled != showrpl ) {</span>
+<span class="lineNum">     409 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(sv-&gt;gw,CID_Replace),showrpl);</span>
+<span class="lineNum">     410 </span><span class="lineNoCov">          0 :         sv-&gt;rplenabled = showrpl;</span>
+<span class="lineNum">     411 </span>            :     }
+<a name="412"><span class="lineNum">     412 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     413 </span>            : 
+<span class="lineNum">     414 </span><span class="lineNoCov">          0 : static void SearchViewFree(SearchView *sv) {</span>
+<span class="lineNum">     415 </span><span class="lineNoCov">          0 :     SplinePointListsFree(sv-&gt;sd.sc_srch.layers[ly_fore].splines);</span>
+<span class="lineNum">     416 </span><span class="lineNoCov">          0 :     SplinePointListsFree(sv-&gt;sd.sc_rpl.layers[ly_fore].splines);</span>
+<span class="lineNum">     417 </span><span class="lineNoCov">          0 :     RefCharsFree(sv-&gt;sd.sc_srch.layers[ly_fore].refs);</span>
+<span class="lineNum">     418 </span><span class="lineNoCov">          0 :     RefCharsFree(sv-&gt;sd.sc_rpl.layers[ly_fore].refs);</span>
+<span class="lineNum">     419 </span><span class="lineNoCov">          0 :     free(sv);</span>
+<a name="420"><span class="lineNum">     420 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     421 </span>            : 
+<span class="lineNum">     422 </span><span class="lineNoCov">          0 : static int sv_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     423 </span><span class="lineNoCov">          0 :     SearchView *sv = (SearchView *) ((CharViewBase *) GDrawGetUserData(gw))-&gt;container;</span>
+<span class="lineNum">     424 </span>            : 
+<span class="lineNum">     425 </span><span class="lineNoCov">          0 :     switch ( event-&gt;type ) {</span>
+<span class="lineNum">     426 </span>            :       case et_expose:
+<span class="lineNum">     427 </span><span class="lineNoCov">          0 :         SVDraw(sv,gw,event);</span>
+<span class="lineNum">     428 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     429 </span>            :       case et_resize:
+<span class="lineNum">     430 </span><span class="lineNoCov">          0 :         if ( event-&gt;u.resize.sized )</span>
+<span class="lineNum">     431 </span><span class="lineNoCov">          0 :             SVResize(sv,event);</span>
+<span class="lineNum">     432 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     433 </span>            :       case et_char:
+<span class="lineNum">     434 </span><span class="lineNoCov">          0 :         SVChar(sv,event);</span>
+<span class="lineNum">     435 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     436 </span>            :       case et_timer:
+<span class="lineNum">     437 </span><span class="lineNoCov">          0 :         SVCheck(sv);</span>
+<span class="lineNum">     438 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     439 </span>            :       case et_close:
+<span class="lineNum">     440 </span><span class="lineNoCov">          0 :         SV_DoClose((struct cvcontainer *) sv);</span>
+<span class="lineNum">     441 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     442 </span>            :       case et_create:
+<span class="lineNum">     443 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     444 </span>            :       case et_destroy:
+<span class="lineNum">     445 </span><span class="lineNoCov">          0 :         SearchViewFree(sv);</span>
+<span class="lineNum">     446 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     447 </span>            :       case et_map:
+<span class="lineNum">     448 </span><span class="lineNoCov">          0 :         if ( event-&gt;u.map.is_visible )</span>
+<span class="lineNum">     449 </span><span class="lineNoCov">          0 :             CVPaletteActivate(sv-&gt;cv_srch.inactive?&amp;sv-&gt;cv_rpl:&amp;sv-&gt;cv_srch);</span>
+<span class="lineNum">     450 </span>            :         else
+<span class="lineNum">     451 </span><span class="lineNoCov">          0 :             CVPalettesHideIfMine(sv-&gt;cv_srch.inactive?&amp;sv-&gt;cv_rpl:&amp;sv-&gt;cv_srch);</span>
+<span class="lineNum">     452 </span><span class="lineNoCov">          0 :         sv-&gt;isvisible = event-&gt;u.map.is_visible;</span>
+<span class="lineNum">     453 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     454 </span>            :     }
+<span class="lineNum">     455 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="456"><span class="lineNum">     456 </span>            : }</a>
+<span class="lineNum">     457 </span>            : 
+<span class="lineNum">     458 </span><span class="lineNoCov">          0 : static void SVSetTitle(SearchView *sv) {</span>
+<span class="lineNum">     459 </span>            :     char ubuf[150];
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 :     sprintf(ubuf,_(&quot;Find in %.100s&quot;),sv-&gt;sd.fv-&gt;sf-&gt;fontname);</span>
+<span class="lineNum">     461 </span><span class="lineNoCov">          0 :     GDrawSetWindowTitles8(sv-&gt;gw,ubuf,_(&quot;Find&quot;));</span>
+<a name="462"><span class="lineNum">     462 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     463 </span>            : 
+<span class="lineNum">     464 </span><span class="lineNoCov">          0 : int SVAttachFV(FontView *fv,int ask_if_difficult) {</span>
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 :     int i, doit, pos, any=0, gid;</span>
+<span class="lineNum">     466 </span>            :     RefChar *r, *rnext, *rprev;
+<span class="lineNum">     467 </span>            : 
+<span class="lineNum">     468 </span><span class="lineNoCov">          0 :     if ( searcher==NULL )</span>
+<span class="lineNum">     469 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     470 </span>            : 
+<span class="lineNum">     471 </span><span class="lineNoCov">          0 :     if ( searcher-&gt;sd.fv==(FontViewBase *) fv )</span>
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     473 </span><span class="lineNoCov">          0 :     if ( searcher-&gt;sd.fv!=NULL &amp;&amp; searcher-&gt;sd.fv-&gt;sf==fv-&gt;b.sf ) {</span>
+<span class="lineNum">     474 </span><span class="lineNoCov">          0 :         ((FontView *) searcher-&gt;sd.fv)-&gt;sv = NULL;</span>
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 :         fv-&gt;sv = searcher;</span>
+<span class="lineNum">     476 </span><span class="lineNoCov">          0 :         searcher-&gt;sd.fv = (FontViewBase *) fv;</span>
+<span class="lineNum">     477 </span><span class="lineNoCov">          0 :         SVSetTitle(searcher);</span>
+<span class="lineNum">     478 </span><span class="lineNoCov">          0 :         searcher-&gt;sd.curchar = NULL;</span>
+<span class="lineNum">     479 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     480 </span>            :     }
+<span class="lineNum">     481 </span>            : 
+<span class="lineNum">     482 </span><span class="lineNoCov">          0 :     if ( searcher-&gt;dummy_sf.layers[ly_fore].order2 != fv-&gt;b.sf-&gt;layers[ly_fore].order2 ) {</span>
+<span class="lineNum">     483 </span><span class="lineNoCov">          0 :         SCClearContents(&amp;searcher-&gt;sd.sc_srch,ly_fore);</span>
+<span class="lineNum">     484 </span><span class="lineNoCov">          0 :         SCClearContents(&amp;searcher-&gt;sd.sc_rpl,ly_fore);</span>
+<span class="lineNum">     485 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;searcher-&gt;sd.sc_srch.layer_cnt; ++i )</span>
+<span class="lineNum">     486 </span><span class="lineNoCov">          0 :             UndoesFree(searcher-&gt;sd.sc_srch.layers[i].undoes);</span>
+<span class="lineNum">     487 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;searcher-&gt;sd.sc_rpl.layer_cnt; ++i )</span>
+<span class="lineNum">     488 </span><span class="lineNoCov">          0 :             UndoesFree(searcher-&gt;sd.sc_rpl.layers[i].undoes);</span>
+<span class="lineNum">     489 </span>            :     }
+<span class="lineNum">     490 </span>            : 
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 :     for ( doit=!ask_if_difficult; doit&lt;=1; ++doit ) {</span>
+<span class="lineNum">     492 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;2; ++i ) {</span>
+<span class="lineNum">     493 </span><span class="lineNoCov">          0 :             rprev = NULL;</span>
+<span class="lineNum">     494 </span><span class="lineNoCov">          0 :             for ( r = searcher-&gt;chars[i]-&gt;layers[ly_fore].refs; r!=NULL; r=rnext ) {</span>
+<span class="lineNum">     495 </span><span class="lineNoCov">          0 :                 rnext = r-&gt;next;</span>
+<span class="lineNum">     496 </span><span class="lineNoCov">          0 :                 pos = SFFindSlot(fv-&gt;b.sf,fv-&gt;b.map,r-&gt;sc-&gt;unicodeenc,r-&gt;sc-&gt;name);</span>
+<span class="lineNum">     497 </span><span class="lineNoCov">          0 :                 gid = -1;</span>
+<span class="lineNum">     498 </span><span class="lineNoCov">          0 :                 if ( pos!=-1 )</span>
+<span class="lineNum">     499 </span><span class="lineNoCov">          0 :                     gid = fv-&gt;b.map-&gt;map[pos];</span>
+<span class="lineNum">     500 </span><span class="lineNoCov">          0 :                 if ( (gid==-1 || fv-&gt;b.sf-&gt;glyphs[gid]!=NULL) &amp;&amp; !doit ) {</span>
+<span class="lineNum">     501 </span>            :                     char *buttons[3];
+<span class="lineNum">     502 </span><span class="lineNoCov">          0 :                     buttons[0] = _(&quot;Yes&quot;);</span>
+<span class="lineNum">     503 </span><span class="lineNoCov">          0 :                     buttons[1] = _(&quot;Cancel&quot;);</span>
+<span class="lineNum">     504 </span><span class="lineNoCov">          0 :                     buttons[2] = NULL;</span>
+<span class="lineNum">     505 </span><span class="lineNoCov">          0 :                     if ( ask_if_difficult==2 &amp;&amp; !searcher-&gt;isvisible )</span>
+<span class="lineNum">     506 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     507 </span><span class="lineNoCov">          0 :                     if ( gwwv_ask(_(&quot;Bad Reference&quot;),(const char **) buttons,1,1,</span>
+<span class="lineNum">     508 </span><span class="lineNoCov">          0 :                             _(&quot;The %1$s in the search dialog contains a reference to %2$.20hs which does not exist in the new font.\nShould I remove the reference?&quot;),</span>
+<span class="lineNum">     509 </span>            :                                 i==0?_(&quot;Search Pattern&quot;):_(&quot;Replace Pattern&quot;),
+<span class="lineNum">     510 </span><span class="lineNoCov">          0 :                                 r-&gt;sc-&gt;name)==1 )</span>
+<span class="lineNum">     511 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     512 </span><span class="lineNoCov">          0 :                 } else if ( !doit )</span>
+<span class="lineNum">     513 </span>            :                     /* Do Nothing */;
+<span class="lineNum">     514 </span><span class="lineNoCov">          0 :                 else if ( gid==-1 || fv-&gt;b.sf-&gt;glyphs[gid]!=NULL ) {</span>
+<span class="lineNum">     515 </span><span class="lineNoCov">          0 :                     if ( rprev==NULL )</span>
+<span class="lineNum">     516 </span><span class="lineNoCov">          0 :                         searcher-&gt;chars[i]-&gt;layers[ly_fore].refs = rnext;</span>
+<span class="lineNum">     517 </span>            :                     else
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 :                         rprev-&gt;next = rnext;</span>
+<span class="lineNum">     519 </span><span class="lineNoCov">          0 :                     RefCharFree(r);</span>
+<span class="lineNum">     520 </span><span class="lineNoCov">          0 :                     any = true;</span>
+<span class="lineNum">     521 </span>            :                 } else {
+<span class="lineNum">     522 </span>            :                     /*SplinePointListsFree(r-&gt;layers[0].splines); r-&gt;layers[0].splines = NULL;*/
+<span class="lineNum">     523 </span><span class="lineNoCov">          0 :                     r-&gt;sc = fv-&gt;b.sf-&gt;glyphs[gid];</span>
+<span class="lineNum">     524 </span><span class="lineNoCov">          0 :                     r-&gt;orig_pos = gid;</span>
+<span class="lineNum">     525 </span><span class="lineNoCov">          0 :                     SCReinstanciateRefChar(searcher-&gt;chars[i],r,fv-&gt;b.active_layer);</span>
+<span class="lineNum">     526 </span><span class="lineNoCov">          0 :                     any = true;</span>
+<span class="lineNum">     527 </span><span class="lineNoCov">          0 :                     rprev = r;</span>
+<span class="lineNum">     528 </span>            :                 }
+<span class="lineNum">     529 </span>            :             }
+<span class="lineNum">     530 </span>            :         }
+<span class="lineNum">     531 </span>            :     }
+<span class="lineNum">     532 </span><span class="lineNoCov">          0 :     fv-&gt;sv = searcher;</span>
+<span class="lineNum">     533 </span><span class="lineNoCov">          0 :     searcher-&gt;sd.fv = (FontViewBase *) fv;</span>
+<span class="lineNum">     534 </span><span class="lineNoCov">          0 :     searcher-&gt;sd.curchar = NULL;</span>
+<span class="lineNum">     535 </span><span class="lineNoCov">          0 :     if ( any ) {</span>
+<span class="lineNum">     536 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(searcher-&gt;cv_srch.v,NULL,false);</span>
+<span class="lineNum">     537 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(searcher-&gt;cv_rpl.v,NULL,false);</span>
+<span class="lineNum">     538 </span>            :     }
+<span class="lineNum">     539 </span><span class="lineNoCov">          0 :     SVSetTitle(searcher);</span>
+<span class="lineNum">     540 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="541"><span class="lineNum">     541 </span>            : }</a>
+<span class="lineNum">     542 </span>            : 
+<span class="lineNum">     543 </span><span class="lineNoCov">          0 : void SVDetachFV(FontView *fv) {</span>
+<span class="lineNum">     544 </span>            :     FontView *other;
+<span class="lineNum">     545 </span>            : 
+<span class="lineNum">     546 </span><span class="lineNoCov">          0 :     fv-&gt;sv = NULL;</span>
+<span class="lineNum">     547 </span><span class="lineNoCov">          0 :     if ( searcher==NULL || searcher-&gt;sd.fv!=(FontViewBase *) fv )</span>
+<span class="lineNum">     548 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     549 </span><span class="lineNoCov">          0 :     SV_DoClose((struct cvcontainer *) searcher);</span>
+<span class="lineNum">     550 </span><span class="lineNoCov">          0 :     for ( other=fv_list; other!=NULL; other=(FontView *) other-&gt;b.next ) {</span>
+<span class="lineNum">     551 </span><span class="lineNoCov">          0 :         if ( other!=fv ) {</span>
+<span class="lineNum">     552 </span><span class="lineNoCov">          0 :             SVAttachFV(fv,false);</span>
+<span class="lineNum">     553 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     554 </span>            :         }
+<span class="lineNum">     555 </span>            :     }
+<a name="556"><span class="lineNum">     556 </span>            : }</a>
+<span class="lineNum">     557 </span>            : 
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 : static int SV_Can_Navigate(struct cvcontainer *cvc, enum nav_type type) {</span>
+<span class="lineNum">     559 </span><span class="lineNoCov">          0 : return( false );</span>
+<a name="560"><span class="lineNum">     560 </span>            : }</a>
+<span class="lineNum">     561 </span>            : 
+<span class="lineNum">     562 </span><span class="lineNoCov">          0 : static int SV_Can_Open(struct cvcontainer *cvc) {</span>
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="564"><span class="lineNum">     564 </span>            : }</a>
+<span class="lineNum">     565 </span>            : 
+<span class="lineNum">     566 </span><span class="lineNoCov">          0 : static void SV_Do_Navigate(struct cvcontainer *cvc, enum nav_type type) {</span>
+<a name="567"><span class="lineNum">     567 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     568 </span>            : 
+<span class="lineNum">     569 </span><span class="lineNoCov">          0 : static SplineFont *SF_Of_SV(struct cvcontainer *cvc) {</span>
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 : return( ((SearchView *) cvc)-&gt;sd.fv-&gt;sf );</span>
+<span class="lineNum">     571 </span>            : }
+<span class="lineNum">     572 </span>            : 
+<span class="lineNum">     573 </span>            : struct cvcontainer_funcs searcher_funcs = {
+<span class="lineNum">     574 </span>            :     cvc_searcher,
+<span class="lineNum">     575 </span>            :     (void (*) (struct cvcontainer *cvc,CharViewBase *cv)) SVMakeActive,
+<span class="lineNum">     576 </span>            :     (void (*) (struct cvcontainer *cvc,void *)) SVChar,
+<span class="lineNum">     577 </span>            :     SV_Can_Navigate,
+<span class="lineNum">     578 </span>            :     SV_Do_Navigate,
+<span class="lineNum">     579 </span>            :     SV_Can_Open,
+<span class="lineNum">     580 </span>            :     SV_DoClose,
+<span class="lineNum">     581 </span>            :     SF_Of_SV
+<a name="582"><span class="lineNum">     582 </span>            : };</a>
+<span class="lineNum">     583 </span>            : 
+<span class="lineNum">     584 </span><span class="lineNoCov">          0 : static SearchView *SVFillup(SearchView *sv, FontView *fv) {</span>
+<span class="lineNum">     585 </span>            : 
+<span class="lineNum">     586 </span><span class="lineNoCov">          0 :     SDFillup(&amp;sv-&gt;sd,(FontViewBase *) fv);</span>
+<span class="lineNum">     587 </span><span class="lineNoCov">          0 :     sv-&gt;base.funcs = &amp;searcher_funcs;</span>
+<span class="lineNum">     588 </span>            : 
+<span class="lineNum">     589 </span><span class="lineNoCov">          0 :     sv-&gt;chars[0] = &amp;sv-&gt;sd.sc_srch;</span>
+<span class="lineNum">     590 </span><span class="lineNoCov">          0 :     sv-&gt;chars[1] = &amp;sv-&gt;sd.sc_rpl;</span>
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_sf.glyphs = sv-&gt;chars;</span>
+<span class="lineNum">     592 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_sf.glyphcnt = sv-&gt;dummy_sf.glyphmax = 2;</span>
+<span class="lineNum">     593 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_sf.pfminfo.fstype = -1;</span>
+<span class="lineNum">     594 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_sf.pfminfo.stylemap = -1;</span>
+<span class="lineNum">     595 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_sf.fontname = sv-&gt;dummy_sf.fullname = sv-&gt;dummy_sf.familyname = &quot;dummy&quot;;</span>
+<span class="lineNum">     596 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_sf.weight = &quot;Medium&quot;;</span>
+<span class="lineNum">     597 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_sf.origname = &quot;dummy&quot;;</span>
+<span class="lineNum">     598 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_sf.ascent = fv-&gt;b.sf-&gt;ascent;</span>
+<span class="lineNum">     599 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_sf.descent = fv-&gt;b.sf-&gt;descent;</span>
+<span class="lineNum">     600 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_sf.layers = sv-&gt;layerinfo;</span>
+<span class="lineNum">     601 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_sf.layer_cnt = 2;</span>
+<span class="lineNum">     602 </span><span class="lineNoCov">          0 :     sv-&gt;layerinfo[ly_back].order2 = fv-&gt;b.sf-&gt;layers[ly_back].order2;</span>
+<span class="lineNum">     603 </span><span class="lineNoCov">          0 :     sv-&gt;layerinfo[ly_back].name = _(&quot;Back&quot;);</span>
+<span class="lineNum">     604 </span><span class="lineNoCov">          0 :     sv-&gt;layerinfo[ly_fore].order2 = fv-&gt;b.sf-&gt;layers[ly_fore].order2;</span>
+<span class="lineNum">     605 </span><span class="lineNoCov">          0 :     sv-&gt;layerinfo[ly_fore].name = _(&quot;Fore&quot;);</span>
+<span class="lineNum">     606 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_sf.grid.order2 = fv-&gt;b.sf-&gt;grid.order2;</span>
+<span class="lineNum">     607 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_sf.anchor = fv-&gt;b.sf-&gt;anchor;</span>
+<span class="lineNum">     608 </span><span class="lineNoCov">          0 :     sv-&gt;sd.sc_srch.width = sv-&gt;sd.sc_srch.vwidth = sv-&gt;sd.sc_rpl.vwidth = sv-&gt;sd.sc_rpl.width =</span>
+<span class="lineNum">     609 </span><span class="lineNoCov">          0 :             sv-&gt;dummy_sf.ascent + sv-&gt;dummy_sf.descent;</span>
+<span class="lineNum">     610 </span><span class="lineNoCov">          0 :     sv-&gt;sd.sc_srch.parent = sv-&gt;sd.sc_rpl.parent = &amp;sv-&gt;dummy_sf;</span>
+<span class="lineNum">     611 </span>            : 
+<span class="lineNum">     612 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_sf.fv = (FontViewBase *) &amp;sv-&gt;dummy_fv;</span>
+<span class="lineNum">     613 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_fv.b.active_layer = ly_fore;</span>
+<span class="lineNum">     614 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_fv.b.sf = &amp;sv-&gt;dummy_sf;</span>
+<span class="lineNum">     615 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_fv.b.selected = sv-&gt;sel;</span>
+<span class="lineNum">     616 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_fv.cbw = sv-&gt;dummy_fv.cbh = default_fv_font_size+1;</span>
+<span class="lineNum">     617 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_fv.magnify = 1;</span>
+<span class="lineNum">     618 </span>            : 
+<span class="lineNum">     619 </span><span class="lineNoCov">          0 :     sv-&gt;cv_srch.b.container = (struct cvcontainer *) sv;</span>
+<span class="lineNum">     620 </span><span class="lineNoCov">          0 :     sv-&gt;cv_rpl.inactive = true;</span>
+<span class="lineNum">     621 </span><span class="lineNoCov">          0 :     sv-&gt;cv_rpl.b.container = (struct cvcontainer *) sv;</span>
+<span class="lineNum">     622 </span>            : 
+<span class="lineNum">     623 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_fv.b.map = &amp;sv-&gt;dummy_map;</span>
+<span class="lineNum">     624 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_map.map = sv-&gt;map;</span>
+<span class="lineNum">     625 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_map.backmap = sv-&gt;backmap;</span>
+<span class="lineNum">     626 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_map.enccount = sv-&gt;dummy_map.encmax = sv-&gt;dummy_map.backmax = 2;</span>
+<span class="lineNum">     627 </span><span class="lineNoCov">          0 :     sv-&gt;dummy_map.enc = &amp;custom;</span>
+<span class="lineNum">     628 </span>            : 
+<span class="lineNum">     629 </span><span class="lineNoCov">          0 :     sv-&gt;sd.fv = (FontViewBase *) fv;</span>
+<span class="lineNum">     630 </span><span class="lineNoCov">          0 :     if ( fv!=NULL )</span>
+<span class="lineNum">     631 </span><span class="lineNoCov">          0 :         fv-&gt;sv = sv;</span>
+<span class="lineNum">     632 </span><span class="lineNoCov">          0 : return( sv );</span>
+<a name="633"><span class="lineNum">     633 </span>            : }</a>
+<span class="lineNum">     634 </span>            : 
+<span class="lineNum">     635 </span><span class="lineNoCov">          0 : SearchView *SVCreate(FontView *fv) {</span>
+<span class="lineNum">     636 </span>            :     SearchView *sv;
+<span class="lineNum">     637 </span>            :     GRect pos;
+<span class="lineNum">     638 </span>            :     GWindow gw;
+<span class="lineNum">     639 </span>            :     GWindowAttrs wattrs;
+<span class="lineNum">     640 </span>            :     GGadgetCreateData gcd[14], boxes[6], *butarray[14], *allowarray[6],
+<span class="lineNum">     641 </span>            :             *fudgearray[4], *halfarray[3], *varray[14];
+<span class="lineNum">     642 </span>            :     GTextInfo label[14];
+<span class="lineNum">     643 </span>            :     FontRequest rq;
+<span class="lineNum">     644 </span>            :     int as, ds, ld;
+<span class="lineNum">     645 </span>            :     char fudgebuf[20];
+<span class="lineNum">     646 </span>            :     int k, sel_pos, efdo_pos;
+<span class="lineNum">     647 </span>            :     static GFont *plainfont = NULL, *boldfont=NULL;
+<span class="lineNum">     648 </span>            : 
+<span class="lineNum">     649 </span><span class="lineNoCov">          0 :     if ( searcher!=NULL ) {</span>
+<span class="lineNum">     650 </span><span class="lineNoCov">          0 :         if ( SVAttachFV(fv,true)) {</span>
+<span class="lineNum">     651 </span><span class="lineNoCov">          0 :             GDrawSetVisible(fv-&gt;sv-&gt;gw,true);</span>
+<span class="lineNum">     652 </span><span class="lineNoCov">          0 :             GDrawRaise(fv-&gt;sv-&gt;gw);</span>
+<span class="lineNum">     653 </span><span class="lineNoCov">          0 : return( searcher );</span>
+<span class="lineNum">     654 </span>            :         } else
+<span class="lineNum">     655 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     656 </span>            :     }
+<span class="lineNum">     657 </span>            : 
+<span class="lineNum">     658 </span><span class="lineNoCov">          0 :     searcher = sv = SVFillup( calloc(1,sizeof(SearchView)), fv );</span>
+<span class="lineNum">     659 </span>            : 
+<span class="lineNum">     660 </span><span class="lineNoCov">          0 :     memset(&amp;wattrs,0,sizeof(wattrs));</span>
+<span class="lineNum">     661 </span><span class="lineNoCov">          0 :     wattrs.mask = wam_events|wam_cursor|wam_isdlg/*|wam_icon*/;</span>
+<span class="lineNum">     662 </span><span class="lineNoCov">          0 :     wattrs.is_dlg = true;</span>
+<span class="lineNum">     663 </span><span class="lineNoCov">          0 :     wattrs.event_masks = -1;</span>
+<span class="lineNum">     664 </span><span class="lineNoCov">          0 :     wattrs.event_masks = -1;</span>
+<span class="lineNum">     665 </span><span class="lineNoCov">          0 :     wattrs.cursor = ct_pointer;</span>
+<span class="lineNum">     666 </span>            :     /*wattrs.icon = icon;*/
+<span class="lineNum">     667 </span><span class="lineNoCov">          0 :     pos.width = 600;</span>
+<span class="lineNum">     668 </span><span class="lineNoCov">          0 :     pos.height = 400;</span>
+<span class="lineNum">     669 </span><span class="lineNoCov">          0 :     pos.x = GGadgetScale(104)+6;</span>
+<span class="lineNum">     670 </span><span class="lineNoCov">          0 :     DefaultY(&amp;pos);</span>
+<span class="lineNum">     671 </span><span class="lineNoCov">          0 :     sv-&gt;gw = gw = GDrawCreateTopWindow(NULL,&amp;pos,sv_e_h,&amp;sv-&gt;cv_srch,&amp;wattrs);</span>
+<span class="lineNum">     672 </span><span class="lineNoCov">          0 :     SVSetTitle(sv);</span>
+<span class="lineNum">     673 </span>            : 
+<span class="lineNum">     674 </span><span class="lineNoCov">          0 :     if ( plainfont==NULL ) {</span>
+<span class="lineNum">     675 </span><span class="lineNoCov">          0 :         memset(&amp;rq,0,sizeof(rq));</span>
+<span class="lineNum">     676 </span><span class="lineNoCov">          0 :         rq.utf8_family_name = SANS_UI_FAMILIES;</span>
+<span class="lineNum">     677 </span><span class="lineNoCov">          0 :         rq.point_size = 12;</span>
+<span class="lineNum">     678 </span><span class="lineNoCov">          0 :         rq.weight = 400;</span>
+<span class="lineNum">     679 </span><span class="lineNoCov">          0 :         plainfont = GDrawInstanciateFont(NULL,&amp;rq);</span>
+<span class="lineNum">     680 </span><span class="lineNoCov">          0 :         plainfont = GResourceFindFont(&quot;SearchView.Font&quot;,plainfont);</span>
+<span class="lineNum">     681 </span><span class="lineNoCov">          0 :         GDrawDecomposeFont(plainfont, &amp;rq);</span>
+<span class="lineNum">     682 </span><span class="lineNoCov">          0 :         rq.weight = 700;</span>
+<span class="lineNum">     683 </span><span class="lineNoCov">          0 :         boldfont = GDrawInstanciateFont(NULL,&amp;rq);</span>
+<span class="lineNum">     684 </span><span class="lineNoCov">          0 :         boldfont = GResourceFindFont(&quot;SearchView.BoldFont&quot;,boldfont);</span>
+<span class="lineNum">     685 </span>            :     }
+<span class="lineNum">     686 </span><span class="lineNoCov">          0 :     sv-&gt;plain = plainfont; sv-&gt;bold = boldfont;</span>
+<span class="lineNum">     687 </span><span class="lineNoCov">          0 :     GDrawWindowFontMetrics(sv-&gt;gw,sv-&gt;plain,&amp;as,&amp;ds,&amp;ld);</span>
+<span class="lineNum">     688 </span><span class="lineNoCov">          0 :     sv-&gt;fh = as+ds; sv-&gt;as = as;</span>
+<span class="lineNum">     689 </span>            : 
+<span class="lineNum">     690 </span><span class="lineNoCov">          0 :     SVCharViewInits(sv);</span>
+<span class="lineNum">     691 </span>            : 
+<span class="lineNum">     692 </span><span class="lineNoCov">          0 :     memset(&amp;label,0,sizeof(label));</span>
+<span class="lineNum">     693 </span><span class="lineNoCov">          0 :     memset(&amp;gcd,0,sizeof(gcd));</span>
+<span class="lineNum">     694 </span><span class="lineNoCov">          0 :     memset(&amp;boxes,0,sizeof(boxes));</span>
+<span class="lineNum">     695 </span>            : 
+<span class="lineNum">     696 </span><span class="lineNoCov">          0 :     k=0;</span>
+<span class="lineNum">     697 </span>            : 
+<span class="lineNum">     698 </span><span class="lineNoCov">          0 :     label[k].text = (unichar_t *) _(&quot;Allow:&quot;);</span>
+<span class="lineNum">     699 </span><span class="lineNoCov">          0 :     label[k].text_is_1byte = true;</span>
+<span class="lineNum">     700 </span><span class="lineNoCov">          0 :     gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     701 </span><span class="lineNoCov">          0 :     gcd[k].gd.pos.x = 5; gcd[k].gd.pos.y = GDrawPixelsToPoints(NULL,sv-&gt;cv_y+sv-&gt;cv_height+8);</span>
+<span class="lineNum">     702 </span><span class="lineNoCov">          0 :     gcd[k].gd.flags = gg_enabled|gg_visible|gg_utf8_popup;</span>
+<span class="lineNum">     703 </span><span class="lineNoCov">          0 :     gcd[k].gd.cid = CID_Allow;</span>
+<span class="lineNum">     704 </span><span class="lineNoCov">          0 :     gcd[k].gd.popup_msg = (unichar_t *) _(&quot;Allow a match even if the search pattern has\nto be transformed by a combination of the\nfollowing transformations.&quot;);</span>
+<span class="lineNum">     705 </span><span class="lineNoCov">          0 :     gcd[k].creator = GLabelCreate;</span>
+<span class="lineNum">     706 </span><span class="lineNoCov">          0 :     allowarray[k] = &amp;gcd[k]; ++k;</span>
+<span class="lineNum">     707 </span>            : 
+<span class="lineNum">     708 </span><span class="lineNoCov">          0 :     label[k].text = (unichar_t *) _(&quot;Flipping&quot;);</span>
+<span class="lineNum">     709 </span><span class="lineNoCov">          0 :     label[k].text_is_1byte = true;</span>
+<span class="lineNum">     710 </span><span class="lineNoCov">          0 :     gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     711 </span><span class="lineNoCov">          0 :     gcd[k].gd.pos.x = 35; gcd[k].gd.pos.y = gcd[0].gd.pos.y-3;</span>
+<span class="lineNum">     712 </span><span class="lineNoCov">          0 :     gcd[k].gd.flags = gg_enabled|gg_visible|gg_cb_on|gg_utf8_popup;</span>
+<span class="lineNum">     713 </span><span class="lineNoCov">          0 :     gcd[k].gd.cid = CID_Flipping;</span>
+<span class="lineNum">     714 </span><span class="lineNoCov">          0 :     gcd[k].gd.popup_msg = (unichar_t *) _(&quot;Allow a match even if the search pattern has\nto be transformed by a combination of the\nfollowing transformations.&quot;);</span>
+<span class="lineNum">     715 </span><span class="lineNoCov">          0 :     gcd[k].creator = GCheckBoxCreate;</span>
+<span class="lineNum">     716 </span><span class="lineNoCov">          0 :     allowarray[k] = &amp;gcd[k]; ++k;</span>
+<span class="lineNum">     717 </span>            : 
+<span class="lineNum">     718 </span><span class="lineNoCov">          0 :     label[k].text = (unichar_t *) _(&quot;Scaling&quot;);</span>
+<span class="lineNum">     719 </span><span class="lineNoCov">          0 :     label[k].text_is_1byte = true;</span>
+<span class="lineNum">     720 </span><span class="lineNoCov">          0 :     gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     721 </span><span class="lineNoCov">          0 :     gcd[k].gd.pos.x = 100; gcd[k].gd.pos.y = gcd[1].gd.pos.y; </span>
+<span class="lineNum">     722 </span><span class="lineNoCov">          0 :     gcd[k].gd.flags = gg_enabled|gg_visible|gg_utf8_popup;</span>
+<span class="lineNum">     723 </span><span class="lineNoCov">          0 :     gcd[k].gd.cid = CID_Scaling;</span>
+<span class="lineNum">     724 </span><span class="lineNoCov">          0 :     gcd[k].gd.popup_msg = (unichar_t *) _(&quot;Allow a match even if the search pattern has\nto be transformed by a combination of the\nfollowing transformations.&quot;);</span>
+<span class="lineNum">     725 </span><span class="lineNoCov">          0 :     gcd[k].creator = GCheckBoxCreate;</span>
+<span class="lineNum">     726 </span><span class="lineNoCov">          0 :     allowarray[k] = &amp;gcd[k]; ++k;</span>
+<span class="lineNum">     727 </span>            : 
+<span class="lineNum">     728 </span><span class="lineNoCov">          0 :     label[k].text = (unichar_t *) _(&quot;Rotating&quot;);</span>
+<span class="lineNum">     729 </span><span class="lineNoCov">          0 :     label[k].text_is_1byte = true;</span>
+<span class="lineNum">     730 </span><span class="lineNoCov">          0 :     gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     731 </span><span class="lineNoCov">          0 :     gcd[k].gd.pos.x = 170; gcd[k].gd.pos.y = gcd[1].gd.pos.y;</span>
+<span class="lineNum">     732 </span><span class="lineNoCov">          0 :     gcd[k].gd.flags = gg_enabled|gg_visible|gg_utf8_popup;</span>
+<span class="lineNum">     733 </span><span class="lineNoCov">          0 :     gcd[k].gd.cid = CID_Rotating;</span>
+<span class="lineNum">     734 </span><span class="lineNoCov">          0 :     gcd[k].gd.popup_msg = (unichar_t *) _(&quot;Allow a match even if the search pattern has\nto be transformed by a combination of the\nfollowing transformations.&quot;);</span>
+<span class="lineNum">     735 </span><span class="lineNoCov">          0 :     gcd[k].creator = GCheckBoxCreate;</span>
+<span class="lineNum">     736 </span><span class="lineNoCov">          0 :     allowarray[k] = &amp;gcd[k]; allowarray[++k] = GCD_Glue; allowarray[5] = NULL;</span>
+<span class="lineNum">     737 </span>            : 
+<span class="lineNum">     738 </span><span class="lineNoCov">          0 :     label[k].text = (unichar_t *) _(&quot;_Match Fuzziness:&quot;);</span>
+<span class="lineNum">     739 </span><span class="lineNoCov">          0 :     label[k].text_is_1byte = true;</span>
+<span class="lineNum">     740 </span><span class="lineNoCov">          0 :     label[k].text_in_resource = true;</span>
+<span class="lineNum">     741 </span><span class="lineNoCov">          0 :     gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     742 </span><span class="lineNoCov">          0 :     gcd[k].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     743 </span><span class="lineNoCov">          0 :     gcd[k].creator = GLabelCreate;</span>
+<span class="lineNum">     744 </span><span class="lineNoCov">          0 :     fudgearray[0] = &amp;gcd[k++];</span>
+<span class="lineNum">     745 </span>            : 
+<span class="lineNum">     746 </span><span class="lineNoCov">          0 :     sprintf(fudgebuf,&quot;%g&quot;,old_fudge);</span>
+<span class="lineNum">     747 </span><span class="lineNoCov">          0 :     label[k].text = (unichar_t *) fudgebuf;</span>
+<span class="lineNum">     748 </span><span class="lineNoCov">          0 :     label[k].text_is_1byte = true;</span>
+<span class="lineNum">     749 </span><span class="lineNoCov">          0 :     label[k].text_in_resource = true;</span>
+<span class="lineNum">     750 </span><span class="lineNoCov">          0 :     gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     751 </span><span class="lineNoCov">          0 :     gcd[k].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     752 </span><span class="lineNoCov">          0 :     gcd[k].gd.cid = CID_Fuzzy;</span>
+<span class="lineNum">     753 </span><span class="lineNoCov">          0 :     gcd[k].creator = GTextFieldCreate;</span>
+<span class="lineNum">     754 </span><span class="lineNoCov">          0 :     fudgearray[1] = &amp;gcd[k++]; fudgearray[2] = GCD_Glue; fudgearray[3] = NULL;</span>
+<span class="lineNum">     755 </span>            : 
+<span class="lineNum">     756 </span><span class="lineNoCov">          0 :     efdo_pos = k;</span>
+<span class="lineNum">     757 </span><span class="lineNoCov">          0 :     label[k].text = (unichar_t *) _(&quot;Endpoints specify minimum length and direction only&quot;);</span>
+<span class="lineNum">     758 </span><span class="lineNoCov">          0 :     label[k].text_is_1byte = true;</span>
+<span class="lineNum">     759 </span><span class="lineNoCov">          0 :     gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     760 </span><span class="lineNoCov">          0 :     gcd[k].gd.pos.x = 5; gcd[k].gd.pos.y = gcd[1].gd.pos.y+18;</span>
+<span class="lineNum">     761 </span><span class="lineNoCov">          0 :     gcd[k].gd.flags = gg_enabled|gg_visible|gg_utf8_popup;</span>
+<span class="lineNum">     762 </span><span class="lineNoCov">          0 :     gcd[k].gd.cid = CID_Endpoints;</span>
+<span class="lineNum">     763 </span><span class="lineNoCov">          0 :     gcd[k].gd.popup_msg = (unichar_t *) _(</span>
+<span class="lineNum">     764 </span>            :         &quot;If the search pattern is a single open contour\n&quot;
+<span class="lineNum">     765 </span>            :         &quot;then do not match the end points. They merely\n&quot;
+<span class="lineNum">     766 </span>            :         &quot;specify the direction from which the curve should\n&quot;
+<span class="lineNum">     767 </span>            :         &quot;move toward the next point (which will be matched),\n&quot;
+<span class="lineNum">     768 </span>            :         &quot;and the minimum distance between the first matched\n&quot;
+<span class="lineNum">     769 </span>            :         &quot;point and the one before it. The endpoints of the\n&quot;
+<span class="lineNum">     770 </span>            :         &quot;replace contour will also only be used for positioning.\n&quot;
+<span class="lineNum">     771 </span>            :         &quot;\n&quot;
+<span class="lineNum">     772 </span>            :         &quot;This allows you to match a right angle corner\n&quot;
+<span class="lineNum">     773 </span>            :         &quot;without needed to specify exactly how long the edges\n&quot;
+<span class="lineNum">     774 </span>            :         &quot;are which form the right angle.&quot;);
+<span class="lineNum">     775 </span><span class="lineNoCov">          0 :     gcd[k++].creator = GCheckBoxCreate;</span>
+<span class="lineNum">     776 </span>            : 
+<span class="lineNum">     777 </span><span class="lineNoCov">          0 :     sel_pos = k;</span>
+<span class="lineNum">     778 </span><span class="lineNoCov">          0 :     label[k].text = (unichar_t *) _(&quot;Search Selected Chars Only&quot;);</span>
+<span class="lineNum">     779 </span><span class="lineNoCov">          0 :     label[k].text_is_1byte = true;</span>
+<span class="lineNum">     780 </span><span class="lineNoCov">          0 :     gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     781 </span><span class="lineNoCov">          0 :     gcd[k].gd.pos.x = 5; gcd[k].gd.pos.y = gcd[1].gd.pos.y+18;</span>
+<span class="lineNum">     782 </span><span class="lineNoCov">          0 :     gcd[k].gd.flags = gg_enabled|gg_visible|gg_utf8_popup;</span>
+<span class="lineNum">     783 </span><span class="lineNoCov">          0 :     gcd[k].gd.cid = CID_Selected;</span>
+<span class="lineNum">     784 </span><span class="lineNoCov">          0 :     gcd[k].gd.popup_msg = (unichar_t *) _(&quot;Only search characters selected in the fontview.\nNormally we search all characters in the font.&quot;);</span>
+<span class="lineNum">     785 </span><span class="lineNoCov">          0 :     gcd[k++].creator = GCheckBoxCreate;</span>
+<span class="lineNum">     786 </span>            : 
+<span class="lineNum">     787 </span><span class="lineNoCov">          0 :     label[k].text = (unichar_t *) _(&quot;Find Next&quot;);     /* Start with this to allow sufficient space */</span>
+<span class="lineNum">     788 </span><span class="lineNoCov">          0 :     label[k].text_is_1byte = true;</span>
+<span class="lineNum">     789 </span><span class="lineNoCov">          0 :     gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     790 </span><span class="lineNoCov">          0 :     gcd[k].gd.pos.x = 5; gcd[k].gd.pos.y = gcd[sel_pos].gd.pos.y+24;</span>
+<span class="lineNum">     791 </span><span class="lineNoCov">          0 :     gcd[k].gd.flags = gg_visible|gg_but_default;</span>
+<span class="lineNum">     792 </span><span class="lineNoCov">          0 :     gcd[k].gd.cid = CID_Find;</span>
+<span class="lineNum">     793 </span><span class="lineNoCov">          0 :     gcd[k].gd.handle_controlevent = SV_Find;</span>
+<span class="lineNum">     794 </span><span class="lineNoCov">          0 :     gcd[k].creator = GButtonCreate;</span>
+<span class="lineNum">     795 </span><span class="lineNoCov">          0 :     butarray[0] = GCD_Glue; butarray[1] = GCD_Glue; butarray[2] = &amp;gcd[k++];</span>
+<span class="lineNum">     796 </span>            : 
+<span class="lineNum">     797 </span><span class="lineNoCov">          0 :     label[k].text = (unichar_t *) _(&quot;Find All&quot;);</span>
+<span class="lineNum">     798 </span><span class="lineNoCov">          0 :     label[k].text_is_1byte = true;</span>
+<span class="lineNum">     799 </span><span class="lineNoCov">          0 :     gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     800 </span><span class="lineNoCov">          0 :     gcd[k].gd.pos.x = 0; gcd[k].gd.pos.y = gcd[k-1].gd.pos.y+3;</span>
+<span class="lineNum">     801 </span><span class="lineNoCov">          0 :     gcd[k].gd.flags = gg_visible;</span>
+<span class="lineNum">     802 </span><span class="lineNoCov">          0 :     gcd[k].gd.cid = CID_FindAll;</span>
+<span class="lineNum">     803 </span><span class="lineNoCov">          0 :     gcd[k].gd.handle_controlevent = SV_FindAll;</span>
+<span class="lineNum">     804 </span><span class="lineNoCov">          0 :     gcd[k].creator = GButtonCreate;</span>
+<span class="lineNum">     805 </span><span class="lineNoCov">          0 :     butarray[3] = GCD_Glue; butarray[4] = &amp;gcd[k++];</span>
+<span class="lineNum">     806 </span>            : 
+<span class="lineNum">     807 </span><span class="lineNoCov">          0 :     label[k].text = (unichar_t *) _(&quot;Replace&quot;);</span>
+<span class="lineNum">     808 </span><span class="lineNoCov">          0 :     label[k].text_is_1byte = true;</span>
+<span class="lineNum">     809 </span><span class="lineNoCov">          0 :     gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     810 </span><span class="lineNoCov">          0 :     gcd[k].gd.pos.x = 0; gcd[k].gd.pos.y = gcd[k-1].gd.pos.y;</span>
+<span class="lineNum">     811 </span><span class="lineNoCov">          0 :     gcd[k].gd.flags = gg_visible;</span>
+<span class="lineNum">     812 </span><span class="lineNoCov">          0 :     gcd[k].gd.cid = CID_Replace;</span>
+<span class="lineNum">     813 </span><span class="lineNoCov">          0 :     gcd[k].gd.handle_controlevent = SV_RplFind;</span>
+<span class="lineNum">     814 </span><span class="lineNoCov">          0 :     gcd[k].creator = GButtonCreate;</span>
+<span class="lineNum">     815 </span><span class="lineNoCov">          0 :     butarray[5] = GCD_Glue; butarray[6] = &amp;gcd[k++];</span>
+<span class="lineNum">     816 </span>            : 
+<span class="lineNum">     817 </span><span class="lineNoCov">          0 :     label[k].text = (unichar_t *) _(&quot;Replace All&quot;);</span>
+<span class="lineNum">     818 </span><span class="lineNoCov">          0 :     label[k].text_is_1byte = true;</span>
+<span class="lineNum">     819 </span><span class="lineNoCov">          0 :     gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     820 </span><span class="lineNoCov">          0 :     gcd[k].gd.pos.x = 0; gcd[k].gd.pos.y = gcd[k-2].gd.pos.y;</span>
+<span class="lineNum">     821 </span><span class="lineNoCov">          0 :     gcd[k].gd.flags = gg_visible;</span>
+<span class="lineNum">     822 </span><span class="lineNoCov">          0 :     gcd[k].gd.cid = CID_ReplaceAll;</span>
+<span class="lineNum">     823 </span><span class="lineNoCov">          0 :     gcd[k].gd.handle_controlevent = SV_RplAll;</span>
+<span class="lineNum">     824 </span><span class="lineNoCov">          0 :     gcd[k].creator = GButtonCreate;</span>
+<span class="lineNum">     825 </span><span class="lineNoCov">          0 :     butarray[7] = GCD_Glue; butarray[8] = &amp;gcd[k++];</span>
+<span class="lineNum">     826 </span>            : 
+<span class="lineNum">     827 </span><span class="lineNoCov">          0 :     label[k].text = (unichar_t *) _(&quot;_Cancel&quot;);</span>
+<span class="lineNum">     828 </span><span class="lineNoCov">          0 :     label[k].text_is_1byte = true;</span>
+<span class="lineNum">     829 </span><span class="lineNoCov">          0 :     label[k].text_in_resource = true;</span>
+<span class="lineNum">     830 </span><span class="lineNoCov">          0 :     gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     831 </span><span class="lineNoCov">          0 :     gcd[k].gd.pos.x = 0; gcd[k].gd.pos.y = gcd[k-3].gd.pos.y;</span>
+<span class="lineNum">     832 </span><span class="lineNoCov">          0 :     gcd[k].gd.flags = gg_enabled|gg_visible|gg_but_cancel;</span>
+<span class="lineNum">     833 </span><span class="lineNoCov">          0 :     gcd[k].gd.cid = CID_Cancel;</span>
+<span class="lineNum">     834 </span><span class="lineNoCov">          0 :     gcd[k].gd.handle_controlevent = SV_Cancel;</span>
+<span class="lineNum">     835 </span><span class="lineNoCov">          0 :     gcd[k].creator = GButtonCreate;</span>
+<span class="lineNum">     836 </span><span class="lineNoCov">          0 :     butarray[9] = GCD_Glue; butarray[10] = &amp;gcd[k++];</span>
+<span class="lineNum">     837 </span><span class="lineNoCov">          0 :     butarray[11] = GCD_Glue; butarray[12] = GCD_Glue; butarray[13] = NULL;</span>
+<span class="lineNum">     838 </span>            : 
+<span class="lineNum">     839 </span><span class="lineNoCov">          0 :     boxes[2].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     840 </span><span class="lineNoCov">          0 :     boxes[2].gd.u.boxelements = allowarray;</span>
+<span class="lineNum">     841 </span><span class="lineNoCov">          0 :     boxes[2].creator = GHBoxCreate;</span>
+<span class="lineNum">     842 </span>            : 
+<span class="lineNum">     843 </span><span class="lineNoCov">          0 :     boxes[3].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     844 </span><span class="lineNoCov">          0 :     boxes[3].gd.u.boxelements = fudgearray;</span>
+<span class="lineNum">     845 </span><span class="lineNoCov">          0 :     boxes[3].creator = GHBoxCreate;</span>
+<span class="lineNum">     846 </span><span class="lineNoCov">          0 :     halfarray[0] = &amp;boxes[2]; halfarray[1] = &amp;boxes[3]; halfarray[2] = NULL;</span>
+<span class="lineNum">     847 </span>            : 
+<span class="lineNum">     848 </span><span class="lineNoCov">          0 :     boxes[4].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     849 </span><span class="lineNoCov">          0 :     boxes[4].gd.u.boxelements = halfarray;</span>
+<span class="lineNum">     850 </span><span class="lineNoCov">          0 :     boxes[4].creator = GHBoxCreate;</span>
+<span class="lineNum">     851 </span>            : 
+<span class="lineNum">     852 </span><span class="lineNoCov">          0 :     boxes[5].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     853 </span><span class="lineNoCov">          0 :     boxes[5].gd.u.boxelements = butarray;</span>
+<span class="lineNum">     854 </span><span class="lineNoCov">          0 :     boxes[5].creator = GHBoxCreate;</span>
+<span class="lineNum">     855 </span>            : 
+<span class="lineNum">     856 </span><span class="lineNoCov">          0 :     varray[0] = GCD_Glue;       varray[1] = NULL;</span>
+<span class="lineNum">     857 </span><span class="lineNoCov">          0 :     varray[2] = &amp;boxes[4];      varray[3] = NULL;</span>
+<span class="lineNum">     858 </span><span class="lineNoCov">          0 :     varray[4] = &amp;gcd[efdo_pos]; varray[5] = NULL;</span>
+<span class="lineNum">     859 </span><span class="lineNoCov">          0 :     varray[6] = GCD_Glue;       varray[7] = NULL;</span>
+<span class="lineNum">     860 </span><span class="lineNoCov">          0 :     varray[8] = &amp;gcd[sel_pos];  varray[9] = NULL;</span>
+<span class="lineNum">     861 </span><span class="lineNoCov">          0 :     varray[10] = &amp;boxes[5];     varray[11]= NULL;</span>
+<span class="lineNum">     862 </span><span class="lineNoCov">          0 :     varray[12] = NULL;</span>
+<span class="lineNum">     863 </span>            : 
+<span class="lineNum">     864 </span><span class="lineNoCov">          0 :     boxes[0].gd.pos.x = boxes[0].gd.pos.y = 2;</span>
+<span class="lineNum">     865 </span><span class="lineNoCov">          0 :     boxes[0].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     866 </span><span class="lineNoCov">          0 :     boxes[0].gd.u.boxelements = varray;</span>
+<span class="lineNum">     867 </span><span class="lineNoCov">          0 :     boxes[0].gd.cid = CID_TopBox;</span>
+<span class="lineNum">     868 </span><span class="lineNoCov">          0 :     boxes[0].creator = GHVGroupCreate;</span>
+<span class="lineNum">     869 </span>            : 
+<span class="lineNum">     870 </span><span class="lineNoCov">          0 :     GGadgetsCreate(gw,boxes);</span>
+<span class="lineNum">     871 </span>            : 
+<span class="lineNum">     872 </span><span class="lineNoCov">          0 :     GHVBoxSetExpandableRow(boxes[0].ret,0);</span>
+<span class="lineNum">     873 </span><span class="lineNoCov">          0 :     GHVBoxSetPadding(boxes[2].ret,6,3);</span>
+<span class="lineNum">     874 </span><span class="lineNoCov">          0 :     GHVBoxSetExpandableCol(boxes[2].ret,gb_expandglue);</span>
+<span class="lineNum">     875 </span><span class="lineNoCov">          0 :     GHVBoxSetExpandableCol(boxes[3].ret,gb_expandglue);</span>
+<span class="lineNum">     876 </span><span class="lineNoCov">          0 :     GHVBoxSetExpandableCol(boxes[5].ret,gb_expandglue);</span>
+<span class="lineNum">     877 </span><span class="lineNoCov">          0 :     GGadgetResize(boxes[0].ret,pos.width,pos.height);</span>
+<span class="lineNum">     878 </span>            : 
+<span class="lineNum">     879 </span><span class="lineNoCov">          0 :     GGadgetSetTitle8(GWidgetGetControl(gw,CID_Find),_(&quot;Find&quot;));</span>
+<span class="lineNum">     880 </span><span class="lineNoCov">          0 :     sv-&gt;showsfindnext = false;</span>
+<span class="lineNum">     881 </span><span class="lineNoCov">          0 :     GDrawRequestTimer(gw,1000,1000,NULL);</span>
+<span class="lineNum">     882 </span><span class="lineNoCov">          0 :     sv-&gt;button_height = GDrawPointsToPixels(gw,100);</span>
+<span class="lineNum">     883 </span><span class="lineNoCov">          0 :     GDrawResize(gw,650,400);            /* Force a resize event */</span>
+<span class="lineNum">     884 </span>            : 
+<span class="lineNum">     885 </span><span class="lineNoCov">          0 :     GDrawSetVisible(sv-&gt;gw,true);</span>
+<span class="lineNum">     886 </span><span class="lineNoCov">          0 : return( sv );</span>
+<a name="887"><span class="lineNum">     887 </span>            : }</a>
+<span class="lineNum">     888 </span>            : 
+<span class="lineNum">     889 </span><span class="lineNoCov">          0 : void SVDestroy(SearchView *sv) {</span>
+<span class="lineNum">     890 </span>            : 
+<span class="lineNum">     891 </span><span class="lineNoCov">          0 :     if ( sv==NULL )</span>
+<span class="lineNum">     892 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     893 </span>            : 
+<span class="lineNum">     894 </span><span class="lineNoCov">          0 :     SDDestroy(&amp;sv-&gt;sd);</span>
+<span class="lineNum">     895 </span><span class="lineNoCov">          0 :     free(sv);</span>
+<a name="896"><span class="lineNum">     896 </span>            : }</a>
+<span class="lineNum">     897 </span>            : 
+<span class="lineNum">     898 </span><span class="lineNoCov">          0 : void FVReplaceOutlineWithReference( FontView *fv, double fudge ) {</span>
+<span class="lineNum">     899 </span>            : 
+<span class="lineNum">     900 </span><span class="lineNoCov">          0 :     if ( fv-&gt;v!=NULL )</span>
+<span class="lineNum">     901 </span><span class="lineNoCov">          0 :         GDrawSetCursor(fv-&gt;v,ct_watch);</span>
+<span class="lineNum">     902 </span>            : 
+<span class="lineNum">     903 </span><span class="lineNoCov">          0 :     FVBReplaceOutlineWithReference((FontViewBase *) fv, fudge);</span>
+<span class="lineNum">     904 </span>            : 
+<span class="lineNum">     905 </span><span class="lineNoCov">          0 :     if ( fv-&gt;v!=NULL ) {</span>
+<span class="lineNum">     906 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(fv-&gt;v,NULL,false);</span>
+<span class="lineNum">     907 </span><span class="lineNoCov">          0 :         GDrawSetCursor(fv-&gt;v,ct_pointer);</span>
+<span class="lineNum">     908 </span>            :     }
+<span class="lineNum">     909 </span><span class="lineNoCov">          0 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

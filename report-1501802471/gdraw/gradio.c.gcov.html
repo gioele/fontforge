@@ -1,0 +1,947 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - gdraw/gradio.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gdraw</a> - gradio.c<span style="font-size: 80%;"> (source / <a href="gradio.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">447</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">25</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &quot;gdraw.h&quot;
+<span class="lineNum">      28 </span>            : #include &quot;gresource.h&quot;
+<span class="lineNum">      29 </span>            : #include &quot;ggadgetP.h&quot;
+<span class="lineNum">      30 </span>            : #include &quot;ustring.h&quot;
+<span class="lineNum">      31 </span>            : #include &quot;gkeysym.h&quot;
+<span class="lineNum">      32 </span>            : #include &lt;math.h&gt;
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span>            : static GBox radio_box = GBOX_EMPTY; /* Don't initialize here */
+<span class="lineNum">      35 </span>            : static GBox radio_on_box = GBOX_EMPTY; /* Don't initialize here */
+<span class="lineNum">      36 </span>            : static GBox radio_off_box = GBOX_EMPTY; /* Don't initialize here */
+<span class="lineNum">      37 </span>            : static GBox checkbox_box = GBOX_EMPTY; /* Don't initialize here */
+<span class="lineNum">      38 </span>            : static GBox checkbox_on_box = GBOX_EMPTY; /* Don't initialize here */
+<span class="lineNum">      39 </span>            : static GBox checkbox_off_box = GBOX_EMPTY; /* Don't initialize here */
+<span class="lineNum">      40 </span>            : static GBox visibility_on_box = GBOX_EMPTY; /* Don't initialize here */
+<span class="lineNum">      41 </span>            : static GBox visibility_off_box = GBOX_EMPTY; /* Don't initialize here */
+<span class="lineNum">      42 </span>            : static GResImage *radon, *radoff, *checkon, *checkoff, *raddison, *raddisoff, *checkdison, *checkdisoff;
+<span class="lineNum">      43 </span>            : static GResImage *visibilityon, *visibilityoff, *visibilitydison, *visibilitydisoff;
+<span class="lineNum">      44 </span>            : static FontInstance *checkbox_font = NULL;
+<span class="lineNum">      45 </span>            : static int gradio_inited = false;
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span>            : static GResInfo gradio_ri, gradioon_ri, gradiooff_ri;
+<span class="lineNum">      48 </span>            : static GResInfo gcheckbox_ri, gcheckboxon_ri, gcheckboxoff_ri;
+<span class="lineNum">      49 </span>            : static GTextInfo radio_lab[] = {
+<span class="lineNum">      50 </span>            :     { (unichar_t *) &quot;Disabled On&quot;, NULL, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">      51 </span>            :     { (unichar_t *) &quot;Disabled Off&quot;, NULL, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">      52 </span>            :     { (unichar_t *) &quot;Enabled&quot; , NULL, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">      53 </span>            :     { (unichar_t *) &quot;Enabled 2&quot; , NULL, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' }
+<span class="lineNum">      54 </span>            : };
+<span class="lineNum">      55 </span>            : static GGadgetCreateData radio_gcd[] = {
+<span class="lineNum">      56 </span>            :     { GRadioCreate, { GRECT_EMPTY, NULL, 0, 0, 0, 0, 0, &amp;radio_lab[0], { NULL }, gg_visible, NULL, NULL }, NULL, NULL },
+<span class="lineNum">      57 </span>            :     { GRadioCreate, { GRECT_EMPTY, NULL, 0, 0, 0, 0, 0, &amp;radio_lab[1], { NULL }, gg_visible|gg_cb_on, NULL, NULL }, NULL, NULL },
+<span class="lineNum">      58 </span>            :     { GRadioCreate, { GRECT_EMPTY, NULL, 0, 0, 0, 0, 0, &amp;radio_lab[2], { NULL }, gg_visible|gg_enabled, NULL, NULL }, NULL, NULL },
+<span class="lineNum">      59 </span>            :     { GRadioCreate, { GRECT_EMPTY, NULL, 0, 0, 0, 0, 0, &amp;radio_lab[3], { NULL }, gg_visible|gg_enabled|gg_cb_on, NULL, NULL }, NULL, NULL }
+<span class="lineNum">      60 </span>            : };
+<span class="lineNum">      61 </span>            : static GGadgetCreateData *rarray[] = { GCD_Glue, &amp;radio_gcd[0], GCD_Glue, &amp;radio_gcd[1], GCD_Glue, &amp;radio_gcd[2], GCD_Glue, &amp;radio_gcd[3], GCD_Glue, NULL, NULL };
+<span class="lineNum">      62 </span>            : static GGadgetCreateData radiobox =
+<span class="lineNum">      63 </span>            :     { GHVGroupCreate, { { 2, 2, 0, 0 }, NULL, 0, 0, 0, 0, 0, NULL, { (GTextInfo *) rarray }, gg_visible|gg_enabled, NULL, NULL }, NULL, NULL };
+<span class="lineNum">      64 </span>            : static GResInfo gradio_ri = {
+<span class="lineNum">      65 </span>            :     &amp;gradioon_ri, &amp;ggadget_ri,&amp;gradioon_ri, &amp;gradiooff_ri,
+<span class="lineNum">      66 </span>            :     &amp;radio_box,
+<span class="lineNum">      67 </span>            :     &amp;checkbox_font,
+<span class="lineNum">      68 </span>            :     &amp;radiobox,
+<span class="lineNum">      69 </span>            :     NULL,
+<span class="lineNum">      70 </span>            :     N_(&quot;Radio Button&quot;),
+<span class="lineNum">      71 </span>            :     N_(&quot;Radio Button&quot;),
+<span class="lineNum">      72 </span>            :     &quot;GRadio&quot;,
+<span class="lineNum">      73 </span>            :     &quot;Gdraw&quot;,
+<span class="lineNum">      74 </span>            :     false,
+<span class="lineNum">      75 </span>            :     omf_border_type|omf_padding,
+<span class="lineNum">      76 </span>            :     NULL,
+<span class="lineNum">      77 </span>            :     GBOX_EMPTY,
+<span class="lineNum">      78 </span>            :     NULL,
+<span class="lineNum">      79 </span>            :     NULL,
+<span class="lineNum">      80 </span>            :     NULL
+<span class="lineNum">      81 </span>            : };
+<span class="lineNum">      82 </span>            : static struct resed gradioon_re[] = {
+<span class="lineNum">      83 </span>            :     { N_(&quot;Image&quot;), &quot;Image&quot;, rt_image, &amp;radon, N_(&quot;Image used instead of the Radio On Mark&quot;), NULL, { 0 }, 0, 0 },
+<span class="lineNum">      84 </span>            :     { N_(&quot;Disabled Image&quot;), &quot;DisabledImage&quot;, rt_image, &amp;raddison, N_(&quot;Image used instead of the Radio On Mark (when the radio is disabled)&quot;), NULL, { 0 }, 0, 0 },
+<span class="lineNum">      85 </span>            :     RESED_EMPTY
+<span class="lineNum">      86 </span>            : };
+<span class="lineNum">      87 </span>            : static GResInfo gradioon_ri = {
+<span class="lineNum">      88 </span>            :     &amp;gradiooff_ri, &amp;ggadget_ri,&amp;gradiooff_ri, &amp;gradio_ri,
+<span class="lineNum">      89 </span>            :     &amp;radio_on_box,
+<span class="lineNum">      90 </span>            :     NULL,
+<span class="lineNum">      91 </span>            :     &amp;radiobox,
+<span class="lineNum">      92 </span>            :     gradioon_re,
+<span class="lineNum">      93 </span>            :     N_(&quot;Radio On Mark&quot;),
+<span class="lineNum">      94 </span>            :     N_(&quot;The mark showing a radio button is on (depressed, selected)&quot;),
+<span class="lineNum">      95 </span>            :     &quot;GRadioOn&quot;,
+<span class="lineNum">      96 </span>            :     &quot;Gdraw&quot;,
+<span class="lineNum">      97 </span>            :     false,
+<span class="lineNum">      98 </span>            :     omf_border_type|omf_border_shape|box_do_depressed_background,
+<span class="lineNum">      99 </span>            :     NULL,
+<span class="lineNum">     100 </span>            :     GBOX_EMPTY,
+<span class="lineNum">     101 </span>            :     NULL,
+<span class="lineNum">     102 </span>            :     NULL,
+<span class="lineNum">     103 </span>            :     NULL
+<span class="lineNum">     104 </span>            : };
+<span class="lineNum">     105 </span>            : static struct resed gradiooff_re[] = {
+<span class="lineNum">     106 </span>            :     { N_(&quot;Image&quot;), &quot;Image&quot;, rt_image, &amp;radoff, N_(&quot;Image used instead of the Radio Off Mark&quot;), NULL, { 0 }, 0, 0 },
+<span class="lineNum">     107 </span>            :     { N_(&quot;Disabled Image&quot;), &quot;DisabledImage&quot;, rt_image, &amp;raddisoff, N_(&quot;Image used instead of the Radio Off Mark (when the radio is disabled)&quot;), NULL, { 0 }, 0, 0 },
+<span class="lineNum">     108 </span>            :     RESED_EMPTY
+<span class="lineNum">     109 </span>            : };
+<span class="lineNum">     110 </span>            : static GResInfo gradiooff_ri = {
+<span class="lineNum">     111 </span>            :     &amp;gcheckbox_ri, &amp;ggadget_ri,&amp;gradioon_ri, &amp;gradio_ri,
+<span class="lineNum">     112 </span>            :     &amp;radio_off_box,
+<span class="lineNum">     113 </span>            :     NULL,
+<span class="lineNum">     114 </span>            :     &amp;radiobox,
+<span class="lineNum">     115 </span>            :     gradiooff_re,
+<span class="lineNum">     116 </span>            :     N_(&quot;Radio Off Mark&quot;),
+<span class="lineNum">     117 </span>            :     N_(&quot;The mark showing a radio button is off (up, not selected)&quot;),
+<span class="lineNum">     118 </span>            :     &quot;GRadioOff&quot;,
+<span class="lineNum">     119 </span>            :     &quot;Gdraw&quot;,
+<span class="lineNum">     120 </span>            :     false,
+<span class="lineNum">     121 </span>            :     omf_border_type|omf_border_shape|box_do_depressed_background,
+<span class="lineNum">     122 </span>            :     NULL,
+<span class="lineNum">     123 </span>            :     GBOX_EMPTY,
+<span class="lineNum">     124 </span>            :     NULL,
+<span class="lineNum">     125 </span>            :     NULL,
+<span class="lineNum">     126 </span>            :     NULL
+<span class="lineNum">     127 </span>            : };
+<span class="lineNum">     128 </span>            : static GTextInfo checkbox_lab[] = {
+<span class="lineNum">     129 </span>            :     { (unichar_t *) &quot;Disabled On&quot;, NULL, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     130 </span>            :     { (unichar_t *) &quot;Disabled Off&quot;, NULL, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">     131 </span>            :     { (unichar_t *) &quot;Enabled&quot; , NULL, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' }
+<span class="lineNum">     132 </span>            : };
+<span class="lineNum">     133 </span>            : static GGadgetCreateData checkbox_gcd[] = {
+<span class="lineNum">     134 </span>            :     { GCheckBoxCreate, { GRECT_EMPTY, NULL, 0, 0, 0, 0, 0, &amp;checkbox_lab[0], { NULL }, gg_visible, NULL, NULL }, NULL, NULL },
+<span class="lineNum">     135 </span>            :     { GCheckBoxCreate, { GRECT_EMPTY, NULL, 0, 0, 0, 0, 0, &amp;checkbox_lab[1], { NULL }, gg_visible|gg_cb_on, NULL, NULL }, NULL, NULL },
+<span class="lineNum">     136 </span>            :     { GCheckBoxCreate, { GRECT_EMPTY, NULL, 0, 0, 0, 0, 0, &amp;checkbox_lab[1], { NULL }, gg_visible|gg_enabled, NULL, NULL }, NULL, NULL }
+<span class="lineNum">     137 </span>            : };
+<span class="lineNum">     138 </span>            : static GGadgetCreateData *carray[] = { GCD_Glue, &amp;checkbox_gcd[0], GCD_Glue, &amp;checkbox_gcd[1], GCD_Glue, &amp;checkbox_gcd[2], GCD_Glue, NULL, NULL };
+<span class="lineNum">     139 </span>            : static GGadgetCreateData checkboxbox =
+<span class="lineNum">     140 </span>            :     { GHVGroupCreate, { { 2, 2, 0, 0 }, NULL, 0, 0, 0, 0, 0, NULL, { (GTextInfo *) carray }, gg_visible|gg_enabled, NULL, NULL }, NULL, NULL };
+<span class="lineNum">     141 </span>            : static GResInfo gcheckbox_ri = {
+<span class="lineNum">     142 </span>            :     &amp;gcheckboxon_ri, &amp;ggadget_ri,&amp;gcheckboxon_ri, &amp;gcheckboxoff_ri,
+<span class="lineNum">     143 </span>            :     &amp;checkbox_box,
+<span class="lineNum">     144 </span>            :     &amp;checkbox_font,
+<span class="lineNum">     145 </span>            :     &amp;checkboxbox,
+<span class="lineNum">     146 </span>            :     NULL,
+<span class="lineNum">     147 </span>            :     N_(&quot;Check Box&quot;),
+<span class="lineNum">     148 </span>            :     N_(&quot;Check Box&quot;),
+<span class="lineNum">     149 </span>            :     &quot;GCheckBox&quot;,
+<span class="lineNum">     150 </span>            :     &quot;Gdraw&quot;,
+<span class="lineNum">     151 </span>            :     false,
+<span class="lineNum">     152 </span>            :     omf_border_type|omf_padding,
+<span class="lineNum">     153 </span>            :     NULL,
+<span class="lineNum">     154 </span>            :     GBOX_EMPTY,
+<span class="lineNum">     155 </span>            :     NULL,
+<span class="lineNum">     156 </span>            :     NULL,
+<span class="lineNum">     157 </span>            :     NULL
+<span class="lineNum">     158 </span>            : };
+<span class="lineNum">     159 </span>            : static struct resed gcheckboxon_re[] = {
+<span class="lineNum">     160 </span>            :     {N_(&quot;Image&quot;), &quot;Image&quot;, rt_image, &amp;checkon, N_(&quot;Image used instead of the Radio On Mark&quot;), NULL, { 0 }, 0, 0 },
+<span class="lineNum">     161 </span>            :     {N_(&quot;Disabled Image&quot;), &quot;DisabledImage&quot;, rt_image, &amp;checkdison, N_(&quot;Image used instead of the Radio On Mark (when the radio is disabled)&quot;), NULL, { 0 }, 0, 0 },
+<span class="lineNum">     162 </span>            :     RESED_EMPTY
+<span class="lineNum">     163 </span>            : };
+<span class="lineNum">     164 </span>            : static GResInfo gcheckboxon_ri = {
+<span class="lineNum">     165 </span>            :     &amp;gcheckboxoff_ri, &amp;ggadget_ri,&amp;gcheckboxoff_ri, &amp;gcheckbox_ri,
+<span class="lineNum">     166 </span>            :     &amp;checkbox_on_box,
+<span class="lineNum">     167 </span>            :     NULL,
+<span class="lineNum">     168 </span>            :     &amp;checkboxbox,
+<span class="lineNum">     169 </span>            :     gcheckboxon_re,
+<span class="lineNum">     170 </span>            :     N_(&quot;Check Box On Mark&quot;),
+<span class="lineNum">     171 </span>            :     N_(&quot;The mark showing a checkbox is on (depressed, selected)&quot;),
+<span class="lineNum">     172 </span>            :     &quot;GCheckBoxOn&quot;,
+<span class="lineNum">     173 </span>            :     &quot;Gdraw&quot;,
+<span class="lineNum">     174 </span>            :     false,
+<span class="lineNum">     175 </span>            :     omf_border_type|omf_border_shape|box_do_depressed_background,
+<span class="lineNum">     176 </span>            :     NULL,
+<span class="lineNum">     177 </span>            :     GBOX_EMPTY,
+<span class="lineNum">     178 </span>            :     NULL,
+<span class="lineNum">     179 </span>            :     NULL,
+<span class="lineNum">     180 </span>            :     NULL
+<span class="lineNum">     181 </span>            : 
+<span class="lineNum">     182 </span>            : };
+<span class="lineNum">     183 </span>            : static struct resed gcheckboxoff_re[] = {
+<span class="lineNum">     184 </span>            :     {N_(&quot;Image&quot;), &quot;Image&quot;, rt_image, &amp;checkoff, N_(&quot;Image used instead of the Check Box Off Mark&quot;), NULL, { 0 }, 0, 0 },
+<span class="lineNum">     185 </span>            :     {N_(&quot;Disabled Image&quot;), &quot;DisabledImage&quot;, rt_image, &amp;checkdisoff, N_(&quot;Image used instead of the Check Box Off Mark (when the radio is disabled)&quot;), NULL, { 0 }, 0, 0 },
+<span class="lineNum">     186 </span>            :     RESED_EMPTY
+<span class="lineNum">     187 </span>            : };
+<span class="lineNum">     188 </span>            : static GResInfo gcheckboxoff_ri = {
+<span class="lineNum">     189 </span>            :     NULL, &amp;ggadget_ri,&amp;gcheckboxon_ri, &amp;gcheckbox_ri,
+<span class="lineNum">     190 </span>            :     &amp;checkbox_off_box,
+<span class="lineNum">     191 </span>            :     NULL,
+<span class="lineNum">     192 </span>            :     &amp;checkboxbox,
+<span class="lineNum">     193 </span>            :     gcheckboxoff_re,
+<span class="lineNum">     194 </span>            :     N_(&quot;Check Box Off Mark&quot;),
+<span class="lineNum">     195 </span>            :     N_(&quot;The mark showing a checkbox is off (up, not selected)&quot;),
+<span class="lineNum">     196 </span>            :     &quot;GCheckBoxOff&quot;,
+<span class="lineNum">     197 </span>            :     &quot;Gdraw&quot;,
+<span class="lineNum">     198 </span>            :     false,
+<span class="lineNum">     199 </span>            :     omf_border_type|omf_border_shape|box_do_depressed_background,
+<span class="lineNum">     200 </span>            :     NULL,
+<span class="lineNum">     201 </span>            :     GBOX_EMPTY,
+<span class="lineNum">     202 </span>            :     NULL,
+<span class="lineNum">     203 </span>            :     NULL,
+<span class="lineNum">     204 </span>            :     NULL
+<a name="205"><span class="lineNum">     205 </span>            : };</a>
+<span class="lineNum">     206 </span>            : 
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 : static void GRadioChanged(GRadio *gr) {</span>
+<span class="lineNum">     208 </span>            :     GEvent e;
+<span class="lineNum">     209 </span>            : 
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :     if ( gr-&gt;isradio &amp;&amp; gr-&gt;ison )</span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 : return;         /* Do Nothing, it's already on */</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :     else if ( gr-&gt;isradio ) {</span>
+<span class="lineNum">     213 </span>            :         GRadio *other;
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :         for ( other=gr-&gt;post; other!=gr; other = other-&gt;post ) {</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :             if ( other-&gt;ison ) {</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :                 other-&gt;ison = false;</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :                 _ggadget_redraw((GGadget *) other);</span>
+<span class="lineNum">     218 </span>            :             }
+<span class="lineNum">     219 </span>            :         }
+<span class="lineNum">     220 </span>            :     } else {
+<span class="lineNum">     221 </span>            :         /* Checkboxes just default down */
+<span class="lineNum">     222 </span>            :         ;
+<span class="lineNum">     223 </span>            :     }
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :     gr-&gt;ison = !gr-&gt;ison;</span>
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 :     e.type = et_controlevent;</span>
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :     e.w = gr-&gt;g.base;</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :     e.u.control.subtype = et_radiochanged;</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :     e.u.control.g = &amp;gr-&gt;g;</span>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :     if ( gr-&gt;g.handle_controlevent != NULL )</span>
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :         (gr-&gt;g.handle_controlevent)(&amp;gr-&gt;g,&amp;e);</span>
+<span class="lineNum">     231 </span>            :     else
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :         GDrawPostEvent(&amp;e);</span>
+<span class="lineNum">     233 </span>            : }
+<a name="234"><span class="lineNum">     234 </span>            : </a>
+<span class="lineNum">     235 </span>            : /* Return the number of lines in the label of a radio button. */
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 : static int gradio_linecount(GRadio *gr) {</span>
+<span class="lineNum">     237 </span>            :     int lcnt;
+<span class="lineNum">     238 </span>            :     unichar_t *pt;
+<span class="lineNum">     239 </span>            : 
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :     lcnt = 0;</span>
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :     if ( gr-&gt;label!=NULL ) {</span>
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :         for ( pt = gr-&gt;label; ; ) {</span>
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :             for ( ; *pt!='\0' &amp;&amp; *pt!='\n'; ++pt );</span>
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :             ++lcnt;</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :             if ( *pt=='\0' )</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :             ++pt;</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     249 </span>            :     }
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 : return( lcnt );</span>
+<span class="lineNum">     251 </span>            : }
+<a name="252"><span class="lineNum">     252 </span>            : </a>
+<span class="lineNum">     253 </span>            : /* Called on expose events, this renders the button. */
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 : static int gradio_expose(GWindow pixmap, GGadget *g, GEvent *event) {</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :     GRadio *gr = (GRadio *) g;</span>
+<span class="lineNum">     256 </span>            :     int x;
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :     GImage *img = gr-&gt;image; /* the optional image tied to the label */</span>
+<span class="lineNum">     258 </span>            :     GResImage *mark;
+<span class="lineNum">     259 </span>            :     GRect old1, old2, old3;
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :     int yoff = (g-&gt;inner.height-(gr-&gt;fh))/2;</span>
+<span class="lineNum">     261 </span>            : 
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :     if ( g-&gt;state == gs_invisible )</span>
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     264 </span>            : 
+<span class="lineNum">     265 </span>            :      /* First blank out the button area. */
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :     GDrawPushClip(pixmap,&amp;g-&gt;r,&amp;old1);</span>
+<span class="lineNum">     267 </span>            : 
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :     GBoxDrawBackground(pixmap,&amp;g-&gt;r,g-&gt;box,</span>
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :             g-&gt;state==gs_enabled? gs_pressedactive: g-&gt;state,false);</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :     GBoxDrawBorder(pixmap,&amp;g-&gt;r,g-&gt;box,g-&gt;state,false);</span>
+<span class="lineNum">     271 </span>            : 
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :     GDrawPushClip(pixmap,&amp;gr-&gt;onoffrect,&amp;old2);</span>
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :     GBoxDrawBackground(pixmap,&amp;gr-&gt;onoffrect,gr-&gt;ison?gr-&gt;onbox:gr-&gt;offbox,</span>
+<span class="lineNum">     274 </span>            :             gs_pressedactive,false);
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :     if (gr-&gt;ison &amp;&amp; gr-&gt;onbox-&gt;border_type!=bt_none)</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :         GBoxDrawBorder(pixmap,&amp;gr-&gt;onoffrect,gr-&gt;onbox, gs_pressedactive,false);</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :     else if (!gr-&gt;ison &amp;&amp; gr-&gt;offbox-&gt;border_type!=bt_none)</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :         GBoxDrawBorder(pixmap,&amp;gr-&gt;onoffrect,gr-&gt;offbox,gs_pressedactive,false);</span>
+<span class="lineNum">     279 </span>            : 
+<span class="lineNum">     280 </span>            :      /* Next draw either the right image or draw in an on or off indicator. */
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :     mark = NULL;</span>
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :     if ( g-&gt;state == gs_disabled )</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :         mark = gr-&gt;ison ? gr-&gt;ondis : gr-&gt;offdis; /* note: ondis or offdis may be NULL! */</span>
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :     if ( mark==NULL || mark-&gt;image==NULL )</span>
+<span class="lineNum">     285 </span><span class="lineNoCov">          0 :         mark = gr-&gt;ison ? gr-&gt;on : gr-&gt;off; /* note: on or off may be NULL! */</span>
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :     if ( mark!=NULL &amp;&amp; mark-&gt;image==NULL ) /* when there's a reference to a special image, but no actual image */</span>
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :         mark = NULL;</span>
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :     if ( mark!=NULL ) {</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :         GDrawPushClip(pixmap,&amp;gr-&gt;onoffinner,&amp;old3);</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :         GDrawDrawScaledImage(pixmap,mark-&gt;image,</span>
+<span class="lineNum">     291 </span>            :                 gr-&gt;onoffinner.x,gr-&gt;onoffinner.y);
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :         GDrawPopClip(pixmap,&amp;old3);</span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :     } else if ( gr-&gt;ison &amp;&amp; gr-&gt;onbox == &amp;checkbox_on_box ) {</span>
+<span class="lineNum">     294 </span>            :          /* for radio buttons where the on is a checkbox style, draw an X */
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :         Color fg = g-&gt;state==gs_disabled?g-&gt;box-&gt;disabled_foreground:</span>
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :                         g-&gt;box-&gt;main_foreground==COLOR_DEFAULT?GDrawGetDefaultForeground(GDrawGetDisplayOfWindow(pixmap)):</span>
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 :                         g-&gt;box-&gt;main_foreground;</span>
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :         int bp = GDrawPointsToPixels(pixmap,gr-&gt;onbox-&gt;border_width);</span>
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :         GDrawDrawLine(pixmap, gr-&gt;onoffrect.x+bp,gr-&gt;onoffrect.y+bp,</span>
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :                                 gr-&gt;onoffrect.x+gr-&gt;onoffrect.width-1-bp,gr-&gt;onoffrect.y+gr-&gt;onoffrect.height-1-bp,</span>
+<span class="lineNum">     301 </span>            :                                 fg);
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 :         GDrawDrawLine(pixmap, gr-&gt;onoffrect.x+gr-&gt;onoffrect.width-1-bp,gr-&gt;onoffrect.y+bp,</span>
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :                                 gr-&gt;onoffrect.x+bp,gr-&gt;onoffrect.y+gr-&gt;onoffrect.height-1-bp,</span>
+<span class="lineNum">     304 </span>            :                                 fg);
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 :     } else if ( gr-&gt;ison &amp;&amp; gr-&gt;onbox == &amp;visibility_on_box ) {</span>
+<span class="lineNum">     306 </span>            :          /* draw open white of eye */
+<span class="lineNum">     307 </span>            :         GPoint pts[15];
+<span class="lineNum">     308 </span>            :         Color fg;
+<span class="lineNum">     309 </span>            :         double angle;
+<span class="lineNum">     310 </span>            :         int c,i;
+<span class="lineNum">     311 </span><span class="lineNoCov">          0 :         int bp = gr-&gt;onbox-&gt;border_type==bt_none ? 0 : GDrawPointsToPixels(pixmap,gr-&gt;onbox-&gt;border_width);</span>
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 :         int x=gr-&gt;onoffrect.x+bp;</span>
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :         int y=gr-&gt;onoffrect.y+bp;</span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :         int w=gr-&gt;onoffrect.width -1-2*bp;</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :         int h=gr-&gt;onoffrect.height-1-2*bp;</span>
+<span class="lineNum">     316 </span>            :         GRect rect;
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :         for (c=0, i=0; c&lt;7; c++) {</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :             angle=(30+c/6.*120)*M_PI/180;</span>
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :             pts[i].x=.5*w*cos(angle)+x+w/2;</span>
+<span class="lineNum">     320 </span><span class="lineNoCov">          0 :             pts[i].y=.5*h*sin(angle)+y+h/4;</span>
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 :             ++i;</span>
+<span class="lineNum">     322 </span>            :         }
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :         for (c=1; c&lt;6; c++) {</span>
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :             angle=(180+30+c/6.*120)*M_PI/180;</span>
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :             pts[i].x=.5*w*cos(angle)+x+w/2;</span>
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :             pts[i].y=.5*h*sin(angle)+y+h*3/4;</span>
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :             ++i;</span>
+<span class="lineNum">     328 </span>            :         }
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :         pts[i].x=pts[0].x;</span>
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 :         pts[i].y=pts[0].y;</span>
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :         ++i;</span>
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 :         fg=0x00ffffff; /* white */</span>
+<span class="lineNum">     333 </span><span class="lineNoCov">          0 :         GDrawFillPoly(pixmap, pts, i, fg);</span>
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :         fg = g-&gt;state==gs_disabled?g-&gt;box-&gt;disabled_foreground:</span>
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 :                         g-&gt;box-&gt;main_foreground==COLOR_DEFAULT?GDrawGetDefaultForeground(GDrawGetDisplayOfWindow(pixmap)):</span>
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :                         g-&gt;box-&gt;main_foreground;</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :         GDrawDrawPoly(pixmap, pts, i, fg);</span>
+<span class="lineNum">     338 </span>            : 
+<span class="lineNum">     339 </span>            :          /* draw pupil */
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :         rect.x=gr-&gt;onoffrect.x+bp+w*.3;</span>
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :         rect.y=gr-&gt;onoffrect.y+bp+h*.3;</span>
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :         rect.width =.4*w;</span>
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :         rect.height=.4*h;</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :         fg=0; /* black */</span>
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 :         GDrawFillElipse(pixmap, &amp;rect, fg);</span>
+<span class="lineNum">     346 </span>            : 
+<span class="lineNum">     347 </span><span class="lineNoCov">          0 :     } else if ( (!gr-&gt;ison) &amp;&amp; gr-&gt;onbox == &amp;visibility_on_box ) {</span>
+<span class="lineNum">     348 </span>            :          /* draw closed eye */
+<span class="lineNum">     349 </span>            :         GPoint pts[6];
+<span class="lineNum">     350 </span>            :         int c,i;
+<span class="lineNum">     351 </span>            :         double angle;
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :         int bp = gr-&gt;onbox-&gt;border_type==bt_none ? 0 : GDrawPointsToPixels(pixmap,gr-&gt;onbox-&gt;border_width);</span>
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 :         int x=gr-&gt;onoffrect.x+bp;</span>
+<span class="lineNum">     354 </span><span class="lineNoCov">          0 :         int y=gr-&gt;onoffrect.y+bp;</span>
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :         int w=gr-&gt;onoffrect.width -1-2*bp;</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :         int h=gr-&gt;onoffrect.height-1-2*bp;</span>
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :         Color fg = g-&gt;state==gs_disabled?g-&gt;box-&gt;disabled_foreground:</span>
+<span class="lineNum">     358 </span><span class="lineNoCov">          0 :                         g-&gt;box-&gt;main_foreground==COLOR_DEFAULT?GDrawGetDefaultForeground(GDrawGetDisplayOfWindow(pixmap)):</span>
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 :                         g-&gt;box-&gt;main_foreground;</span>
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :         for (c=0, i=0; c&lt;=6; c++) {</span>
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 :             angle=(30+c/6.*120)*M_PI/180;</span>
+<span class="lineNum">     362 </span><span class="lineNoCov">          0 :             pts[i].x=.5*w*cos(angle)+x+w/2;</span>
+<span class="lineNum">     363 </span><span class="lineNoCov">          0 :             pts[i].y=.5*h*sin(angle)+y+h/4;</span>
+<span class="lineNum">     364 </span>            : 
+<span class="lineNum">     365 </span>            :              /* draw lashes */
+<span class="lineNum">     366 </span><span class="lineNoCov">          0 :             if (i&gt;0 &amp;&amp; i&lt;5) GDrawDrawLine(pixmap, pts[i].x,pts[i].y, .75*w*cos(angle)+x+w/2, .75*h*sin(angle)+y+h/4, fg);</span>
+<span class="lineNum">     367 </span><span class="lineNoCov">          0 :             ++i;</span>
+<span class="lineNum">     368 </span>            :         }
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 :         GDrawDrawPoly(pixmap, pts, i, fg);</span>
+<span class="lineNum">     370 </span>            :     }
+<span class="lineNum">     371 </span>            : 
+<span class="lineNum">     372 </span><span class="lineNoCov">          0 :     GDrawPopClip(pixmap,&amp;old2);</span>
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 :     x = gr-&gt;onoffrect.x + gr-&gt;onoffrect.width + GDrawPointsToPixels(pixmap,4);</span>
+<span class="lineNum">     374 </span>            : 
+<span class="lineNum">     375 </span>            :      /* Finally write out the label if any. */
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 :     GDrawPushClip(pixmap,&amp;g-&gt;inner,&amp;old2);</span>
+<span class="lineNum">     377 </span><span class="lineNoCov">          0 :     if ( gr-&gt;font!=NULL )</span>
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 :         GDrawSetFont(pixmap,gr-&gt;font);</span>
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :     if ( gr-&gt;image_precedes &amp;&amp; img!=NULL ) {</span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :         GDrawDrawScaledImage(pixmap,img,x,g-&gt;inner.y);</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :         x += GImageGetScaledWidth(pixmap,img) + GDrawPointsToPixels(pixmap,_GGadget_TextImageSkip);</span>
+<span class="lineNum">     382 </span>            :     }
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :     if ( gr-&gt;label!=NULL ) {</span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :         Color fg = g-&gt;state==gs_disabled?g-&gt;box-&gt;disabled_foreground:</span>
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :                         g-&gt;box-&gt;main_foreground==COLOR_DEFAULT?GDrawGetDefaultForeground(GDrawGetDisplayOfWindow(pixmap)):</span>
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :                         g-&gt;box-&gt;main_foreground;</span>
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :         int lcnt = gradio_linecount(gr);</span>
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 :         if ( lcnt&gt;1 )</span>
+<span class="lineNum">     389 </span><span class="lineNoCov">          0 :             yoff = (g-&gt;inner.height-lcnt*gr-&gt;fh)/2;</span>
+<span class="lineNum">     390 </span><span class="lineNoCov">          0 :         _ggadget_underlineMnemonic(pixmap,x,g-&gt;inner.y + gr-&gt;as + yoff,gr-&gt;label,</span>
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 :                 g-&gt;mnemonic,fg,g-&gt;inner.y+g-&gt;inner.height);</span>
+<span class="lineNum">     392 </span><span class="lineNoCov">          0 :         x += GDrawDrawText(pixmap,x,g-&gt;inner.y + gr-&gt;as + yoff,gr-&gt;label,-1,fg);</span>
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 :         x += GDrawPointsToPixels(pixmap,_GGadget_TextImageSkip);</span>
+<span class="lineNum">     394 </span>            :     }
+<span class="lineNum">     395 </span><span class="lineNoCov">          0 :     if ( !gr-&gt;image_precedes &amp;&amp; img!=NULL )</span>
+<span class="lineNum">     396 </span><span class="lineNoCov">          0 :         GDrawDrawScaledImage(pixmap,img,x,g-&gt;inner.y);</span>
+<span class="lineNum">     397 </span>            : 
+<span class="lineNum">     398 </span><span class="lineNoCov">          0 :     GDrawPopClip(pixmap,&amp;old2);</span>
+<span class="lineNum">     399 </span><span class="lineNoCov">          0 :     GDrawPopClip(pixmap,&amp;old1);</span>
+<span class="lineNum">     400 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="401"><span class="lineNum">     401 </span>            : }</a>
+<span class="lineNum">     402 </span>            : 
+<span class="lineNum">     403 </span><span class="lineNoCov">          0 : static int gradio_mouse(GGadget *g, GEvent *event) {</span>
+<span class="lineNum">     404 </span><span class="lineNoCov">          0 :     GRadio *gr = (GRadio *) g;</span>
+<span class="lineNum">     405 </span><span class="lineNoCov">          0 :     int within = gr-&gt;within, pressed = gr-&gt;pressed;</span>
+<span class="lineNum">     406 </span>            : 
+<span class="lineNum">     407 </span><span class="lineNoCov">          0 :     if ( !g-&gt;takes_input || (g-&gt;state!=gs_enabled &amp;&amp; g-&gt;state!=gs_active &amp;&amp; g-&gt;state!=gs_focused ))</span>
+<span class="lineNum">     408 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     409 </span>            : 
+<span class="lineNum">     410 </span><span class="lineNoCov">          0 :     if ( event-&gt;type == et_crossing ) {</span>
+<span class="lineNum">     411 </span><span class="lineNoCov">          0 :         if ( gr-&gt;within &amp;&amp; !event-&gt;u.crossing.entered )</span>
+<span class="lineNum">     412 </span><span class="lineNoCov">          0 :             gr-&gt;within = false;</span>
+<span class="lineNum">     413 </span><span class="lineNoCov">          0 :     } else if ( gr-&gt;pressed &amp;&amp; event-&gt;type!=et_mousemove ) {</span>
+<span class="lineNum">     414 </span><span class="lineNoCov">          0 :         if ( event-&gt;type == et_mousedown ) /* They pressed 2 mouse buttons? */</span>
+<span class="lineNum">     415 </span><span class="lineNoCov">          0 :             gr-&gt;pressed = false;</span>
+<span class="lineNum">     416 </span><span class="lineNoCov">          0 :         else if ( GGadgetWithin(g,event-&gt;u.mouse.x,event-&gt;u.mouse.y)) {</span>
+<span class="lineNum">     417 </span><span class="lineNoCov">          0 :             gr-&gt;pressed = false;</span>
+<span class="lineNum">     418 </span><span class="lineNoCov">          0 :             if ( !gr-&gt;isradio || !gr-&gt;ison )</span>
+<span class="lineNum">     419 </span><span class="lineNoCov">          0 :                 GRadioChanged(gr);</span>
+<span class="lineNum">     420 </span><span class="lineNoCov">          0 :         } else if ( event-&gt;type == et_mouseup )</span>
+<span class="lineNum">     421 </span><span class="lineNoCov">          0 :             gr-&gt;pressed = false;</span>
+<span class="lineNum">     422 </span>            :         else
+<span class="lineNum">     423 </span><span class="lineNoCov">          0 :             gr-&gt;within = true;</span>
+<span class="lineNum">     424 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_mousedown &amp;&amp;</span>
+<span class="lineNum">     425 </span><span class="lineNoCov">          0 :             GGadgetWithin(g,event-&gt;u.mouse.x,event-&gt;u.mouse.y)) {</span>
+<span class="lineNum">     426 </span><span class="lineNoCov">          0 :         gr-&gt;pressed = true;</span>
+<span class="lineNum">     427 </span><span class="lineNoCov">          0 :         gr-&gt;within = true;</span>
+<span class="lineNum">     428 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_mousemove &amp;&amp;</span>
+<span class="lineNum">     429 </span><span class="lineNoCov">          0 :             GGadgetWithin(g,event-&gt;u.mouse.x,event-&gt;u.mouse.y)) {</span>
+<span class="lineNum">     430 </span><span class="lineNoCov">          0 :         gr-&gt;within = true;</span>
+<span class="lineNum">     431 </span><span class="lineNoCov">          0 :         if ( !gr-&gt;pressed &amp;&amp; g-&gt;popup_msg )</span>
+<span class="lineNum">     432 </span><span class="lineNoCov">          0 :             GGadgetPreparePopup(g-&gt;base,g-&gt;popup_msg);</span>
+<span class="lineNum">     433 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_mousemove &amp;&amp; gr-&gt;within ) {</span>
+<span class="lineNum">     434 </span><span class="lineNoCov">          0 :         gr-&gt;within = false;</span>
+<span class="lineNum">     435 </span>            :     } else {
+<span class="lineNum">     436 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     437 </span>            :     }
+<span class="lineNum">     438 </span><span class="lineNoCov">          0 :     if ( within != gr-&gt;within )</span>
+<span class="lineNum">     439 </span><span class="lineNoCov">          0 :         g-&gt;state = gr-&gt;within? gs_active : gs_enabled;</span>
+<span class="lineNum">     440 </span><span class="lineNoCov">          0 :     if ( within != gr-&gt;within || pressed != gr-&gt;pressed )</span>
+<span class="lineNum">     441 </span><span class="lineNoCov">          0 :         _ggadget_redraw(g);</span>
+<span class="lineNum">     442 </span><span class="lineNoCov">          0 : return( gr-&gt;within );</span>
+<a name="443"><span class="lineNum">     443 </span>            : }</a>
+<span class="lineNum">     444 </span>            : 
+<span class="lineNum">     445 </span><span class="lineNoCov">          0 : static int gradio_key(GGadget *g, GEvent *event) {</span>
+<span class="lineNum">     446 </span><span class="lineNoCov">          0 :     GRadio *gr = (GRadio *) g;</span>
+<span class="lineNum">     447 </span>            : 
+<span class="lineNum">     448 </span><span class="lineNoCov">          0 :     if ( !g-&gt;takes_input || (g-&gt;state!=gs_enabled &amp;&amp; g-&gt;state!=gs_active &amp;&amp; g-&gt;state!=gs_focused ))</span>
+<span class="lineNum">     449 </span><span class="lineNoCov">          0 : return(false);</span>
+<span class="lineNum">     450 </span>            : 
+<span class="lineNum">     451 </span><span class="lineNoCov">          0 :     if ( event-&gt;u.chr.keysym == GK_Return || event-&gt;u.chr.keysym == GK_Tab ||</span>
+<span class="lineNum">     452 </span><span class="lineNoCov">          0 :             event-&gt;u.chr.keysym == GK_BackTab || event-&gt;u.chr.keysym == GK_Escape )</span>
+<span class="lineNum">     453 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     454 </span>            : 
+<span class="lineNum">     455 </span><span class="lineNoCov">          0 :     if (event-&gt;u.chr.chars[0]==' ' ) {</span>
+<span class="lineNum">     456 </span><span class="lineNoCov">          0 :         GRadioChanged(gr);</span>
+<span class="lineNum">     457 </span><span class="lineNoCov">          0 :         _ggadget_redraw(g);</span>
+<span class="lineNum">     458 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     459 </span>            :     }
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 : return( false );</span>
+<a name="461"><span class="lineNum">     461 </span>            : }</a>
+<span class="lineNum">     462 </span>            : 
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 : static int gradio_focus(GGadget *g, GEvent *event) {</span>
+<span class="lineNum">     464 </span><span class="lineNoCov">          0 :     GRadio *gr = (GRadio *) g;</span>
+<span class="lineNum">     465 </span>            : 
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :     if ( !g-&gt;takes_input || (g-&gt;state!=gs_enabled &amp;&amp; g-&gt;state!=gs_active ))</span>
+<span class="lineNum">     467 </span><span class="lineNoCov">          0 : return(false);</span>
+<span class="lineNum">     468 </span>            : 
+<span class="lineNum">     469 </span><span class="lineNoCov">          0 :     if ( event-&gt;u.focus.mnemonic_focus==mf_shortcut ) {</span>
+<span class="lineNum">     470 </span><span class="lineNoCov">          0 :         GRadioChanged(gr);</span>
+<span class="lineNum">     471 </span>            :     }
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="473"><span class="lineNum">     473 </span>            : }</a>
+<span class="lineNum">     474 </span>            : 
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 : static void gradio_destroy(GGadget *g) {</span>
+<span class="lineNum">     476 </span><span class="lineNoCov">          0 :     GRadio *gr = (GRadio *) g;</span>
+<span class="lineNum">     477 </span>            : 
+<span class="lineNum">     478 </span><span class="lineNoCov">          0 :     if ( gr==NULL )</span>
+<span class="lineNum">     479 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     480 </span><span class="lineNoCov">          0 :     if ( gr-&gt;isradio &amp;&amp; gr-&gt;post!=gr ) {</span>
+<span class="lineNum">     481 </span>            :         GRadio *prev;
+<span class="lineNum">     482 </span><span class="lineNoCov">          0 :         for ( prev=gr-&gt;post; prev-&gt;post!=gr; prev = prev-&gt;post );</span>
+<span class="lineNum">     483 </span><span class="lineNoCov">          0 :         prev-&gt;post = gr-&gt;post;</span>
+<span class="lineNum">     484 </span>            :     }
+<span class="lineNum">     485 </span><span class="lineNoCov">          0 :     free(gr-&gt;label);</span>
+<span class="lineNum">     486 </span><span class="lineNoCov">          0 :     _ggadget_destroy(g);</span>
+<a name="487"><span class="lineNum">     487 </span>            : }</a>
+<span class="lineNum">     488 </span>            : 
+<span class="lineNum">     489 </span><span class="lineNoCov">          0 : static void GRadioSetTitle(GGadget *g,const unichar_t *tit) {</span>
+<span class="lineNum">     490 </span><span class="lineNoCov">          0 :     GRadio *b = (GRadio *) g;</span>
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 :     free(b-&gt;label);</span>
+<span class="lineNum">     492 </span><span class="lineNoCov">          0 :     b-&gt;label = u_copy(tit);</span>
+<a name="493"><span class="lineNum">     493 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     494 </span>            : 
+<span class="lineNum">     495 </span><span class="lineNoCov">          0 : static const unichar_t *_GRadioGetTitle(GGadget *g) {</span>
+<span class="lineNum">     496 </span><span class="lineNoCov">          0 :     GRadio *b = (GRadio *) g;</span>
+<span class="lineNum">     497 </span><span class="lineNoCov">          0 : return( b-&gt;label );</span>
+<a name="498"><span class="lineNum">     498 </span>            : }</a>
+<span class="lineNum">     499 </span>            : 
+<span class="lineNum">     500 </span><span class="lineNoCov">          0 : static void GRadioSetImageTitle(GGadget *g,GImage *img,const unichar_t *tit, int before) {</span>
+<span class="lineNum">     501 </span><span class="lineNoCov">          0 :     GRadio *b = (GRadio *) g;</span>
+<span class="lineNum">     502 </span><span class="lineNoCov">          0 :     if ( b-&gt;g.free_box )</span>
+<span class="lineNum">     503 </span><span class="lineNoCov">          0 :         free( b-&gt;g.box );</span>
+<span class="lineNum">     504 </span><span class="lineNoCov">          0 :     free(b-&gt;label);</span>
+<span class="lineNum">     505 </span><span class="lineNoCov">          0 :     b-&gt;label = u_copy(tit);</span>
+<span class="lineNum">     506 </span><span class="lineNoCov">          0 :     b-&gt;image = img;</span>
+<span class="lineNum">     507 </span><span class="lineNoCov">          0 :     b-&gt;image_precedes = before;</span>
+<span class="lineNum">     508 </span><span class="lineNoCov">          0 :     _ggadget_redraw(g);</span>
+<a name="509"><span class="lineNum">     509 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     510 </span>            : 
+<span class="lineNum">     511 </span><span class="lineNoCov">          0 : static GImage *GRadioGetImage(GGadget *g) {</span>
+<span class="lineNum">     512 </span><span class="lineNoCov">          0 :     GRadio *b = (GRadio *) g;</span>
+<span class="lineNum">     513 </span><span class="lineNoCov">          0 : return( b-&gt;image );</span>
+<a name="514"><span class="lineNum">     514 </span>            : }</a>
+<span class="lineNum">     515 </span>            : 
+<span class="lineNum">     516 </span><span class="lineNoCov">          0 : static void GRadioSetFont(GGadget *g,FontInstance *new) {</span>
+<span class="lineNum">     517 </span><span class="lineNoCov">          0 :     GRadio *b = (GRadio *) g;</span>
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 :     b-&gt;font = new;</span>
+<a name="519"><span class="lineNum">     519 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     520 </span>            : 
+<span class="lineNum">     521 </span><span class="lineNoCov">          0 : static FontInstance *GRadioGetFont(GGadget *g) {</span>
+<span class="lineNum">     522 </span><span class="lineNoCov">          0 :     GRadio *b = (GRadio *) g;</span>
+<span class="lineNum">     523 </span><span class="lineNoCov">          0 : return( b-&gt;font );</span>
+<a name="524"><span class="lineNum">     524 </span>            : }</a>
+<span class="lineNum">     525 </span>            : 
+<span class="lineNum">     526 </span><span class="lineNoCov">          0 : static void _gradio_move(GGadget *g, int32 x, int32 y ) {</span>
+<span class="lineNum">     527 </span><span class="lineNoCov">          0 :     GRadio *b = (GRadio *) g;</span>
+<span class="lineNum">     528 </span><span class="lineNoCov">          0 :     b-&gt;onoffrect.x = x+(b-&gt;onoffrect.x-g-&gt;r.x);</span>
+<span class="lineNum">     529 </span><span class="lineNoCov">          0 :     b-&gt;onoffinner.x = x+(b-&gt;onoffinner.x-g-&gt;r.x);</span>
+<span class="lineNum">     530 </span><span class="lineNoCov">          0 :     _ggadget_move(g,x,y);</span>
+<span class="lineNum">     531 </span><span class="lineNoCov">          0 :     b-&gt;onoffrect.y = g-&gt;r.y+(g-&gt;r.height-b-&gt;onoffrect.height)/2;</span>
+<span class="lineNum">     532 </span><span class="lineNoCov">          0 :     b-&gt;onoffinner.y = g-&gt;r.y+(g-&gt;r.height-b-&gt;onoffinner.height)/2;</span>
+<a name="533"><span class="lineNum">     533 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     534 </span>            : 
+<span class="lineNum">     535 </span><span class="lineNoCov">          0 : static void GRadioGetDesiredSize(GGadget *g, GRect *outer, GRect *inner) {</span>
+<span class="lineNum">     536 </span><span class="lineNoCov">          0 :     GCheckBox *gl = (GCheckBox *) g;</span>
+<span class="lineNum">     537 </span><span class="lineNoCov">          0 :     int iwidth=0, iheight=0;</span>
+<span class="lineNum">     538 </span>            :     GTextBounds bounds;
+<span class="lineNum">     539 </span><span class="lineNoCov">          0 :     int as=0, ds, ld, fh=0, width=0;</span>
+<span class="lineNum">     540 </span>            : 
+<span class="lineNum">     541 </span><span class="lineNoCov">          0 :     if ( gl-&gt;image!=NULL ) {</span>
+<span class="lineNum">     542 </span><span class="lineNoCov">          0 :         iwidth = GImageGetScaledWidth(gl-&gt;g.base,gl-&gt;image);</span>
+<span class="lineNum">     543 </span><span class="lineNoCov">          0 :         iheight = GImageGetScaledHeight(gl-&gt;g.base,gl-&gt;image);</span>
+<span class="lineNum">     544 </span>            :     }
+<span class="lineNum">     545 </span><span class="lineNoCov">          0 :     GDrawWindowFontMetrics(g-&gt;base,gl-&gt;font,&amp;as, &amp;ds, &amp;ld);</span>
+<span class="lineNum">     546 </span><span class="lineNoCov">          0 :     if ( gl-&gt;label!=NULL ) {</span>
+<span class="lineNum">     547 </span><span class="lineNoCov">          0 :         FontInstance *old = GDrawSetFont(gl-&gt;g.base,gl-&gt;font);</span>
+<span class="lineNum">     548 </span><span class="lineNoCov">          0 :         width = GDrawGetTextBounds(gl-&gt;g.base,gl-&gt;label, -1, &amp;bounds);</span>
+<span class="lineNum">     549 </span><span class="lineNoCov">          0 :         GDrawSetFont(gl-&gt;g.base,old);</span>
+<span class="lineNum">     550 </span><span class="lineNoCov">          0 :         if ( as&lt;bounds.as ) as = bounds.as;</span>
+<span class="lineNum">     551 </span><span class="lineNoCov">          0 :         if ( ds&lt;bounds.ds ) ds = bounds.ds;</span>
+<span class="lineNum">     552 </span>            :     }
+<span class="lineNum">     553 </span><span class="lineNoCov">          0 :     fh = as+ds;</span>
+<span class="lineNum">     554 </span>            : 
+<span class="lineNum">     555 </span><span class="lineNoCov">          0 :     if ( width!=0 &amp;&amp; iwidth!=0 )</span>
+<span class="lineNum">     556 </span><span class="lineNoCov">          0 :         width += GDrawPointsToPixels(gl-&gt;g.base,_GGadget_TextImageSkip);</span>
+<span class="lineNum">     557 </span><span class="lineNoCov">          0 :     width += iwidth;</span>
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :     if ( iheight&lt;fh )</span>
+<span class="lineNum">     559 </span><span class="lineNoCov">          0 :         iheight = fh;</span>
+<span class="lineNum">     560 </span><span class="lineNoCov">          0 :     if ( iheight &lt; gl-&gt;onoffrect.height )</span>
+<span class="lineNum">     561 </span><span class="lineNoCov">          0 :         iheight = gl-&gt;onoffrect.height;</span>
+<span class="lineNum">     562 </span><span class="lineNoCov">          0 :     width += gl-&gt;onoffrect.width + GDrawPointsToPixels(gl-&gt;g.base,5);</span>
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 :     if ( g-&gt;desired_width&gt;0 ) width = g-&gt;desired_width;</span>
+<span class="lineNum">     564 </span><span class="lineNoCov">          0 :     if ( g-&gt;desired_height&gt;0 ) iheight = g-&gt;desired_height;</span>
+<span class="lineNum">     565 </span><span class="lineNoCov">          0 :     if ( inner!=NULL ) {</span>
+<span class="lineNum">     566 </span><span class="lineNoCov">          0 :         inner-&gt;x = inner-&gt;y = 0;</span>
+<span class="lineNum">     567 </span><span class="lineNoCov">          0 :         inner-&gt;width = width;</span>
+<span class="lineNum">     568 </span><span class="lineNoCov">          0 :         inner-&gt;height = iheight;</span>
+<span class="lineNum">     569 </span>            :     }
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 :     if ( outer!=NULL ) {</span>
+<span class="lineNum">     571 </span><span class="lineNoCov">          0 :         outer-&gt;x = outer-&gt;y = 0;</span>
+<span class="lineNum">     572 </span><span class="lineNoCov">          0 :         outer-&gt;width = width;</span>
+<span class="lineNum">     573 </span><span class="lineNoCov">          0 :         outer-&gt;height = iheight;</span>
+<span class="lineNum">     574 </span>            :         /*_ggadgetFigureSize(gl-&gt;g.base,gl-&gt;g.box,outer,false);*/
+<span class="lineNum">     575 </span>            :     }
+<a name="576"><span class="lineNum">     576 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     577 </span>            : 
+<span class="lineNum">     578 </span><span class="lineNoCov">          0 : void GVisibilityBoxSetToMinWH(GGadget *g)</span>
+<span class="lineNum">     579 </span>            : {
+<span class="lineNum">     580 </span>            :     GRect size;
+<span class="lineNum">     581 </span>            :     GRect outer;
+<span class="lineNum">     582 </span>            :     GRect inner;
+<span class="lineNum">     583 </span><span class="lineNoCov">          0 :     GRadioGetDesiredSize(g, &amp;outer, &amp;inner );</span>
+<span class="lineNum">     584 </span><span class="lineNoCov">          0 :     outer.width = MIN(outer.width,outer.height);</span>
+<span class="lineNum">     585 </span><span class="lineNoCov">          0 :     outer.width -= 3;</span>
+<span class="lineNum">     586 </span><span class="lineNoCov">          0 :     size.width  = outer.width;</span>
+<span class="lineNum">     587 </span><span class="lineNoCov">          0 :     size.height = outer.height;</span>
+<span class="lineNum">     588 </span><span class="lineNoCov">          0 :     GGadgetSetSize(g,&amp;size);</span>
+<span class="lineNum">     589 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     590 </span>            : 
+<span class="lineNum">     591 </span>            : 
+<span class="lineNum">     592 </span>            : struct gfuncs gradio_funcs = {
+<span class="lineNum">     593 </span>            :     0,
+<span class="lineNum">     594 </span>            :     sizeof(struct gfuncs),
+<span class="lineNum">     595 </span>            : 
+<span class="lineNum">     596 </span>            :     gradio_expose,
+<span class="lineNum">     597 </span>            :     gradio_mouse,
+<span class="lineNum">     598 </span>            :     gradio_key,
+<span class="lineNum">     599 </span>            :     NULL,
+<span class="lineNum">     600 </span>            :     gradio_focus,
+<span class="lineNum">     601 </span>            :     NULL,
+<span class="lineNum">     602 </span>            :     NULL,
+<span class="lineNum">     603 </span>            : 
+<span class="lineNum">     604 </span>            :     _ggadget_redraw,
+<span class="lineNum">     605 </span>            :     _gradio_move,
+<span class="lineNum">     606 </span>            :     _ggadget_resize,
+<span class="lineNum">     607 </span>            :     _ggadget_setvisible,
+<span class="lineNum">     608 </span>            :     _ggadget_setenabled,
+<span class="lineNum">     609 </span>            :     _ggadget_getsize,
+<span class="lineNum">     610 </span>            :     _ggadget_getinnersize,
+<span class="lineNum">     611 </span>            : 
+<span class="lineNum">     612 </span>            :     gradio_destroy,
+<span class="lineNum">     613 </span>            : 
+<span class="lineNum">     614 </span>            :     GRadioSetTitle,
+<span class="lineNum">     615 </span>            :     _GRadioGetTitle,
+<span class="lineNum">     616 </span>            :     NULL,
+<span class="lineNum">     617 </span>            :     GRadioSetImageTitle,
+<span class="lineNum">     618 </span>            :     GRadioGetImage,
+<span class="lineNum">     619 </span>            : 
+<span class="lineNum">     620 </span>            :     GRadioSetFont,
+<span class="lineNum">     621 </span>            :     GRadioGetFont,
+<span class="lineNum">     622 </span>            : 
+<span class="lineNum">     623 </span>            :     NULL,
+<span class="lineNum">     624 </span>            :     NULL,
+<span class="lineNum">     625 </span>            :     NULL,
+<span class="lineNum">     626 </span>            :     NULL,
+<span class="lineNum">     627 </span>            :     NULL,
+<span class="lineNum">     628 </span>            :     NULL,
+<span class="lineNum">     629 </span>            :     NULL,
+<span class="lineNum">     630 </span>            :     NULL,
+<span class="lineNum">     631 </span>            :     NULL,
+<span class="lineNum">     632 </span>            :     NULL,
+<span class="lineNum">     633 </span>            :     NULL,
+<span class="lineNum">     634 </span>            : 
+<span class="lineNum">     635 </span>            :     GRadioGetDesiredSize,
+<span class="lineNum">     636 </span>            :     _ggadget_setDesiredSize,
+<span class="lineNum">     637 </span>            :     NULL,
+<span class="lineNum">     638 </span>            :     NULL
+<a name="639"><span class="lineNum">     639 </span>            : };</a>
+<span class="lineNum">     640 </span>            : 
+<span class="lineNum">     641 </span><span class="lineNoCov">          0 : static void GRadioInit() {</span>
+<span class="lineNum">     642 </span><span class="lineNoCov">          0 :     _GGadgetCopyDefaultBox(&amp;radio_box);</span>
+<span class="lineNum">     643 </span><span class="lineNoCov">          0 :     _GGadgetCopyDefaultBox(&amp;radio_on_box);</span>
+<span class="lineNum">     644 </span><span class="lineNoCov">          0 :     _GGadgetCopyDefaultBox(&amp;radio_off_box);</span>
+<span class="lineNum">     645 </span><span class="lineNoCov">          0 :     _GGadgetCopyDefaultBox(&amp;checkbox_box);</span>
+<span class="lineNum">     646 </span><span class="lineNoCov">          0 :     _GGadgetCopyDefaultBox(&amp;checkbox_on_box);</span>
+<span class="lineNum">     647 </span><span class="lineNoCov">          0 :     _GGadgetCopyDefaultBox(&amp;checkbox_off_box);</span>
+<span class="lineNum">     648 </span><span class="lineNoCov">          0 :     _GGadgetCopyDefaultBox(&amp;visibility_on_box);</span>
+<span class="lineNum">     649 </span><span class="lineNoCov">          0 :     _GGadgetCopyDefaultBox(&amp;visibility_off_box);</span>
+<span class="lineNum">     650 </span>            : 
+<span class="lineNum">     651 </span><span class="lineNoCov">          0 :     radio_box.padding = 0;</span>
+<span class="lineNum">     652 </span><span class="lineNoCov">          0 :     radio_box.border_type = bt_none;</span>
+<span class="lineNum">     653 </span><span class="lineNoCov">          0 :     radio_on_box.border_type = bt_raised;</span>
+<span class="lineNum">     654 </span><span class="lineNoCov">          0 :     radio_off_box.border_type = bt_lowered;</span>
+<span class="lineNum">     655 </span><span class="lineNoCov">          0 :     radio_on_box.border_shape = radio_off_box.border_shape = bs_diamond;</span>
+<span class="lineNum">     656 </span><span class="lineNoCov">          0 :     radio_on_box.flags = radio_off_box.flags |= box_do_depressed_background;</span>
+<span class="lineNum">     657 </span>            : 
+<span class="lineNum">     658 </span><span class="lineNoCov">          0 :     checkbox_box.padding = 0;</span>
+<span class="lineNum">     659 </span><span class="lineNoCov">          0 :     checkbox_box.border_type = bt_none;</span>
+<span class="lineNum">     660 </span><span class="lineNoCov">          0 :     checkbox_on_box.border_type = bt_raised;</span>
+<span class="lineNum">     661 </span><span class="lineNoCov">          0 :     checkbox_off_box.border_type = bt_lowered;</span>
+<span class="lineNum">     662 </span><span class="lineNoCov">          0 :     checkbox_on_box.flags = checkbox_off_box.flags |= box_do_depressed_background;</span>
+<span class="lineNum">     663 </span><span class="lineNoCov">          0 :     checkbox_font = _GGadgetInitDefaultBox(&quot;GRadio.&quot;,&amp;radio_box,NULL);</span>
+<span class="lineNum">     664 </span><span class="lineNoCov">          0 :     checkbox_font = _GGadgetInitDefaultBox(&quot;GCheckBox.&quot;,&amp;checkbox_box,checkbox_font);</span>
+<span class="lineNum">     665 </span>            : 
+<span class="lineNum">     666 </span><span class="lineNoCov">          0 :     visibility_on_box.border_type=bt_none;</span>
+<span class="lineNum">     667 </span><span class="lineNoCov">          0 :     visibility_on_box.padding=1;</span>
+<span class="lineNum">     668 </span><span class="lineNoCov">          0 :     visibility_off_box.border_type=bt_none;</span>
+<span class="lineNum">     669 </span><span class="lineNoCov">          0 :     visibility_off_box.padding=1;</span>
+<span class="lineNum">     670 </span>            : 
+<span class="lineNum">     671 </span><span class="lineNoCov">          0 :     _GGadgetInitDefaultBox(&quot;GRadioOn.&quot;,&amp;radio_on_box,NULL);</span>
+<span class="lineNum">     672 </span><span class="lineNoCov">          0 :     _GGadgetInitDefaultBox(&quot;GRadioOff.&quot;,&amp;radio_off_box,NULL);</span>
+<span class="lineNum">     673 </span><span class="lineNoCov">          0 :     _GGadgetInitDefaultBox(&quot;GCheckBoxOn.&quot;,&amp;checkbox_on_box,NULL);</span>
+<span class="lineNum">     674 </span><span class="lineNoCov">          0 :     _GGadgetInitDefaultBox(&quot;GCheckBoxOff.&quot;,&amp;checkbox_off_box,NULL);</span>
+<span class="lineNum">     675 </span><span class="lineNoCov">          0 :     _GGadgetInitDefaultBox(&quot;GVisibilityBoxOn.&quot;,&amp;visibility_on_box,NULL);</span>
+<span class="lineNum">     676 </span><span class="lineNoCov">          0 :     _GGadgetInitDefaultBox(&quot;GVisibitityBoxOff.&quot;,&amp;visibility_off_box,NULL);</span>
+<span class="lineNum">     677 </span>            : 
+<span class="lineNum">     678 </span><span class="lineNoCov">          0 :     if ( radio_on_box.depressed_background == radio_off_box.depressed_background ) {</span>
+<span class="lineNum">     679 </span><span class="lineNoCov">          0 :         radio_on_box.depressed_background = radio_on_box.active_border;</span>
+<span class="lineNum">     680 </span><span class="lineNoCov">          0 :         radio_off_box.depressed_background = radio_off_box.main_background;</span>
+<span class="lineNum">     681 </span>            :     }
+<span class="lineNum">     682 </span>            : 
+<span class="lineNum">     683 </span><span class="lineNoCov">          0 :     if ( checkbox_on_box.depressed_background == checkbox_off_box.depressed_background ) {</span>
+<span class="lineNum">     684 </span><span class="lineNoCov">          0 :         checkbox_on_box.depressed_background = checkbox_on_box.active_border;</span>
+<span class="lineNum">     685 </span><span class="lineNoCov">          0 :         checkbox_off_box.depressed_background = checkbox_off_box.main_background;</span>
+<span class="lineNum">     686 </span>            :     }
+<span class="lineNum">     687 </span>            : 
+<span class="lineNum">     688 </span><span class="lineNoCov">          0 :     radon = GGadgetResourceFindImage(&quot;GRadioOn.Image&quot;,NULL);</span>
+<span class="lineNum">     689 </span><span class="lineNoCov">          0 :     radoff = GGadgetResourceFindImage(&quot;GRadioOff.Image&quot;,NULL);</span>
+<span class="lineNum">     690 </span><span class="lineNoCov">          0 :     raddison = GGadgetResourceFindImage(&quot;GRadioOn.DisabledImage&quot;,NULL);</span>
+<span class="lineNum">     691 </span><span class="lineNoCov">          0 :     raddisoff = GGadgetResourceFindImage(&quot;GRadioOff.DisabledImage&quot;,NULL);</span>
+<span class="lineNum">     692 </span>            : 
+<span class="lineNum">     693 </span><span class="lineNoCov">          0 :     checkon = GGadgetResourceFindImage(&quot;GCheckBoxOn.Image&quot;,NULL);</span>
+<span class="lineNum">     694 </span><span class="lineNoCov">          0 :     checkoff = GGadgetResourceFindImage(&quot;GCheckBoxOff.Image&quot;,NULL);</span>
+<span class="lineNum">     695 </span><span class="lineNoCov">          0 :     checkdison = GGadgetResourceFindImage(&quot;GCheckBoxOn.DisabledImage&quot;,NULL);</span>
+<span class="lineNum">     696 </span><span class="lineNoCov">          0 :     checkdisoff = GGadgetResourceFindImage(&quot;GCheckBoxOff.DisabledImage&quot;,NULL);</span>
+<span class="lineNum">     697 </span>            : 
+<span class="lineNum">     698 </span><span class="lineNoCov">          0 :     visibilityon = GGadgetResourceFindImage(&quot;GVisibilityBoxOn.Image&quot;,NULL);</span>
+<span class="lineNum">     699 </span><span class="lineNoCov">          0 :     visibilityoff = GGadgetResourceFindImage(&quot;GVisibilityBoxOff.Image&quot;,NULL);</span>
+<span class="lineNum">     700 </span><span class="lineNoCov">          0 :     visibilitydison = GGadgetResourceFindImage(&quot;GVisibilityBoxOn.DisabledImage&quot;,NULL);</span>
+<span class="lineNum">     701 </span><span class="lineNoCov">          0 :     visibilitydisoff = GGadgetResourceFindImage(&quot;GVisibilityBoxOff.DisabledImage&quot;,NULL);</span>
+<span class="lineNum">     702 </span>            : 
+<span class="lineNum">     703 </span><span class="lineNoCov">          0 :     gradio_inited = true;</span>
+<a name="704"><span class="lineNum">     704 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     705 </span>            : 
+<span class="lineNum">     706 </span><span class="lineNoCov">          0 : static void GCheckBoxFit(GCheckBox *gl) {</span>
+<span class="lineNum">     707 </span><span class="lineNoCov">          0 :     int as=0, ds, ld;</span>
+<span class="lineNum">     708 </span>            :     GRect outer, inner, needed;
+<span class="lineNum">     709 </span>            :     int iwidth, iheight;
+<span class="lineNum">     710 </span>            : 
+<span class="lineNum">     711 </span><span class="lineNoCov">          0 :     needed.x = needed.y = 0;</span>
+<span class="lineNum">     712 </span><span class="lineNoCov">          0 :     needed.width = needed.height = 1;</span>
+<span class="lineNum">     713 </span><span class="lineNoCov">          0 :     if ( gl-&gt;on!=NULL &amp;&amp; gl-&gt;on-&gt;image!=NULL ) {</span>
+<span class="lineNum">     714 </span><span class="lineNoCov">          0 :         if (( iwidth = GImageGetScaledWidth(gl-&gt;g.base,gl-&gt;on-&gt;image))&gt;needed.width )</span>
+<span class="lineNum">     715 </span><span class="lineNoCov">          0 :             needed.width = iwidth;</span>
+<span class="lineNum">     716 </span><span class="lineNoCov">          0 :         if (( iheight = GImageGetScaledHeight(gl-&gt;g.base,gl-&gt;on-&gt;image))&gt;needed.height )</span>
+<span class="lineNum">     717 </span><span class="lineNoCov">          0 :             needed.height = iheight;</span>
+<span class="lineNum">     718 </span>            :     }
+<span class="lineNum">     719 </span><span class="lineNoCov">          0 :     if ( gl-&gt;off!=NULL &amp;&amp; gl-&gt;off-&gt;image!=NULL ) {</span>
+<span class="lineNum">     720 </span><span class="lineNoCov">          0 :         if (( iwidth = GImageGetScaledWidth(gl-&gt;g.base,gl-&gt;off-&gt;image))&gt;needed.width )</span>
+<span class="lineNum">     721 </span><span class="lineNoCov">          0 :             needed.width = iwidth;</span>
+<span class="lineNum">     722 </span><span class="lineNoCov">          0 :         if (( iheight = GImageGetScaledHeight(gl-&gt;g.base,gl-&gt;off-&gt;image))&gt;needed.height )</span>
+<span class="lineNum">     723 </span><span class="lineNoCov">          0 :             needed.height = iheight;</span>
+<span class="lineNum">     724 </span>            :     }
+<span class="lineNum">     725 </span><span class="lineNoCov">          0 :     gl-&gt;onoffinner = needed;</span>
+<span class="lineNum">     726 </span><span class="lineNoCov">          0 :     _ggadgetFigureSize(gl-&gt;g.base,gl-&gt;onbox,&amp;needed,false);</span>
+<span class="lineNum">     727 </span><span class="lineNoCov">          0 :     gl-&gt;onoffrect = needed;</span>
+<span class="lineNum">     728 </span>            : 
+<span class="lineNum">     729 </span><span class="lineNoCov">          0 :     GDrawWindowFontMetrics(gl-&gt;g.base,gl-&gt;font,&amp;as, &amp;ds, &amp;ld);</span>
+<span class="lineNum">     730 </span><span class="lineNoCov">          0 :     GRadioGetDesiredSize(&amp;gl-&gt;g,&amp;outer,&amp;inner);</span>
+<span class="lineNum">     731 </span><span class="lineNoCov">          0 :     _ggadgetSetRects(&amp;gl-&gt;g,&amp;outer, &amp;inner, -1, 0);</span>
+<span class="lineNum">     732 </span>            : 
+<span class="lineNum">     733 </span><span class="lineNoCov">          0 :     gl-&gt;as = as;</span>
+<span class="lineNum">     734 </span><span class="lineNoCov">          0 :     gl-&gt;fh = as+ds;</span>
+<span class="lineNum">     735 </span>            : 
+<span class="lineNum">     736 </span><span class="lineNoCov">          0 :     gl-&gt;onoffrect.x = gl-&gt;g.inner.x;</span>
+<span class="lineNum">     737 </span><span class="lineNoCov">          0 :     gl-&gt;onoffrect.y = (gl-&gt;as&gt;gl-&gt;onoffrect.height)?gl-&gt;g.inner.y+gl-&gt;as-gl-&gt;onoffrect.height:</span>
+<span class="lineNum">     738 </span><span class="lineNoCov">          0 :             gl-&gt;g.inner.y+(gl-&gt;g.inner.height-gl-&gt;onoffrect.height)/2;</span>
+<span class="lineNum">     739 </span><span class="lineNoCov">          0 :     gl-&gt;onoffinner.x = gl-&gt;onoffrect.x + (gl-&gt;onoffrect.width-gl-&gt;onoffinner.width)/2;</span>
+<span class="lineNum">     740 </span><span class="lineNoCov">          0 :     gl-&gt;onoffinner.y = gl-&gt;onoffrect.y + (gl-&gt;onoffrect.height-gl-&gt;onoffinner.height)/2;</span>
+<a name="741"><span class="lineNum">     741 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     742 </span>            : 
+<span class="lineNum">     743 </span><span class="lineNoCov">          0 : static GCheckBox *_GCheckBoxCreate(GCheckBox *gl, struct gwindow *base, GGadgetData *gd,void *data, GBox *def) {</span>
+<span class="lineNum">     744 </span>            : 
+<span class="lineNum">     745 </span><span class="lineNoCov">          0 :     if ( !gradio_inited )</span>
+<span class="lineNum">     746 </span><span class="lineNoCov">          0 :         GRadioInit();</span>
+<span class="lineNum">     747 </span><span class="lineNoCov">          0 :     gl-&gt;g.funcs = &amp;gradio_funcs;</span>
+<span class="lineNum">     748 </span><span class="lineNoCov">          0 :     _GGadget_Create(&amp;gl-&gt;g,base,gd,data,def);</span>
+<span class="lineNum">     749 </span>            : 
+<span class="lineNum">     750 </span><span class="lineNoCov">          0 :     gl-&gt;g.takes_input = true; gl-&gt;g.takes_keyboard = true; gl-&gt;g.focusable = true;</span>
+<span class="lineNum">     751 </span><span class="lineNoCov">          0 :     gl-&gt;font = checkbox_font;</span>
+<span class="lineNum">     752 </span><span class="lineNoCov">          0 :     if ( gd-&gt;label!=NULL ) {</span>
+<span class="lineNum">     753 </span><span class="lineNoCov">          0 :         gl-&gt;image_precedes = gd-&gt;label-&gt;image_precedes;</span>
+<span class="lineNum">     754 </span><span class="lineNoCov">          0 :         if ( gd-&gt;label-&gt;font!=NULL )</span>
+<span class="lineNum">     755 </span><span class="lineNoCov">          0 :             gl-&gt;font = gd-&gt;label-&gt;font;</span>
+<span class="lineNum">     756 </span><span class="lineNoCov">          0 :         if ( gd-&gt;label-&gt;text_in_resource &amp;&amp; gd-&gt;label-&gt;text_is_1byte )</span>
+<span class="lineNum">     757 </span><span class="lineNoCov">          0 :             gl-&gt;label = utf82u_mncopy((char *) gd-&gt;label-&gt;text,&amp;gl-&gt;g.mnemonic);</span>
+<span class="lineNum">     758 </span><span class="lineNoCov">          0 :         else if ( gd-&gt;label-&gt;text_in_resource )</span>
+<span class="lineNum">     759 </span><span class="lineNoCov">          0 :             gl-&gt;label = u_copy((unichar_t *) GStringGetResource((intpt) gd-&gt;label-&gt;text,&amp;gl-&gt;g.mnemonic));</span>
+<span class="lineNum">     760 </span><span class="lineNoCov">          0 :         else if ( gd-&gt;label-&gt;text_is_1byte )</span>
+<span class="lineNum">     761 </span><span class="lineNoCov">          0 :             gl-&gt;label = /*def2u*/ utf82u_copy((char *) gd-&gt;label-&gt;text);</span>
+<span class="lineNum">     762 </span>            :         else
+<span class="lineNum">     763 </span><span class="lineNoCov">          0 :             gl-&gt;label = u_copy(gd-&gt;label-&gt;text);</span>
+<span class="lineNum">     764 </span><span class="lineNoCov">          0 :         gl-&gt;image = gd-&gt;label-&gt;image;</span>
+<span class="lineNum">     765 </span>            :     }
+<span class="lineNum">     766 </span><span class="lineNoCov">          0 :     if ( gd-&gt;flags &amp; gg_cb_on )</span>
+<span class="lineNum">     767 </span><span class="lineNoCov">          0 :         gl-&gt;ison = true;</span>
+<span class="lineNum">     768 </span><span class="lineNoCov">          0 :     if ( gl-&gt;isradio ) {</span>
+<span class="lineNum">     769 </span><span class="lineNoCov">          0 :         gl-&gt;onbox = &amp;radio_on_box;</span>
+<span class="lineNum">     770 </span><span class="lineNoCov">          0 :         gl-&gt;offbox = &amp;radio_off_box;</span>
+<span class="lineNum">     771 </span><span class="lineNoCov">          0 :         gl-&gt;on = radon;</span>
+<span class="lineNum">     772 </span><span class="lineNoCov">          0 :         gl-&gt;off = radoff;</span>
+<span class="lineNum">     773 </span><span class="lineNoCov">          0 :         gl-&gt;ondis = raddison;</span>
+<span class="lineNum">     774 </span><span class="lineNoCov">          0 :         gl-&gt;offdis = raddisoff;</span>
+<span class="lineNum">     775 </span>            :     } else {
+<span class="lineNum">     776 </span><span class="lineNoCov">          0 :         gl-&gt;onbox = &amp;checkbox_on_box;</span>
+<span class="lineNum">     777 </span><span class="lineNoCov">          0 :         gl-&gt;offbox = &amp;checkbox_off_box;</span>
+<span class="lineNum">     778 </span><span class="lineNoCov">          0 :         gl-&gt;on = checkon;</span>
+<span class="lineNum">     779 </span><span class="lineNoCov">          0 :         gl-&gt;off = checkoff;</span>
+<span class="lineNum">     780 </span><span class="lineNoCov">          0 :         gl-&gt;ondis = checkdison;</span>
+<span class="lineNum">     781 </span><span class="lineNoCov">          0 :         gl-&gt;offdis = checkdisoff;</span>
+<span class="lineNum">     782 </span>            :     }
+<span class="lineNum">     783 </span><span class="lineNoCov">          0 :     GCheckBoxFit(gl);</span>
+<span class="lineNum">     784 </span><span class="lineNoCov">          0 :     _GGadget_FinalPosition(&amp;gl-&gt;g,base,gd);</span>
+<span class="lineNum">     785 </span>            : 
+<span class="lineNum">     786 </span><span class="lineNoCov">          0 :     if ( gd-&gt;flags &amp; gg_group_end )</span>
+<span class="lineNum">     787 </span><span class="lineNoCov">          0 :         _GGadgetCloseGroup(&amp;gl-&gt;g);</span>
+<span class="lineNum">     788 </span><span class="lineNoCov">          0 : return( gl );</span>
+<a name="789"><span class="lineNum">     789 </span>            : }</a>
+<span class="lineNum">     790 </span>            : 
+<span class="lineNum">     791 </span><span class="lineNoCov">          0 : GGadget *GCheckBoxCreate(struct gwindow *base, GGadgetData *gd,void *data) {</span>
+<span class="lineNum">     792 </span><span class="lineNoCov">          0 :     GCheckBox *gl = _GCheckBoxCreate(calloc(1,sizeof(GCheckBox)),base,gd,data,&amp;checkbox_box);</span>
+<span class="lineNum">     793 </span>            : 
+<span class="lineNum">     794 </span><span class="lineNoCov">          0 : return( &amp;gl-&gt;g );</span>
+<a name="795"><span class="lineNum">     795 </span>            : }</a>
+<span class="lineNum">     796 </span>            : 
+<span class="lineNum">     797 </span><span class="lineNoCov">          0 : GGadget *GVisibilityBoxCreate(struct gwindow *base, GGadgetData *gd,void *data) {</span>
+<span class="lineNum">     798 </span><span class="lineNoCov">          0 :     GCheckBox *gl = _GCheckBoxCreate(calloc(1,sizeof(GCheckBox)),base,gd,data,&amp;checkbox_box);</span>
+<span class="lineNum">     799 </span><span class="lineNoCov">          0 :     gl-&gt;onbox = &amp;visibility_on_box;</span>
+<span class="lineNum">     800 </span><span class="lineNoCov">          0 :     gl-&gt;offbox = &amp;visibility_off_box;</span>
+<span class="lineNum">     801 </span><span class="lineNoCov">          0 :     gl-&gt;on = visibilityon;</span>
+<span class="lineNum">     802 </span><span class="lineNoCov">          0 :     gl-&gt;off = visibilityoff;</span>
+<span class="lineNum">     803 </span><span class="lineNoCov">          0 :     gl-&gt;ondis = visibilitydison;</span>
+<span class="lineNum">     804 </span><span class="lineNoCov">          0 :     gl-&gt;offdis = visibilitydisoff;</span>
+<span class="lineNum">     805 </span>            : 
+<span class="lineNum">     806 </span><span class="lineNoCov">          0 : return( &amp;gl-&gt;g );</span>
+<a name="807"><span class="lineNum">     807 </span>            : }</a>
+<span class="lineNum">     808 </span>            : 
+<span class="lineNum">     809 </span><span class="lineNoCov">          0 : GGadget *GRadioCreate(struct gwindow *base, GGadgetData *gd,void *data) {</span>
+<span class="lineNum">     810 </span><span class="lineNoCov">          0 :     GRadio *gl = (GRadio *) calloc(1,sizeof(GRadio));</span>
+<span class="lineNum">     811 </span>            :     GGadget *gr;
+<span class="lineNum">     812 </span>            : 
+<span class="lineNum">     813 </span><span class="lineNoCov">          0 :     gl-&gt;isradio = true;</span>
+<span class="lineNum">     814 </span><span class="lineNoCov">          0 :     gl-&gt;radiogroup = gd-&gt;u.radiogroup;</span>
+<span class="lineNum">     815 </span><span class="lineNoCov">          0 :     _GCheckBoxCreate((GCheckBox *) gl,base,gd,data,&amp;radio_box);</span>
+<span class="lineNum">     816 </span>            : 
+<span class="lineNum">     817 </span><span class="lineNoCov">          0 :     gl-&gt;post = gl;</span>
+<span class="lineNum">     818 </span><span class="lineNoCov">          0 :     if ( gd-&gt;flags &amp; gg_rad_startnew )</span>
+<span class="lineNum">     819 </span>            :         /* Done */;
+<span class="lineNum">     820 </span><span class="lineNoCov">          0 :     else if ( gl-&gt;g.prev!=NULL &amp;&amp; gl-&gt;radiogroup!=0 ) {</span>
+<span class="lineNum">     821 </span><span class="lineNoCov">          0 :         for ( gr=gl-&gt;g.prev; gr!=NULL; gr = gr-&gt;prev ) {</span>
+<span class="lineNum">     822 </span><span class="lineNoCov">          0 :             if ( gr-&gt;funcs==&amp;gradio_funcs &amp;&amp; ((GRadio *) gr)-&gt;radiogroup == gl-&gt;radiogroup ) {</span>
+<span class="lineNum">     823 </span><span class="lineNoCov">          0 :                 gl-&gt;post = ((GRadio *) gr)-&gt;post;</span>
+<span class="lineNum">     824 </span><span class="lineNoCov">          0 :                 ((GRadio *) gr)-&gt;post = gl;</span>
+<span class="lineNum">     825 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     826 </span>            :             }
+<span class="lineNum">     827 </span>            :         }
+<span class="lineNum">     828 </span><span class="lineNoCov">          0 :     } else if ( gl-&gt;g.prev!=NULL &amp;&amp; gl-&gt;g.prev-&gt;funcs==&amp;gradio_funcs &amp;&amp;</span>
+<span class="lineNum">     829 </span><span class="lineNoCov">          0 :             ((GRadio *) (gl-&gt;g.prev))-&gt;isradio ) {</span>
+<span class="lineNum">     830 </span><span class="lineNoCov">          0 :         gl-&gt;post = ((GRadio *) (gl-&gt;g.prev))-&gt;post;</span>
+<span class="lineNum">     831 </span><span class="lineNoCov">          0 :         ((GRadio *) (gl-&gt;g.prev))-&gt;post = gl;</span>
+<span class="lineNum">     832 </span><span class="lineNoCov">          0 :     } else if ( gd-&gt;flags &amp; gg_rad_continueold ) {</span>
+<span class="lineNum">     833 </span><span class="lineNoCov">          0 :         for ( gr=gl-&gt;g.prev; gr!=NULL &amp;&amp; (gr-&gt;funcs!=&amp;gradio_funcs ||</span>
+<span class="lineNum">     834 </span><span class="lineNoCov">          0 :                 !((GRadio *) gr)-&gt;isradio); gr = gr-&gt;prev );</span>
+<span class="lineNum">     835 </span><span class="lineNoCov">          0 :         if ( gr!=NULL ) {</span>
+<span class="lineNum">     836 </span><span class="lineNoCov">          0 :             gl-&gt;post = ((GRadio *) gr)-&gt;post;</span>
+<span class="lineNum">     837 </span><span class="lineNoCov">          0 :             ((GRadio *) gr)-&gt;post = gl;</span>
+<span class="lineNum">     838 </span>            :         }
+<span class="lineNum">     839 </span>            :     }
+<span class="lineNum">     840 </span>            : 
+<span class="lineNum">     841 </span><span class="lineNoCov">          0 : return( &amp;gl-&gt;g );</span>
+<a name="842"><span class="lineNum">     842 </span>            : }</a>
+<span class="lineNum">     843 </span>            : 
+<span class="lineNum">     844 </span><span class="lineNoCov">          0 : void GGadgetSetChecked(GGadget *g, int ison) {</span>
+<span class="lineNum">     845 </span><span class="lineNoCov">          0 :     GRadio *gr = (GRadio *) g;</span>
+<span class="lineNum">     846 </span>            : 
+<span class="lineNum">     847 </span><span class="lineNoCov">          0 :     if ( gr-&gt;isradio ) {</span>
+<span class="lineNum">     848 </span><span class="lineNoCov">          0 :         if ( ison &amp;&amp; !gr-&gt;ison ) {</span>
+<span class="lineNum">     849 </span>            :             GRadio *other;
+<span class="lineNum">     850 </span><span class="lineNoCov">          0 :             for ( other=gr-&gt;post; other!=gr; other = other-&gt;post ) {</span>
+<span class="lineNum">     851 </span><span class="lineNoCov">          0 :                 if ( other-&gt;ison ) {</span>
+<span class="lineNum">     852 </span><span class="lineNoCov">          0 :                     other-&gt;ison = false;</span>
+<span class="lineNum">     853 </span><span class="lineNoCov">          0 :                     _ggadget_redraw((GGadget *) other);</span>
+<span class="lineNum">     854 </span>            :                 }
+<span class="lineNum">     855 </span>            :             }
+<span class="lineNum">     856 </span>            :         }
+<span class="lineNum">     857 </span>            :     }
+<span class="lineNum">     858 </span><span class="lineNoCov">          0 :     gr-&gt;ison = ison?1:0;</span>
+<span class="lineNum">     859 </span><span class="lineNoCov">          0 :     _ggadget_redraw(g);</span>
+<a name="860"><span class="lineNum">     860 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     861 </span>            : 
+<span class="lineNum">     862 </span><span class="lineNoCov">          0 : int GGadgetIsChecked(GGadget *g) {</span>
+<span class="lineNum">     863 </span><span class="lineNoCov">          0 : return( ((GRadio *) g)-&gt;ison );</span>
+<a name="864"><span class="lineNum">     864 </span>            : }</a>
+<span class="lineNum">     865 </span>            : 
+<span class="lineNum">     866 </span><span class="lineNoCov">          0 : GResInfo *_GRadioRIHead(void) {</span>
+<span class="lineNum">     867 </span>            : 
+<span class="lineNum">     868 </span><span class="lineNoCov">          0 :     if ( !gradio_inited )</span>
+<span class="lineNum">     869 </span><span class="lineNoCov">          0 :         GRadioInit();</span>
+<span class="lineNum">     870 </span><span class="lineNoCov">          0 : return( &amp;gradio_ri );</span>
+<span class="lineNum">     871 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

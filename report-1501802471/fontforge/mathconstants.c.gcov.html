@@ -1,0 +1,277 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforge/mathconstants.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforge</a> - mathconstants.c<span style="font-size: 80%;"> (source / <a href="mathconstants.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">56</td>
+            <td class="headerCovTableEntry">60</td>
+            <td class="headerCovTableEntryHi">93.3 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2007-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            : #include &quot;mathconstants.h&quot;
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            : #include &quot;fontforgevw.h&quot;
+<span class="lineNum">      31 </span>            : #include &quot;fvfonts.h&quot;
+<span class="lineNum">      32 </span>            : #include &quot;splineutil.h&quot;
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span>            : #ifdef __need_size_t
+<span class="lineNum">      35 </span>            : /* This is a bug on the mac, someone defines this and leaves it defined */
+<span class="lineNum">      36 </span>            : /*  that means when I load stddef.h it only defines size_t and doesn't */
+<span class="lineNum">      37 </span>            : /*  do offset_of, which is what I need */
+<span class="lineNum">      38 </span>            : # undef __need_size_t
+<span class="lineNum">      39 </span>            : #endif
+<span class="lineNum">      40 </span>            : #include &lt;stddef.h&gt;
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            : #define MCD(ui_name,name,msg,np) { ui_name, #name, offsetof(struct MATH,name), -1,msg,np }
+<span class="lineNum">      43 </span>            : #define MCDD(ui_name,name,devtab_name,msg,np) { ui_name, #name, offsetof(struct MATH,name), offsetof(struct MATH,devtab_name),msg,np }
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span>            : struct math_constants_descriptor math_constants_descriptor[] = {
+<span class="lineNum">      46 </span>            :     MCD(N_(&quot;ScriptPercentScaleDown:&quot;),ScriptPercentScaleDown,N_(&quot;Percentage scale down for script level 1&quot;),0),
+<span class="lineNum">      47 </span>            :     MCD(N_(&quot;ScriptScriptPercentScaleDown:&quot;),ScriptScriptPercentScaleDown,N_(&quot;Percentage scale down for script level 2&quot;),0),
+<span class="lineNum">      48 </span>            :     MCD(N_(&quot;DelimitedSubFormulaMinHeight:&quot;),DelimitedSubFormulaMinHeight,N_(&quot;Minimum height at which to treat a delimited\nexpression as a subformula&quot;),0),
+<span class="lineNum">      49 </span>            :     MCD(N_(&quot;DisplayOperatorMinHeight:&quot;),DisplayOperatorMinHeight,N_(&quot;Minimum height of n-ary operators (integration, summation, etc.)&quot;),0),
+<span class="lineNum">      50 </span>            :     MCDD(N_(&quot;MathLeading:&quot;),MathLeading,MathLeading_adjust,N_(&quot;White space to be left between math formulae\nto ensure proper line spacing.&quot;),0),
+<span class="lineNum">      51 </span>            :     MCDD(N_(&quot;AxisHeight:&quot;),AxisHeight,AxisHeight_adjust,N_(&quot;Axis height of the font&quot;),0),
+<span class="lineNum">      52 </span>            :     MCDD(N_(&quot;AccentBaseHeight:&quot;),AccentBaseHeight,AccentBaseHeight_adjust,N_(&quot;Maximum (ink) height of accent base that\ndoes not require raising the accents.&quot;),0),
+<span class="lineNum">      53 </span>            :     MCDD(N_(&quot;FlattenedAccentBaseHeight:&quot;),FlattenedAccentBaseHeight,FlattenedAccentBaseHeight_adjust,N_(&quot;Maximum (ink) height of accent base that\ndoes not require flattening the accents.&quot;),0),
+<span class="lineNum">      54 </span>            :     MCDD(N_(&quot;SubscriptShiftDown:&quot;),SubscriptShiftDown,SubscriptShiftDown_adjust,N_(&quot;The standard shift down applied to subscript elements.\nPositive for moving downward.&quot;),1),
+<span class="lineNum">      55 </span>            :     MCDD(N_(&quot;SubscriptTopMax:&quot;),SubscriptTopMax,SubscriptTopMax_adjust,N_(&quot;Maximum height of the (ink) top of subscripts\nthat does not require moving\nsubscripts further down.&quot;),0),
+<span class="lineNum">      56 </span>            :     MCDD(N_(&quot;SubscriptBaselineDropMin:&quot;),SubscriptBaselineDropMin,SubscriptBaselineDropMin_adjust,N_(&quot;Maximum allowed drop of the baseline of\nsubscripts relative to the bottom of the base.\nUsed for bases that are treated as a box\nor extended shape. Positive for subscript\nbaseline dropped below base bottom.&quot;),0),
+<span class="lineNum">      57 </span>            :     MCDD(N_(&quot;SuperscriptShiftUp:&quot;),SuperscriptShiftUp,SuperscriptShiftUp_adjust,N_(&quot;Standard shift up applied to superscript elements.&quot;),0),
+<span class="lineNum">      58 </span>            :     MCDD(N_(&quot;SuperscriptShiftUpCramped:&quot;),SuperscriptShiftUpCramped,SuperscriptShiftUpCramped_adjust,N_(&quot;Standard shift of superscript relative\nto base in cramped mode.&quot;),0),
+<span class="lineNum">      59 </span>            :     MCDD(N_(&quot;SuperscriptBottomMin:&quot;),SuperscriptBottomMin,SuperscriptBottomMin_adjust,N_(&quot;Minimum allowed height of the bottom\nof superscripts that does not require moving\nthem further up.&quot;),0),
+<span class="lineNum">      60 </span>            :     MCDD(N_(&quot;SuperscriptBaselineDropMax:&quot;),SuperscriptBaselineDropMax,SuperscriptBaselineDropMax_adjust,N_(&quot;Maximum allowed drop of the baseline of\nsuperscripts relative to the top of the base.\nUsed for bases that are treated as a box\nor extended shape. Positive for superscript\nbaseline below base top.&quot;),0),
+<span class="lineNum">      61 </span>            :     MCDD(N_(&quot;SubSuperscriptGapMin:&quot;),SubSuperscriptGapMin,SubSuperscriptGapMin_adjust,N_(&quot;Minimum gap between the superscript and subscript ink.&quot;),0),
+<span class="lineNum">      62 </span>            :     MCDD(N_(&quot;SuperscriptBottomMaxWithSubscript:&quot;),SuperscriptBottomMaxWithSubscript,SuperscriptBottomMaxWithSubscript_adjust,N_(&quot;The maximum level to which the (ink) bottom\nof superscript can be pushed to increase the\ngap between superscript and subscript, before\nsubscript starts being moved down.&quot;),0),
+<span class="lineNum">      63 </span>            :     MCDD(N_(&quot;SpaceAfterScript:&quot;),SpaceAfterScript,SpaceAfterScript_adjust,N_(&quot;Extra white space to be added after each\nsub/superscript.&quot;),0),
+<span class="lineNum">      64 </span>            :     MCDD(N_(&quot;UpperLimitGapMin:&quot;),UpperLimitGapMin,UpperLimitGapMin_adjust,N_(&quot;Minimum gap between the bottom of the\nupper limit, and the top of the base operator.&quot;),1),
+<span class="lineNum">      65 </span>            :     MCDD(N_(&quot;UpperLimitBaselineRiseMin:&quot;),UpperLimitBaselineRiseMin,UpperLimitBaselineRiseMin_adjust,N_(&quot;Minimum distance between the baseline of an upper\nlimit and the bottom of the base operator.&quot;),0),
+<span class="lineNum">      66 </span>            :     MCDD(N_(&quot;LowerLimitGapMin:&quot;),LowerLimitGapMin,LowerLimitGapMin_adjust,N_(&quot;Minimum gap between (ink) top of the lower limit,\nand (ink) bottom of the base operator.&quot;),0),
+<span class="lineNum">      67 </span>            :     MCDD(N_(&quot;LowerLimitBaselineDropMin:&quot;),LowerLimitBaselineDropMin,LowerLimitBaselineDropMin_adjust,N_(&quot;Minimum distance between the baseline of the\nlower limit and bottom of the base operator.&quot;),0),
+<span class="lineNum">      68 </span>            :     MCDD(N_(&quot;StackTopShiftUp:&quot;),StackTopShiftUp,StackTopShiftUp_adjust,N_(&quot;Standard shift up applied to the top element of a stack.&quot;),1),
+<span class="lineNum">      69 </span>            :     MCDD(N_(&quot;StackTopDisplayStyleShiftUp:&quot;),StackTopDisplayStyleShiftUp,StackTopDisplayStyleShiftUp_adjust,N_(&quot;Standard shift up applied to the top element of\na stack in display style.&quot;),0),
+<span class="lineNum">      70 </span>            :     MCDD(N_(&quot;StackBottomShiftDown:&quot;),StackBottomShiftDown,StackBottomShiftDown_adjust,N_(&quot;Standard shift down applied to the bottom element of a stack.\nPositive values indicate downward motion.&quot;),0),
+<span class="lineNum">      71 </span>            :     MCDD(N_(&quot;StackBottomDisplayStyleShiftDown:&quot;),StackBottomDisplayStyleShiftDown,StackBottomDisplayStyleShiftDown_adjust,N_(&quot;Standard shift down applied to the bottom\nelement of a stack in display style.\nPositive values indicate downward motion.&quot;),0),
+<span class="lineNum">      72 </span>            :     MCDD(N_(&quot;StackGapMin:&quot;),StackGapMin,StackGapMin_adjust,N_(&quot;Minimum gap between bottom of the top\nelement of a stack, and the top of the bottom element.&quot;),0),
+<span class="lineNum">      73 </span>            :     MCDD(N_(&quot;StackDisplayStyleGapMin:&quot;),StackDisplayStyleGapMin,StackDisplayStyleGapMin_adjust,N_(&quot;Minimum gap between bottom of the top\nelement of a stack and the top of the bottom\nelement in display style.&quot;),0),
+<span class="lineNum">      74 </span>            :     MCDD(N_(&quot;StretchStackTopShiftUp:&quot;),StretchStackTopShiftUp,StretchStackTopShiftUp_adjust,N_(&quot;Standard shift up applied to the top element of the stretch stack.&quot;),0),
+<span class="lineNum">      75 </span>            :     MCDD(N_(&quot;StretchStackBottomShiftDown:&quot;),StretchStackBottomShiftDown,StretchStackBottomShiftDown_adjust,N_(&quot;Standard shift down applied to the bottom\nelement of the stretch stack.\nPositive values indicate downward motion.&quot;),0),
+<span class="lineNum">      76 </span>            :     MCDD(N_(&quot;StretchStackGapAboveMin:&quot;),StretchStackGapAboveMin,StretchStackGapAboveMin_adjust,N_(&quot;Minimum gap between the ink of the stretched\nelement and the ink bottom of the element\nabove..&quot;),0),
+<span class="lineNum">      77 </span>            :     MCDD(N_(&quot;StretchStackGapBelowMin:&quot;),StretchStackGapBelowMin,StretchStackGapBelowMin_adjust,N_(&quot;Minimum gap between the ink of the stretched\nelement and the ink top of the element below.&quot;),0),
+<span class="lineNum">      78 </span>            :     MCDD(N_(&quot;FractionNumeratorShiftUp:&quot;),FractionNumeratorShiftUp,FractionNumeratorShiftUp_adjust,N_(&quot;Standard shift up applied to the numerator.&quot;),1),
+<span class="lineNum">      79 </span>            :     MCDD(N_(&quot;FractionNumeratorDisplayStyleShiftUp:&quot;),FractionNumeratorDisplayStyleShiftUp,FractionNumeratorDisplayStyleShiftUp_adjust,N_(&quot;Standard shift up applied to the\nnumerator in display style.&quot;),0),
+<span class="lineNum">      80 </span>            :     MCDD(N_(&quot;FractionDenominatorShiftDown:&quot;),FractionDenominatorShiftDown,FractionDenominatorShiftDown_adjust,N_(&quot;Standard shift down applied to the denominator.\nPositive values indicate downward motion.&quot;),0),
+<span class="lineNum">      81 </span>            :     MCDD(N_(&quot;FractionDenominatorDisplayStyleShiftDown:&quot;),FractionDenominatorDisplayStyleShiftDown,FractionDenominatorDisplayStyleShiftDown_adjust,N_(&quot;Standard shift down applied to the\ndenominator in display style.\nPositive values indicate downward motion.&quot;),0),
+<span class="lineNum">      82 </span>            :     MCDD(N_(&quot;FractionNumeratorGapMin:&quot;),FractionNumeratorGapMin,FractionNumeratorGapMin_adjust,N_(&quot;Minimum tolerated gap between the ink\nbottom of the numerator and the ink of the fraction bar.&quot;),0),
+<span class="lineNum">      83 </span>            :     MCDD(N_(&quot;FractionNumeratorDisplayStyleGapMin:&quot;),FractionNumeratorDisplayStyleGapMin,FractionNumeratorDisplayStyleGapMin_adjust,N_(&quot;Minimum tolerated gap between the ink\nbottom of the numerator and the ink of the fraction\nbar in display style.&quot;),0),
+<span class="lineNum">      84 </span>            :     MCDD(N_(&quot;FractionRuleThickness:&quot;),FractionRuleThickness,FractionRuleThickness_adjust,N_(&quot;Thickness of the fraction bar.&quot;),0),
+<span class="lineNum">      85 </span>            :     MCDD(N_(&quot;FractionDenominatorGapMin:&quot;),FractionDenominatorGapMin,FractionDenominatorGapMin_adjust,N_(&quot;Minimum tolerated gap between the ink top of the denominator\nand the ink of the fraction bar..&quot;),0),
+<span class="lineNum">      86 </span>            :     MCDD(N_(&quot;FractionDenominatorDisplayStyleGapMin:&quot;),FractionDenominatorDisplayStyleGapMin,FractionDenominatorDisplayStyleGapMin_adjust,N_(&quot;Minimum tolerated gap between the ink top of the denominator\nand the ink of the fraction bar in display style.&quot;),0),
+<span class="lineNum">      87 </span>            :     MCDD(N_(&quot;SkewedFractionHorizontalGap:&quot;),SkewedFractionHorizontalGap,SkewedFractionHorizontalGap_adjust,N_(&quot;Horizontal distance between the top\nand bottom elements of a skewed fraction.&quot;),0),
+<span class="lineNum">      88 </span>            :     MCDD(N_(&quot;SkewedFractionVerticalGap:&quot;),SkewedFractionVerticalGap,SkewedFractionVerticalGap_adjust,N_(&quot;Vertical distance between the ink of the top and\nbottom elements of a skewed fraction.&quot;),0),
+<span class="lineNum">      89 </span>            :     MCDD(N_(&quot;OverbarVerticalGap:&quot;),OverbarVerticalGap,OverbarVerticalGap_adjust,N_(&quot;Distance between the overbar and\nthe ink top of the base.&quot;),1),
+<span class="lineNum">      90 </span>            :     MCDD(N_(&quot;OverbarRuleThickness:&quot;),OverbarRuleThickness,OverbarRuleThickness_adjust,N_(&quot;Thickness of the overbar.&quot;),0),
+<span class="lineNum">      91 </span>            :     MCDD(N_(&quot;OverbarExtraAscender:&quot;),OverbarExtraAscender,OverbarExtraAscender_adjust,N_(&quot;Extra white space reserved above the overbar.&quot;),0),
+<span class="lineNum">      92 </span>            :     MCDD(N_(&quot;UnderbarVerticalGap:&quot;),UnderbarVerticalGap,UnderbarVerticalGap_adjust,N_(&quot;Distance between underbar and\nthe (ink) bottom of the base.&quot;),0),
+<span class="lineNum">      93 </span>            :     MCDD(N_(&quot;UnderbarRuleThickness:&quot;),UnderbarRuleThickness,UnderbarRuleThickness_adjust,N_(&quot;Thickness of the underbar.&quot;),0),
+<span class="lineNum">      94 </span>            :     MCDD(N_(&quot;UnderbarExtraDescender:&quot;),UnderbarExtraDescender,UnderbarExtraDescender_adjust,N_(&quot;Extra white space reserved below the underbar.&quot;),0),
+<span class="lineNum">      95 </span>            :     MCDD(N_(&quot;RadicalVerticalGap:&quot;),RadicalVerticalGap,RadicalVerticalGap_adjust,N_(&quot;Space between the ink to of the\nexpression and the bar over it.&quot;),1),
+<span class="lineNum">      96 </span>            :     MCDD(N_(&quot;RadicalDisplayStyleVerticalGap:&quot;),RadicalDisplayStyleVerticalGap,RadicalDisplayStyleVerticalGap_adjust,N_(&quot;Space between the ink top of the\nexpression and the bar over it in display\nstyle.&quot;),0),
+<span class="lineNum">      97 </span>            :     MCDD(N_(&quot;RadicalRuleThickness:&quot;),RadicalRuleThickness,RadicalRuleThickness_adjust,N_(&quot;Thickness of the radical rule in\ndesigned or constructed radical\nsigns.&quot;),0),
+<span class="lineNum">      98 </span>            :     MCDD(N_(&quot;RadicalExtraAscender:&quot;),RadicalExtraAscender,RadicalExtraAscender_adjust,N_(&quot;Extra white space reserved above the radical.&quot;),0),
+<span class="lineNum">      99 </span>            :     MCDD(N_(&quot;RadicalKernBeforeDegree:&quot;),RadicalKernBeforeDegree,RadicalKernBeforeDegree_adjust,N_(&quot;Extra horizontal kern before the degree of a\nradical if such be present.&quot;),0),
+<span class="lineNum">     100 </span>            :     MCDD(N_(&quot;RadicalKernAfterDegree:&quot;),RadicalKernAfterDegree,RadicalKernAfterDegree_adjust,N_(&quot;Negative horizontal kern after the degree of a\nradical if such be present.&quot;),0),
+<span class="lineNum">     101 </span>            :     MCD(N_(&quot;RadicalDegreeBottomRaisePercent:&quot;),RadicalDegreeBottomRaisePercent,N_(&quot;Height of the bottom of the radical degree, if\nsuch be present, in proportion to the ascender\nof the radical sign.&quot;),0),
+<span class="lineNum">     102 </span>            :     MCD(N_(&quot;MinConnectorOverlap:&quot;),MinConnectorOverlap,N_(&quot;Minimum overlap of connecting glyphs during\nglyph construction.&quot;),1),
+<span class="lineNum">     103 </span>            :     MATH_CONSTANTS_DESCRIPTOR_EMPTY
+<a name="104"><span class="lineNum">     104 </span>            : };</a>
+<span class="lineNum">     105 </span>            : 
+<span class="lineNum">     106 </span><span class="lineCov">          2 : struct MATH *MathTableNew(SplineFont *sf) {</span>
+<span class="lineNum">     107 </span><span class="lineCov">          2 :     struct MATH *math = calloc(1,sizeof(struct MATH));  /* Too big for chunkalloc */</span>
+<span class="lineNum">     108 </span><span class="lineCov">          2 :     int emsize = sf-&gt;ascent+sf-&gt;descent;</span>
+<span class="lineNum">     109 </span>            :     DBounds b;
+<span class="lineNum">     110 </span>            :     SplineChar *sc;
+<span class="lineNum">     111 </span>            : 
+<span class="lineNum">     112 </span><span class="lineCov">          2 :     math-&gt;ScriptPercentScaleDown     = 80;</span>
+<span class="lineNum">     113 </span><span class="lineCov">          2 :     math-&gt;ScriptScriptPercentScaleDown       = 60;</span>
+<span class="lineNum">     114 </span><span class="lineCov">          2 :     math-&gt;DelimitedSubFormulaMinHeight       = emsize*1.5;</span>
+<span class="lineNum">     115 </span>            :     /* No default given for math-&gt;DisplayOperatorMinHeight */
+<span class="lineNum">     116 </span>            :     /* No default given for math-&gt;MathLeading */
+<span class="lineNum">     117 </span>            :     /* The OpenType MATH specification does not suggest any value for
+<span class="lineNum">     118 </span>            :        math-&gt;AxisHeight. By default, we align the axis height with the middle
+<span class="lineNum">     119 </span>            :        of the + sign. */
+<span class="lineNum">     120 </span><span class="lineCov">          2 :     sc = SFGetChar(sf,'+',NULL);</span>
+<span class="lineNum">     121 </span><span class="lineCov">          2 :     if ( sc!=NULL ) {</span>
+<span class="lineNum">     122 </span><span class="lineCov">          1 :         SplineCharFindBounds(sc,&amp;b);</span>
+<span class="lineNum">     123 </span><span class="lineCov">          1 :         math-&gt;AxisHeight = (b.maxy+b.miny)/2;</span>
+<span class="lineNum">     124 </span>            :     }
+<span class="lineNum">     125 </span><span class="lineCov">          2 :     sc = SFGetChar(sf,'x',NULL);</span>
+<span class="lineNum">     126 </span><span class="lineCov">          2 :     if ( sc!=NULL ) {</span>
+<span class="lineNum">     127 </span><span class="lineCov">          1 :         SplineCharFindBounds(sc,&amp;b);</span>
+<span class="lineNum">     128 </span><span class="lineCov">          1 :         math-&gt;AccentBaseHeight = b.maxy;</span>
+<span class="lineNum">     129 </span>            :     }
+<span class="lineNum">     130 </span><span class="lineCov">          2 :     sc = SFGetChar(sf,'I',NULL);</span>
+<span class="lineNum">     131 </span><span class="lineCov">          2 :     if ( sc!=NULL ) {</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :         SplineCharFindBounds(sc,&amp;b);</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :         math-&gt;FlattenedAccentBaseHeight = b.maxy;</span>
+<span class="lineNum">     134 </span>            :     }
+<span class="lineNum">     135 </span><span class="lineCov">          2 :     if ( sf-&gt;pfminfo.subsuper_set )</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :         math-&gt;SubscriptShiftDown = sf-&gt;pfminfo.os2_subyoff;</span>
+<span class="lineNum">     137 </span><span class="lineCov">          2 :     math-&gt;SubscriptTopMax = math-&gt;AccentBaseHeight;               /* X-height */</span>
+<span class="lineNum">     138 </span>            :     /* No default given for math-&gt;SubscriptBaselineDropMin */
+<span class="lineNum">     139 </span><span class="lineCov">          2 :     if ( sf-&gt;pfminfo.subsuper_set )</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :         math-&gt;SuperscriptShiftUp = sf-&gt;pfminfo.os2_supyoff;</span>
+<span class="lineNum">     141 </span>            :     /* No default given for math-&gt;SuperscriptShiftUpCramped */
+<span class="lineNum">     142 </span><span class="lineCov">          2 :     math-&gt;SuperscriptBottomMin = math-&gt;AccentBaseHeight;  /* X-height */</span>
+<span class="lineNum">     143 </span>            :     /* No default given for math-&gt;SuperscriptBaselineDropMax */
+<span class="lineNum">     144 </span><span class="lineCov">          2 :     math-&gt;SubSuperscriptGapMin = 4*sf-&gt;uwidth;                    /* 4* default rule thickness */</span>
+<span class="lineNum">     145 </span><span class="lineCov">          2 :     math-&gt;SuperscriptBottomMaxWithSubscript = math-&gt;AccentBaseHeight;     /* X-height */</span>
+<span class="lineNum">     146 </span><span class="lineCov">          2 :     math-&gt;SpaceAfterScript = emsize/24;                              /* .5pt at 12pt */</span>
+<span class="lineNum">     147 </span>            :     /* No default given for math-&gt;UpperLimitGapMin */
+<span class="lineNum">     148 </span>            :     /* No default given for math-&gt;UpperLimitBaselineRiseMin */
+<span class="lineNum">     149 </span>            :     /* No default given for math-&gt;LowerLimitGapMin */
+<span class="lineNum">     150 </span>            :     /* No default given for math-&gt;LowerLimitBaselineDropMin */
+<span class="lineNum">     151 </span>            :     /* No default given for math-&gt;StackTopShiftUp */
+<span class="lineNum">     152 </span>            :     /* No default given for math-&gt;StackTopDisplayStyleShiftUp */
+<span class="lineNum">     153 </span>            :     /* No default given for math-&gt;StackBottomShiftDown */
+<span class="lineNum">     154 </span>            :     /* No default given for math-&gt;StackBottomDisplayStyleShiftDown */
+<span class="lineNum">     155 </span><span class="lineCov">          2 :     math-&gt;StackGapMin = 3*sf-&gt;uwidth;                             /* 3* default rule thickness */</span>
+<span class="lineNum">     156 </span><span class="lineCov">          2 :     math-&gt;StackDisplayStyleGapMin = 7*sf-&gt;uwidth;</span>
+<span class="lineNum">     157 </span>            :     /* No default given for math-&gt;StretchStackTopShiftUp */
+<span class="lineNum">     158 </span>            :     /* No default given for math-&gt;StretchStackBottomShiftDown */
+<span class="lineNum">     159 </span><span class="lineCov">          2 :     math-&gt;StretchStackGapAboveMin = math-&gt;UpperLimitGapMin;</span>
+<span class="lineNum">     160 </span><span class="lineCov">          2 :     math-&gt;StretchStackGapBelowMin = math-&gt;LowerLimitGapMin;</span>
+<span class="lineNum">     161 </span>            :     /* No default given for math-&gt;FractionNumeratorShiftUp */
+<span class="lineNum">     162 </span><span class="lineCov">          2 :     math-&gt;FractionNumeratorDisplayStyleShiftUp = math-&gt;StackTopDisplayStyleShiftUp;</span>
+<span class="lineNum">     163 </span>            :     /* No default given for math-&gt;FractionDenominatorShiftDown */
+<span class="lineNum">     164 </span><span class="lineCov">          2 :     math-&gt;FractionDenominatorDisplayStyleShiftDown = math-&gt;StackBottomDisplayStyleShiftDown;</span>
+<span class="lineNum">     165 </span><span class="lineCov">          2 :     math-&gt;FractionNumeratorGapMin = sf-&gt;uwidth;</span>
+<span class="lineNum">     166 </span><span class="lineCov">          2 :     math-&gt;FractionNumeratorDisplayStyleGapMin = 3*sf-&gt;uwidth;</span>
+<span class="lineNum">     167 </span><span class="lineCov">          2 :     math-&gt;FractionRuleThickness = sf-&gt;uwidth;</span>
+<span class="lineNum">     168 </span><span class="lineCov">          2 :     math-&gt;FractionDenominatorGapMin = sf-&gt;uwidth;</span>
+<span class="lineNum">     169 </span><span class="lineCov">          2 :     math-&gt;FractionDenominatorDisplayStyleGapMin = 3*sf-&gt;uwidth;</span>
+<span class="lineNum">     170 </span>            :     /* No default given for math-&gt;SkewedFractionHorizontalGap */
+<span class="lineNum">     171 </span>            :     /* No default given for math-&gt;SkewedFractionVerticalGap */
+<span class="lineNum">     172 </span><span class="lineCov">          2 :     math-&gt;OverbarVerticalGap = 3*sf-&gt;uwidth;</span>
+<span class="lineNum">     173 </span><span class="lineCov">          2 :     math-&gt;OverbarRuleThickness = sf-&gt;uwidth;</span>
+<span class="lineNum">     174 </span><span class="lineCov">          2 :     math-&gt;OverbarExtraAscender = sf-&gt;uwidth;</span>
+<span class="lineNum">     175 </span><span class="lineCov">          2 :     math-&gt;UnderbarVerticalGap = 3*sf-&gt;uwidth;</span>
+<span class="lineNum">     176 </span><span class="lineCov">          2 :     math-&gt;UnderbarRuleThickness = sf-&gt;uwidth;</span>
+<span class="lineNum">     177 </span><span class="lineCov">          2 :     math-&gt;UnderbarExtraDescender = sf-&gt;uwidth;</span>
+<span class="lineNum">     178 </span><span class="lineCov">          2 :     math-&gt;RadicalVerticalGap = sf-&gt;uwidth;</span>
+<span class="lineNum">     179 </span><span class="lineCov">          2 :     math-&gt;RadicalDisplayStyleVerticalGap = sf-&gt;uwidth+.25*math-&gt;AccentBaseHeight; /* rule thickness + 1/4 X-height */</span>
+<span class="lineNum">     180 </span><span class="lineCov">          2 :     math-&gt;RadicalRuleThickness = sf-&gt;uwidth;</span>
+<span class="lineNum">     181 </span><span class="lineCov">          2 :     math-&gt;RadicalExtraAscender = sf-&gt;uwidth;</span>
+<span class="lineNum">     182 </span><span class="lineCov">          2 :     math-&gt;RadicalKernBeforeDegree = 5*emsize/18;</span>
+<span class="lineNum">     183 </span><span class="lineCov">          2 :     math-&gt;RadicalKernAfterDegree = -10*emsize/18;</span>
+<span class="lineNum">     184 </span><span class="lineCov">          2 :     math-&gt;RadicalDegreeBottomRaisePercent = 60;</span>
+<span class="lineNum">     185 </span>            : 
+<span class="lineNum">     186 </span><span class="lineCov">          2 :     math-&gt;MinConnectorOverlap = emsize/50;</span>
+<span class="lineNum">     187 </span><span class="lineCov">          2 : return( math );</span>
+<a name="188"><span class="lineNum">     188 </span>            : }</a>
+<span class="lineNum">     189 </span>            : 
+<span class="lineNum">     190 </span><span class="lineCov">          2 : void MATHFree(struct MATH *math) {</span>
+<span class="lineNum">     191 </span>            :     int i;
+<span class="lineNum">     192 </span>            : 
+<span class="lineNum">     193 </span><span class="lineCov">          2 :     if ( math==NULL )</span>
+<span class="lineNum">     194 </span><span class="lineCov">          2 : return;</span>
+<span class="lineNum">     195 </span>            : 
+<span class="lineNum">     196 </span><span class="lineCov">        116 :     for ( i=0; math_constants_descriptor[i].ui_name!=NULL; ++i ) {</span>
+<span class="lineNum">     197 </span><span class="lineCov">        114 :         if ( math_constants_descriptor[i].devtab_offset&gt;=0 )</span>
+<span class="lineNum">     198 </span><span class="lineCov">        102 :             DeviceTableFree( *(DeviceTable **) (((char *) math) + math_constants_descriptor[i].devtab_offset ) );</span>
+<span class="lineNum">     199 </span>            :     }
+<span class="lineNum">     200 </span><span class="lineCov">          2 :     free(math);</span>
+<span class="lineNum">     201 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

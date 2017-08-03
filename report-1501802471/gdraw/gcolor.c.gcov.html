@@ -1,0 +1,850 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - gdraw/gcolor.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gdraw</a> - gcolor.c<span style="font-size: 80%;"> (source / <a href="gcolor.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">487</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">15</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2008-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &lt;ggadget.h&gt;
+<span class="lineNum">      28 </span>            : #include &lt;gwidget.h&gt;
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">      31 </span>            : #include &lt;stdlib.h&gt;
+<a name="32"><span class="lineNum">      32 </span>            : #include &lt;math.h&gt;</a>
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span><span class="lineNoCov">          0 : static GImage *ColorWheel(int width,int height) {</span>
+<span class="lineNum">      35 </span>            :     struct hslrgb col;
+<span class="lineNum">      36 </span>            :     GImage *wheel;
+<span class="lineNum">      37 </span>            :     struct _GImage *base;
+<span class="lineNum">      38 </span>            :     int i,j;
+<span class="lineNum">      39 </span>            :     double x,y, hh, hw;
+<span class="lineNum">      40 </span>            :     uint32 *row;
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span><span class="lineNoCov">          0 :     memset(&amp;col,0,sizeof(col));</span>
+<span class="lineNum">      43 </span><span class="lineNoCov">          0 :     col.v = 1.0;</span>
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span><span class="lineNoCov">          0 :     if ( width&lt;10 ) width = 10;</span>
+<span class="lineNum">      46 </span><span class="lineNoCov">          0 :     if ( height&lt;10 ) height = 10;</span>
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 :     hh = height/2.0; hw = width/2.0;</span>
+<span class="lineNum">      48 </span>            : 
+<span class="lineNum">      49 </span><span class="lineNoCov">          0 :     wheel = GImageCreate(it_true,width,height);</span>
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 :     base = wheel-&gt;u.image;</span>
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;height; ++i ) {</span>
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 :         row = (uint32 *) (base-&gt;data + i*base-&gt;bytes_per_line);</span>
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :         y = (i-hh)/(hh-1);</span>
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :         for ( j=0; j&lt;width; ++j ) {</span>
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :             x = (j-hw)/(hw-1);</span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :             col.s = sqrt(x*x + y*y);</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :             if ( col.s&gt;1.0 ) {</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :                 *row++ = 0xffffff;</span>
+<span class="lineNum">      59 </span>            :             } else {
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 :                 col.h = atan2(y,x)*180/3.1415926535897932;</span>
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :                 if ( col.h &lt; 0 ) col.h += 360;</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :                 gHSV2RGB(&amp;col);</span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :                 *row++ = COLOR_CREATE( (int) rint(255*col.r), (int) rint(255*col.g), (int) rint(255*col.b));</span>
+<span class="lineNum">      64 </span>            :             }
+<span class="lineNum">      65 </span>            :         }
+<span class="lineNum">      66 </span>            :     }
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 : return( wheel );        </span>
+<span class="lineNum">      68 </span>            : }
+<a name="69"><span class="lineNum">      69 </span>            : </a>
+<span class="lineNum">      70 </span>            : #define GRAD_WIDTH      20
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 : static GImage *Gradient(int height) {</span>
+<span class="lineNum">      72 </span>            :     GImage *grad;
+<span class="lineNum">      73 </span>            :     struct _GImage *base;
+<span class="lineNum">      74 </span>            :     int i,j,c;
+<span class="lineNum">      75 </span>            :     uint32 *row;
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :     if ( height&lt;10 ) height = 10;</span>
+<span class="lineNum">      78 </span>            : 
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :     grad = GImageCreate(it_true,GRAD_WIDTH,height);</span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :     base = grad-&gt;u.image;</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;height; ++i ) {</span>
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :         row = (uint32 *) (base-&gt;data + i*base-&gt;bytes_per_line);</span>
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :         c = 255*(height-1-i)/(height-1);</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :         for ( j=0; j&lt;GRAD_WIDTH; ++j ) {</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :             *row++ = COLOR_CREATE(c,c,c);</span>
+<span class="lineNum">      86 </span>            :         }
+<span class="lineNum">      87 </span>            :     }
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 : return( grad );</span>
+<span class="lineNum">      89 </span>            : }
+<span class="lineNum">      90 </span>            : 
+<span class="lineNum">      91 </span>            : /* ************************************************************************** */
+<span class="lineNum">      92 </span>            : #define USEFUL_MAX      6
+<span class="lineNum">      93 </span>            : 
+<span class="lineNum">      94 </span>            : static uint8 image_data[] = {
+<span class="lineNum">      95 </span>            :     0x00, 0x00,
+<span class="lineNum">      96 </span>            :     0x7f, 0xfe,
+<span class="lineNum">      97 </span>            :     0x7f, 0xfe,
+<span class="lineNum">      98 </span>            :     0x7f, 0xfe,
+<span class="lineNum">      99 </span>            :     0x7f, 0xfe,
+<span class="lineNum">     100 </span>            :     0x7f, 0xfe,
+<span class="lineNum">     101 </span>            :     0x7f, 0xfe,
+<span class="lineNum">     102 </span>            :     0x7f, 0xfe,
+<span class="lineNum">     103 </span>            :     0x7f, 0xfe,
+<span class="lineNum">     104 </span>            :     0x7f, 0xfe,
+<span class="lineNum">     105 </span>            :     0x7f, 0xfe,
+<span class="lineNum">     106 </span>            :     0x00, 0x00,
+<span class="lineNum">     107 </span>            : };
+<span class="lineNum">     108 </span>            : static GClut cluts[2*USEFUL_MAX] = {
+<span class="lineNum">     109 </span>            :     { 2, 0, COLOR_UNKNOWN, GCLUT_CLUT_EMPTY },
+<span class="lineNum">     110 </span>            :     { 2, 0, COLOR_UNKNOWN, GCLUT_CLUT_EMPTY },
+<span class="lineNum">     111 </span>            :     { 2, 0, COLOR_UNKNOWN, GCLUT_CLUT_EMPTY },
+<span class="lineNum">     112 </span>            :     { 2, 0, COLOR_UNKNOWN, GCLUT_CLUT_EMPTY },
+<span class="lineNum">     113 </span>            :     { 2, 0, COLOR_UNKNOWN, GCLUT_CLUT_EMPTY },
+<span class="lineNum">     114 </span>            :     { 2, 0, COLOR_UNKNOWN, GCLUT_CLUT_EMPTY },
+<span class="lineNum">     115 </span>            :     { 2, 0, COLOR_UNKNOWN, GCLUT_CLUT_EMPTY },
+<span class="lineNum">     116 </span>            :     { 2, 0, COLOR_UNKNOWN, GCLUT_CLUT_EMPTY },
+<span class="lineNum">     117 </span>            :     { 2, 0, COLOR_UNKNOWN, GCLUT_CLUT_EMPTY },
+<span class="lineNum">     118 </span>            :     { 2, 0, COLOR_UNKNOWN, GCLUT_CLUT_EMPTY },
+<span class="lineNum">     119 </span>            :     { 2, 0, COLOR_UNKNOWN, GCLUT_CLUT_EMPTY },
+<span class="lineNum">     120 </span>            :     { 2, 0, COLOR_UNKNOWN, GCLUT_CLUT_EMPTY }
+<span class="lineNum">     121 </span>            : };
+<span class="lineNum">     122 </span>            : static struct _GImage bases[2*USEFUL_MAX] = {
+<span class="lineNum">     123 </span>            :     { it_mono, 0,16,12,2, (uint8 *) image_data, &amp;cluts[0], COLOR_UNKNOWN },
+<span class="lineNum">     124 </span>            :     { it_mono, 0,16,12,2, (uint8 *) image_data, &amp;cluts[1], COLOR_UNKNOWN },
+<span class="lineNum">     125 </span>            :     { it_mono, 0,16,12,2, (uint8 *) image_data, &amp;cluts[2], COLOR_UNKNOWN },
+<span class="lineNum">     126 </span>            :     { it_mono, 0,16,12,2, (uint8 *) image_data, &amp;cluts[3], COLOR_UNKNOWN },
+<span class="lineNum">     127 </span>            :     { it_mono, 0,16,12,2, (uint8 *) image_data, &amp;cluts[4], COLOR_UNKNOWN },
+<span class="lineNum">     128 </span>            :     { it_mono, 0,16,12,2, (uint8 *) image_data, &amp;cluts[5], COLOR_UNKNOWN },
+<span class="lineNum">     129 </span>            :     { it_mono, 0,16,12,2, (uint8 *) image_data, &amp;cluts[6], COLOR_UNKNOWN },
+<span class="lineNum">     130 </span>            :     { it_mono, 0,16,12,2, (uint8 *) image_data, &amp;cluts[7], COLOR_UNKNOWN },
+<span class="lineNum">     131 </span>            :     { it_mono, 0,16,12,2, (uint8 *) image_data, &amp;cluts[8], COLOR_UNKNOWN },
+<span class="lineNum">     132 </span>            :     { it_mono, 0,16,12,2, (uint8 *) image_data, &amp;cluts[9], COLOR_UNKNOWN },
+<span class="lineNum">     133 </span>            :     { it_mono, 0,16,12,2, (uint8 *) image_data, &amp;cluts[10], COLOR_UNKNOWN },
+<span class="lineNum">     134 </span>            :     { it_mono, 0,16,12,2, (uint8 *) image_data, &amp;cluts[11], COLOR_UNKNOWN }
+<span class="lineNum">     135 </span>            : };
+<span class="lineNum">     136 </span>            : static GImage blanks[2*USEFUL_MAX] = {
+<span class="lineNum">     137 </span>            :     { 0, { &amp;bases[0] }, NULL },
+<span class="lineNum">     138 </span>            :     { 0, { &amp;bases[1] }, NULL },
+<span class="lineNum">     139 </span>            :     { 0, { &amp;bases[2] }, NULL },
+<span class="lineNum">     140 </span>            :     { 0, { &amp;bases[3] }, NULL },
+<span class="lineNum">     141 </span>            :     { 0, { &amp;bases[4] }, NULL },
+<span class="lineNum">     142 </span>            :     { 0, { &amp;bases[5] }, NULL },
+<span class="lineNum">     143 </span>            :     { 0, { &amp;bases[6] }, NULL },
+<span class="lineNum">     144 </span>            :     { 0, { &amp;bases[7] }, NULL },
+<span class="lineNum">     145 </span>            :     { 0, { &amp;bases[8] }, NULL },
+<span class="lineNum">     146 </span>            :     { 0, { &amp;bases[9] }, NULL },
+<span class="lineNum">     147 </span>            :     { 0, { &amp;bases[10] }, NULL },
+<span class="lineNum">     148 </span>            :     { 0, { &amp;bases[11] }, NULL }
+<span class="lineNum">     149 </span>            : };
+<span class="lineNum">     150 </span>            : /* ************************************************************************** */
+<span class="lineNum">     151 </span>            : struct hslrgba recent_cols[USEFUL_MAX+1];
+<span class="lineNum">     152 </span>            : 
+<span class="lineNum">     153 </span>            : struct gcol_data {
+<span class="lineNum">     154 </span>            :     GImage *wheel;
+<span class="lineNum">     155 </span>            :     GImage *grad;
+<span class="lineNum">     156 </span>            :     int wheel_width, wheel_height;
+<span class="lineNum">     157 </span>            :     GWindow gw;
+<span class="lineNum">     158 </span>            :     GWindow wheelw, gradw, colw;
+<span class="lineNum">     159 </span>            :     int done, pressed;
+<span class="lineNum">     160 </span>            :     struct hslrgba col, origcol;
+<span class="lineNum">     161 </span>            :     struct hslrgba user_cols[USEFUL_MAX+1];
+<span class="lineNum">     162 </span>            : };
+<span class="lineNum">     163 </span>            : 
+<span class="lineNum">     164 </span>            : #define CID_Red         1001
+<span class="lineNum">     165 </span>            : #define CID_Green       1002
+<span class="lineNum">     166 </span>            : #define CID_Blue        1003
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span>            : #define CID_Hue         1011
+<span class="lineNum">     169 </span>            : #define CID_Saturation  1012
+<span class="lineNum">     170 </span>            : #define CID_Value       1013
+<span class="lineNum">     171 </span>            : 
+<span class="lineNum">     172 </span>            : #define CID_Alpha       1019
+<span class="lineNum">     173 </span>            : 
+<span class="lineNum">     174 </span>            : #define CID_Wheel       1021
+<span class="lineNum">     175 </span>            : #define CID_Grad        1022
+<span class="lineNum">     176 </span>            : #define CID_Color       1023
+<span class="lineNum">     177 </span>            : 
+<span class="lineNum">     178 </span>            : static int cids[] = { CID_Hue, CID_Saturation, CID_Value, CID_Red, CID_Green, CID_Blue, CID_Alpha, 0 };
+<a name="179"><span class="lineNum">     179 </span>            : static char *labnames[] = { N_(&quot;Hue:&quot;), N_(&quot;Saturation:&quot;), N_(&quot;Value:&quot;), N_(&quot;Red:&quot;), N_(&quot;Green:&quot;), N_(&quot;Blue:&quot;), N_(&quot;Opacity:&quot;) };</a>
+<span class="lineNum">     180 </span>            : 
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 : static int GCol_OK(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :         struct gcol_data *d = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :         double *offs[7] = { &amp;d-&gt;col.h, &amp;d-&gt;col.s, &amp;d-&gt;col.v, &amp;d-&gt;col.r, &amp;d-&gt;col.g, &amp;d-&gt;col.b, &amp;d-&gt;col.alpha };</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :         int err = false, i;</span>
+<span class="lineNum">     186 </span>            :         double val;
+<span class="lineNum">     187 </span>            : 
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;7; ++i ) {</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :             val = GetReal8(d-&gt;gw,cids[i],_(labnames[i]),&amp;err);</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :             if ( err )</span>
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :             if ( i==0 ) {</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :                 val = fmod(val,360);</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :                 if ( val&lt;0 ) val += 360;</span>
+<span class="lineNum">     195 </span>            :             } else {
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :                 if ( val&lt;0 || val&gt;1 ) {</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :                     gwwv_post_error(_(&quot;Value out of bounds&quot;), _(&quot;Saturation and Value, and the three colors must be between 0 and 1&quot;));</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     199 </span>            :                 }
+<span class="lineNum">     200 </span>            :             }
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :             *offs[i] = val;</span>
+<span class="lineNum">     202 </span>            :         }
+<span class="lineNum">     203 </span>            : 
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :         d-&gt;done = true;</span>
+<span class="lineNum">     205 </span>            :     }
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="207"><span class="lineNum">     207 </span>            : }</a>
+<span class="lineNum">     208 </span>            : 
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 : static int GCol_Cancel(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :         struct gcol_data *d = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :         d-&gt;col.rgb = d-&gt;col.hsv = false;</span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :         d-&gt;done = true;</span>
+<span class="lineNum">     214 </span>            :     }
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="216"><span class="lineNum">     216 </span>            : }</a>
+<span class="lineNum">     217 </span>            : 
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 : static int GCol_TextChanged(GGadget *g, GEvent *e) {</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :     if ( e-&gt;type==et_controlevent &amp;&amp; e-&gt;u.control.subtype == et_textchanged ) {</span>
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :         struct gcol_data *d = GDrawGetUserData(GGadgetGetWindow(g));</span>
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :         double *offs[7] = { &amp;d-&gt;col.h, &amp;d-&gt;col.s, &amp;d-&gt;col.v, &amp;d-&gt;col.r, &amp;d-&gt;col.g, &amp;d-&gt;col.b, &amp;d-&gt;col.alpha };</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :         int i, err = false;</span>
+<span class="lineNum">     223 </span>            :         int low, high;
+<span class="lineNum">     224 </span>            :         double val;
+<span class="lineNum">     225 </span>            :         char text[50];
+<span class="lineNum">     226 </span>            : 
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :         if ( GGadgetGetCid(g)==CID_Alpha ) {</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :             low = 3; high=7;</span>
+<span class="lineNum">     229 </span>            :             /* Didn't actually change the rgb values, but parse them */
+<span class="lineNum">     230 </span>            :             /*  This is in case we need to clear the error flag */
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :             d-&gt;col.hsv = false;</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :             d-&gt;col.rgb = true;</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :         } else if ( GGadgetGetCid(g)&gt;=CID_Hue ) {</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :             low = 0; high=3;</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :             d-&gt;col.hsv = true;</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :             d-&gt;col.rgb = false;</span>
+<span class="lineNum">     237 </span>            :         } else {
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :             low = 3; high=6;</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :             d-&gt;col.hsv = false;</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :             d-&gt;col.rgb = true;</span>
+<span class="lineNum">     241 </span>            :         }
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :         for ( i=low; i&lt;high; ++i ) {</span>
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :             val = GetCalmReal8(d-&gt;gw,cids[i],_(labnames[i]),&amp;err);</span>
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :             if ( err )</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :             if ( i==0 ) {</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :                 val = fmod(val,360);</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :                 if ( val&lt;0 ) val += 360;</span>
+<span class="lineNum">     249 </span>            :             } else {
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :                 if ( val&lt;0 || val&gt;1 ) {</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :                     err = true;</span>
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     253 </span>            :                 }
+<span class="lineNum">     254 </span>            :             }
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :             *offs[i] = val;</span>
+<span class="lineNum">     256 </span>            :         }
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :         if ( err ) {</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :             d-&gt;col.hsv = d-&gt;col.rgb = false;</span>
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :         } else if ( d-&gt;col.hsv ) {</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :             gHSV2RGB((struct hslrgb *) &amp;d-&gt;col);</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :             for ( i=3; i&lt;6; ++i ) {</span>
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :                 sprintf( text, &quot;%.2f&quot;, *offs[i]);</span>
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :                 GGadgetSetTitle8(GWidgetGetControl(d-&gt;gw,cids[i]),text);</span>
+<span class="lineNum">     264 </span>            :             }
+<span class="lineNum">     265 </span>            :         } else {
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :             gRGB2HSV((struct hslrgb *) &amp;d-&gt;col);</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :             sprintf( text, &quot;%3.0f&quot;, *offs[0]);</span>
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :             GGadgetSetTitle8(GWidgetGetControl(d-&gt;gw,cids[0]),text);</span>
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :             for ( i=1; i&lt;3; ++i ) {</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :                 sprintf( text, &quot;%.2f&quot;, *offs[i]);</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :                 GGadgetSetTitle8(GWidgetGetControl(d-&gt;gw,cids[i]),text);</span>
+<span class="lineNum">     272 </span>            :             }
+<span class="lineNum">     273 </span>            :         }
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(d-&gt;wheelw,NULL,false);</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(d-&gt;gradw,NULL,false);</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(d-&gt;colw,NULL,false);</span>
+<span class="lineNum">     277 </span>            :     }
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="279"><span class="lineNum">     279 </span>            : }</a>
+<span class="lineNum">     280 </span>            : 
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 : static void GCol_ShowTexts(struct gcol_data *d) {</span>
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :     double *offs[7] = { &amp;d-&gt;col.h, &amp;d-&gt;col.s, &amp;d-&gt;col.v, &amp;d-&gt;col.r, &amp;d-&gt;col.g, &amp;d-&gt;col.b, &amp;d-&gt;col.alpha };</span>
+<span class="lineNum">     283 </span>            :     int i;
+<span class="lineNum">     284 </span>            :     char text[50];
+<span class="lineNum">     285 </span>            : 
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :     gHSV2RGB((struct hslrgb *) &amp;d-&gt;col);</span>
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :     sprintf( text, &quot;%3.0f&quot;, *offs[0]);</span>
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :     GGadgetSetTitle8(GWidgetGetControl(d-&gt;gw,cids[0]),text);</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :     for ( i=1; i&lt;7; ++i ) {</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :         sprintf( text, &quot;%.2f&quot;, *offs[i]);</span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :         GGadgetSetTitle8(GWidgetGetControl(d-&gt;gw,cids[i]),text);</span>
+<span class="lineNum">     292 </span>            :     }
+<a name="293"><span class="lineNum">     293 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     294 </span>            : 
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 : static int wheel_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :     struct gcol_data *d = GDrawGetUserData(gw);</span>
+<span class="lineNum">     297 </span>            :     GRect size;
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :     if ( event-&gt;type==et_expose ) {</span>
+<span class="lineNum">     299 </span>            :         GRect circle;
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :         GDrawGetSize(d-&gt;wheelw,&amp;size);</span>
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :         if ( d-&gt;wheel==NULL || </span>
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 :                 GImageGetHeight(d-&gt;wheel)!=size.height ||</span>
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :                 GImageGetWidth(d-&gt;wheel)!=size.width ) {</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :             if ( d-&gt;wheel!=NULL )</span>
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 :                 GImageDestroy(d-&gt;wheel);</span>
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :             d-&gt;wheel = ColorWheel(size.width,size.height);</span>
+<span class="lineNum">     307 </span>            :         }
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 :         GDrawDrawImage(gw,d-&gt;wheel,NULL,0,0);</span>
+<span class="lineNum">     309 </span><span class="lineNoCov">          0 :         if ( d-&gt;col.hsv ) {</span>
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 :             double s = sin(d-&gt;col.h*3.1415926535897932/180.);</span>
+<span class="lineNum">     311 </span><span class="lineNoCov">          0 :             double c = cos(d-&gt;col.h*3.1415926535897932/180.);</span>
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 :             int y = (int) rint(d-&gt;col.s*(size.height-1)*s/2.0) + size.height/2;</span>
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :             int x = (int) rint(d-&gt;col.s*(size.width-1)*c/2.0) + size.width/2;</span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :             circle.x = x-3; circle.y = y-3;</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :             circle.width = circle.height = 7;</span>
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :             GDrawDrawElipse(gw,&amp;circle,0x000000);</span>
+<span class="lineNum">     317 </span>            :         }
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_mousedown ||</span>
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :             (event-&gt;type==et_mousemove &amp;&amp; d-&gt;pressed) ||</span>
+<span class="lineNum">     320 </span><span class="lineNoCov">          0 :             event-&gt;type==et_mouseup ) {</span>
+<span class="lineNum">     321 </span>            :         Color rgb;
+<span class="lineNum">     322 </span>            :         struct hslrgba temp;
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :         GDrawGetSize(d-&gt;wheelw,&amp;size);</span>
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :         if ( event-&gt;u.mouse.y&gt;=0 &amp;&amp; event-&gt;u.mouse.y&lt;size.height &amp;&amp;</span>
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :                 event-&gt;u.mouse.x&gt;=0 &amp;&amp; event-&gt;u.mouse.x&lt;size.width ) {</span>
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :             rgb = GImageGetPixelRGBA(d-&gt;wheel,event-&gt;u.mouse.x,event-&gt;u.mouse.y);</span>
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :             temp.r = ((rgb&gt;&gt;16)&amp;0xff)/255.;</span>
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :             temp.g = ((rgb&gt;&gt;8)&amp;0xff)/255.;</span>
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :             temp.b = ((rgb   )&amp;0xff)/255.;</span>
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 :             gRGB2HSV((struct hslrgb *) &amp;temp);</span>
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :             d-&gt;col.h = temp.h; d-&gt;col.s = temp.s;</span>
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 :             GCol_ShowTexts(d);</span>
+<span class="lineNum">     333 </span><span class="lineNoCov">          0 :             GDrawRequestExpose(d-&gt;colw,NULL,false);</span>
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :             GDrawRequestExpose(d-&gt;wheelw,NULL,false);</span>
+<span class="lineNum">     335 </span>            :         }
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :         if ( event-&gt;type == et_mousedown )</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :             d-&gt;pressed = true;</span>
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 :         else if ( event-&gt;type == et_mouseup )</span>
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 :             d-&gt;pressed = false;</span>
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type==et_resize ) {</span>
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(gw,NULL,false);</span>
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_char ) {</span>
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     344 </span>            :     }
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="346"><span class="lineNum">     346 </span>            : }</a>
+<span class="lineNum">     347 </span>            : 
+<span class="lineNum">     348 </span><span class="lineNoCov">          0 : static int grad_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :     struct gcol_data *d = GDrawGetUserData(gw);</span>
+<span class="lineNum">     350 </span>            :     GRect size;
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :     if ( event-&gt;type==et_expose ) {</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :         GDrawGetSize(d-&gt;wheelw,&amp;size);</span>
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 :         if ( d-&gt;grad==NULL || GImageGetHeight(d-&gt;grad)!=size.height ) {</span>
+<span class="lineNum">     354 </span><span class="lineNoCov">          0 :             if ( d-&gt;grad!=NULL )</span>
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :                 GImageDestroy(d-&gt;grad);</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :             d-&gt;grad = Gradient(size.height);</span>
+<span class="lineNum">     357 </span>            :         }
+<span class="lineNum">     358 </span><span class="lineNoCov">          0 :         GDrawDrawImage(gw,d-&gt;grad,NULL,0,0);</span>
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 :         if ( d-&gt;col.hsv ) {</span>
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :             int y = size.height-1-(int) rint(size.height*d-&gt;col.v);</span>
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 :             int col = d-&gt;col.v&gt;.5 ? 0x000000 : 0xffffff;</span>
+<span class="lineNum">     362 </span><span class="lineNoCov">          0 :             GDrawDrawLine(gw,0,y,GRAD_WIDTH,y,col);</span>
+<span class="lineNum">     363 </span>            :         }
+<span class="lineNum">     364 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_mousedown ||</span>
+<span class="lineNum">     365 </span><span class="lineNoCov">          0 :             (event-&gt;type==et_mousemove &amp;&amp; d-&gt;pressed) ||</span>
+<span class="lineNum">     366 </span><span class="lineNoCov">          0 :             event-&gt;type==et_mouseup ) {</span>
+<span class="lineNum">     367 </span><span class="lineNoCov">          0 :         GDrawGetSize(d-&gt;wheelw,&amp;size);</span>
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :         if ( event-&gt;u.mouse.y&lt;0 )</span>
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 :             event-&gt;u.mouse.y =0;</span>
+<span class="lineNum">     370 </span><span class="lineNoCov">          0 :         else if ( event-&gt;u.mouse.y&gt;=size.height )</span>
+<span class="lineNum">     371 </span><span class="lineNoCov">          0 :             event-&gt;u.mouse.y = size.height-1;</span>
+<span class="lineNum">     372 </span><span class="lineNoCov">          0 :         d-&gt;col.v = (size.height-1-event-&gt;u.mouse.y) / (double) (size.height-1);</span>
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 :         if ( d-&gt;col.v&lt;0 ) d-&gt;col.v = 0;</span>
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 :         if ( d-&gt;col.v&gt;1 ) d-&gt;col.v = 1;</span>
+<span class="lineNum">     375 </span><span class="lineNoCov">          0 :         GCol_ShowTexts(d);</span>
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(d-&gt;colw,NULL,false);</span>
+<span class="lineNum">     377 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(d-&gt;gradw,NULL,false);</span>
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 :         if ( event-&gt;type == et_mousedown )</span>
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :             d-&gt;pressed = true;</span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :         else if ( event-&gt;type == et_mouseup )</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :             d-&gt;pressed = false;</span>
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type==et_resize ) {</span>
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(gw,NULL,false);</span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_char ) {</span>
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     386 </span>            :     }
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="388"><span class="lineNum">     388 </span>            : }</a>
+<span class="lineNum">     389 </span>            : 
+<span class="lineNum">     390 </span><span class="lineNoCov">          0 : static void TranslucentRect(GWindow gw,GRect *size,int col,double alpha, int h) {</span>
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 :     if ( alpha==1.0 )</span>
+<span class="lineNum">     392 </span><span class="lineNoCov">          0 :         GDrawFillRect(gw,size,col);</span>
+<span class="lineNum">     393 </span>            :     else {
+<span class="lineNum">     394 </span><span class="lineNoCov">          0 :         int r = COLOR_RED(col), g = COLOR_GREEN(col), b = COLOR_BLUE(col);</span>
+<span class="lineNum">     395 </span><span class="lineNoCov">          0 :         double white_bias = 255.*(1.0-alpha);</span>
+<span class="lineNum">     396 </span><span class="lineNoCov">          0 :         Color dark = (((int) rint(r*alpha))&lt;&lt;16) |</span>
+<span class="lineNum">     397 </span><span class="lineNoCov">          0 :                      (((int) rint(g*alpha))&lt;&lt;8 ) |</span>
+<span class="lineNum">     398 </span><span class="lineNoCov">          0 :                      (((int) rint(b*alpha)) );</span>
+<span class="lineNum">     399 </span><span class="lineNoCov">          0 :         Color light= (((int) rint(white_bias+r*alpha))&lt;&lt;16) |</span>
+<span class="lineNum">     400 </span><span class="lineNoCov">          0 :                      (((int) rint(white_bias+g*alpha))&lt;&lt;8 ) |</span>
+<span class="lineNum">     401 </span><span class="lineNoCov">          0 :                      (((int) rint(white_bias+b*alpha)) );</span>
+<span class="lineNum">     402 </span>            :         GRect small, old;
+<span class="lineNum">     403 </span>            :         int x,y;
+<span class="lineNum">     404 </span><span class="lineNoCov">          0 :         int smallh = (h+1)/2;</span>
+<span class="lineNum">     405 </span>            : 
+<span class="lineNum">     406 </span><span class="lineNoCov">          0 :         small.height = small.width = smallh;</span>
+<span class="lineNum">     407 </span><span class="lineNoCov">          0 :         GDrawPushClip(gw,size,&amp;old);</span>
+<span class="lineNum">     408 </span><span class="lineNoCov">          0 :         for ( y=0; y&lt;2; ++y ) {</span>
+<span class="lineNum">     409 </span><span class="lineNoCov">          0 :             small.y = y*smallh;</span>
+<span class="lineNum">     410 </span><span class="lineNoCov">          0 :             for ( x=size-&gt;x/smallh; x&lt;=(size-&gt;x+size-&gt;width)/smallh; ++x ) {</span>
+<span class="lineNum">     411 </span><span class="lineNoCov">          0 :                 small.x = x*smallh;</span>
+<span class="lineNum">     412 </span><span class="lineNoCov">          0 :                 GDrawFillRect(gw,&amp;small,((x+y)&amp;1)?dark : light);</span>
+<span class="lineNum">     413 </span>            :             }
+<span class="lineNum">     414 </span>            :         }
+<span class="lineNum">     415 </span><span class="lineNoCov">          0 :         GDrawPopClip(gw,&amp;old);</span>
+<span class="lineNum">     416 </span>            :     }
+<a name="417"><span class="lineNum">     417 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     418 </span>            : 
+<span class="lineNum">     419 </span><span class="lineNoCov">          0 : static int col_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     420 </span>            :     GRect size, r;
+<span class="lineNum">     421 </span><span class="lineNoCov">          0 :     if ( event-&gt;type==et_expose ) {</span>
+<span class="lineNum">     422 </span><span class="lineNoCov">          0 :         struct gcol_data *d = GDrawGetUserData(gw);</span>
+<span class="lineNum">     423 </span><span class="lineNoCov">          0 :         GDrawGetSize(d-&gt;colw,&amp;size);</span>
+<span class="lineNum">     424 </span><span class="lineNoCov">          0 :         r = event-&gt;u.expose.rect;</span>
+<span class="lineNum">     425 </span><span class="lineNoCov">          0 :         if ( r.x&lt;size.width/2 ) {</span>
+<span class="lineNum">     426 </span><span class="lineNoCov">          0 :             int col = (((int) rint(255*d-&gt;origcol.r))&lt;&lt;16) |</span>
+<span class="lineNum">     427 </span><span class="lineNoCov">          0 :                       (((int) rint(255*d-&gt;origcol.g))&lt;&lt;8 ) |</span>
+<span class="lineNum">     428 </span><span class="lineNoCov">          0 :                       (((int) rint(255*d-&gt;origcol.b))    );</span>
+<span class="lineNum">     429 </span><span class="lineNoCov">          0 :             if ( r.x+r.width&gt;size.width/2 )</span>
+<span class="lineNum">     430 </span><span class="lineNoCov">          0 :                 r.width = size.width/2-r.x;</span>
+<span class="lineNum">     431 </span><span class="lineNoCov">          0 :             TranslucentRect(gw,&amp;r,col,d-&gt;origcol.alpha,size.height);</span>
+<span class="lineNum">     432 </span><span class="lineNoCov">          0 :             r.width = event-&gt;u.expose.rect.width;</span>
+<span class="lineNum">     433 </span>            :         }
+<span class="lineNum">     434 </span><span class="lineNoCov">          0 :         if ( r.x+r.width&gt;size.width/2 ) {</span>
+<span class="lineNum">     435 </span><span class="lineNoCov">          0 :             r.width = r.x+r.width - size.width/2;</span>
+<span class="lineNum">     436 </span><span class="lineNoCov">          0 :             r.x = size.width/2;</span>
+<span class="lineNum">     437 </span><span class="lineNoCov">          0 :             if ( d-&gt;col.rgb ) {</span>
+<span class="lineNum">     438 </span><span class="lineNoCov">          0 :                 int col = (((int) rint(255*d-&gt;col.r))&lt;&lt;16) |</span>
+<span class="lineNum">     439 </span><span class="lineNoCov">          0 :                           (((int) rint(255*d-&gt;col.g))&lt;&lt;8 ) |</span>
+<span class="lineNum">     440 </span><span class="lineNoCov">          0 :                           (((int) rint(255*d-&gt;col.b))    );</span>
+<span class="lineNum">     441 </span><span class="lineNoCov">          0 :                 TranslucentRect(gw,&amp;r,col,d-&gt;col.alpha,size.height);</span>
+<span class="lineNum">     442 </span>            :             } else {
+<span class="lineNum">     443 </span><span class="lineNoCov">          0 :                 GDrawSetStippled(gw,2,0,0);</span>
+<span class="lineNum">     444 </span><span class="lineNoCov">          0 :                 GDrawSetBackground(gw,0xffff00);</span>
+<span class="lineNum">     445 </span><span class="lineNoCov">          0 :                 GDrawFillRect(gw,&amp;r,0x000000);</span>
+<span class="lineNum">     446 </span><span class="lineNoCov">          0 :                 GDrawSetStippled(gw,0,0,0);</span>
+<span class="lineNum">     447 </span>            :             }
+<span class="lineNum">     448 </span>            :         }
+<span class="lineNum">     449 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_mousedown ) {</span>
+<span class="lineNum">     450 </span><span class="lineNoCov">          0 :         struct gcol_data *d = GDrawGetUserData(gw);</span>
+<span class="lineNum">     451 </span><span class="lineNoCov">          0 :         GDrawGetSize(d-&gt;colw,&amp;size);</span>
+<span class="lineNum">     452 </span><span class="lineNoCov">          0 :         if ( event-&gt;u.mouse.x&lt;size.width/2 ) {</span>
+<span class="lineNum">     453 </span><span class="lineNoCov">          0 :             d-&gt;col = d-&gt;origcol;</span>
+<span class="lineNum">     454 </span><span class="lineNoCov">          0 :             GCol_ShowTexts(d);</span>
+<span class="lineNum">     455 </span><span class="lineNoCov">          0 :             GDrawRequestExpose(d-&gt;wheelw,NULL,false);</span>
+<span class="lineNum">     456 </span><span class="lineNoCov">          0 :             GDrawRequestExpose(d-&gt;colw,NULL,false);</span>
+<span class="lineNum">     457 </span><span class="lineNoCov">          0 :             GDrawRequestExpose(d-&gt;gradw,NULL,false);</span>
+<span class="lineNum">     458 </span>            :         }
+<span class="lineNum">     459 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type==et_resize ) {</span>
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(gw,NULL,false);</span>
+<span class="lineNum">     461 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_char ) {</span>
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     463 </span>            :     }
+<span class="lineNum">     464 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="465"><span class="lineNum">     465 </span>            : }</a>
+<span class="lineNum">     466 </span>            : 
+<span class="lineNum">     467 </span><span class="lineNoCov">          0 : static void do_popup_color(GWindow gw,struct gmenuitem *mi,GEvent *e) {</span>
+<span class="lineNum">     468 </span><span class="lineNoCov">          0 :     struct gcol_data *d = GDrawGetUserData(gw);</span>
+<span class="lineNum">     469 </span><span class="lineNoCov">          0 :     const struct hslrgba *col = mi-&gt;ti.userdata;</span>
+<span class="lineNum">     470 </span>            : 
+<span class="lineNum">     471 </span><span class="lineNoCov">          0 :     d-&gt;col = *col;</span>
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 :     GCol_ShowTexts(d);</span>
+<span class="lineNum">     473 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(d-&gt;wheelw,NULL,false);</span>
+<span class="lineNum">     474 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(d-&gt;colw,NULL,false);</span>
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(d-&gt;gradw,NULL,false);</span>
+<a name="476"><span class="lineNum">     476 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     477 </span>            : 
+<span class="lineNum">     478 </span><span class="lineNoCov">          0 : static int popup_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     479 </span><span class="lineNoCov">          0 :     struct gcol_data *d = GDrawGetUserData(gw);</span>
+<span class="lineNum">     480 </span><span class="lineNoCov">          0 :     if ( recent_cols[0].hsv || d-&gt;user_cols[0].hsv ) {</span>
+<span class="lineNum">     481 </span><span class="lineNoCov">          0 :         if ( event-&gt;type==et_expose ) {</span>
+<span class="lineNum">     482 </span><span class="lineNoCov">          0 :             GDrawDrawLine(gw,1,1,GRAD_WIDTH-2,1,0x000000);</span>
+<span class="lineNum">     483 </span><span class="lineNoCov">          0 :             GDrawDrawLine(gw,1,1,GRAD_WIDTH/2-1,GRAD_WIDTH-2,0x000000);</span>
+<span class="lineNum">     484 </span><span class="lineNoCov">          0 :             GDrawDrawLine(gw,GRAD_WIDTH/2-1,GRAD_WIDTH-2,GRAD_WIDTH-2,1,0x000000);</span>
+<span class="lineNum">     485 </span><span class="lineNoCov">          0 :         } else if ( event-&gt;type == et_mousedown ) {</span>
+<span class="lineNum">     486 </span>            :             GMenuItem menu[2*USEFUL_MAX+2];
+<span class="lineNum">     487 </span>            :             int i,j,k;
+<span class="lineNum">     488 </span>            : 
+<span class="lineNum">     489 </span><span class="lineNoCov">          0 :             memset(menu,0,sizeof(menu));</span>
+<span class="lineNum">     490 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;USEFUL_MAX &amp;&amp; recent_cols[i].hsv; ++i ) {</span>
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 :                 menu[i].ti.image = &amp;blanks[i];</span>
+<span class="lineNum">     492 </span><span class="lineNoCov">          0 :                 cluts[i].clut[1] = (((int) rint(255.*recent_cols[i].r))&lt;&lt;16 ) |</span>
+<span class="lineNum">     493 </span><span class="lineNoCov">          0 :                                     (((int) rint(255.*recent_cols[i].g))&lt;&lt;8 ) |</span>
+<span class="lineNum">     494 </span><span class="lineNoCov">          0 :                                     (((int) rint(255.*recent_cols[i].b)) );</span>
+<span class="lineNum">     495 </span><span class="lineNoCov">          0 :                 menu[i].ti.fg = menu[i].ti.bg = COLOR_DEFAULT;</span>
+<span class="lineNum">     496 </span><span class="lineNoCov">          0 :                 menu[i].ti.userdata = &amp;recent_cols[i];</span>
+<span class="lineNum">     497 </span><span class="lineNoCov">          0 :                 menu[i].invoke = do_popup_color;</span>
+<span class="lineNum">     498 </span>            :             }
+<span class="lineNum">     499 </span><span class="lineNoCov">          0 :             j=i;</span>
+<span class="lineNum">     500 </span><span class="lineNoCov">          0 :             if ( i!=0 &amp;&amp; d-&gt;user_cols[0].hsv ) {</span>
+<span class="lineNum">     501 </span><span class="lineNoCov">          0 :                 menu[i].ti.line = true;</span>
+<span class="lineNum">     502 </span><span class="lineNoCov">          0 :                 menu[i].ti.fg = menu[i].ti.bg = COLOR_DEFAULT;</span>
+<span class="lineNum">     503 </span><span class="lineNoCov">          0 :                 ++i;</span>
+<span class="lineNum">     504 </span>            :             }
+<span class="lineNum">     505 </span><span class="lineNoCov">          0 :             for ( k=0; k&lt;USEFUL_MAX &amp;&amp; d-&gt;user_cols[k].hsv; ++k, ++i, ++j ) {</span>
+<span class="lineNum">     506 </span><span class="lineNoCov">          0 :                 menu[i].ti.image = &amp;blanks[j];</span>
+<span class="lineNum">     507 </span><span class="lineNoCov">          0 :                 cluts[j].clut[1] = (((int) rint(255.*d-&gt;user_cols[k].r))&lt;&lt;16 ) |</span>
+<span class="lineNum">     508 </span><span class="lineNoCov">          0 :                                     (((int) rint(255.*d-&gt;user_cols[k].g))&lt;&lt;8 ) |</span>
+<span class="lineNum">     509 </span><span class="lineNoCov">          0 :                                     (((int) rint(255.*d-&gt;user_cols[k].b)) );</span>
+<span class="lineNum">     510 </span><span class="lineNoCov">          0 :                 menu[i].ti.fg = menu[i].ti.bg = COLOR_DEFAULT;</span>
+<span class="lineNum">     511 </span><span class="lineNoCov">          0 :                 menu[i].ti.userdata = &amp;d-&gt;user_cols[k];</span>
+<span class="lineNum">     512 </span><span class="lineNoCov">          0 :                 menu[i].invoke = do_popup_color;</span>
+<span class="lineNum">     513 </span>            :             }
+<span class="lineNum">     514 </span><span class="lineNoCov">          0 :             GMenuCreatePopupMenu(gw,event, menu);</span>
+<span class="lineNum">     515 </span>            :         }
+<span class="lineNum">     516 </span>            :     }
+<span class="lineNum">     517 </span>            : 
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 :     if ( event-&gt;type == et_char )</span>
+<span class="lineNum">     519 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     520 </span>            : 
+<span class="lineNum">     521 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="522"><span class="lineNum">     522 </span>            : }</a>
+<span class="lineNum">     523 </span>            : 
+<span class="lineNum">     524 </span><span class="lineNoCov">          0 : static int e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     525 </span><span class="lineNoCov">          0 :     if ( event-&gt;type==et_close ) {</span>
+<span class="lineNum">     526 </span><span class="lineNoCov">          0 :         struct gcol_data *d = GDrawGetUserData(gw);</span>
+<span class="lineNum">     527 </span><span class="lineNoCov">          0 :         d-&gt;col.rgb = d-&gt;col.hsv = false;</span>
+<span class="lineNum">     528 </span><span class="lineNoCov">          0 :         d-&gt;done = true;</span>
+<span class="lineNum">     529 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_char ) {</span>
+<span class="lineNum">     530 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     531 </span>            :     }
+<span class="lineNum">     532 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="533"><span class="lineNum">     533 </span>            : }</a>
+<span class="lineNum">     534 </span>            : 
+<span class="lineNum">     535 </span><span class="lineNoCov">          0 : struct hslrgba GWidgetColorA(const char *title,struct hslrgba *defcol,struct hslrgba *usercols) {</span>
+<span class="lineNum">     536 </span>            :     GRect pos;
+<span class="lineNum">     537 </span>            :     GWindow gw;
+<span class="lineNum">     538 </span>            :     GWindowAttrs wattrs;
+<span class="lineNum">     539 </span>            :     GGadgetCreateData gcd[23], boxes[6], *txarray[9][3], *wheelarray[3][3], *barray[8], *hvarray[3][3];
+<span class="lineNum">     540 </span>            :     GTextInfo label[21];
+<span class="lineNum">     541 </span>            :     struct gcol_data d;
+<span class="lineNum">     542 </span>            :     int k, i;
+<span class="lineNum">     543 </span><span class="lineNoCov">          0 :     double *offs[7] = { &amp;d.col.h, &amp;d.col.s, &amp;d.col.v, &amp;d.col.r, &amp;d.col.g, &amp;d.col.b, &amp;d.col.alpha };</span>
+<span class="lineNum">     544 </span>            :     char values[7][40];
+<span class="lineNum">     545 </span>            : 
+<span class="lineNum">     546 </span><span class="lineNoCov">          0 :     GProgressPauseTimer();</span>
+<span class="lineNum">     547 </span><span class="lineNoCov">          0 :     memset(&amp;d,0,sizeof(d));</span>
+<span class="lineNum">     548 </span><span class="lineNoCov">          0 :     memset(&amp;wattrs,0,sizeof(wattrs));</span>
+<span class="lineNum">     549 </span><span class="lineNoCov">          0 :     wattrs.mask = wam_events|wam_cursor|wam_utf8_wtitle|wam_undercursor|wam_restrict|wam_isdlg;</span>
+<span class="lineNum">     550 </span><span class="lineNoCov">          0 :     wattrs.event_masks = ~(1&lt;&lt;et_charup);</span>
+<span class="lineNum">     551 </span><span class="lineNoCov">          0 :     wattrs.restrict_input_to_me = 1;</span>
+<span class="lineNum">     552 </span><span class="lineNoCov">          0 :     wattrs.undercursor = 1;</span>
+<span class="lineNum">     553 </span><span class="lineNoCov">          0 :     wattrs.is_dlg = true;</span>
+<span class="lineNum">     554 </span><span class="lineNoCov">          0 :     wattrs.cursor = ct_pointer;</span>
+<span class="lineNum">     555 </span><span class="lineNoCov">          0 :     wattrs.utf8_window_title = title;</span>
+<span class="lineNum">     556 </span><span class="lineNoCov">          0 :     pos.x = pos.y = 0;</span>
+<span class="lineNum">     557 </span><span class="lineNoCov">          0 :     pos.width = pos.height = 200;</span>
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :     d.gw = gw = GDrawCreateTopWindow(NULL,&amp;pos,e_h,&amp;d,&amp;wattrs);</span>
+<span class="lineNum">     559 </span>            : 
+<span class="lineNum">     560 </span><span class="lineNoCov">          0 :     if ( defcol!=NULL &amp;&amp; (defcol-&gt;rgb || defcol-&gt;hsv || defcol-&gt;hsl ))</span>
+<span class="lineNum">     561 </span><span class="lineNoCov">          0 :         d.col = *defcol;</span>
+<span class="lineNum">     562 </span><span class="lineNoCov">          0 :     else if ( recent_cols[0].hsv ) {</span>
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 :         d.col = recent_cols[0];</span>
+<span class="lineNum">     564 </span><span class="lineNoCov">          0 :         d.col.has_alpha = true;</span>
+<span class="lineNum">     565 </span><span class="lineNoCov">          0 :     } else if ( usercols!=NULL &amp;&amp; (usercols[0].rgb || usercols[0].hsv || usercols[0].hsl )) {</span>
+<span class="lineNum">     566 </span><span class="lineNoCov">          0 :         d.col = usercols[0];</span>
+<span class="lineNum">     567 </span><span class="lineNoCov">          0 :         d.col.has_alpha = true;</span>
+<span class="lineNum">     568 </span>            :     } else {
+<span class="lineNum">     569 </span><span class="lineNoCov">          0 :         d.col.rgb = true;</span>
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 :         d.col.r = d.col.g = d.col.b = 1.0;</span>
+<span class="lineNum">     571 </span><span class="lineNoCov">          0 :         d.col.alpha = 1.0;</span>
+<span class="lineNum">     572 </span><span class="lineNoCov">          0 :         d.col.has_alpha = true;</span>
+<span class="lineNum">     573 </span>            :     }
+<span class="lineNum">     574 </span><span class="lineNoCov">          0 :     if ( d.col.rgb ) {</span>
+<span class="lineNum">     575 </span><span class="lineNoCov">          0 :         if ( !d.col.hsv )</span>
+<span class="lineNum">     576 </span><span class="lineNoCov">          0 :             gRGB2HSV((struct hslrgb *) &amp;d.col);</span>
+<span class="lineNum">     577 </span><span class="lineNoCov">          0 :     } else if ( d.col.hsv )</span>
+<span class="lineNum">     578 </span><span class="lineNoCov">          0 :         gHSV2RGB((struct hslrgb *) &amp;d.col);</span>
+<span class="lineNum">     579 </span>            :     else {
+<span class="lineNum">     580 </span><span class="lineNoCov">          0 :         gHSL2RGB((struct hslrgb *) &amp;d.col);</span>
+<span class="lineNum">     581 </span><span class="lineNoCov">          0 :         gRGB2HSV((struct hslrgb *) &amp;d.col);</span>
+<span class="lineNum">     582 </span>            :     }
+<span class="lineNum">     583 </span><span class="lineNoCov">          0 :     d.origcol = d.col;</span>
+<span class="lineNum">     584 </span><span class="lineNoCov">          0 :     if ( usercols!=NULL ) {</span>
+<span class="lineNum">     585 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;6 &amp;&amp; (usercols[i].rgb || usercols[i].hsv || usercols[i].hsl ); ++i ) {</span>
+<span class="lineNum">     586 </span><span class="lineNoCov">          0 :             d.user_cols[i] = usercols[i];</span>
+<span class="lineNum">     587 </span><span class="lineNoCov">          0 :             if ( d.user_cols[i].rgb ) {</span>
+<span class="lineNum">     588 </span><span class="lineNoCov">          0 :                 if ( !d.user_cols[i].hsv )</span>
+<span class="lineNum">     589 </span><span class="lineNoCov">          0 :                     gRGB2HSV((struct hslrgb *) &amp;d.user_cols[i]);</span>
+<span class="lineNum">     590 </span><span class="lineNoCov">          0 :             } else if ( d.user_cols[i].hsv )</span>
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 :                 gHSV2RGB((struct hslrgb *) &amp;d.user_cols[i]);</span>
+<span class="lineNum">     592 </span>            :             else {
+<span class="lineNum">     593 </span><span class="lineNoCov">          0 :                 gHSL2RGB((struct hslrgb *) &amp;d.user_cols[i]);</span>
+<span class="lineNum">     594 </span><span class="lineNoCov">          0 :                 gRGB2HSV((struct hslrgb *) &amp;d.user_cols[i]);</span>
+<span class="lineNum">     595 </span>            :             }
+<span class="lineNum">     596 </span>            :         }
+<span class="lineNum">     597 </span>            :     }
+<span class="lineNum">     598 </span>            : 
+<span class="lineNum">     599 </span><span class="lineNoCov">          0 :     k=0;</span>
+<span class="lineNum">     600 </span><span class="lineNoCov">          0 :     memset(&amp;gcd,0,sizeof(gcd));</span>
+<span class="lineNum">     601 </span><span class="lineNoCov">          0 :     memset(&amp;label,0,sizeof(label));</span>
+<span class="lineNum">     602 </span><span class="lineNoCov">          0 :     memset(&amp;boxes,0,sizeof(boxes));</span>
+<span class="lineNum">     603 </span>            : 
+<span class="lineNum">     604 </span><span class="lineNoCov">          0 :     gcd[k].gd.pos.height = gcd[k].gd.pos.width = 150;</span>
+<span class="lineNum">     605 </span><span class="lineNoCov">          0 :     if ( d.col.has_alpha )</span>
+<span class="lineNum">     606 </span><span class="lineNoCov">          0 :         gcd[k].gd.pos.height = gcd[k].gd.pos.width = 170;</span>
+<span class="lineNum">     607 </span><span class="lineNoCov">          0 :     gcd[k].gd.flags = gg_visible | gg_enabled;</span>
+<span class="lineNum">     608 </span><span class="lineNoCov">          0 :     gcd[k].gd.u.drawable_e_h = wheel_e_h;</span>
+<span class="lineNum">     609 </span><span class="lineNoCov">          0 :     gcd[k].gd.cid = CID_Wheel;</span>
+<span class="lineNum">     610 </span><span class="lineNoCov">          0 :     gcd[k].creator = GDrawableCreate;</span>
+<span class="lineNum">     611 </span><span class="lineNoCov">          0 :     wheelarray[0][0] = &amp;gcd[k++];</span>
+<span class="lineNum">     612 </span>            : 
+<span class="lineNum">     613 </span><span class="lineNoCov">          0 :     gcd[k].gd.pos.height = 150; gcd[k].gd.pos.width = GRAD_WIDTH;</span>
+<span class="lineNum">     614 </span><span class="lineNoCov">          0 :     gcd[k].gd.flags = gg_visible | gg_enabled;</span>
+<span class="lineNum">     615 </span><span class="lineNoCov">          0 :     gcd[k].gd.u.drawable_e_h = grad_e_h;</span>
+<span class="lineNum">     616 </span><span class="lineNoCov">          0 :     gcd[k].gd.cid = CID_Grad;</span>
+<span class="lineNum">     617 </span><span class="lineNoCov">          0 :     gcd[k].creator = GDrawableCreate;</span>
+<span class="lineNum">     618 </span><span class="lineNoCov">          0 :     wheelarray[0][1] = &amp;gcd[k++]; wheelarray[0][2] = NULL;</span>
+<span class="lineNum">     619 </span>            : 
+<span class="lineNum">     620 </span><span class="lineNoCov">          0 :     gcd[k].gd.pos.width = 150; gcd[k].gd.pos.height = GRAD_WIDTH;</span>
+<span class="lineNum">     621 </span><span class="lineNoCov">          0 :     gcd[k].gd.flags = gg_visible | gg_enabled;</span>
+<span class="lineNum">     622 </span><span class="lineNoCov">          0 :     gcd[k].gd.u.drawable_e_h = col_e_h;</span>
+<span class="lineNum">     623 </span><span class="lineNoCov">          0 :     gcd[k].gd.cid = CID_Color;</span>
+<span class="lineNum">     624 </span><span class="lineNoCov">          0 :     gcd[k].creator = GDrawableCreate;</span>
+<span class="lineNum">     625 </span><span class="lineNoCov">          0 :     wheelarray[1][0] = &amp;gcd[k++];</span>
+<span class="lineNum">     626 </span>            : 
+<span class="lineNum">     627 </span><span class="lineNoCov">          0 :     gcd[k].gd.pos.width = GRAD_WIDTH; gcd[k].gd.pos.height = GRAD_WIDTH;</span>
+<span class="lineNum">     628 </span><span class="lineNoCov">          0 :     gcd[k].gd.flags = gg_visible | gg_enabled;</span>
+<span class="lineNum">     629 </span><span class="lineNoCov">          0 :     gcd[k].gd.u.drawable_e_h = popup_e_h;</span>
+<span class="lineNum">     630 </span><span class="lineNoCov">          0 :     gcd[k].creator = GDrawableCreate;</span>
+<span class="lineNum">     631 </span><span class="lineNoCov">          0 :     wheelarray[1][1] = &amp;gcd[k++]; wheelarray[1][2] = NULL;</span>
+<span class="lineNum">     632 </span><span class="lineNoCov">          0 :     wheelarray[2][0] = NULL;</span>
+<span class="lineNum">     633 </span>            : 
+<span class="lineNum">     634 </span><span class="lineNoCov">          0 :     boxes[2].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     635 </span><span class="lineNoCov">          0 :     boxes[2].gd.u.boxelements = wheelarray[0];</span>
+<span class="lineNum">     636 </span><span class="lineNoCov">          0 :     boxes[2].creator = GHVBoxCreate;</span>
+<span class="lineNum">     637 </span>            : 
+<span class="lineNum">     638 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;7; ++i ) {</span>
+<span class="lineNum">     639 </span><span class="lineNoCov">          0 :         label[k].text = (unichar_t *) _(labnames[i]);</span>
+<span class="lineNum">     640 </span><span class="lineNoCov">          0 :         label[k].text_is_1byte = true;</span>
+<span class="lineNum">     641 </span><span class="lineNoCov">          0 :         label[k].text_in_resource = true;</span>
+<span class="lineNum">     642 </span><span class="lineNoCov">          0 :         gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     643 </span><span class="lineNoCov">          0 :         gcd[k].gd.flags = gg_visible | gg_enabled ;</span>
+<span class="lineNum">     644 </span><span class="lineNoCov">          0 :         gcd[k++].creator = GLabelCreate;</span>
+<span class="lineNum">     645 </span><span class="lineNoCov">          0 :         txarray[i][0] = &amp;gcd[k-1];</span>
+<span class="lineNum">     646 </span>            : 
+<span class="lineNum">     647 </span><span class="lineNoCov">          0 :         if ( i==0 )</span>
+<span class="lineNum">     648 </span><span class="lineNoCov">          0 :             sprintf( values[0], &quot;%3.0f&quot;, *offs[0]);</span>
+<span class="lineNum">     649 </span>            :         else
+<span class="lineNum">     650 </span><span class="lineNoCov">          0 :             sprintf( values[i], &quot;%.2f&quot;, *offs[i]);</span>
+<span class="lineNum">     651 </span><span class="lineNoCov">          0 :         label[k].text = (unichar_t *) values[i];</span>
+<span class="lineNum">     652 </span><span class="lineNoCov">          0 :         label[k].text_is_1byte = true;</span>
+<span class="lineNum">     653 </span><span class="lineNoCov">          0 :         gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     654 </span><span class="lineNoCov">          0 :         gcd[k].gd.pos.width = 60;</span>
+<span class="lineNum">     655 </span><span class="lineNoCov">          0 :         gcd[k].gd.flags = gg_visible | gg_enabled;</span>
+<span class="lineNum">     656 </span><span class="lineNoCov">          0 :         gcd[k].gd.cid = cids[i];</span>
+<span class="lineNum">     657 </span><span class="lineNoCov">          0 :         gcd[k].gd.handle_controlevent = GCol_TextChanged;</span>
+<span class="lineNum">     658 </span><span class="lineNoCov">          0 :         gcd[k++].creator = i==0 ? GNumericFieldCreate : GTextFieldCreate;</span>
+<span class="lineNum">     659 </span><span class="lineNoCov">          0 :         txarray[i][1] = &amp;gcd[k-1]; txarray[i][2] = NULL;</span>
+<span class="lineNum">     660 </span>            :     }
+<span class="lineNum">     661 </span><span class="lineNoCov">          0 :     if ( !d.col.has_alpha ) {</span>
+<span class="lineNum">     662 </span><span class="lineNoCov">          0 :         gcd[k-1].gd.flags &amp;= ~gg_visible;</span>
+<span class="lineNum">     663 </span><span class="lineNoCov">          0 :         gcd[k-2].gd.flags &amp;= ~gg_visible;</span>
+<span class="lineNum">     664 </span>            :     }
+<span class="lineNum">     665 </span><span class="lineNoCov">          0 :     txarray[i][0] = txarray[i][1] = GCD_Glue; txarray[i][2] = NULL;</span>
+<span class="lineNum">     666 </span><span class="lineNoCov">          0 :     txarray[i+1][0] = NULL;</span>
+<span class="lineNum">     667 </span>            : 
+<span class="lineNum">     668 </span><span class="lineNoCov">          0 :     boxes[3].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     669 </span><span class="lineNoCov">          0 :     boxes[3].gd.u.boxelements = txarray[0];</span>
+<span class="lineNum">     670 </span><span class="lineNoCov">          0 :     boxes[3].creator = GHVBoxCreate;</span>
+<span class="lineNum">     671 </span>            : 
+<span class="lineNum">     672 </span><span class="lineNoCov">          0 :     gcd[k].gd.flags = gg_visible | gg_enabled | gg_but_default;</span>
+<span class="lineNum">     673 </span><span class="lineNoCov">          0 :     label[k].text = (unichar_t *) _(&quot;_OK&quot;);</span>
+<span class="lineNum">     674 </span><span class="lineNoCov">          0 :     label[k].text_is_1byte = true;</span>
+<span class="lineNum">     675 </span><span class="lineNoCov">          0 :     label[k].text_in_resource = true;</span>
+<span class="lineNum">     676 </span><span class="lineNoCov">          0 :     gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     677 </span><span class="lineNoCov">          0 :     gcd[k].gd.handle_controlevent = GCol_OK;</span>
+<span class="lineNum">     678 </span><span class="lineNoCov">          0 :     gcd[k++].creator = GButtonCreate;</span>
+<span class="lineNum">     679 </span><span class="lineNoCov">          0 :     barray[0] = GCD_Glue; barray[1] = &amp;gcd[k-1]; barray[2] = GCD_Glue;</span>
+<span class="lineNum">     680 </span>            : 
+<span class="lineNum">     681 </span><span class="lineNoCov">          0 :     gcd[k].gd.flags = gg_visible | gg_enabled | gg_but_cancel;</span>
+<span class="lineNum">     682 </span><span class="lineNoCov">          0 :     label[k].text = (unichar_t *) _(&quot;_Cancel&quot;);</span>
+<span class="lineNum">     683 </span><span class="lineNoCov">          0 :     label[k].text_is_1byte = true;</span>
+<span class="lineNum">     684 </span><span class="lineNoCov">          0 :     label[k].text_in_resource = true;</span>
+<span class="lineNum">     685 </span><span class="lineNoCov">          0 :     gcd[k].gd.label = &amp;label[k];</span>
+<span class="lineNum">     686 </span><span class="lineNoCov">          0 :     gcd[k].gd.handle_controlevent = GCol_Cancel;</span>
+<span class="lineNum">     687 </span><span class="lineNoCov">          0 :     gcd[k].creator = GButtonCreate;</span>
+<span class="lineNum">     688 </span><span class="lineNoCov">          0 :     barray[3] = GCD_Glue; barray[4] = &amp;gcd[k]; barray[5] = GCD_Glue;</span>
+<span class="lineNum">     689 </span><span class="lineNoCov">          0 :     barray[6] = NULL;</span>
+<span class="lineNum">     690 </span>            : 
+<span class="lineNum">     691 </span><span class="lineNoCov">          0 :     boxes[4].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     692 </span><span class="lineNoCov">          0 :     boxes[4].gd.u.boxelements = barray;</span>
+<span class="lineNum">     693 </span><span class="lineNoCov">          0 :     boxes[4].creator = GHBoxCreate;</span>
+<span class="lineNum">     694 </span>            : 
+<span class="lineNum">     695 </span><span class="lineNoCov">          0 :     hvarray[0][0] = &amp;boxes[2];</span>
+<span class="lineNum">     696 </span><span class="lineNoCov">          0 :     hvarray[0][1] = &amp;boxes[3];</span>
+<span class="lineNum">     697 </span><span class="lineNoCov">          0 :     hvarray[0][2] = NULL;</span>
+<span class="lineNum">     698 </span><span class="lineNoCov">          0 :     hvarray[1][0] = &amp;boxes[4];</span>
+<span class="lineNum">     699 </span><span class="lineNoCov">          0 :     hvarray[1][1] = GCD_ColSpan;</span>
+<span class="lineNum">     700 </span><span class="lineNoCov">          0 :     hvarray[1][2] = NULL;</span>
+<span class="lineNum">     701 </span><span class="lineNoCov">          0 :     hvarray[2][0] = NULL;</span>
+<span class="lineNum">     702 </span>            : 
+<span class="lineNum">     703 </span><span class="lineNoCov">          0 :     boxes[0].gd.pos.x = boxes[0].gd.pos.y = 2;</span>
+<span class="lineNum">     704 </span><span class="lineNoCov">          0 :     boxes[0].gd.flags = gg_enabled|gg_visible;</span>
+<span class="lineNum">     705 </span><span class="lineNoCov">          0 :     boxes[0].gd.u.boxelements = hvarray[0];</span>
+<span class="lineNum">     706 </span><span class="lineNoCov">          0 :     boxes[0].creator = GHVGroupCreate;</span>
+<span class="lineNum">     707 </span><span class="lineNoCov">          0 :     GGadgetsCreate(gw,boxes);</span>
+<span class="lineNum">     708 </span><span class="lineNoCov">          0 :     GHVBoxSetExpandableRow(boxes[0].ret,0);</span>
+<span class="lineNum">     709 </span><span class="lineNoCov">          0 :     GHVBoxSetExpandableCol(boxes[0].ret,0);</span>
+<span class="lineNum">     710 </span><span class="lineNoCov">          0 :     GHVBoxSetExpandableRow(boxes[2].ret,0);</span>
+<span class="lineNum">     711 </span><span class="lineNoCov">          0 :     GHVBoxSetExpandableCol(boxes[2].ret,0);</span>
+<span class="lineNum">     712 </span><span class="lineNoCov">          0 :     GHVBoxSetExpandableRow(boxes[3].ret,gb_expandglue);</span>
+<span class="lineNum">     713 </span><span class="lineNoCov">          0 :     GHVBoxSetExpandableCol(boxes[4].ret,gb_expandgluesame);</span>
+<span class="lineNum">     714 </span><span class="lineNoCov">          0 :     GHVBoxFitWindow(boxes[0].ret);</span>
+<span class="lineNum">     715 </span><span class="lineNoCov">          0 :     d.wheelw = GDrawableGetWindow(GWidgetGetControl(gw,CID_Wheel));</span>
+<span class="lineNum">     716 </span><span class="lineNoCov">          0 :     d.gradw  = GDrawableGetWindow(GWidgetGetControl(gw,CID_Grad));</span>
+<span class="lineNum">     717 </span><span class="lineNoCov">          0 :     d.colw   = GDrawableGetWindow(GWidgetGetControl(gw,CID_Color));</span>
+<span class="lineNum">     718 </span><span class="lineNoCov">          0 :     GDrawSetVisible(gw,true);</span>
+<span class="lineNum">     719 </span>            : 
+<span class="lineNum">     720 </span><span class="lineNoCov">          0 :     while ( !d.done )</span>
+<span class="lineNum">     721 </span><span class="lineNoCov">          0 :         GDrawProcessOneEvent(NULL);</span>
+<span class="lineNum">     722 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(gw);</span>
+<span class="lineNum">     723 </span><span class="lineNoCov">          0 :     if ( d.grad!=NULL )</span>
+<span class="lineNum">     724 </span><span class="lineNoCov">          0 :         GImageDestroy(d.grad);</span>
+<span class="lineNum">     725 </span><span class="lineNoCov">          0 :     if ( d.wheel!=NULL )</span>
+<span class="lineNum">     726 </span><span class="lineNoCov">          0 :         GImageDestroy(d.wheel);</span>
+<span class="lineNum">     727 </span><span class="lineNoCov">          0 :     if ( d.col.hsv || d.col.rgb ) {</span>
+<span class="lineNum">     728 </span>            :         int j;
+<span class="lineNum">     729 </span><span class="lineNoCov">          0 :         for ( j=0; j&lt;USEFUL_MAX; ++j )</span>
+<span class="lineNum">     730 </span><span class="lineNoCov">          0 :             if ( d.col.r==recent_cols[j].r &amp;&amp; d.col.g==recent_cols[j].g &amp;&amp;</span>
+<span class="lineNum">     731 </span><span class="lineNoCov">          0 :                     d.col.b==recent_cols[j].b &amp;&amp;</span>
+<span class="lineNum">     732 </span><span class="lineNoCov">          0 :                     (!d.col.has_alpha || d.col.alpha==recent_cols[j].alpha))</span>
+<span class="lineNum">     733 </span>            :         break;
+<span class="lineNum">     734 </span><span class="lineNoCov">          0 :         if ( j==USEFUL_MAX )</span>
+<span class="lineNum">     735 </span><span class="lineNoCov">          0 :             --j;</span>
+<span class="lineNum">     736 </span><span class="lineNoCov">          0 :         for ( ; j&gt;0; --j )</span>
+<span class="lineNum">     737 </span><span class="lineNoCov">          0 :             recent_cols[j] = recent_cols[j-1];</span>
+<span class="lineNum">     738 </span><span class="lineNoCov">          0 :         recent_cols[0] = d.col;</span>
+<span class="lineNum">     739 </span>            :     }
+<span class="lineNum">     740 </span><span class="lineNoCov">          0 : return( d.col );</span>
+<a name="741"><span class="lineNum">     741 </span>            : }</a>
+<span class="lineNum">     742 </span>            : 
+<span class="lineNum">     743 </span><span class="lineNoCov">          0 : struct hslrgb GWidgetColor(const char *title,struct hslrgb *defcol,struct hslrgb *usercols) {</span>
+<span class="lineNum">     744 </span>            :     struct hslrgba def, users[USEFUL_MAX+1], *d, *u, temp;
+<span class="lineNum">     745 </span>            :     struct hslrgb ret;
+<span class="lineNum">     746 </span>            :     int i;
+<span class="lineNum">     747 </span><span class="lineNoCov">          0 :     if ( usercols==NULL )</span>
+<span class="lineNum">     748 </span><span class="lineNoCov">          0 :         u = NULL;</span>
+<span class="lineNum">     749 </span>            :     else {
+<span class="lineNum">     750 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;6 &amp;&amp; (usercols[i].rgb || usercols[i].hsv || usercols[i].hsl ); ++i ) {</span>
+<span class="lineNum">     751 </span><span class="lineNoCov">          0 :             memcpy(&amp;users[i],&amp;usercols[i],sizeof(struct hslrgb));</span>
+<span class="lineNum">     752 </span><span class="lineNoCov">          0 :             users[i].has_alpha = 0;</span>
+<span class="lineNum">     753 </span><span class="lineNoCov">          0 :             users[i].alpha = 1.0;</span>
+<span class="lineNum">     754 </span>            :         }
+<span class="lineNum">     755 </span><span class="lineNoCov">          0 :         u = users;</span>
+<span class="lineNum">     756 </span>            :     }
+<span class="lineNum">     757 </span>            : 
+<span class="lineNum">     758 </span><span class="lineNoCov">          0 :     if ( defcol!=NULL )</span>
+<span class="lineNum">     759 </span><span class="lineNoCov">          0 :         memcpy(&amp;def,defcol,sizeof(*defcol));</span>
+<span class="lineNum">     760 </span><span class="lineNoCov">          0 :     else if ( recent_cols[0].hsv )</span>
+<span class="lineNum">     761 </span><span class="lineNoCov">          0 :         def = recent_cols[0];</span>
+<span class="lineNum">     762 </span><span class="lineNoCov">          0 :     else if ( u!=NULL &amp;&amp; (u[0].rgb || u[0].hsv || u[0].hsl ))</span>
+<span class="lineNum">     763 </span><span class="lineNoCov">          0 :         def = u[0];</span>
+<span class="lineNum">     764 </span>            :     else {
+<span class="lineNum">     765 </span><span class="lineNoCov">          0 :         def.rgb = true;</span>
+<span class="lineNum">     766 </span><span class="lineNoCov">          0 :         def.r = def.g = def.b = 1.0;</span>
+<span class="lineNum">     767 </span>            :     }
+<span class="lineNum">     768 </span><span class="lineNoCov">          0 :     def.has_alpha = false;</span>
+<span class="lineNum">     769 </span><span class="lineNoCov">          0 :     def.alpha = 1.0;</span>
+<span class="lineNum">     770 </span><span class="lineNoCov">          0 :     d = &amp;def;</span>
+<span class="lineNum">     771 </span><span class="lineNoCov">          0 :     temp = GWidgetColorA(title,d,u);</span>
+<span class="lineNum">     772 </span><span class="lineNoCov">          0 :     memcpy(&amp;ret,&amp;temp,sizeof(ret));</span>
+<span class="lineNum">     773 </span><span class="lineNoCov">          0 : return( ret );</span>
+<span class="lineNum">     774 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

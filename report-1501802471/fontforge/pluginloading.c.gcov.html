@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforge/pluginloading.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforge</a> - pluginloading.c<span style="font-size: 80%;"> (source / <a href="pluginloading.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">10</td>
+            <td class="headerCovTableEntry">29</td>
+            <td class="headerCovTableEntryLo">34.5 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntryLo">66.7 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2005-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            : #include &lt;fontforge-config.h&gt;
+<span class="lineNum">      29 </span>            : #include &lt;intl.h&gt;
+<span class="lineNum">      30 </span>            : #include &lt;basics.h&gt;
+<span class="lineNum">      31 </span>            : #include &lt;pluginloading.h&gt;
+<span class="lineNum">      32 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">      33 </span>            : 
+<a name="34"><span class="lineNum">      34 </span>            : static int inited = false;</a>
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span><span class="lineCov">         40 : void init_plugins(void) {</span>
+<span class="lineNum">      37 </span>            :     int err;
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span><span class="lineCov">         40 :     if (!inited)</span>
+<span class="lineNum">      40 </span>            :     {
+<span class="lineNum">      41 </span><span class="lineCov">         40 :         err = lt_dlinit();</span>
+<span class="lineNum">      42 </span><span class="lineCov">         40 :         if (1 &lt; err)</span>
+<span class="lineNum">      43 </span>            :         {
+<span class="lineNum">      44 </span><span class="lineNoCov">          0 :             fprintf(stderr, &quot;%d errors encountered during libltdl startup.\n&quot;,</span>
+<span class="lineNum">      45 </span>            :                      err);
+<span class="lineNum">      46 </span><span class="lineNoCov">          0 :             abort();</span>
+<span class="lineNum">      47 </span>            :         }
+<span class="lineNum">      48 </span><span class="lineCov">         40 :         else if (1 == err)</span>
+<span class="lineNum">      49 </span>            :         {
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 :             fprintf(stderr, &quot;1 error encountered during libltdl startup.\n&quot;);</span>
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 :             abort();</span>
+<span class="lineNum">      52 </span>            :         }
+<span class="lineNum">      53 </span>            : 
+<span class="lineNum">      54 </span>            : #ifdef PLUGINDIR
+<span class="lineNum">      55 </span><span class="lineCov">         40 :         lt_dladdsearchdir(PLUGINDIR);</span>
+<span class="lineNum">      56 </span>            : #endif /* PLUGINDIR */
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span><span class="lineCov">         40 :         inited = true;</span>
+<span class="lineNum">      59 </span>            :     }
+<a name="60"><span class="lineNum">      60 </span><span class="lineCov">         40 : }</span></a>
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span><span class="lineCov">         40 : int plugins_are_initialized(void) {</span>
+<span class="lineNum">      63 </span><span class="lineCov">         40 :     return inited;</span>
+<span class="lineNum">      64 </span>            : }
+<span class="lineNum">      65 </span>            : 
+<span class="lineNum">      66 </span>            : /* Load (or fake loading) a named plugin that is somewhere in the path
+<a name="67"><span class="lineNum">      67 </span>            :  * list for lt_dlopenext(). Optionally logs a message. Returns the</a>
+<span class="lineNum">      68 </span>            :  * plugin handle, or NULL. */
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 : lt_dlhandle load_plugin(const char *dynamic_lib_name, void (*logger)(const char *fmt,...)) {</span>
+<span class="lineNum">      70 </span>            :     lt_dlhandle plugin;
+<span class="lineNum">      71 </span>            :     int (*init)(void);
+<span class="lineNum">      72 </span>            : 
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :     plugin = lt_dlopenext(dynamic_lib_name);</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :     if ( plugin == NULL )</span>
+<span class="lineNum">      75 </span>            :     {
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :         if (logger != NULL)</span>
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :             logger(_(&quot;Failed to dlopen: %s\n%s&quot;), dynamic_lib_name, lt_dlerror());</span>
+<span class="lineNum">      78 </span>            :     }
+<span class="lineNum">      79 </span>            :     else
+<span class="lineNum">      80 </span>            :     {
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :         init = (int (*)(void)) lt_dlsym(plugin,&quot;FontForgeInit&quot;);</span>
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :         if ( init == NULL )</span>
+<span class="lineNum">      83 </span>            :         {
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :             if (logger != NULL)</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :                 logger(_(&quot;Failed to find init function in %s&quot;), dynamic_lib_name);</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :             lt_dlclose(plugin);</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :             plugin = NULL;</span>
+<span class="lineNum">      88 </span>            :         }
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :         else if ( (*init)()==0 )</span>
+<span class="lineNum">      90 </span>            :         { /* Init routine in charge of any
+<span class="lineNum">      91 </span>            :                                       * error messages */
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :             lt_dlclose(plugin);</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :             plugin = NULL;</span>
+<span class="lineNum">      94 </span>            :         }
+<span class="lineNum">      95 </span>            :     }
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :     return plugin;</span>
+<span class="lineNum">      97 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

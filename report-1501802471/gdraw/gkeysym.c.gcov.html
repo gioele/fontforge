@@ -1,0 +1,437 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - gdraw/gkeysym.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gdraw</a> - gkeysym.c<span style="font-size: 80%;"> (source / <a href="gkeysym.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #include &lt;stdio.h&gt;</a>
+<span class="lineNum">       2 </span>            : #include &lt;gdraw.h&gt;
+<span class="lineNum">       3 </span>            : #include &lt;gkeysym.h&gt;
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span>            : static unichar_t BackSpace[] = { 'B', 'a', 'c', 'k', 'S', 'p', 'a', 'c', 'e', '\0' };
+<span class="lineNum">       6 </span>            : static unichar_t Tab[] = { 'T', 'a', 'b', '\0' };
+<span class="lineNum">       7 </span>            : static unichar_t Linefeed[] = { 'L', 'i', 'n', 'e', 'f', 'e', 'e', 'd', '\0' };
+<span class="lineNum">       8 </span>            : static unichar_t Clear[] = { 'C', 'l', 'e', 'a', 'r', '\0' };
+<span class="lineNum">       9 </span>            : static unichar_t Return[] = { 'R', 'e', 't', 'u', 'r', 'n', '\0' };
+<span class="lineNum">      10 </span>            : static unichar_t Pause[] = { 'P', 'a', 'u', 's', 'e', '\0' };
+<span class="lineNum">      11 </span>            : static unichar_t Scroll_Lock[] = { 'S', 'c', 'r', 'o', 'l', 'l', '_', 'L', 'o', 'c', 'k', '\0' };
+<span class="lineNum">      12 </span>            : static unichar_t Sys_Req[] = { 'S', 'y', 's', '_', 'R', 'e', 'q', '\0' };
+<span class="lineNum">      13 </span>            : static unichar_t Escape[] = { 'E', 's', 'c', 'a', 'p', 'e', '\0' };
+<span class="lineNum">      14 </span>            : static unichar_t Delete[] = { 'D', 'e', 'l', 'e', 't', 'e', '\0' };
+<span class="lineNum">      15 </span>            : static unichar_t Home[] = { 'H', 'o', 'm', 'e', '\0' };
+<span class="lineNum">      16 </span>            : static unichar_t Left[] = { 'L', 'e', 'f', 't', '\0' };
+<span class="lineNum">      17 </span>            : static unichar_t Up[] = { 'U', 'p', '\0' };
+<span class="lineNum">      18 </span>            : static unichar_t Right[] = { 'R', 'i', 'g', 'h', 't', '\0' };
+<span class="lineNum">      19 </span>            : static unichar_t Down[] = { 'D', 'o', 'w', 'n', '\0' };
+<span class="lineNum">      20 </span>            : static unichar_t Page_Up[] = { 'P', 'a', 'g', 'e', 'U', 'p', '\0' };
+<span class="lineNum">      21 </span>            : static unichar_t Page_Down[] = { 'P', 'a', 'g', 'e', 'D', 'o', 'w', 'n', '\0' };
+<span class="lineNum">      22 </span>            : static unichar_t End[] = { 'E', 'n', 'd', '\0' };
+<span class="lineNum">      23 </span>            : static unichar_t Begin[] = { 'B', 'e', 'g', 'i', 'n', '\0' };
+<span class="lineNum">      24 </span>            : static unichar_t KP_Home[] = { 'K', 'P', '_', 'H', 'o', 'm', 'e', '\0' };
+<span class="lineNum">      25 </span>            : static unichar_t KP_Left[] = { 'K', 'P', '_', 'L', 'e', 'f', 't', '\0' };
+<span class="lineNum">      26 </span>            : static unichar_t KP_Up[] = { 'K', 'P', '_', 'U', 'p', '\0' };
+<span class="lineNum">      27 </span>            : static unichar_t KP_Right[] = { 'K', 'P', '_', 'R', 'i', 'g', 'h', 't', '\0' };
+<span class="lineNum">      28 </span>            : static unichar_t KP_Down[] = { 'K', 'P', '_', 'D', 'o', 'w', 'n', '\0' };
+<span class="lineNum">      29 </span>            : static unichar_t KP_Page_Up[] = { 'K', 'P', '_', 'P', 'a', 'g', 'e', 'U', 'p', '\0' };
+<span class="lineNum">      30 </span>            : static unichar_t KP_Page_Down[] = { 'K', 'P', '_', 'P', 'a', 'g', 'e', 'D', 'o', 'w', 'n', '\0' };
+<span class="lineNum">      31 </span>            : static unichar_t KP_End[] = { 'K', 'P', '_', 'E', 'n', 'd', '\0' };
+<span class="lineNum">      32 </span>            : static unichar_t KP_Begin[] = { 'K', 'P', '_', 'B', 'e', 'g', 'i', 'n', '\0' };
+<span class="lineNum">      33 </span>            : static unichar_t F1[] = { 'F', '1', '\0' };
+<span class="lineNum">      34 </span>            : static unichar_t F2[] = { 'F', '2', '\0' };
+<span class="lineNum">      35 </span>            : static unichar_t F3[] = { 'F', '3', '\0' };
+<span class="lineNum">      36 </span>            : static unichar_t F4[] = { 'F', '4', '\0' };
+<span class="lineNum">      37 </span>            : static unichar_t F5[] = { 'F', '5', '\0' };
+<span class="lineNum">      38 </span>            : static unichar_t F6[] = { 'F', '6', '\0' };
+<span class="lineNum">      39 </span>            : static unichar_t F7[] = { 'F', '7', '\0' };
+<span class="lineNum">      40 </span>            : static unichar_t F8[] = { 'F', '8', '\0' };
+<span class="lineNum">      41 </span>            : static unichar_t F9[] = { 'F', '9', '\0' };
+<span class="lineNum">      42 </span>            : static unichar_t F10[] = { 'F', '1', '0', '\0' };
+<span class="lineNum">      43 </span>            : static unichar_t F11[] = { 'F', '1', '1', '\0' };
+<span class="lineNum">      44 </span>            : static unichar_t F12[] = { 'F', '1', '2', '\0' };
+<span class="lineNum">      45 </span>            : static unichar_t F13[] = { 'F', '1', '3', '\0' };
+<span class="lineNum">      46 </span>            : static unichar_t F14[] = { 'F', '1', '4', '\0' };
+<span class="lineNum">      47 </span>            : static unichar_t F15[] = { 'F', '1', '5', '\0' };
+<span class="lineNum">      48 </span>            : static unichar_t F16[] = { 'F', '1', '6', '\0' };
+<span class="lineNum">      49 </span>            : static unichar_t F17[] = { 'F', '1', '7', '\0' };
+<span class="lineNum">      50 </span>            : static unichar_t F18[] = { 'F', '1', '8', '\0' };
+<span class="lineNum">      51 </span>            : static unichar_t F19[] = { 'F', '1', '9', '\0' };
+<span class="lineNum">      52 </span>            : static unichar_t F20[] = { 'F', '2', '0', '\0' };
+<span class="lineNum">      53 </span>            : static unichar_t F21[] = { 'F', '2', '1', '\0' };
+<span class="lineNum">      54 </span>            : static unichar_t F22[] = { 'F', '2', '2', '\0' };
+<span class="lineNum">      55 </span>            : static unichar_t F23[] = { 'F', '2', '3', '\0' };
+<span class="lineNum">      56 </span>            : static unichar_t F24[] = { 'F', '2', '4', '\0' };
+<span class="lineNum">      57 </span>            : static unichar_t F25[] = { 'F', '2', '5', '\0' };
+<span class="lineNum">      58 </span>            : static unichar_t F26[] = { 'F', '2', '6', '\0' };
+<span class="lineNum">      59 </span>            : static unichar_t F27[] = { 'F', '2', '7', '\0' };
+<span class="lineNum">      60 </span>            : static unichar_t F28[] = { 'F', '2', '8', '\0' };
+<span class="lineNum">      61 </span>            : static unichar_t F29[] = { 'F', '2', '9', '\0' };
+<span class="lineNum">      62 </span>            : static unichar_t F30[] = { 'F', '3', '0', '\0' };
+<span class="lineNum">      63 </span>            : static unichar_t F31[] = { 'F', '3', '1', '\0' };
+<span class="lineNum">      64 </span>            : static unichar_t F32[] = { 'F', '3', '2', '\0' };
+<span class="lineNum">      65 </span>            : static unichar_t F33[] = { 'F', '3', '3', '\0' };
+<span class="lineNum">      66 </span>            : static unichar_t F34[] = { 'F', '3', '4', '\0' };
+<span class="lineNum">      67 </span>            : static unichar_t F35[] = { 'F', '3', '5', '\0' };
+<span class="lineNum">      68 </span>            : static unichar_t Shift_L[] = { 'S', 'h', 'i', 'f', 't', '_', 'L', '\0' };
+<span class="lineNum">      69 </span>            : static unichar_t Shift_R[] = { 'S', 'h', 'i', 'f', 't', '_', 'R', '\0' };
+<span class="lineNum">      70 </span>            : static unichar_t Control_L[] = { 'C', 'o', 'n', 't', 'r', 'o', 'l', '_', 'L', '\0' };
+<span class="lineNum">      71 </span>            : static unichar_t Control_R[] = { 'C', 'o', 'n', 't', 'r', 'o', 'l', '_', 'R', '\0' };
+<span class="lineNum">      72 </span>            : static unichar_t Caps_Lock[] = { 'C', 'a', 'p', 's', '_', 'L', 'o', 'c', 'k', '\0' };
+<span class="lineNum">      73 </span>            : static unichar_t Shift_Lock[] = { 'S', 'h', 'i', 'f', 't', '_', 'L', 'o', 'c', 'k', '\0' };
+<span class="lineNum">      74 </span>            : static unichar_t Meta_L[] = { 'M', 'e', 't', 'a', '_', 'L', '\0' };
+<span class="lineNum">      75 </span>            : static unichar_t Meta_R[] = { 'M', 'e', 't', 'a', '_', 'R', '\0' };
+<span class="lineNum">      76 </span>            : static unichar_t Alt_L[] = { 'A', 'l', 't', '_', 'L', '\0' };
+<span class="lineNum">      77 </span>            : static unichar_t Alt_R[] = { 'A', 'l', 't', '_', 'R', '\0' };
+<span class="lineNum">      78 </span>            : static unichar_t Super_L[] = { 'S', 'u', 'p', 'e', 'r', '_', 'L', '\0' };
+<span class="lineNum">      79 </span>            : static unichar_t Super_R[] = { 'S', 'u', 'p', 'e', 'r', '_', 'R', '\0' };
+<span class="lineNum">      80 </span>            : static unichar_t Hyper_L[] = { 'H', 'y', 'p', 'e', 'r', '_', 'L', '\0' };
+<span class="lineNum">      81 </span>            : static unichar_t Hyper_R[] = { 'H', 'y', 'p', 'e', 'r', '_', 'R', '\0' };
+<span class="lineNum">      82 </span>            : 
+<span class="lineNum">      83 </span>            : unichar_t *GDrawKeysyms[] = { 
+<span class="lineNum">      84 </span>            :         NULL,
+<span class="lineNum">      85 </span>            :         NULL,
+<span class="lineNum">      86 </span>            :         NULL,
+<span class="lineNum">      87 </span>            :         NULL,
+<span class="lineNum">      88 </span>            :         NULL,
+<span class="lineNum">      89 </span>            :         NULL,
+<span class="lineNum">      90 </span>            :         NULL,
+<span class="lineNum">      91 </span>            :         NULL,
+<span class="lineNum">      92 </span>            :         BackSpace,
+<span class="lineNum">      93 </span>            :         Tab,
+<span class="lineNum">      94 </span>            :         Linefeed,
+<span class="lineNum">      95 </span>            :         Clear,
+<span class="lineNum">      96 </span>            :         NULL,
+<span class="lineNum">      97 </span>            :         Return,
+<span class="lineNum">      98 </span>            :         NULL,
+<span class="lineNum">      99 </span>            :         NULL,
+<span class="lineNum">     100 </span>            :         NULL,
+<span class="lineNum">     101 </span>            :         NULL,
+<span class="lineNum">     102 </span>            :         NULL,
+<span class="lineNum">     103 </span>            :         Pause,
+<span class="lineNum">     104 </span>            :         Scroll_Lock,
+<span class="lineNum">     105 </span>            :         Sys_Req,
+<span class="lineNum">     106 </span>            :         NULL,
+<span class="lineNum">     107 </span>            :         NULL,
+<span class="lineNum">     108 </span>            :         NULL,
+<span class="lineNum">     109 </span>            :         NULL,
+<span class="lineNum">     110 </span>            :         NULL,
+<span class="lineNum">     111 </span>            :         Escape,
+<span class="lineNum">     112 </span>            :         NULL,
+<span class="lineNum">     113 </span>            :         NULL,
+<span class="lineNum">     114 </span>            :         NULL,
+<span class="lineNum">     115 </span>            :         NULL,
+<span class="lineNum">     116 </span>            :         NULL,
+<span class="lineNum">     117 </span>            :         NULL,
+<span class="lineNum">     118 </span>            :         NULL,
+<span class="lineNum">     119 </span>            :         NULL,
+<span class="lineNum">     120 </span>            :         NULL,
+<span class="lineNum">     121 </span>            :         NULL,
+<span class="lineNum">     122 </span>            :         NULL,
+<span class="lineNum">     123 </span>            :         NULL,
+<span class="lineNum">     124 </span>            :         NULL,
+<span class="lineNum">     125 </span>            :         NULL,
+<span class="lineNum">     126 </span>            :         NULL,
+<span class="lineNum">     127 </span>            :         NULL,
+<span class="lineNum">     128 </span>            :         NULL,
+<span class="lineNum">     129 </span>            :         NULL,
+<span class="lineNum">     130 </span>            :         NULL,
+<span class="lineNum">     131 </span>            :         NULL,
+<span class="lineNum">     132 </span>            :         NULL,
+<span class="lineNum">     133 </span>            :         NULL,
+<span class="lineNum">     134 </span>            :         NULL,
+<span class="lineNum">     135 </span>            :         NULL,
+<span class="lineNum">     136 </span>            :         NULL,
+<span class="lineNum">     137 </span>            :         NULL,
+<span class="lineNum">     138 </span>            :         NULL,
+<span class="lineNum">     139 </span>            :         NULL,
+<span class="lineNum">     140 </span>            :         NULL,
+<span class="lineNum">     141 </span>            :         NULL,
+<span class="lineNum">     142 </span>            :         NULL,
+<span class="lineNum">     143 </span>            :         NULL,
+<span class="lineNum">     144 </span>            :         NULL,
+<span class="lineNum">     145 </span>            :         NULL,
+<span class="lineNum">     146 </span>            :         NULL,
+<span class="lineNum">     147 </span>            :         NULL,
+<span class="lineNum">     148 </span>            :         NULL,
+<span class="lineNum">     149 </span>            :         NULL,
+<span class="lineNum">     150 </span>            :         NULL,
+<span class="lineNum">     151 </span>            :         NULL,
+<span class="lineNum">     152 </span>            :         NULL,
+<span class="lineNum">     153 </span>            :         NULL,
+<span class="lineNum">     154 </span>            :         NULL,
+<span class="lineNum">     155 </span>            :         NULL,
+<span class="lineNum">     156 </span>            :         NULL,
+<span class="lineNum">     157 </span>            :         NULL,
+<span class="lineNum">     158 </span>            :         NULL,
+<span class="lineNum">     159 </span>            :         NULL,
+<span class="lineNum">     160 </span>            :         NULL,
+<span class="lineNum">     161 </span>            :         NULL,
+<span class="lineNum">     162 </span>            :         NULL,
+<span class="lineNum">     163 </span>            :         NULL,
+<span class="lineNum">     164 </span>            :         Home,
+<span class="lineNum">     165 </span>            :         Left,
+<span class="lineNum">     166 </span>            :         Up,
+<span class="lineNum">     167 </span>            :         Right,
+<span class="lineNum">     168 </span>            :         Down,
+<span class="lineNum">     169 </span>            :         Page_Up,
+<span class="lineNum">     170 </span>            :         Page_Down,
+<span class="lineNum">     171 </span>            :         End,
+<span class="lineNum">     172 </span>            :         Begin,
+<span class="lineNum">     173 </span>            :         NULL,
+<span class="lineNum">     174 </span>            :         NULL,
+<span class="lineNum">     175 </span>            :         NULL,
+<span class="lineNum">     176 </span>            :         NULL,
+<span class="lineNum">     177 </span>            :         NULL,
+<span class="lineNum">     178 </span>            :         NULL,
+<span class="lineNum">     179 </span>            :         NULL,
+<span class="lineNum">     180 </span>            :         NULL,
+<span class="lineNum">     181 </span>            :         NULL,
+<span class="lineNum">     182 </span>            :         NULL,
+<span class="lineNum">     183 </span>            :         NULL,
+<span class="lineNum">     184 </span>            :         NULL,
+<span class="lineNum">     185 </span>            :         NULL,
+<span class="lineNum">     186 </span>            :         NULL,
+<span class="lineNum">     187 </span>            :         NULL,
+<span class="lineNum">     188 </span>            :         NULL,
+<span class="lineNum">     189 </span>            :         NULL,
+<span class="lineNum">     190 </span>            :         NULL,
+<span class="lineNum">     191 </span>            :         NULL,
+<span class="lineNum">     192 </span>            :         NULL,
+<span class="lineNum">     193 </span>            :         NULL,
+<span class="lineNum">     194 </span>            :         NULL,
+<span class="lineNum">     195 </span>            :         NULL,
+<span class="lineNum">     196 </span>            :         NULL,
+<span class="lineNum">     197 </span>            :         NULL,
+<span class="lineNum">     198 </span>            :         NULL,
+<span class="lineNum">     199 </span>            :         NULL,
+<span class="lineNum">     200 </span>            :         NULL,
+<span class="lineNum">     201 </span>            :         NULL,
+<span class="lineNum">     202 </span>            :         NULL,
+<span class="lineNum">     203 </span>            :         NULL,
+<span class="lineNum">     204 </span>            :         NULL,
+<span class="lineNum">     205 </span>            :         NULL,
+<span class="lineNum">     206 </span>            :         NULL,
+<span class="lineNum">     207 </span>            :         NULL,
+<span class="lineNum">     208 </span>            :         NULL,
+<span class="lineNum">     209 </span>            :         NULL,
+<span class="lineNum">     210 </span>            :         NULL,
+<span class="lineNum">     211 </span>            :         NULL,
+<span class="lineNum">     212 </span>            :         NULL,
+<span class="lineNum">     213 </span>            :         NULL,
+<span class="lineNum">     214 </span>            :         NULL,
+<span class="lineNum">     215 </span>            :         NULL,
+<span class="lineNum">     216 </span>            :         NULL,
+<span class="lineNum">     217 </span>            :         NULL,
+<span class="lineNum">     218 </span>            :         NULL,
+<span class="lineNum">     219 </span>            :         NULL,
+<span class="lineNum">     220 </span>            :         NULL,
+<span class="lineNum">     221 </span>            :         NULL,
+<span class="lineNum">     222 </span>            :         NULL,
+<span class="lineNum">     223 </span>            :         NULL,
+<span class="lineNum">     224 </span>            :         NULL,
+<span class="lineNum">     225 </span>            :         NULL,
+<span class="lineNum">     226 </span>            :         NULL,
+<span class="lineNum">     227 </span>            :         NULL,
+<span class="lineNum">     228 </span>            :         NULL,
+<span class="lineNum">     229 </span>            :         NULL,
+<span class="lineNum">     230 </span>            :         NULL,
+<span class="lineNum">     231 </span>            :         NULL,
+<span class="lineNum">     232 </span>            :         NULL,
+<span class="lineNum">     233 </span>            :         KP_Home,
+<span class="lineNum">     234 </span>            :         KP_Left,
+<span class="lineNum">     235 </span>            :         KP_Up,
+<span class="lineNum">     236 </span>            :         KP_Right,
+<span class="lineNum">     237 </span>            :         KP_Down,
+<span class="lineNum">     238 </span>            :         KP_Page_Up,
+<span class="lineNum">     239 </span>            :         KP_Page_Down,
+<span class="lineNum">     240 </span>            :         KP_End,
+<span class="lineNum">     241 </span>            :         KP_Begin,
+<span class="lineNum">     242 </span>            :         NULL,
+<span class="lineNum">     243 </span>            :         NULL,
+<span class="lineNum">     244 </span>            :         NULL,
+<span class="lineNum">     245 </span>            :         NULL,
+<span class="lineNum">     246 </span>            :         NULL,
+<span class="lineNum">     247 </span>            :         NULL,
+<span class="lineNum">     248 </span>            :         NULL,
+<span class="lineNum">     249 </span>            :         NULL,
+<span class="lineNum">     250 </span>            :         NULL,
+<span class="lineNum">     251 </span>            :         NULL,
+<span class="lineNum">     252 </span>            :         NULL,
+<span class="lineNum">     253 </span>            :         NULL,
+<span class="lineNum">     254 </span>            :         NULL,
+<span class="lineNum">     255 </span>            :         NULL,
+<span class="lineNum">     256 </span>            :         NULL,
+<span class="lineNum">     257 </span>            :         NULL,
+<span class="lineNum">     258 </span>            :         NULL,
+<span class="lineNum">     259 </span>            :         NULL,
+<span class="lineNum">     260 </span>            :         NULL,
+<span class="lineNum">     261 </span>            :         NULL,
+<span class="lineNum">     262 </span>            :         NULL,
+<span class="lineNum">     263 </span>            :         NULL,
+<span class="lineNum">     264 </span>            :         NULL,
+<span class="lineNum">     265 </span>            :         NULL,
+<span class="lineNum">     266 </span>            :         NULL,
+<span class="lineNum">     267 </span>            :         NULL,
+<span class="lineNum">     268 </span>            :         NULL,
+<span class="lineNum">     269 </span>            :         NULL,
+<span class="lineNum">     270 </span>            :         NULL,
+<span class="lineNum">     271 </span>            :         NULL,
+<span class="lineNum">     272 </span>            :         NULL,
+<span class="lineNum">     273 </span>            :         NULL,
+<span class="lineNum">     274 </span>            :         F1,
+<span class="lineNum">     275 </span>            :         F2,
+<span class="lineNum">     276 </span>            :         F3,
+<span class="lineNum">     277 </span>            :         F4,
+<span class="lineNum">     278 </span>            :         F5,
+<span class="lineNum">     279 </span>            :         F6,
+<span class="lineNum">     280 </span>            :         F7,
+<span class="lineNum">     281 </span>            :         F8,
+<span class="lineNum">     282 </span>            :         F9,
+<span class="lineNum">     283 </span>            :         F10,
+<span class="lineNum">     284 </span>            :         F11,
+<span class="lineNum">     285 </span>            :         F12,
+<span class="lineNum">     286 </span>            :         F13,
+<span class="lineNum">     287 </span>            :         F14,
+<span class="lineNum">     288 </span>            :         F15,
+<span class="lineNum">     289 </span>            :         F16,
+<span class="lineNum">     290 </span>            :         F17,
+<span class="lineNum">     291 </span>            :         F18,
+<span class="lineNum">     292 </span>            :         F19,
+<span class="lineNum">     293 </span>            :         F20,
+<span class="lineNum">     294 </span>            :         F21,
+<span class="lineNum">     295 </span>            :         F22,
+<span class="lineNum">     296 </span>            :         F23,
+<span class="lineNum">     297 </span>            :         F24,
+<span class="lineNum">     298 </span>            :         F25,
+<span class="lineNum">     299 </span>            :         F26,
+<span class="lineNum">     300 </span>            :         F27,
+<span class="lineNum">     301 </span>            :         F28,
+<span class="lineNum">     302 </span>            :         F29,
+<span class="lineNum">     303 </span>            :         F30,
+<span class="lineNum">     304 </span>            :         F31,
+<span class="lineNum">     305 </span>            :         F32,
+<span class="lineNum">     306 </span>            :         F33,
+<span class="lineNum">     307 </span>            :         F34,
+<span class="lineNum">     308 </span>            :         F35,
+<span class="lineNum">     309 </span>            :         Shift_L,
+<span class="lineNum">     310 </span>            :         Shift_R,
+<span class="lineNum">     311 </span>            :         Control_L,
+<span class="lineNum">     312 </span>            :         Control_R,
+<span class="lineNum">     313 </span>            :         Caps_Lock,
+<span class="lineNum">     314 </span>            :         Shift_Lock,
+<span class="lineNum">     315 </span>            :         Meta_L,
+<span class="lineNum">     316 </span>            :         Meta_R,
+<span class="lineNum">     317 </span>            :         Alt_L,
+<span class="lineNum">     318 </span>            :         Alt_R,
+<span class="lineNum">     319 </span>            :         Super_L,
+<span class="lineNum">     320 </span>            :         Super_R,
+<span class="lineNum">     321 </span>            :         Hyper_L,
+<span class="lineNum">     322 </span>            :         Hyper_R,
+<span class="lineNum">     323 </span>            :         NULL,
+<span class="lineNum">     324 </span>            :         NULL,
+<span class="lineNum">     325 </span>            :         NULL,
+<span class="lineNum">     326 </span>            :         NULL,
+<span class="lineNum">     327 </span>            :         NULL,
+<span class="lineNum">     328 </span>            :         NULL,
+<span class="lineNum">     329 </span>            :         NULL,
+<span class="lineNum">     330 </span>            :         NULL,
+<span class="lineNum">     331 </span>            :         NULL,
+<span class="lineNum">     332 </span>            :         NULL,
+<span class="lineNum">     333 </span>            :         NULL,
+<span class="lineNum">     334 </span>            :         NULL,
+<span class="lineNum">     335 </span>            :         NULL,
+<span class="lineNum">     336 </span>            :         NULL,
+<span class="lineNum">     337 </span>            :         NULL,
+<span class="lineNum">     338 </span>            :         NULL,
+<span class="lineNum">     339 </span>            :         Delete,
+<span class="lineNum">     340 </span>            :         NULL
+<a name="341"><span class="lineNum">     341 </span>            : };</a>
+<span class="lineNum">     342 </span>            : 
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 : int GKeysymIsModifier(uint16 keysym) {</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :     switch(keysym) {</span>
+<span class="lineNum">     345 </span>            :         case GK_Shift_L:
+<span class="lineNum">     346 </span>            :         case GK_Shift_R:
+<span class="lineNum">     347 </span>            :         case GK_Control_L:
+<span class="lineNum">     348 </span>            :         case GK_Control_R:
+<span class="lineNum">     349 </span>            :         case GK_Meta_L:
+<span class="lineNum">     350 </span>            :         case GK_Meta_R:
+<span class="lineNum">     351 </span>            :         case GK_Alt_L:
+<span class="lineNum">     352 </span>            :         case GK_Alt_R:
+<span class="lineNum">     353 </span>            :         case GK_Super_L:
+<span class="lineNum">     354 </span>            :         case GK_Super_R:
+<span class="lineNum">     355 </span>            :         case GK_Hyper_L:
+<span class="lineNum">     356 </span>            :         case GK_Hyper_R:
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :             return true;</span>
+<span class="lineNum">     358 </span>            :         default:
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 :             return false;</span>
+<span class="lineNum">     360 </span>            :     }
+<span class="lineNum">     361 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

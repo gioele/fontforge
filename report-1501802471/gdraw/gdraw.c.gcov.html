@@ -1,0 +1,1247 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - gdraw/gdraw.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gdraw</a> - gdraw.c<span style="font-size: 80%;"> (source / <a href="gdraw.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">6</td>
+            <td class="headerCovTableEntry">705</td>
+            <td class="headerCovTableEntryLo">0.9 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">153</td>
+            <td class="headerCovTableEntryLo">1.3 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &quot;gdrawP.h&quot;
+<span class="lineNum">      28 </span>            : #include &lt;gkeysym.h&gt;
+<span class="lineNum">      29 </span>            : #include &lt;ustring.h&gt;
+<span class="lineNum">      30 </span>            : #include &lt;gio.h&gt;
+<span class="lineNum">      31 </span>            : #include &quot;gdraw.h&quot;
+<span class="lineNum">      32 </span>            : #if __Mac
+<span class="lineNum">      33 </span>            : #  include &lt;sys/select.h&gt;
+<span class="lineNum">      34 </span>            : #endif
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            : 
+<span class="lineNum">      37 </span>            : 
+<span class="lineNum">      38 </span>            : /* Functions for font metrics:
+<span class="lineNum">      39 </span>            :     rectangle of text (left side bearing of first char, right of last char)
+<span class="lineNum">      40 </span>            : */
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            : GDisplay *screen_display = NULL;
+<span class="lineNum">      43 </span>            : GDisplay *printer_display = NULL;
+<span class="lineNum">      44 </span>            : void (*_GDraw_BuildCharHook)(GDisplay *) = NULL;
+<a name="45"><span class="lineNum">      45 </span>            : void (*_GDraw_InsCharHook)(GDisplay *,unichar_t) = NULL;</a>
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 : void GDrawTerm(GDisplay *disp) {</span>
+<span class="lineNum">      48 </span><span class="lineNoCov">          0 :     (disp-&gt;funcs-&gt;term)(disp);</span>
+<a name="49"><span class="lineNum">      49 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 : int GDrawGetRes(GWindow gw) {</span>
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 :     if ( gw==NULL ) {</span>
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :         if ( screen_display==NULL )</span>
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 : return( 100 );</span>
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :         gw = screen_display-&gt;groot;</span>
+<span class="lineNum">      56 </span>            :     }
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 : return( gw-&gt;display-&gt;res );</span>
+<a name="58"><span class="lineNum">      58 </span>            : }</a>
+<span class="lineNum">      59 </span>            : 
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 : int GDrawPointsToPixels(GWindow gw,int points) {</span>
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :     if ( gw==NULL ) {</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :         if ( screen_display==NULL )</span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 : return( PointToPixel(points,100));</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :         gw = screen_display-&gt;groot;</span>
+<span class="lineNum">      65 </span>            :     }
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 : return( PointToPixel(points,gw-&gt;display-&gt;res));</span>
+<a name="67"><span class="lineNum">      67 </span>            : }</a>
+<span class="lineNum">      68 </span>            : 
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 : int GDrawPixelsToPoints(GWindow gw,int pixels) {</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :     if ( gw==NULL ) {</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :         if ( screen_display==NULL )</span>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 : return( PixelToPoint(pixels,100));</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :         gw = screen_display-&gt;groot;</span>
+<span class="lineNum">      74 </span>            :     }
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 : return( PixelToPoint(pixels,gw-&gt;display-&gt;res));</span>
+<a name="76"><span class="lineNum">      76 </span>            : }</a>
+<span class="lineNum">      77 </span>            : 
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 : void GDrawSetDefaultIcon(GWindow icon) {</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :     (icon-&gt;display-&gt;funcs-&gt;setDefaultIcon)(icon);</span>
+<a name="80"><span class="lineNum">      80 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 : GWindow GDrawCreateTopWindow(GDisplay *gdisp, GRect *pos,</span>
+<span class="lineNum">      83 </span>            :         int (*eh)(GWindow,GEvent *), void *user_data, GWindowAttrs *wattrs) {
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :     if ( gdisp==NULL ) gdisp = screen_display;</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 : return( (gdisp-&gt;funcs-&gt;createTopWindow)(gdisp,pos,eh,user_data,wattrs) );</span>
+<a name="86"><span class="lineNum">      86 </span>            : }</a>
+<span class="lineNum">      87 </span>            : 
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 : GWindow GDrawCreateSubWindow(GWindow w, GRect *pos,</span>
+<span class="lineNum">      89 </span>            :         int (*eh)(GWindow,GEvent *), void *user_data, GWindowAttrs *wattrs) {
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 : return( (w-&gt;display-&gt;funcs-&gt;createSubWindow)(w,pos,eh,user_data,wattrs) );</span>
+<a name="91"><span class="lineNum">      91 </span>            : }</a>
+<span class="lineNum">      92 </span>            : 
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 : GWindow GDrawCreatePixmap(GDisplay *gdisp, uint16 width, uint16 height) {</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :     if ( gdisp==NULL ) gdisp = screen_display;</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 : return( (gdisp-&gt;funcs-&gt;createPixmap)(gdisp,width,height));</span>
+<a name="96"><span class="lineNum">      96 </span>            : }</a>
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 : GWindow GDrawCreateBitmap(GDisplay *gdisp, uint16 width, uint16 height, uint8 *data) {</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :     if ( gdisp==NULL ) gdisp = screen_display;</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 : return( (gdisp-&gt;funcs-&gt;createBitmap)(gdisp,width,height,data));</span>
+<a name="101"><span class="lineNum">     101 </span>            : }</a>
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 : GCursor GDrawCreateCursor(GWindow src,GWindow mask,Color fg,Color bg,</span>
+<span class="lineNum">     104 </span>            :         int16 x, int16 y ) {
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 : return( (src-&gt;display-&gt;funcs-&gt;createCursor)(src,mask,fg,bg,x,y));</span>
+<a name="106"><span class="lineNum">     106 </span>            : }</a>
+<span class="lineNum">     107 </span>            : 
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 : void GDrawDestroyWindow(GWindow w) {</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;destroyWindow)(w);</span>
+<a name="110"><span class="lineNum">     110 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     111 </span>            : 
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 : void GDrawSetZoom(GWindow w,GRect *zoom, enum gzoom_flags flags) {</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;setZoom)(w,zoom,flags);</span>
+<a name="114"><span class="lineNum">     114 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     115 </span>            : 
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 : void GDrawDestroyCursor(GDisplay *gdisp, GCursor ct) {</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :     if ( gdisp==NULL ) gdisp = screen_display;</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :     (gdisp-&gt;funcs-&gt;destroyCursor)(gdisp,ct);</span>
+<a name="119"><span class="lineNum">     119 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     120 </span>            : 
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 : int GDrawNativeWindowExists(GDisplay *gdisp, void *native) {</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :     if ( gdisp==NULL ) gdisp = screen_display;</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 : return( (gdisp-&gt;funcs-&gt;nativeWindowExists)(gdisp,native) );</span>
+<a name="124"><span class="lineNum">     124 </span>            : }</a>
+<span class="lineNum">     125 </span>            : 
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 : void GDrawSetWindowBackground(GWindow w,Color col) {</span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;setWindowBackground)(w,col);</span>
+<a name="128"><span class="lineNum">     128 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     129 </span>            : 
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 : void GDrawSetWindowBorder(GWindow w,int width,Color col) {</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;setWindowBorder)(w,width,col);</span>
+<a name="132"><span class="lineNum">     132 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     133 </span>            : 
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 : int GDrawSetDither(GDisplay *gdisp, int dither) {</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :     if ( gdisp==NULL ) gdisp = screen_display;</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 : return( (gdisp-&gt;funcs-&gt;setDither)(gdisp,dither) );</span>
+<a name="137"><span class="lineNum">     137 </span>            : }</a>
+<span class="lineNum">     138 </span>            : 
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 : void GDrawReparentWindow(GWindow child, GWindow parent, int x, int y) {</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :     (child-&gt;display-&gt;funcs-&gt;reparentWindow)(child,parent,x,y);</span>
+<a name="141"><span class="lineNum">     141 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     142 </span>            : 
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 : void GDrawSetVisible(GWindow w, int visible) {</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;setVisible)(w,visible);</span>
+<a name="145"><span class="lineNum">     145 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     146 </span>            : 
+<span class="lineNum">     147 </span><span class="lineCov">         25 : int GDrawIsVisible(GWindow w) {</span>
+<span class="lineNum">     148 </span><span class="lineCov">         25 :     if ( w==NULL )</span>
+<span class="lineNum">     149 </span><span class="lineCov">         25 : return( false );</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :     while ( w!=NULL &amp;&amp; ( w-&gt;is_visible || w-&gt;is_pixmap ))</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :         w = w-&gt;parent;</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 : return( w==NULL );</span>
+<a name="153"><span class="lineNum">     153 </span>            : }</a>
+<span class="lineNum">     154 </span>            : 
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 : void GDrawMove(GWindow w, int32 x, int32 y) {</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;move)(w,x,y);</span>
+<a name="157"><span class="lineNum">     157 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     158 </span>            : 
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 : void GDrawTrueMove(GWindow w, int32 x, int32 y) {</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;trueMove)(w,x,y);</span>
+<a name="161"><span class="lineNum">     161 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 : void GDrawResize(GWindow w, int32 width, int32 height) {</span>
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;resize)(w,width,height);</span>
+<a name="165"><span class="lineNum">     165 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     166 </span>            : 
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 : void GDrawMoveResize(GWindow w, int32 x, int32 y, int32 width, int32 height) {</span>
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;moveResize)(w,x,y,width,height);</span>
+<a name="169"><span class="lineNum">     169 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     170 </span>            : 
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 : GWindow GDrawGetRoot(GDisplay *gdisp) {</span>
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :     if ( gdisp==NULL ) gdisp = screen_display;</span>
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 : return(gdisp-&gt;groot);</span>
+<a name="174"><span class="lineNum">     174 </span>            : }</a>
+<span class="lineNum">     175 </span>            : 
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 : Color GDrawGetDefaultBackground(GDisplay *gdisp) {</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :     if ( gdisp==NULL ) gdisp = screen_display;</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 : return(gdisp-&gt;def_background);</span>
+<a name="179"><span class="lineNum">     179 </span>            : }</a>
+<span class="lineNum">     180 </span>            : 
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 : Color GDrawGetDefaultForeground(GDisplay *gdisp) {</span>
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :     if ( gdisp==NULL ) gdisp = screen_display;</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 : return(gdisp-&gt;def_foreground);</span>
+<a name="184"><span class="lineNum">     184 </span>            : }</a>
+<span class="lineNum">     185 </span>            : 
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 : GRect *GDrawGetSize(GWindow w, GRect *ret) {</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :     *ret = w-&gt;pos;</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 : return(ret);</span>
+<a name="189"><span class="lineNum">     189 </span>            : }</a>
+<span class="lineNum">     190 </span>            : 
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 : GDrawEH GDrawGetEH(GWindow w) {</span>
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 : return( w-&gt;eh );</span>
+<a name="193"><span class="lineNum">     193 </span>            : }</a>
+<span class="lineNum">     194 </span>            : 
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 : void GDrawSetEH(GWindow w,GDrawEH eh) {</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :     w-&gt;eh = eh;</span>
+<a name="197"><span class="lineNum">     197 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     198 </span>            : 
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 : void GDrawGetPointerPosition(GWindow w, GEvent *ret) {</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;getPointerPos)(w,ret);</span>
+<a name="201"><span class="lineNum">     201 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     202 </span>            : 
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 : GWindow GDrawGetPointerWindow(GWindow w) {</span>
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 : return( (w-&gt;display-&gt;funcs-&gt;getPointerWindow)(w));</span>
+<a name="205"><span class="lineNum">     205 </span>            : }</a>
+<span class="lineNum">     206 </span>            : 
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 : void GDrawRaise(GWindow w) {</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;raise)(w);</span>
+<a name="209"><span class="lineNum">     209 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     210 </span>            : 
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 : void GDrawRaiseAbove(GWindow w,GWindow below) {</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;raiseAbove)(w,below);</span>
+<a name="213"><span class="lineNum">     213 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     214 </span>            : 
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 : int GDrawIsAbove(GWindow w,GWindow other) {</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 : return( (w-&gt;display-&gt;funcs-&gt;isAbove)(w,other) );</span>
+<a name="217"><span class="lineNum">     217 </span>            : }</a>
+<span class="lineNum">     218 </span>            : 
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 : void GDrawLower(GWindow w) {</span>
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;lower)(w);</span>
+<a name="221"><span class="lineNum">     221 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     222 </span>            : 
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 : void GDrawSetWindowTitles(GWindow w, const unichar_t *title, const unichar_t *icontit) {</span>
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;setWindowTitles)(w,title,icontit);</span>
+<a name="225"><span class="lineNum">     225 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     226 </span>            : 
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 : unichar_t *GDrawGetWindowTitle(GWindow w) {</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 : return( (w-&gt;display-&gt;funcs-&gt;getWindowTitle)(w) );</span>
+<a name="229"><span class="lineNum">     229 </span>            : }</a>
+<span class="lineNum">     230 </span>            : 
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 : void GDrawSetWindowTitles8(GWindow w, const char *title, const char *icontit) {</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;setWindowTitles8)(w,title,icontit);</span>
+<a name="233"><span class="lineNum">     233 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     234 </span>            : 
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 : char *GDrawGetWindowTitle8(GWindow w) {</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 : return( (w-&gt;display-&gt;funcs-&gt;getWindowTitle8)(w) );</span>
+<a name="237"><span class="lineNum">     237 </span>            : }</a>
+<span class="lineNum">     238 </span>            : 
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 : void GDrawSetTransientFor(GWindow transient, GWindow owner) {</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :     (transient-&gt;display-&gt;funcs-&gt;setTransientFor)(transient,owner);</span>
+<a name="241"><span class="lineNum">     241 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     242 </span>            : 
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 : void GDrawSetCursor(GWindow w, GCursor ct) {</span>
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;setCursor)(w,ct);</span>
+<a name="245"><span class="lineNum">     245 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     246 </span>            : 
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 : GCursor GDrawGetCursor(GWindow w) {</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 : return( (w-&gt;display-&gt;funcs-&gt;getCursor)(w) );</span>
+<a name="249"><span class="lineNum">     249 </span>            : }</a>
+<span class="lineNum">     250 </span>            : 
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 : GWindow GDrawGetRedirectWindow(GDisplay *gd) {</span>
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :     if ( gd==NULL ) gd = screen_display;</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 : return( (gd-&gt;funcs-&gt;getRedirectWindow)(gd) );</span>
+<a name="254"><span class="lineNum">     254 </span>            : }</a>
+<span class="lineNum">     255 </span>            : 
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 : void GDrawTranslateCoordinates(GWindow from,GWindow to, GPoint *pt) {</span>
+<span class="lineNum">     257 </span>            :     GDisplay *gd;
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :     if ( from!=NULL )</span>
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :         gd = from-&gt;display;</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :     else if ( to!=NULL )</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :         gd = to-&gt;display;</span>
+<span class="lineNum">     262 </span>            :     else
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :     (gd-&gt;funcs-&gt;translateCoordinates)(from,to,pt);</span>
+<a name="265"><span class="lineNum">     265 </span>            : }</a>
+<span class="lineNum">     266 </span>            : 
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 : int32 GDrawEventInWindow(GWindow inme,GEvent *event) {</span>
+<span class="lineNum">     268 </span>            :     GPoint pt;
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :     if ( event-&gt;type&lt;et_char || event-&gt;type&gt;et_crossing )</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :     pt.x = event-&gt;u.mouse.x; pt.y = event-&gt;u.mouse.y;</span>
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :     (inme-&gt;display-&gt;funcs-&gt;translateCoordinates)(event-&gt;w,inme,&amp;pt);</span>
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :     if ( pt.x&lt;0 || pt.y&lt;0 || pt.x &gt;= inme-&gt;pos.width || pt.y &gt;= inme-&gt;pos.height )</span>
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     275 </span>            : 
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="277"><span class="lineNum">     277 </span>            : }</a>
+<span class="lineNum">     278 </span>            : 
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 : GWindow GDrawGetParentWindow(GWindow gw) {</span>
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 : return( gw-&gt;parent );</span>
+<a name="281"><span class="lineNum">     281 </span>            : }</a>
+<span class="lineNum">     282 </span>            : 
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 : int GDrawWindowIsAncestor(GWindow ancester, GWindow descendent) {</span>
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :     while ( descendent!=NULL &amp;&amp; descendent!=ancester )</span>
+<span class="lineNum">     285 </span><span class="lineNoCov">          0 :         descendent = descendent-&gt;parent;</span>
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 : return( descendent==ancester );</span>
+<a name="287"><span class="lineNum">     287 </span>            : }</a>
+<span class="lineNum">     288 </span>            : 
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 : void GDrawSetUserData(GWindow gw, void *ud) {</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :     gw-&gt;user_data = ud;</span>
+<a name="291"><span class="lineNum">     291 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     292 </span>            : 
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 : void *GDrawGetUserData(GWindow gw) {</span>
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :     if( !gw )</span>
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :         return 0;</span>
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 : return( gw-&gt;user_data );</span>
+<a name="297"><span class="lineNum">     297 </span>            : }</a>
+<span class="lineNum">     298 </span>            : 
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 : void GDrawSetWindowTypeName(GWindow gw, char* name)</span>
+<span class="lineNum">     300 </span>            : {
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :     gw-&gt;window_type_name = name;</span>
+<a name="302"><span class="lineNum">     302 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     303 </span>            : 
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 : char* GDrawGetWindowTypeName(GWindow gw)</span>
+<span class="lineNum">     305 </span>            : {
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :     if(!gw)</span>
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :         return 0;</span>
+<span class="lineNum">     308 </span>            :     
+<span class="lineNum">     309 </span><span class="lineNoCov">          0 :     return(gw-&gt;window_type_name);</span>
+<span class="lineNum">     310 </span>            : }
+<a name="311"><span class="lineNum">     311 </span>            : </a>
+<span class="lineNum">     312 </span>            : 
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 : GDisplay *GDrawGetDisplayOfWindow(GWindow gw) {</span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :     if ( gw==NULL )</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 : return( screen_display );</span>
+<span class="lineNum">     316 </span>            : 
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 : return( gw-&gt;display );</span>
+<a name="318"><span class="lineNum">     318 </span>            : }</a>
+<span class="lineNum">     319 </span>            : 
+<span class="lineNum">     320 </span><span class="lineNoCov">          0 : void GDrawBeep(GDisplay *gdisp) {</span>
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 :     if ( gdisp==NULL ) gdisp = screen_display;</span>
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 :     (gdisp-&gt;funcs-&gt;beep)(gdisp);</span>
+<a name="323"><span class="lineNum">     323 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     324 </span>            : 
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 : void GDrawFlush(GDisplay *gdisp) {</span>
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :     if ( gdisp==NULL ) gdisp = screen_display;</span>
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :     (gdisp-&gt;funcs-&gt;flush)(gdisp);</span>
+<a name="328"><span class="lineNum">     328 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     329 </span>            : 
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 : void GDrawGetClip(GWindow w, GRect *ret) {</span>
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :     *ret = w-&gt;ggc-&gt;clip;</span>
+<a name="332"><span class="lineNum">     332 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     333 </span>            : 
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 : void GDrawSetClip(GWindow w, GRect *rct) {</span>
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 :     if ( rct==NULL ) {</span>
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :         w-&gt;ggc-&gt;clip.x = w-&gt;ggc-&gt;clip.y = 0;</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :         w-&gt;ggc-&gt;clip.width = w-&gt;ggc-&gt;clip.height = 0x7fff;</span>
+<span class="lineNum">     338 </span>            :     } else
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 :         w-&gt;ggc-&gt;clip = *rct;</span>
+<a name="340"><span class="lineNum">     340 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     341 </span>            : 
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 : void GDrawPushClip(GWindow w, GRect *rct, GRect *old) {</span>
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;pushClip)(w,rct,old);</span>
+<a name="344"><span class="lineNum">     344 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     345 </span>            : 
+<span class="lineNum">     346 </span><span class="lineNoCov">          0 : void GDrawPushClipOnly(GWindow w)</span>
+<span class="lineNum">     347 </span>            : {
+<span class="lineNum">     348 </span><span class="lineNoCov">          0 :     if( w-&gt;display-&gt;funcs-&gt;PushClipOnly )</span>
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :         (w-&gt;display-&gt;funcs-&gt;PushClipOnly)( w );</span>
+<a name="350"><span class="lineNum">     350 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     351 </span>            : 
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 : void GDrawClipPreserve(GWindow w)</span>
+<span class="lineNum">     353 </span>            : {
+<span class="lineNum">     354 </span><span class="lineNoCov">          0 :     if( w-&gt;display-&gt;funcs-&gt;ClipPreserve )</span>
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :         (w-&gt;display-&gt;funcs-&gt;ClipPreserve)( w );</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 : }</span>
+<a name="357"><span class="lineNum">     357 </span>            : </a>
+<span class="lineNum">     358 </span>            : 
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 : void GDrawPopClip(GWindow w, GRect *old) {</span>
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;popClip)(w,old);</span>
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 : }</span>
+<a name="362"><span class="lineNum">     362 </span>            : </a>
+<span class="lineNum">     363 </span>            : 
+<span class="lineNum">     364 </span><span class="lineNoCov">          0 : GGC *GDrawGetWindowGGC(GWindow w) {</span>
+<span class="lineNum">     365 </span><span class="lineNoCov">          0 : return( w-&gt;ggc );</span>
+<a name="366"><span class="lineNum">     366 </span>            : }</a>
+<span class="lineNum">     367 </span>            : 
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 : void GDrawSetXORBase(GWindow w,Color col) {</span>
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 :     w-&gt;ggc-&gt;xor_base = col;</span>
+<a name="370"><span class="lineNum">     370 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     371 </span>            : 
+<span class="lineNum">     372 </span><span class="lineNoCov">          0 : void GDrawSetXORMode(GWindow w) {</span>
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 :     w-&gt;ggc-&gt;func = df_xor;</span>
+<a name="374"><span class="lineNum">     374 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     375 </span>            : 
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 : void GDrawSetCopyMode(GWindow w) {</span>
+<span class="lineNum">     377 </span><span class="lineNoCov">          0 :     w-&gt;ggc-&gt;func = df_copy;</span>
+<a name="378"><span class="lineNum">     378 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     379 </span>            : 
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 : void GDrawSetCopyThroughSubWindows(GWindow w,int16 through) {</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :     w-&gt;ggc-&gt;copy_through_sub_windows = through;</span>
+<a name="382"><span class="lineNum">     382 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     383 </span>            : 
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 : void GDrawSetDashedLine(GWindow w,int16 dash_len, int16 skip_len, int16 off) {</span>
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :     w-&gt;ggc-&gt;dash_offset = off;</span>
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :     w-&gt;ggc-&gt;dash_len = dash_len;</span>
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :     w-&gt;ggc-&gt;skip_len = skip_len;</span>
+<a name="388"><span class="lineNum">     388 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     389 </span>            : 
+<span class="lineNum">     390 </span><span class="lineNoCov">          0 : void GDrawSetStippled(GWindow w,int16 ts, int32 yoff,int32 xoff) {</span>
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 :     w-&gt;ggc-&gt;ts = ts;</span>
+<span class="lineNum">     392 </span><span class="lineNoCov">          0 :     w-&gt;ggc-&gt;ts_xoff = xoff; w-&gt;ggc-&gt;ts_yoff = yoff;</span>
+<a name="393"><span class="lineNum">     393 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     394 </span>            : 
+<span class="lineNum">     395 </span><span class="lineNoCov">          0 : void GDrawSetLineWidth(GWindow w,int16 width) {</span>
+<span class="lineNum">     396 </span><span class="lineNoCov">          0 :     w-&gt;ggc-&gt;line_width = width;</span>
+<a name="397"><span class="lineNum">     397 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     398 </span>            : 
+<span class="lineNum">     399 </span><span class="lineNoCov">          0 : int16 GDrawGetLineWidth( GWindow w ) </span>
+<span class="lineNum">     400 </span>            : {
+<span class="lineNum">     401 </span><span class="lineNoCov">          0 :     return w-&gt;ggc-&gt;line_width;</span>
+<span class="lineNum">     402 </span>            : }
+<a name="403"><span class="lineNum">     403 </span>            : </a>
+<span class="lineNum">     404 </span>            : 
+<span class="lineNum">     405 </span><span class="lineNoCov">          0 : void GDrawSetForeground(GWindow w,Color col) {</span>
+<span class="lineNum">     406 </span><span class="lineNoCov">          0 :     w-&gt;ggc-&gt;fg = col;</span>
+<a name="407"><span class="lineNum">     407 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     408 </span>            : 
+<span class="lineNum">     409 </span><span class="lineNoCov">          0 : void GDrawSetBackground(GWindow w,Color col) {</span>
+<span class="lineNum">     410 </span><span class="lineNoCov">          0 :     w-&gt;ggc-&gt;bg = col;</span>
+<a name="411"><span class="lineNum">     411 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     412 </span>            : 
+<span class="lineNum">     413 </span><span class="lineNoCov">          0 : void GDrawClear(GWindow w, GRect *rect) {</span>
+<span class="lineNum">     414 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;clear)(w,rect);</span>
+<a name="415"><span class="lineNum">     415 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     416 </span>            : 
+<span class="lineNum">     417 </span><span class="lineNoCov">          0 : void GDrawDrawLine(GWindow w, int32 x,int32 y, int32 xend,int32 yend, Color col) {</span>
+<span class="lineNum">     418 </span><span class="lineNoCov">          0 :     if ( col!=COLOR_UNKNOWN )</span>
+<span class="lineNum">     419 </span><span class="lineNoCov">          0 :         (w-&gt;display-&gt;funcs-&gt;drawLine)(w,x,y,xend,yend,col);</span>
+<a name="420"><span class="lineNum">     420 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     421 </span>            : 
+<span class="lineNum">     422 </span><span class="lineNoCov">          0 : void GDrawDrawArrow(GWindow w, int32 x,int32 y, int32 xend,int32 yend, int arrows, Color col) {</span>
+<span class="lineNum">     423 </span><span class="lineNoCov">          0 :     if ( col!=COLOR_UNKNOWN )</span>
+<span class="lineNum">     424 </span><span class="lineNoCov">          0 :         (w-&gt;display-&gt;funcs-&gt;drawArrow)(w,x,y,xend,yend,arrows,col);</span>
+<a name="425"><span class="lineNum">     425 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     426 </span>            : 
+<span class="lineNum">     427 </span><span class="lineNoCov">          0 : void GDrawDrawRect(GWindow w, GRect *rect, Color col) {</span>
+<span class="lineNum">     428 </span><span class="lineNoCov">          0 :     if ( col!=COLOR_UNKNOWN )</span>
+<span class="lineNum">     429 </span><span class="lineNoCov">          0 :         (w-&gt;display-&gt;funcs-&gt;drawRect)(w,rect,col);</span>
+<a name="430"><span class="lineNum">     430 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     431 </span>            : 
+<span class="lineNum">     432 </span><span class="lineNoCov">          0 : void GDrawFillRect(GWindow w, GRect *rect, Color col) {</span>
+<span class="lineNum">     433 </span>            :     GRect temp;
+<span class="lineNum">     434 </span><span class="lineNoCov">          0 :     if ( rect==NULL ) {</span>
+<span class="lineNum">     435 </span><span class="lineNoCov">          0 :         temp.x = temp.y = 0; temp.width = w-&gt;pos.width; temp.height = w-&gt;pos.height;</span>
+<span class="lineNum">     436 </span><span class="lineNoCov">          0 :         rect = &amp;temp;</span>
+<span class="lineNum">     437 </span>            :     }
+<span class="lineNum">     438 </span><span class="lineNoCov">          0 :     if ( col!=COLOR_UNKNOWN )</span>
+<span class="lineNum">     439 </span><span class="lineNoCov">          0 :         (w-&gt;display-&gt;funcs-&gt;fillRect)(w,rect,col);</span>
+<a name="440"><span class="lineNum">     440 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     441 </span>            : 
+<span class="lineNum">     442 </span><span class="lineNoCov">          0 : void GDrawFillRoundRect(GWindow w, GRect *rect, int radius, Color col) {</span>
+<span class="lineNum">     443 </span>            :     GRect temp;
+<span class="lineNum">     444 </span><span class="lineNoCov">          0 :     if ( rect==NULL ) {</span>
+<span class="lineNum">     445 </span><span class="lineNoCov">          0 :         temp.x = temp.y = 0; temp.width = w-&gt;pos.width; temp.height = w-&gt;pos.height;</span>
+<span class="lineNum">     446 </span><span class="lineNoCov">          0 :         rect = &amp;temp;</span>
+<span class="lineNum">     447 </span>            :     }
+<span class="lineNum">     448 </span><span class="lineNoCov">          0 :     if ( col!=COLOR_UNKNOWN )</span>
+<span class="lineNum">     449 </span><span class="lineNoCov">          0 :         (w-&gt;display-&gt;funcs-&gt;fillRoundRect)(w,rect,radius,col);</span>
+<a name="450"><span class="lineNum">     450 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     451 </span>            : 
+<span class="lineNum">     452 </span><span class="lineNoCov">          0 : void GDrawDrawElipse(GWindow w, GRect *rect, Color col) {</span>
+<span class="lineNum">     453 </span><span class="lineNoCov">          0 :     if ( col!=COLOR_UNKNOWN )</span>
+<span class="lineNum">     454 </span><span class="lineNoCov">          0 :         (w-&gt;display-&gt;funcs-&gt;drawElipse)(w,rect,col);</span>
+<a name="455"><span class="lineNum">     455 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     456 </span>            : 
+<span class="lineNum">     457 </span><span class="lineNoCov">          0 : void GDrawFillElipse(GWindow w, GRect *rect, Color col) {</span>
+<span class="lineNum">     458 </span><span class="lineNoCov">          0 :     if ( col!=COLOR_UNKNOWN )</span>
+<span class="lineNum">     459 </span><span class="lineNoCov">          0 :         (w-&gt;display-&gt;funcs-&gt;fillElipse)(w,rect,col);</span>
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     461 </span>            : 
+<span class="lineNum">     462 </span>            : /* angles expressed as in X, in 64's of a degree with 0 angle at 3 o'clock */
+<a name="463"><span class="lineNum">     463 </span>            : /*  and positive measured counter-clockwise (or the same way as in polar coords)*/</a>
+<span class="lineNum">     464 </span>            : /* tangle is NOT the end angle, it's the angle offset from the first to the end*/
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 : void GDrawDrawArc(GWindow w, GRect *rect, int32 sangle, int32 tangle, Color col) {</span>
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :     if ( col!=COLOR_UNKNOWN )</span>
+<span class="lineNum">     467 </span><span class="lineNoCov">          0 :         (w-&gt;display-&gt;funcs-&gt;drawArc)(w,rect,sangle,tangle,col);</span>
+<a name="468"><span class="lineNum">     468 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     469 </span>            : 
+<span class="lineNum">     470 </span><span class="lineNoCov">          0 : void GDrawDrawPoly(GWindow w, GPoint *pts, int16 cnt, Color col) {</span>
+<span class="lineNum">     471 </span><span class="lineNoCov">          0 :     if ( col!=COLOR_UNKNOWN )</span>
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 :         (w-&gt;display-&gt;funcs-&gt;drawPoly)(w,pts,cnt,col);</span>
+<a name="473"><span class="lineNum">     473 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     474 </span>            : 
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 : void GDrawFillPoly(GWindow w, GPoint *pts, int16 cnt, Color col) {</span>
+<span class="lineNum">     476 </span><span class="lineNoCov">          0 :     if ( col!=COLOR_UNKNOWN )</span>
+<span class="lineNum">     477 </span><span class="lineNoCov">          0 :         (w-&gt;display-&gt;funcs-&gt;fillPoly)(w,pts,cnt,col);</span>
+<a name="478"><span class="lineNum">     478 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     479 </span>            : 
+<span class="lineNum">     480 </span><span class="lineNoCov">          0 : void GDrawScroll(GWindow w, GRect *rect, int32 hor, int32 vert) {</span>
+<span class="lineNum">     481 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;scroll)(w,rect,hor,vert);</span>
+<span class="lineNum">     482 </span><span class="lineNoCov">          0 : }</span>
+<a name="483"><span class="lineNum">     483 </span>            : </a>
+<span class="lineNum">     484 </span>            : /* draws the subset of the image specified by src starting at loc (x,y) */
+<span class="lineNum">     485 </span><span class="lineNoCov">          0 : void GDrawDrawImage(GWindow w, GImage *img, GRect *src, int32 x, int32 y) {</span>
+<span class="lineNum">     486 </span>            :     GRect r;
+<span class="lineNum">     487 </span><span class="lineNoCov">          0 :     if ( src==NULL ) {</span>
+<span class="lineNum">     488 </span><span class="lineNoCov">          0 :         struct _GImage *base = img-&gt;list_len==0?img-&gt;u.image:img-&gt;u.images[0];</span>
+<span class="lineNum">     489 </span><span class="lineNoCov">          0 :         r.x = r.y = 0;</span>
+<span class="lineNum">     490 </span><span class="lineNoCov">          0 :         r.width = base-&gt;width; r.height = base-&gt;height;</span>
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 :         src = &amp;r;</span>
+<span class="lineNum">     492 </span>            :     }
+<span class="lineNum">     493 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;drawImage)(w,img,src,x,y);</span>
+<span class="lineNum">     494 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     495 </span>            : 
+<a name="496"><span class="lineNum">     496 </span>            : /* Draw the entire image so that it is approximately the same size on other */</a>
+<span class="lineNum">     497 </span>            : /*  displays as on the screen */
+<span class="lineNum">     498 </span><span class="lineNoCov">          0 : void GDrawDrawScaledImage(GWindow w, GImage *img, int32 x, int32 y) {</span>
+<span class="lineNum">     499 </span>            :     GRect r;
+<span class="lineNum">     500 </span>            : 
+<span class="lineNum">     501 </span><span class="lineNoCov">          0 :     r.x = r.y = 0;</span>
+<span class="lineNum">     502 </span><span class="lineNoCov">          0 :     r.width = GImageGetScaledWidth(w,img);</span>
+<span class="lineNum">     503 </span><span class="lineNoCov">          0 :     r.height = GImageGetScaledHeight(w,img);</span>
+<span class="lineNum">     504 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;drawImage)(w,img,&amp;r,x,y);</span>
+<span class="lineNum">     505 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     506 </span>            : 
+<span class="lineNum">     507 </span>            : /* Similar to DrawImage, but can in some cases make improvements -- if the */
+<a name="508"><span class="lineNum">     508 </span>            : /*  is an indexed image, then treat as the alpha channel rather than a color */</a>
+<span class="lineNum">     509 </span>            : /*  in its own right */
+<span class="lineNum">     510 </span><span class="lineNoCov">          0 : void GDrawDrawGlyph(GWindow w, GImage *img, GRect *src, int32 x, int32 y) {</span>
+<span class="lineNum">     511 </span>            :     GRect r;
+<span class="lineNum">     512 </span><span class="lineNoCov">          0 :     if ( src==NULL ) {</span>
+<span class="lineNum">     513 </span><span class="lineNoCov">          0 :         struct _GImage *base = img-&gt;list_len==0?img-&gt;u.image:img-&gt;u.images[0];</span>
+<span class="lineNum">     514 </span><span class="lineNoCov">          0 :         r.x = r.y = 0;</span>
+<span class="lineNum">     515 </span><span class="lineNoCov">          0 :         r.width = base-&gt;width; r.height = base-&gt;height;</span>
+<span class="lineNum">     516 </span><span class="lineNoCov">          0 :         src = &amp;r;</span>
+<span class="lineNum">     517 </span>            :     }
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;drawGlyph)(w,img,src,x,y);</span>
+<span class="lineNum">     519 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     520 </span>            : 
+<span class="lineNum">     521 </span>            : /* We got an expose event for the src rectangle. The image is supposed to be */
+<span class="lineNum">     522 </span>            : /*  tiled across the window starting at (x,y) and continuing at least to the */
+<a name="523"><span class="lineNum">     523 </span>            : /*  limit of the expose event. Figure out how to draw what bits of the image */</a>
+<span class="lineNum">     524 </span>            : /*  where and how many times */
+<span class="lineNum">     525 </span><span class="lineNoCov">          0 : void GDrawTileImage(GWindow w, GImage *img, GRect *src, int32 x, int32 y) {</span>
+<span class="lineNum">     526 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;tileImage)(w,img,src,x,y);</span>
+<span class="lineNum">     527 </span><span class="lineNoCov">          0 : }</span>
+<a name="528"><span class="lineNum">     528 </span>            : </a>
+<span class="lineNum">     529 </span>            : /* same as drawImage except with pixmaps */
+<span class="lineNum">     530 </span><span class="lineNoCov">          0 : void GDrawDrawPixmap(GWindow w, GWindow pixmap, GRect *src, int32 x, int32 y) {</span>
+<span class="lineNum">     531 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;drawPixmap)(w,pixmap,src,x,y);</span>
+<span class="lineNum">     532 </span><span class="lineNoCov">          0 : }</span>
+<a name="533"><span class="lineNum">     533 </span>            : </a>
+<span class="lineNum">     534 </span>            : /* same as tileImage except with pixmaps */
+<span class="lineNum">     535 </span><span class="lineNoCov">          0 : void GDrawTilePixmap(GWindow w, GWindow pixmap, GRect *src, int32 x, int32 y) {</span>
+<span class="lineNum">     536 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;tilePixmap)(w,pixmap,src,x,y);</span>
+<span class="lineNum">     537 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     538 </span>            : 
+<span class="lineNum">     539 </span>            : /* We assume the full image is drawn starting at (x,y) and scaled to (width,height) */
+<span class="lineNum">     540 </span>            : /*  this routine updates the rectangle on the screen                     */
+<span class="lineNum">     541 </span>            : /*              (x+src-&gt;x,y+src-&gt;y,x+src-&gt;width,y+src-&gt;height)               */
+<a name="542"><span class="lineNum">     542 </span>            : /* Ie. if you get an expose event in the middle of the image subtract off the */</a>
+<span class="lineNum">     543 </span>            : /*  image base (x,y) and pass in the exposed rectangle */
+<span class="lineNum">     544 </span><span class="lineNoCov">          0 : void GDrawDrawImageMagnified(GWindow w, GImage *img, GRect *dest, int32 x, int32 y,</span>
+<span class="lineNum">     545 </span>            :         int32 width, int32 height) {
+<span class="lineNum">     546 </span>            :     GRect temp;
+<span class="lineNum">     547 </span><span class="lineNoCov">          0 :     struct _GImage *base = img-&gt;list_len==0?img-&gt;u.image:img-&gt;u.images[0];</span>
+<span class="lineNum">     548 </span>            : 
+<span class="lineNum">     549 </span><span class="lineNoCov">          0 :     if ( base-&gt;width==width &amp;&amp; base-&gt;height==height ) {</span>
+<span class="lineNum">     550 </span>            :         /* Not magnified after all */
+<span class="lineNum">     551 </span><span class="lineNoCov">          0 :         if ( dest==NULL )</span>
+<span class="lineNum">     552 </span><span class="lineNoCov">          0 :             GDrawDrawImage(w,img,NULL,x,y);</span>
+<span class="lineNum">     553 </span>            :         else {
+<span class="lineNum">     554 </span>            :             int old;
+<span class="lineNum">     555 </span><span class="lineNoCov">          0 :             temp = *dest; temp.x += x; temp.y += y;</span>
+<span class="lineNum">     556 </span><span class="lineNoCov">          0 :             if ( temp.x&lt;x ) {</span>
+<span class="lineNum">     557 </span><span class="lineNoCov">          0 :                 temp.x = 0;</span>
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :                 temp.width-=x;</span>
+<span class="lineNum">     559 </span>            :             } else {
+<span class="lineNum">     560 </span><span class="lineNoCov">          0 :                 old = x;</span>
+<span class="lineNum">     561 </span><span class="lineNoCov">          0 :                 x = temp.x;</span>
+<span class="lineNum">     562 </span><span class="lineNoCov">          0 :                 temp.x -= old;</span>
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 :                 temp.width -= old;</span>
+<span class="lineNum">     564 </span>            :             }
+<span class="lineNum">     565 </span><span class="lineNoCov">          0 :             if ( temp.y&lt;y ) {</span>
+<span class="lineNum">     566 </span><span class="lineNoCov">          0 :                 temp.y = 0;</span>
+<span class="lineNum">     567 </span><span class="lineNoCov">          0 :                 temp.height-=y;</span>
+<span class="lineNum">     568 </span>            :             } else {
+<span class="lineNum">     569 </span><span class="lineNoCov">          0 :                 old = y;</span>
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 :                 y = temp.y;</span>
+<span class="lineNum">     571 </span><span class="lineNoCov">          0 :                 temp.y -= old;</span>
+<span class="lineNum">     572 </span><span class="lineNoCov">          0 :                 temp.height -= old;</span>
+<span class="lineNum">     573 </span>            :             }
+<span class="lineNum">     574 </span><span class="lineNoCov">          0 :             if ( temp.x&gt;=base-&gt;width || temp.y&gt;=base-&gt;height || temp.width&lt;=0 || temp.height&lt;=0 )</span>
+<span class="lineNum">     575 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     576 </span><span class="lineNoCov">          0 :             if ( temp.x+temp.width&gt;=base-&gt;width )</span>
+<span class="lineNum">     577 </span><span class="lineNoCov">          0 :                 temp.width = base-&gt;width-temp.x;</span>
+<span class="lineNum">     578 </span><span class="lineNoCov">          0 :             if ( temp.y+temp.height&gt;=base-&gt;height )</span>
+<span class="lineNum">     579 </span><span class="lineNoCov">          0 :                 temp.height = base-&gt;height-temp.y;</span>
+<span class="lineNum">     580 </span><span class="lineNoCov">          0 :             GDrawDrawImage(w,img,&amp;temp,x,y);</span>
+<span class="lineNum">     581 </span>            :         }
+<span class="lineNum">     582 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     583 </span>            :     }
+<span class="lineNum">     584 </span><span class="lineNoCov">          0 :     if ( dest==NULL ) {</span>
+<span class="lineNum">     585 </span><span class="lineNoCov">          0 :         temp.x = temp.y = 0;</span>
+<span class="lineNum">     586 </span><span class="lineNoCov">          0 :         temp.width = width; temp.height = height;</span>
+<span class="lineNum">     587 </span><span class="lineNoCov">          0 :         dest = &amp;temp;</span>
+<span class="lineNum">     588 </span><span class="lineNoCov">          0 :     } else if ( dest-&gt;x&lt;0 || dest-&gt;y&lt;0 ||</span>
+<span class="lineNum">     589 </span><span class="lineNoCov">          0 :             dest-&gt;x+dest-&gt;width &gt; width || dest-&gt;y+dest-&gt;height &gt; height ) {</span>
+<span class="lineNum">     590 </span><span class="lineNoCov">          0 :         temp = *dest;</span>
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 :         if ( temp.x&lt;0 ) { temp.width += temp.x; temp.x = 0; }</span>
+<span class="lineNum">     592 </span><span class="lineNoCov">          0 :         if ( temp.y&lt;0 ) { temp.height += temp.y; temp.y = 0; }</span>
+<span class="lineNum">     593 </span><span class="lineNoCov">          0 :         if ( temp.x+temp.width&gt;width ) temp.width = width-temp.x;</span>
+<span class="lineNum">     594 </span><span class="lineNoCov">          0 :         if ( temp.y+temp.height&gt;height ) temp.height = height-temp.y;</span>
+<span class="lineNum">     595 </span><span class="lineNoCov">          0 :         dest = &amp;temp;</span>
+<span class="lineNum">     596 </span>            :     }
+<span class="lineNum">     597 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;drawImageMag)(w,img,dest,x,y, width, height);</span>
+<a name="598"><span class="lineNum">     598 </span>            : }</a>
+<span class="lineNum">     599 </span>            : 
+<span class="lineNum">     600 </span><span class="lineNoCov">          0 : GImage *GDrawCopyScreenToImage(GWindow w, GRect *rect) {</span>
+<span class="lineNum">     601 </span>            :     GRect temp;
+<span class="lineNum">     602 </span><span class="lineNoCov">          0 :     if ( rect==NULL ) {</span>
+<span class="lineNum">     603 </span><span class="lineNoCov">          0 :         temp.x = 0; temp.y = 0; temp.width = w-&gt;pos.width; temp.height = w-&gt;pos.height;</span>
+<span class="lineNum">     604 </span><span class="lineNoCov">          0 :         rect = &amp;temp;</span>
+<span class="lineNum">     605 </span>            :     }
+<span class="lineNum">     606 </span><span class="lineNoCov">          0 : return( (w-&gt;display-&gt;funcs-&gt;copyScreenToImage)(w,rect) );</span>
+<a name="607"><span class="lineNum">     607 </span>            : }</a>
+<span class="lineNum">     608 </span>            : 
+<span class="lineNum">     609 </span><span class="lineNoCov">          0 : void GDrawWindowFontMetrics(GWindow w,FontInstance *fi,int *as, int *ds, int *ld) {</span>
+<span class="lineNum">     610 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;getFontMetrics)(w,fi,as,ds,ld);</span>
+<span class="lineNum">     611 </span><span class="lineNoCov">          0 : }</span>
+<a name="612"><span class="lineNum">     612 </span>            : </a>
+<span class="lineNum">     613 </span>            : 
+<span class="lineNum">     614 </span><span class="lineNoCov">          0 : enum gcairo_flags GDrawHasCairo(GWindow w) {</span>
+<span class="lineNum">     615 </span><span class="lineNoCov">          0 : return( (w-&gt;display-&gt;funcs-&gt;hasCairo)(w));</span>
+<a name="616"><span class="lineNum">     616 </span>            : }</a>
+<span class="lineNum">     617 </span>            : 
+<span class="lineNum">     618 </span><span class="lineNoCov">          0 : void GDrawPathStartNew(GWindow w) {</span>
+<span class="lineNum">     619 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;startNewPath)(w);</span>
+<a name="620"><span class="lineNum">     620 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     621 </span>            : 
+<span class="lineNum">     622 </span><span class="lineNoCov">          0 : void GDrawPathStartSubNew(GWindow w) {</span>
+<span class="lineNum">     623 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;startNewSubPath)(w);</span>
+<a name="624"><span class="lineNum">     624 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     625 </span>            : 
+<span class="lineNum">     626 </span><span class="lineNoCov">          0 : int GDrawFillRuleSetWinding(GWindow w) {</span>
+<span class="lineNum">     627 </span><span class="lineNoCov">          0 :     return (w-&gt;display-&gt;funcs-&gt;fillRuleSetWinding)(w);</span>
+<a name="628"><span class="lineNum">     628 </span>            : }</a>
+<span class="lineNum">     629 </span>            : 
+<span class="lineNum">     630 </span><span class="lineNoCov">          0 : void GDrawPathClose(GWindow w) {</span>
+<span class="lineNum">     631 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;closePath)(w);</span>
+<a name="632"><span class="lineNum">     632 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     633 </span>            : 
+<span class="lineNum">     634 </span><span class="lineNoCov">          0 : void GDrawPathMoveTo(GWindow w,double x, double y) {</span>
+<span class="lineNum">     635 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;moveto)(w,x,y);</span>
+<a name="636"><span class="lineNum">     636 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     637 </span>            : 
+<span class="lineNum">     638 </span><span class="lineNoCov">          0 : void GDrawPathLineTo(GWindow w,double x, double y) {</span>
+<span class="lineNum">     639 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;lineto)(w,x,y);</span>
+<a name="640"><span class="lineNum">     640 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     641 </span>            : 
+<span class="lineNum">     642 </span><span class="lineNoCov">          0 : void GDrawPathCurveTo(GWindow w,</span>
+<span class="lineNum">     643 </span>            :                     double cx1, double cy1,
+<span class="lineNum">     644 </span>            :                     double cx2, double cy2,
+<span class="lineNum">     645 </span>            :                     double x, double y) {
+<span class="lineNum">     646 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;curveto)(w,cx1,cy1,cx2,cy2,x,y);</span>
+<a name="647"><span class="lineNum">     647 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     648 </span>            : 
+<span class="lineNum">     649 </span><span class="lineNoCov">          0 : void GDrawPathStroke(GWindow w,Color col) {</span>
+<span class="lineNum">     650 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;stroke)(w,col);</span>
+<a name="651"><span class="lineNum">     651 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     652 </span>            : 
+<span class="lineNum">     653 </span><span class="lineNoCov">          0 : void GDrawPathFill(GWindow w,Color col) {</span>
+<span class="lineNum">     654 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;fill)(w,col);</span>
+<a name="655"><span class="lineNum">     655 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     656 </span>            : 
+<span class="lineNum">     657 </span><span class="lineNoCov">          0 : void GDrawPathFillAndStroke(GWindow w,Color fillcol, Color strokecol) {</span>
+<span class="lineNum">     658 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;fillAndStroke)(w,fillcol,strokecol);</span>
+<a name="659"><span class="lineNum">     659 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     660 </span>            : 
+<span class="lineNum">     661 </span><span class="lineNoCov">          0 : void GDrawLayoutInit(GWindow w, char *text, int cnt, GFont *fi) {</span>
+<span class="lineNum">     662 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;layoutInit)(w,text,cnt,fi);</span>
+<a name="663"><span class="lineNum">     663 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     664 </span>            : 
+<span class="lineNum">     665 </span><span class="lineNoCov">          0 : void GDrawLayoutDraw(GWindow w, int32 x, int32 y, Color fg) {</span>
+<span class="lineNum">     666 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;layoutDraw)(w,x,y,fg);</span>
+<a name="667"><span class="lineNum">     667 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     668 </span>            : 
+<span class="lineNum">     669 </span><span class="lineNoCov">          0 : void GDrawLayoutIndexToPos(GWindow w, int index, GRect *pos) {</span>
+<span class="lineNum">     670 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;layoutIndexToPos)(w,index,pos);</span>
+<a name="671"><span class="lineNum">     671 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     672 </span>            : 
+<span class="lineNum">     673 </span><span class="lineNoCov">          0 : int GDrawLayoutXYToIndex(GWindow w, int x, int y) {</span>
+<span class="lineNum">     674 </span><span class="lineNoCov">          0 : return( (w-&gt;display-&gt;funcs-&gt;layoutXYToIndex)(w,x,y) );</span>
+<a name="675"><span class="lineNum">     675 </span>            : }</a>
+<span class="lineNum">     676 </span>            : 
+<span class="lineNum">     677 </span><span class="lineNoCov">          0 : void GDrawLayoutExtents(GWindow w, GRect *size) {</span>
+<span class="lineNum">     678 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;layoutExtents)(w,size);</span>
+<a name="679"><span class="lineNum">     679 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     680 </span>            : 
+<span class="lineNum">     681 </span><span class="lineNoCov">          0 : void GDrawLayoutSetWidth(GWindow w, int width) {</span>
+<span class="lineNum">     682 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;layoutSetWidth)(w,width);</span>
+<a name="683"><span class="lineNum">     683 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     684 </span>            : 
+<span class="lineNum">     685 </span><span class="lineNoCov">          0 : int  GDrawLayoutLineCount(GWindow w) {</span>
+<span class="lineNum">     686 </span><span class="lineNoCov">          0 : return( (w-&gt;display-&gt;funcs-&gt;layoutLineCount)(w) );</span>
+<a name="687"><span class="lineNum">     687 </span>            : }</a>
+<span class="lineNum">     688 </span>            : 
+<span class="lineNum">     689 </span><span class="lineNoCov">          0 : int  GDrawLayoutLineStart(GWindow w,int line) {</span>
+<span class="lineNum">     690 </span><span class="lineNoCov">          0 : return( (w-&gt;display-&gt;funcs-&gt;layoutLineStart)(w,line) );</span>
+<span class="lineNum">     691 </span>            : }
+<a name="692"><span class="lineNum">     692 </span>            : </a>
+<span class="lineNum">     693 </span>            : 
+<span class="lineNum">     694 </span><span class="lineNoCov">          0 : GIC *GDrawCreateInputContext(GWindow w,enum gic_style def_style) {</span>
+<span class="lineNum">     695 </span><span class="lineNoCov">          0 : return(w-&gt;display-&gt;funcs-&gt;createInputContext)(w,def_style);</span>
+<a name="696"><span class="lineNum">     696 </span>            : }</a>
+<span class="lineNum">     697 </span>            : 
+<span class="lineNum">     698 </span><span class="lineNoCov">          0 : void GDrawSetGIC(GWindow w, GIC *gic, int x, int y) {</span>
+<span class="lineNum">     699 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;setGIC)(w,gic,x,y);</span>
+<a name="700"><span class="lineNum">     700 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     701 </span>            : 
+<span class="lineNum">     702 </span><span class="lineNoCov">          0 : void GDrawGrabSelection(GWindow w,enum selnames sel) {</span>
+<span class="lineNum">     703 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;grabSelection)(w,sel);</span>
+<a name="704"><span class="lineNum">     704 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     705 </span>            : 
+<span class="lineNum">     706 </span><span class="lineNoCov">          0 : void GDrawAddSelectionType(GWindow w,enum selnames sel,char *type,</span>
+<span class="lineNum">     707 </span>            :         void *data,int32 cnt,int32 unitsize,void *(*gendata)(void *,int32 *len),
+<span class="lineNum">     708 </span>            :         void (*freedata)(void *)) {
+<span class="lineNum">     709 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;addSelectionType)(w,sel,type,data,cnt,unitsize,gendata,freedata);</span>
+<a name="710"><span class="lineNum">     710 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     711 </span>            : 
+<span class="lineNum">     712 </span><span class="lineNoCov">          0 : void *GDrawRequestSelection(GWindow w,enum selnames sn, char *typename, int32 *len) {</span>
+<span class="lineNum">     713 </span><span class="lineNoCov">          0 : return( (w-&gt;display-&gt;funcs-&gt;requestSelection)(w,sn,typename,len));</span>
+<a name="714"><span class="lineNum">     714 </span>            : }</a>
+<span class="lineNum">     715 </span>            : 
+<span class="lineNum">     716 </span><span class="lineNoCov">          0 : int GDrawSelectionHasType(GWindow w,enum selnames sn, char *typename) {</span>
+<span class="lineNum">     717 </span><span class="lineNoCov">          0 : return( (w-&gt;display-&gt;funcs-&gt;selectionHasType)(w,sn,typename));</span>
+<a name="718"><span class="lineNum">     718 </span>            : }</a>
+<span class="lineNum">     719 </span>            : 
+<span class="lineNum">     720 </span><span class="lineNoCov">          0 : void GDrawBindSelection(GDisplay *disp,enum selnames sel, char *atomname) {</span>
+<span class="lineNum">     721 </span><span class="lineNoCov">          0 :     if ( disp==NULL )</span>
+<span class="lineNum">     722 </span><span class="lineNoCov">          0 :         disp = screen_display;</span>
+<span class="lineNum">     723 </span><span class="lineNoCov">          0 :     if (disp != NULL)</span>
+<span class="lineNum">     724 </span><span class="lineNoCov">          0 :         (disp-&gt;funcs-&gt;bindSelection)(disp,sel,atomname);</span>
+<a name="725"><span class="lineNum">     725 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     726 </span>            : 
+<span class="lineNum">     727 </span><span class="lineNoCov">          0 : int GDrawSelectionOwned(GDisplay *disp,enum selnames sel) {</span>
+<span class="lineNum">     728 </span><span class="lineNoCov">          0 :     if ( disp==NULL )</span>
+<span class="lineNum">     729 </span><span class="lineNoCov">          0 :         disp = screen_display;</span>
+<span class="lineNum">     730 </span><span class="lineNoCov">          0 :     if (disp != NULL)</span>
+<span class="lineNum">     731 </span><span class="lineNoCov">          0 :         return( (disp-&gt;funcs-&gt;selectionHasOwner)(disp,sel));</span>
+<span class="lineNum">     732 </span>            :     else
+<span class="lineNum">     733 </span><span class="lineNoCov">          0 :         return -1;</span>
+<a name="734"><span class="lineNum">     734 </span>            : }</a>
+<span class="lineNum">     735 </span>            : 
+<span class="lineNum">     736 </span><span class="lineNoCov">          0 : int GDrawEnableExposeRequests(GWindow w,int enabled) {</span>
+<span class="lineNum">     737 </span><span class="lineNoCov">          0 :     int old = w-&gt;disable_expose_requests;</span>
+<span class="lineNum">     738 </span><span class="lineNoCov">          0 :     w-&gt;disable_expose_requests = enabled;</span>
+<span class="lineNum">     739 </span><span class="lineNoCov">          0 : return( old );</span>
+<a name="740"><span class="lineNum">     740 </span>            : }</a>
+<span class="lineNum">     741 </span>            : 
+<span class="lineNum">     742 </span><span class="lineCov">         25 : void GDrawRequestExpose(GWindow w, GRect *rect, int doclear) {</span>
+<span class="lineNum">     743 </span><span class="lineCov">         25 :     if ( !GDrawIsVisible(w) || w-&gt;disable_expose_requests )</span>
+<span class="lineNum">     744 </span><span class="lineCov">         50 : return;</span>
+<span class="lineNum">     745 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;requestExpose)(w,rect,doclear);</span>
+<a name="746"><span class="lineNum">     746 </span>            : }</a>
+<span class="lineNum">     747 </span>            : 
+<span class="lineNum">     748 </span><span class="lineNoCov">          0 : void GDrawForceUpdate(GWindow w) {</span>
+<span class="lineNum">     749 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;forceUpdate)(w);</span>
+<a name="750"><span class="lineNum">     750 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     751 </span>            : 
+<span class="lineNum">     752 </span><span class="lineNoCov">          0 : void GDrawSync(GDisplay *gdisp) {</span>
+<span class="lineNum">     753 </span><span class="lineNoCov">          0 :     if ( gdisp==NULL ) gdisp=screen_display;</span>
+<span class="lineNum">     754 </span><span class="lineNoCov">          0 :     if (gdisp != NULL)</span>
+<span class="lineNum">     755 </span><span class="lineNoCov">          0 :     (gdisp-&gt;funcs-&gt;sync)(gdisp);</span>
+<a name="756"><span class="lineNum">     756 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     757 </span>            : 
+<span class="lineNum">     758 </span><span class="lineNoCov">          0 : void GDrawPointerUngrab(GDisplay *gdisp) {</span>
+<span class="lineNum">     759 </span><span class="lineNoCov">          0 :     if ( gdisp==NULL ) gdisp=screen_display;</span>
+<span class="lineNum">     760 </span><span class="lineNoCov">          0 :     if (gdisp != NULL)</span>
+<span class="lineNum">     761 </span><span class="lineNoCov">          0 :     (gdisp-&gt;funcs-&gt;pointerUngrab)(gdisp);</span>
+<a name="762"><span class="lineNum">     762 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     763 </span>            : 
+<span class="lineNum">     764 </span><span class="lineNoCov">          0 : void GDrawPointerGrab(GWindow w) {</span>
+<span class="lineNum">     765 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;pointerGrab)(w);</span>
+<a name="766"><span class="lineNum">     766 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     767 </span>            : 
+<span class="lineNum">     768 </span><span class="lineNoCov">          0 : void GDrawProcessOneEvent(GDisplay *gdisp) {</span>
+<span class="lineNum">     769 </span><span class="lineNoCov">          0 :     if ( gdisp==NULL ) gdisp=screen_display;</span>
+<span class="lineNum">     770 </span><span class="lineNoCov">          0 :     if (gdisp != NULL)</span>
+<span class="lineNum">     771 </span><span class="lineNoCov">          0 :     (gdisp-&gt;funcs-&gt;processOneEvent)(gdisp);</span>
+<a name="772"><span class="lineNum">     772 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     773 </span>            : 
+<span class="lineNum">     774 </span><span class="lineNoCov">          0 : void GDrawSkipMouseMoveEvents(GWindow w,GEvent *last) {</span>
+<span class="lineNum">     775 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;skipMouseMoveEvents)(w,last);</span>
+<a name="776"><span class="lineNum">     776 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     777 </span>            : 
+<span class="lineNum">     778 </span><span class="lineNoCov">          0 : void GDrawProcessPendingEvents(GDisplay *gdisp) {</span>
+<span class="lineNum">     779 </span><span class="lineNoCov">          0 :     if ( gdisp==NULL ) gdisp=screen_display;</span>
+<span class="lineNum">     780 </span><span class="lineNoCov">          0 :     if (gdisp != NULL)</span>
+<span class="lineNum">     781 </span><span class="lineNoCov">          0 :     (gdisp-&gt;funcs-&gt;processPendingEvents)(gdisp);</span>
+<a name="782"><span class="lineNum">     782 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     783 </span>            : 
+<span class="lineNum">     784 </span><span class="lineNoCov">          0 : void GDrawProcessWindowEvents(GWindow w) {</span>
+<span class="lineNum">     785 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;processWindowEvents)(w);</span>
+<a name="786"><span class="lineNum">     786 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     787 </span>            : 
+<span class="lineNum">     788 </span><span class="lineNoCov">          0 : void GDrawEventLoop(GDisplay *gdisp) {</span>
+<span class="lineNum">     789 </span><span class="lineNoCov">          0 :     if ( gdisp==NULL ) gdisp=screen_display;</span>
+<span class="lineNum">     790 </span><span class="lineNoCov">          0 :     if (gdisp != NULL)</span>
+<span class="lineNum">     791 </span><span class="lineNoCov">          0 :     (gdisp-&gt;funcs-&gt;eventLoop)(gdisp);</span>
+<a name="792"><span class="lineNum">     792 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     793 </span>            : 
+<span class="lineNum">     794 </span><span class="lineNoCov">          0 : void GDrawPostEvent(GEvent *e) {</span>
+<span class="lineNum">     795 </span><span class="lineNoCov">          0 :     GDisplay *gdisp = e-&gt;w-&gt;display;</span>
+<span class="lineNum">     796 </span><span class="lineNoCov">          0 :     if ( gdisp==NULL ) gdisp=screen_display;</span>
+<span class="lineNum">     797 </span><span class="lineNoCov">          0 :     if (gdisp != NULL)</span>
+<span class="lineNum">     798 </span><span class="lineNoCov">          0 :     (gdisp-&gt;funcs-&gt;postEvent)(e);</span>
+<a name="799"><span class="lineNum">     799 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     800 </span>            : 
+<span class="lineNum">     801 </span><span class="lineNoCov">          0 : void GDrawPostDragEvent(GWindow w,GEvent *mouse,enum event_type et) {</span>
+<span class="lineNum">     802 </span><span class="lineNoCov">          0 :     GDisplay *gdisp = w-&gt;display;</span>
+<span class="lineNum">     803 </span><span class="lineNoCov">          0 :     (gdisp-&gt;funcs-&gt;postDragEvent)(w,mouse,et);</span>
+<a name="804"><span class="lineNum">     804 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     805 </span>            : 
+<span class="lineNum">     806 </span><span class="lineNoCov">          0 : GTimer *GDrawRequestTimer(GWindow w,int32 time_from_now,int32 frequency,</span>
+<span class="lineNum">     807 </span>            :         void *userdata) {
+<span class="lineNum">     808 </span><span class="lineNoCov">          0 : return( (w-&gt;display-&gt;funcs-&gt;requestTimer)(w,time_from_now,frequency,userdata));</span>
+<a name="809"><span class="lineNum">     809 </span>            : }</a>
+<span class="lineNum">     810 </span>            : 
+<span class="lineNum">     811 </span><span class="lineNoCov">          0 : void GDrawCancelTimer(GTimer *timer) {</span>
+<span class="lineNum">     812 </span>            :     GDisplay *gdisp;
+<span class="lineNum">     813 </span><span class="lineNoCov">          0 :     if ( timer==NULL )</span>
+<span class="lineNum">     814 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     815 </span><span class="lineNoCov">          0 :     gdisp=timer-&gt;owner-&gt;display;</span>
+<span class="lineNum">     816 </span><span class="lineNoCov">          0 :     (gdisp-&gt;funcs-&gt;cancelTimer)(timer);</span>
+<a name="817"><span class="lineNum">     817 </span>            : }</a>
+<span class="lineNum">     818 </span>            : 
+<span class="lineNum">     819 </span><span class="lineNoCov">          0 : void GDrawSyncThread(GDisplay *gdisp, void (*func)(void *), void *data) {</span>
+<span class="lineNum">     820 </span><span class="lineNoCov">          0 :     if ( gdisp==NULL )</span>
+<span class="lineNum">     821 </span><span class="lineNoCov">          0 :         gdisp = screen_display;</span>
+<span class="lineNum">     822 </span><span class="lineNoCov">          0 :     if (gdisp != NULL)</span>
+<span class="lineNum">     823 </span><span class="lineNoCov">          0 :     (gdisp-&gt;funcs-&gt;syncThread)(gdisp,func,data);</span>
+<a name="824"><span class="lineNum">     824 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     825 </span>            : 
+<span class="lineNum">     826 </span><span class="lineNoCov">          0 : GWindow GPrinterStartJob(GDisplay *gdisp,void *user_data,GPrinterAttrs *attrs) {</span>
+<span class="lineNum">     827 </span><span class="lineNoCov">          0 :     if ( gdisp==NULL )</span>
+<span class="lineNum">     828 </span><span class="lineNoCov">          0 :         gdisp = printer_display;</span>
+<span class="lineNum">     829 </span><span class="lineNoCov">          0 :     if (gdisp != NULL)</span>
+<span class="lineNum">     830 </span><span class="lineNoCov">          0 :         return( (gdisp-&gt;funcs-&gt;startJob)(gdisp,user_data,attrs) );</span>
+<span class="lineNum">     831 </span>            :     else
+<span class="lineNum">     832 </span><span class="lineNoCov">          0 :         return NULL;</span>
+<a name="833"><span class="lineNum">     833 </span>            : }</a>
+<span class="lineNum">     834 </span>            : 
+<span class="lineNum">     835 </span><span class="lineNoCov">          0 : void GPrinterNextPage(GWindow w) {</span>
+<span class="lineNum">     836 </span><span class="lineNoCov">          0 :     if ( w==NULL )</span>
+<span class="lineNum">     837 </span><span class="lineNoCov">          0 :         w = printer_display-&gt;groot;</span>
+<span class="lineNum">     838 </span><span class="lineNoCov">          0 :     (w-&gt;display-&gt;funcs-&gt;nextPage)(w);</span>
+<a name="839"><span class="lineNum">     839 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     840 </span>            : 
+<span class="lineNum">     841 </span><span class="lineNoCov">          0 : int GPrinterEndJob(GWindow w,int cancel) {</span>
+<span class="lineNum">     842 </span><span class="lineNoCov">          0 :     if ( w==NULL )</span>
+<span class="lineNum">     843 </span><span class="lineNoCov">          0 :         w = printer_display-&gt;groot;</span>
+<span class="lineNum">     844 </span><span class="lineNoCov">          0 : return( (w-&gt;display-&gt;funcs-&gt;endJob)(w,cancel) );</span>
+<a name="845"><span class="lineNum">     845 </span>            : }</a>
+<span class="lineNum">     846 </span>            : 
+<span class="lineNum">     847 </span><span class="lineNoCov">          0 : int GDrawRequestDeviceEvents(GWindow w,int devcnt,struct gdeveventmask *de) {</span>
+<span class="lineNum">     848 </span><span class="lineNoCov">          0 : return( (w-&gt;display-&gt;funcs-&gt;requestDeviceEvents)(w,devcnt,de) );</span>
+<a name="849"><span class="lineNum">     849 </span>            : }</a>
+<span class="lineNum">     850 </span>            : 
+<span class="lineNum">     851 </span><span class="lineNoCov">          0 : void GDrawSetBuildCharHooks(void (*hook)(GDisplay *),void (*inshook)(GDisplay *,unichar_t)) {</span>
+<span class="lineNum">     852 </span><span class="lineNoCov">          0 :     _GDraw_BuildCharHook = hook;</span>
+<span class="lineNum">     853 </span><span class="lineNoCov">          0 :     _GDraw_InsCharHook = inshook;</span>
+<span class="lineNum">     854 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     855 </span>            : 
+<span class="lineNum">     856 </span>            : /* We are in compose characters mode. The gdisp-&gt;mykey_state argument tells us*/
+<span class="lineNum">     857 </span>            : /*  how many accent keys have been pressed. When we finally get a non-accent */
+<span class="lineNum">     858 </span>            : /*  we try to look through our rules for composing letters given this set of */
+<span class="lineNum">     859 </span>            : /*  accents and this base character. If we find something, great, install it */
+<span class="lineNum">     860 </span>            : /*  and return. If there's nothing then see if we get anywhere by removing */
+<span class="lineNum">     861 </span>            : /*  one of the accents (if so use it, but continue with the remain accent in */
+<a name="862"><span class="lineNum">     862 </span>            : /*  the state). Finally we use the base character followed by all the accents */</a>
+<span class="lineNum">     863 </span>            : /*  left unaccounted for in the mask */
+<span class="lineNum">     864 </span><span class="lineNoCov">          0 : void _GDraw_ComposeChars(GDisplay *gdisp,GEvent *gevent) {</span>
+<span class="lineNum">     865 </span><span class="lineNoCov">          0 :     unichar_t ch = gevent-&gt;u.chr.keysym;</span>
+<span class="lineNum">     866 </span><span class="lineNoCov">          0 :     struct gchr_transform *strt = NULL, *trans, *end=NULL;</span>
+<span class="lineNum">     867 </span>            :     extern struct gchr_lookup _gdraw_chrlookup[];
+<span class="lineNum">     868 </span>            :     extern struct gchr_accents _gdraw_accents[];
+<span class="lineNum">     869 </span>            :     extern uint32 _gdraw_chrs_ctlmask, _gdraw_chrs_metamask, _gdraw_chrs_any;
+<span class="lineNum">     870 </span>            :     int i,mask;
+<span class="lineNum">     871 </span>            :     unichar_t hold[_GD_EVT_CHRLEN], *pt, *ept, *hpt;
+<span class="lineNum">     872 </span><span class="lineNoCov">          0 :     uint32 mykey_state = gdisp-&gt;mykey_state;</span>
+<span class="lineNum">     873 </span>            : 
+<span class="lineNum">     874 </span><span class="lineNoCov">          0 :     if ( gevent-&gt;u.chr.chars[0]=='\0' )              /* ignore things like the shift key */</span>
+<span class="lineNum">     875 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     876 </span><span class="lineNoCov">          0 :     if ( gevent-&gt;u.chr.keysym==GK_Escape ) {</span>
+<span class="lineNum">     877 </span><span class="lineNoCov">          0 :         gevent-&gt;u.chr.chars[0] = '\0';</span>
+<span class="lineNum">     878 </span><span class="lineNoCov">          0 :         gevent-&gt;u.chr.keysym = '\0';</span>
+<span class="lineNum">     879 </span><span class="lineNoCov">          0 :         gdisp-&gt;mykeybuild = false;</span>
+<span class="lineNum">     880 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     881 </span>            :     }
+<span class="lineNum">     882 </span><span class="lineNoCov">          0 :     if ( gevent-&gt;u.chr.state&amp;ksm_control )</span>
+<span class="lineNum">     883 </span><span class="lineNoCov">          0 :         mykey_state |= _gdraw_chrs_ctlmask;</span>
+<span class="lineNum">     884 </span><span class="lineNoCov">          0 :     if ( gevent-&gt;u.chr.state&amp;ksm_meta )</span>
+<span class="lineNum">     885 </span><span class="lineNoCov">          0 :         mykey_state |= _gdraw_chrs_metamask;</span>
+<span class="lineNum">     886 </span><span class="lineNoCov">          0 :     if ( ch&gt;' ' &amp;&amp; ch&lt;0x7f ) {</span>
+<span class="lineNum">     887 </span><span class="lineNoCov">          0 :         for ( trans = strt = _gdraw_chrlookup[ch-' '].transtab, end=trans+_gdraw_chrlookup[ch-' '].cnt;</span>
+<span class="lineNum">     888 </span><span class="lineNoCov">          0 :                 trans&lt;end; ++trans ) {</span>
+<span class="lineNum">     889 </span><span class="lineNoCov">          0 :             if ( trans-&gt;oldstate==mykey_state ) {</span>
+<span class="lineNum">     890 </span><span class="lineNoCov">          0 :                 gdisp-&gt;mykey_state = trans-&gt;newstate;</span>
+<span class="lineNum">     891 </span><span class="lineNoCov">          0 :                 if ( trans-&gt;resch=='\0' )</span>
+<span class="lineNum">     892 </span><span class="lineNoCov">          0 :                     u_strcpy(gevent-&gt;u.chr.chars,gevent-&gt;u.chr.chars+1);</span>
+<span class="lineNum">     893 </span>            :                 else {
+<span class="lineNum">     894 </span><span class="lineNoCov">          0 :                     gevent-&gt;u.chr.chars[0] = trans-&gt;resch;</span>
+<span class="lineNum">     895 </span><span class="lineNoCov">          0 :                     gdisp-&gt;mykeybuild = false;</span>
+<span class="lineNum">     896 </span>            :                 }
+<span class="lineNum">     897 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     898 </span><span class="lineNoCov">          0 :             } else if ( trans-&gt;oldstate==_gdraw_chrs_any ) {</span>
+<span class="lineNum">     899 </span><span class="lineNoCov">          0 :                 gdisp-&gt;mykey_state |= trans-&gt;newstate;</span>
+<span class="lineNum">     900 </span><span class="lineNoCov">          0 :                 u_strcpy(gevent-&gt;u.chr.chars,gevent-&gt;u.chr.chars+1);</span>
+<span class="lineNum">     901 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     902 </span>            :             }
+<span class="lineNum">     903 </span>            :         }
+<span class="lineNum">     904 </span>            :     }
+<span class="lineNum">     905 </span>            : 
+<span class="lineNum">     906 </span><span class="lineNoCov">          0 :     GDrawBeep(gdisp);</span>
+<span class="lineNum">     907 </span><span class="lineNoCov">          0 :     if ( mykey_state==0 || mykey_state==0x8000000 )</span>
+<span class="lineNum">     908 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     909 </span><span class="lineNoCov">          0 :     u_strcpy(hold,gevent-&gt;u.chr.chars+1);</span>
+<span class="lineNum">     910 </span><span class="lineNoCov">          0 :     if ( strt!=NULL ) for ( mask=0x1; mask&lt;0x8000000; mask&lt;&lt;=1 ) {</span>
+<span class="lineNum">     911 </span><span class="lineNoCov">          0 :         if ( (mykey_state&amp;~mask)== 0 )</span>
+<span class="lineNum">     912 </span><span class="lineNoCov">          0 :     break;                      /* otherwise dotabove a gives us ae */</span>
+<span class="lineNum">     913 </span><span class="lineNoCov">          0 :         for ( trans=strt; trans&lt;end; ++trans ) {</span>
+<span class="lineNum">     914 </span><span class="lineNoCov">          0 :             if ( trans-&gt;oldstate==(mykey_state&amp;~mask) &amp;&amp; trans-&gt;resch!='\0' ) {</span>
+<span class="lineNum">     915 </span><span class="lineNoCov">          0 :                 mykey_state = mask;</span>
+<span class="lineNum">     916 </span><span class="lineNoCov">          0 :                 gevent-&gt;u.chr.chars[0] = trans-&gt;resch;</span>
+<span class="lineNum">     917 </span><span class="lineNoCov">          0 :     goto break_2_loops;</span>
+<span class="lineNum">     918 </span>            :             }
+<span class="lineNum">     919 </span>            :         }
+<span class="lineNum">     920 </span>            :     }
+<span class="lineNum">     921 </span>            :     break_2_loops:;
+<span class="lineNum">     922 </span><span class="lineNoCov">          0 :     pt = gevent-&gt;u.chr.chars+1; ept = gevent-&gt;u.chr.chars+_GD_EVT_CHRLEN-1;</span>
+<span class="lineNum">     923 </span><span class="lineNoCov">          0 :     for ( i=0; _gdraw_accents[i].accent!=0 &amp;&amp; pt&lt;ept; ++i ) {</span>
+<span class="lineNum">     924 </span><span class="lineNoCov">          0 :         if ( (_gdraw_accents[i].mask&amp;mykey_state)==_gdraw_accents[i].mask ) {</span>
+<span class="lineNum">     925 </span><span class="lineNoCov">          0 :             *pt++ = _gdraw_accents[i].accent;</span>
+<span class="lineNum">     926 </span><span class="lineNoCov">          0 :             mykey_state &amp;= ~_gdraw_accents[i].mask;</span>
+<span class="lineNum">     927 </span>            :         }
+<span class="lineNum">     928 </span>            :     }
+<span class="lineNum">     929 </span><span class="lineNoCov">          0 :     for ( hpt = hold; pt&lt;ept &amp;&amp; *hpt!='\0'; )</span>
+<span class="lineNum">     930 </span><span class="lineNoCov">          0 :         *pt++ = *hpt++;</span>
+<span class="lineNum">     931 </span><span class="lineNoCov">          0 :     *pt = '\0';</span>
+<span class="lineNum">     932 </span><span class="lineNoCov">          0 :     gdisp-&gt;mykeybuild = false;</span>
+<a name="933"><span class="lineNum">     933 </span>            : }</a>
+<span class="lineNum">     934 </span>            : 
+<span class="lineNum">     935 </span><span class="lineNoCov">          0 : void GDrawDestroyDisplays() {</span>
+<span class="lineNum">     936 </span><span class="lineNoCov">          0 :   if (screen_display != NULL) {</span>
+<span class="lineNum">     937 </span><span class="lineNoCov">          0 :     _GXDraw_DestroyDisplay(screen_display);</span>
+<span class="lineNum">     938 </span><span class="lineNoCov">          0 :     screen_display = NULL;</span>
+<span class="lineNum">     939 </span>            :   }
+<span class="lineNum">     940 </span><span class="lineNoCov">          0 :   if (printer_display != NULL) {</span>
+<span class="lineNum">     941 </span><span class="lineNoCov">          0 :     _GPSDraw_DestroyDisplay(printer_display);</span>
+<span class="lineNum">     942 </span><span class="lineNoCov">          0 :     printer_display = NULL;</span>
+<span class="lineNum">     943 </span>            :   }
+<a name="944"><span class="lineNum">     944 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     945 </span>            : 
+<span class="lineNum">     946 </span><span class="lineNoCov">          0 : void GDrawCreateDisplays(char *displayname,char *programname) {</span>
+<span class="lineNum">     947 </span><span class="lineNoCov">          0 :     GIO_SetThreadCallback((void (*)(void *,void *,void *)) GDrawSyncThread);</span>
+<span class="lineNum">     948 </span><span class="lineNoCov">          0 :     screen_display = _GXDraw_CreateDisplay(displayname,programname);</span>
+<span class="lineNum">     949 </span><span class="lineNoCov">          0 :     printer_display = _GPSDraw_CreateDisplay();</span>
+<span class="lineNum">     950 </span><span class="lineNoCov">          0 :     if ( screen_display==NULL ) {</span>
+<span class="lineNum">     951 </span><span class="lineNoCov">          0 :         fprintf( stderr, &quot;Could not open screen.\n&quot; );</span>
+<span class="lineNum">     952 </span>            : #if __Mac
+<span class="lineNum">     953 </span>            :         fprintf( stderr, &quot;You must start X11 before you can start %s\n&quot;, programname);
+<span class="lineNum">     954 </span>            :         fprintf( stderr, &quot; X11 is optional software found on your install DVD.\n&quot; );
+<span class="lineNum">     955 </span>            : #elif __CygWin
+<span class="lineNum">     956 </span>            :         fprintf( stderr, &quot;You must start X11 before you can start %s\n&quot;, programname);
+<span class="lineNum">     957 </span>            :         fprintf( stderr, &quot; X11 may be obtained from the cygwin site in a separate package.\n&quot; );
+<span class="lineNum">     958 </span>            : #endif
+<span class="lineNum">     959 </span><span class="lineNoCov">          0 : exit(1);</span>
+<span class="lineNum">     960 </span>            :     }
+<a name="961"><span class="lineNum">     961 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     962 </span>            : 
+<span class="lineNum">     963 </span><span class="lineNoCov">          0 : void *GDrawNativeDisplay(GDisplay *gdisp) {</span>
+<span class="lineNum">     964 </span><span class="lineNoCov">          0 :     if ( gdisp==NULL )</span>
+<span class="lineNum">     965 </span><span class="lineNoCov">          0 :         gdisp=screen_display;</span>
+<span class="lineNum">     966 </span><span class="lineNoCov">          0 :     if ( gdisp==NULL )</span>
+<span class="lineNum">     967 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     968 </span>            : 
+<span class="lineNum">     969 </span><span class="lineNoCov">          0 : return( (gdisp-&gt;funcs-&gt;nativeDisplay)(gdisp) );</span>
+<span class="lineNum">     970 </span>            : }
+<span class="lineNum">     971 </span>            : 
+<a name="972"><span class="lineNum">     972 </span>            : </a>
+<span class="lineNum">     973 </span>            : void
+<span class="lineNum">     974 </span><span class="lineNoCov">          0 : GDrawAddReadFD( GDisplay *gdisp,</span>
+<span class="lineNum">     975 </span>            :                 int fd, void* udata,
+<span class="lineNum">     976 </span>            :                 void (*callback)(int fd, void* udata ))
+<span class="lineNum">     977 </span>            : {
+<span class="lineNum">     978 </span><span class="lineNoCov">          0 :     if ( !gdisp )</span>
+<span class="lineNum">     979 </span>            :     {
+<span class="lineNum">     980 </span><span class="lineNoCov">          0 :         gdisp=screen_display;</span>
+<span class="lineNum">     981 </span>            :     }
+<span class="lineNum">     982 </span>            :     
+<span class="lineNum">     983 </span><span class="lineNoCov">          0 :     if( !gdisp )</span>
+<span class="lineNum">     984 </span>            :     {
+<span class="lineNum">     985 </span>            :         // collab code being called from python scripted fontforge.
+<span class="lineNum">     986 </span><span class="lineNoCov">          0 :         GDrawCreateDisplays( 0, &quot;fontforge&quot;);</span>
+<span class="lineNum">     987 </span><span class="lineNoCov">          0 :         gdisp=screen_display;</span>
+<span class="lineNum">     988 </span>            :     }
+<span class="lineNum">     989 </span>            :     
+<span class="lineNum">     990 </span><span class="lineNoCov">          0 :     if( gdisp-&gt;fd_callbacks_last &gt;= gdisplay_fd_callbacks_size )</span>
+<span class="lineNum">     991 </span>            :     {
+<span class="lineNum">     992 </span><span class="lineNoCov">          0 :         fprintf(stderr,&quot;Error: FontForge has attempted to add more read FDs than it is equipt to handle\n&quot;);</span>
+<span class="lineNum">     993 </span><span class="lineNoCov">          0 :         fprintf(stderr,&quot; Please report this error!\n&quot;);</span>
+<span class="lineNum">     994 </span><span class="lineNoCov">          0 :         return;</span>
+<span class="lineNum">     995 </span>            :     }
+<span class="lineNum">     996 </span>            :     
+<span class="lineNum">     997 </span><span class="lineNoCov">          0 :     fd_callback_t* cb = &amp;gdisp-&gt;fd_callbacks[ gdisp-&gt;fd_callbacks_last ];</span>
+<span class="lineNum">     998 </span><span class="lineNoCov">          0 :     gdisp-&gt;fd_callbacks_last++;</span>
+<span class="lineNum">     999 </span>            : 
+<span class="lineNum">    1000 </span><span class="lineNoCov">          0 :     cb-&gt;fd = fd;</span>
+<span class="lineNum">    1001 </span><span class="lineNoCov">          0 :     cb-&gt;udata = udata;</span>
+<span class="lineNum">    1002 </span><span class="lineNoCov">          0 :     cb-&gt;callback = callback;</span>
+<span class="lineNum">    1003 </span>            : }
+<a name="1004"><span class="lineNum">    1004 </span>            : </a>
+<span class="lineNum">    1005 </span>            : static void
+<span class="lineNum">    1006 </span><span class="lineNoCov">          0 : fd_callback_clear( fd_callback_t* cb )</span>
+<span class="lineNum">    1007 </span>            : {
+<span class="lineNum">    1008 </span><span class="lineNoCov">          0 :     cb-&gt;fd = 0;</span>
+<span class="lineNum">    1009 </span><span class="lineNoCov">          0 :     cb-&gt;callback = 0;</span>
+<span class="lineNum">    1010 </span><span class="lineNoCov">          0 :     cb-&gt;udata = 0;</span>
+<span class="lineNum">    1011 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">    1012 </span>            : 
+<a name="1013"><span class="lineNum">    1013 </span>            : </a>
+<span class="lineNum">    1014 </span>            : void
+<span class="lineNum">    1015 </span><span class="lineNoCov">          0 : GDrawRemoveReadFD( GDisplay *gdisp,</span>
+<span class="lineNum">    1016 </span>            :                    int fd, void* udata )
+<span class="lineNum">    1017 </span>            : {
+<span class="lineNum">    1018 </span><span class="lineNoCov">          0 :     if ( gdisp==NULL )</span>
+<span class="lineNum">    1019 </span><span class="lineNoCov">          0 :         gdisp=screen_display;</span>
+<span class="lineNum">    1020 </span><span class="lineNoCov">          0 :     if( !fd )</span>
+<span class="lineNum">    1021 </span><span class="lineNoCov">          0 :         return;</span>
+<span class="lineNum">    1022 </span>            :     
+<span class="lineNum">    1023 </span><span class="lineNoCov">          0 :     int idx = 0;</span>
+<span class="lineNum">    1024 </span><span class="lineNoCov">          0 :     for( idx = 0; idx &lt; gdisplay_fd_callbacks_size; ++idx )</span>
+<span class="lineNum">    1025 </span>            :     {
+<span class="lineNum">    1026 </span><span class="lineNoCov">          0 :         fd_callback_t* cb = &amp;gdisp-&gt;fd_callbacks[ idx ];</span>
+<span class="lineNum">    1027 </span><span class="lineNoCov">          0 :         if( cb-&gt;fd == fd )</span>
+<span class="lineNum">    1028 </span>            :         {
+<span class="lineNum">    1029 </span><span class="lineNoCov">          0 :             if( idx+1 &gt;= gdisp-&gt;fd_callbacks_last )</span>
+<span class="lineNum">    1030 </span>            :             {
+<span class="lineNum">    1031 </span><span class="lineNoCov">          0 :                 gdisp-&gt;fd_callbacks_last--;</span>
+<span class="lineNum">    1032 </span><span class="lineNoCov">          0 :                 fd_callback_clear( cb );</span>
+<span class="lineNum">    1033 </span><span class="lineNoCov">          0 :                 return;</span>
+<span class="lineNum">    1034 </span>            :             }
+<span class="lineNum">    1035 </span><span class="lineNoCov">          0 :             gdisp-&gt;fd_callbacks_last--;</span>
+<span class="lineNum">    1036 </span><span class="lineNoCov">          0 :             fd_callback_t* last = &amp;gdisp-&gt;fd_callbacks[ gdisp-&gt;fd_callbacks_last ];</span>
+<span class="lineNum">    1037 </span><span class="lineNoCov">          0 :             memcpy( cb, last, sizeof(fd_callback_t) );</span>
+<span class="lineNum">    1038 </span><span class="lineNoCov">          0 :             fd_callback_clear( last );</span>
+<span class="lineNum">    1039 </span><span class="lineNoCov">          0 :             return;</span>
+<span class="lineNum">    1040 </span>            :         }
+<span class="lineNum">    1041 </span>            :     }
+<span class="lineNum">    1042 </span>            : }
+<span class="lineNum">    1043 </span>            : 
+<span class="lineNum">    1044 </span>            : 
+<span class="lineNum">    1045 </span>            : 
+<span class="lineNum">    1046 </span>            : #ifndef MAX
+<span class="lineNum">    1047 </span>            : #define MAX(x,y)   (((x) &gt; (y)) ? (x) : (y))
+<span class="lineNum">    1048 </span>            : #endif
+<span class="lineNum">    1049 </span>            :                                    
+<span class="lineNum">    1050 </span>            : /* void MacServiceZeroMQFDs() */
+<span class="lineNum">    1051 </span>            : /* { */
+<span class="lineNum">    1052 </span>            : /*     int ret = 0; */
+<span class="lineNum">    1053 </span>            :     
+<span class="lineNum">    1054 </span>            : /*     GDisplay *gdisp = GDrawGetDisplayOfWindow(0); */
+<span class="lineNum">    1055 </span>            : /*     int fd = 0; */
+<span class="lineNum">    1056 </span>            : /*     fd_set read, write, except; */
+<span class="lineNum">    1057 </span>            : /*     FD_ZERO(&amp;read); FD_ZERO(&amp;write); FD_ZERO(&amp;except); */
+<span class="lineNum">    1058 </span>            : /*     struct timeval timeout; */
+<span class="lineNum">    1059 </span>            : /*     timeout.tv_sec = 0; */
+<span class="lineNum">    1060 </span>            : /*     timeout.tv_usec = 1; */
+<span class="lineNum">    1061 </span>            : 
+<span class="lineNum">    1062 </span>            : /*     if( gdisp-&gt;zeromq_fd &gt; 0 ) */
+<span class="lineNum">    1063 </span>            : /*     { */
+<span class="lineNum">    1064 </span>            : /*      FD_SET(gdisp-&gt;zeromq_fd,&amp;read); */
+<span class="lineNum">    1065 </span>            : /*      fd = MAX( fd, gdisp-&gt;zeromq_fd ); */
+<span class="lineNum">    1066 </span>            : /*     } */
+<span class="lineNum">    1067 </span>            : /*     if( fd &gt; 0 ) */
+<span class="lineNum">    1068 </span>            : /*      ret = select(fd+1,&amp;read,&amp;write,&amp;except,&amp;timeout); */
+<span class="lineNum">    1069 </span>            : 
+<span class="lineNum">    1070 </span>            : /*     if( FD_ISSET(gdisp-&gt;zeromq_fd,&amp;read)) */
+<span class="lineNum">    1071 </span>            : /*     { */
+<span class="lineNum">    1072 </span>            : /*      gdisp-&gt;zeromq_fd_callback( gdisp-&gt;zeromq_fd, gdisp-&gt;zeromq_datas ); */
+<span class="lineNum">    1073 </span>            : /*     } */
+<span class="lineNum">    1074 </span>            : /* } */
+<a name="1075"><span class="lineNum">    1075 </span>            : </a>
+<span class="lineNum">    1076 </span>            : 
+<span class="lineNum">    1077 </span><span class="lineNoCov">          0 : void MacServiceReadFDs()</span>
+<span class="lineNum">    1078 </span>            : {
+<span class="lineNum">    1079 </span>            : #if (!defined(__MINGW32__))&amp;&amp;(!defined(__CYGWIN__))
+<span class="lineNum">    1080 </span><span class="lineNoCov">          0 :     int ret = 0;</span>
+<span class="lineNum">    1081 </span>            :     
+<span class="lineNum">    1082 </span><span class="lineNoCov">          0 :     GDisplay *gdisp = GDrawGetDisplayOfWindow(0);</span>
+<span class="lineNum">    1083 </span><span class="lineNoCov">          0 :     int fd = 0;</span>
+<span class="lineNum">    1084 </span>            :     fd_set read, write, except;
+<span class="lineNum">    1085 </span><span class="lineNoCov">          0 :     FD_ZERO(&amp;read); FD_ZERO(&amp;write); FD_ZERO(&amp;except);</span>
+<span class="lineNum">    1086 </span>            :     struct timeval timeout;
+<span class="lineNum">    1087 </span><span class="lineNoCov">          0 :     timeout.tv_sec = 0;</span>
+<span class="lineNum">    1088 </span><span class="lineNoCov">          0 :     timeout.tv_usec = 1;</span>
+<span class="lineNum">    1089 </span>            : 
+<span class="lineNum">    1090 </span><span class="lineNoCov">          0 :     int idx = 0;</span>
+<span class="lineNum">    1091 </span><span class="lineNoCov">          0 :     for( idx = 0; idx &lt; gdisp-&gt;fd_callbacks_last; ++idx )</span>
+<span class="lineNum">    1092 </span>            :     {
+<span class="lineNum">    1093 </span><span class="lineNoCov">          0 :         fd_callback_t* cb = &amp;gdisp-&gt;fd_callbacks[ idx ];</span>
+<span class="lineNum">    1094 </span><span class="lineNoCov">          0 :         FD_SET(cb-&gt;fd,&amp;read);</span>
+<span class="lineNum">    1095 </span><span class="lineNoCov">          0 :         fd = MAX( fd, cb-&gt;fd );</span>
+<span class="lineNum">    1096 </span>            :     }
+<span class="lineNum">    1097 </span>            :     
+<span class="lineNum">    1098 </span><span class="lineNoCov">          0 :     if( fd &gt; 0 )</span>
+<span class="lineNum">    1099 </span><span class="lineNoCov">          0 :         ret = select(fd+1,&amp;read,&amp;write,&amp;except,&amp;timeout);</span>
+<span class="lineNum">    1100 </span>            : 
+<span class="lineNum">    1101 </span><span class="lineNoCov">          0 :     for( idx = 0; idx &lt; gdisp-&gt;fd_callbacks_last; ++idx )</span>
+<span class="lineNum">    1102 </span>            :     {
+<span class="lineNum">    1103 </span><span class="lineNoCov">          0 :         fd_callback_t* cb = &amp;gdisp-&gt;fd_callbacks[ idx ];</span>
+<span class="lineNum">    1104 </span><span class="lineNoCov">          0 :         if( FD_ISSET(cb-&gt;fd,&amp;read))</span>
+<span class="lineNum">    1105 </span><span class="lineNoCov">          0 :             cb-&gt;callback( cb-&gt;fd, cb-&gt;udata );</span>
+<span class="lineNum">    1106 </span>            :     }
+<span class="lineNum">    1107 </span>            : #endif
+<span class="lineNum">    1108 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">    1109 </span>            : 
+<a name="1110"><span class="lineNum">    1110 </span>            : </a>
+<span class="lineNum">    1111 </span>            : 
+<span class="lineNum">    1112 </span><span class="lineNoCov">          0 : static int BackgroundTimer_eh( GWindow w, GEvent* ev )</span>
+<span class="lineNum">    1113 </span>            : {
+<span class="lineNum">    1114 </span><span class="lineNoCov">          0 :     if ( ev-&gt;type == et_timer )</span>
+<span class="lineNum">    1115 </span>            :     {
+<span class="lineNum">    1116 </span><span class="lineNoCov">          0 :         BackgroundTimer_t* bgt = (BackgroundTimer_t*)ev-&gt;u.timer.userdata;</span>
+<span class="lineNum">    1117 </span><span class="lineNoCov">          0 :         bgt-&gt;func( bgt-&gt;userdata );</span>
+<span class="lineNum">    1118 </span>            :     }
+<span class="lineNum">    1119 </span><span class="lineNoCov">          0 :     return 0;</span>
+<span class="lineNum">    1120 </span>            : }
+<span class="lineNum">    1121 </span>            : 
+<a name="1122"><span class="lineNum">    1122 </span>            : </a>
+<span class="lineNum">    1123 </span>            : BackgroundTimer_t*
+<span class="lineNum">    1124 </span><span class="lineNoCov">          0 : BackgroundTimer_new( int32 BackgroundTimerMS, </span>
+<span class="lineNum">    1125 </span>            :                      BackgroundTimerFunc func,
+<span class="lineNum">    1126 </span>            :                      void *userdata )
+<span class="lineNum">    1127 </span>            : {
+<span class="lineNum">    1128 </span><span class="lineNoCov">          0 :     BackgroundTimer_t* ret = calloc( 1, sizeof(BackgroundTimer_t) );</span>
+<span class="lineNum">    1129 </span><span class="lineNoCov">          0 :     ret-&gt;func = func;</span>
+<span class="lineNum">    1130 </span><span class="lineNoCov">          0 :     ret-&gt;userdata = userdata;</span>
+<span class="lineNum">    1131 </span><span class="lineNoCov">          0 :     ret-&gt;BackgroundTimerMS = BackgroundTimerMS;</span>
+<span class="lineNum">    1132 </span>            :     
+<span class="lineNum">    1133 </span>            :     GWindowAttrs wattrs;
+<span class="lineNum">    1134 </span><span class="lineNoCov">          0 :     memset(&amp;wattrs,0,sizeof(wattrs));</span>
+<span class="lineNum">    1135 </span><span class="lineNoCov">          0 :     wattrs.mask = wam_events|wam_cursor|wam_utf8_wtitle|wam_isdlg|wam_positioned;</span>
+<span class="lineNum">    1136 </span><span class="lineNoCov">          0 :     wattrs.event_masks = ~(1&lt;&lt;et_charup);</span>
+<span class="lineNum">    1137 </span><span class="lineNoCov">          0 :     wattrs.is_dlg = true;</span>
+<span class="lineNum">    1138 </span><span class="lineNoCov">          0 :     wattrs.positioned = true;</span>
+<span class="lineNum">    1139 </span><span class="lineNoCov">          0 :     wattrs.utf8_window_title = &quot;Timer Window&quot;;</span>
+<span class="lineNum">    1140 </span>            :     GRect pos;
+<span class="lineNum">    1141 </span><span class="lineNoCov">          0 :     pos.width = 10;</span>
+<span class="lineNum">    1142 </span><span class="lineNoCov">          0 :     pos.height = 10;</span>
+<span class="lineNum">    1143 </span><span class="lineNoCov">          0 :     pos.x = 0;</span>
+<span class="lineNum">    1144 </span><span class="lineNoCov">          0 :     pos.y = 0;</span>
+<span class="lineNum">    1145 </span>            :     
+<span class="lineNum">    1146 </span><span class="lineNoCov">          0 :     GWindow w = GDrawCreateTopWindow( 0, &amp;pos,</span>
+<span class="lineNum">    1147 </span>            :                                       BackgroundTimer_eh, ret, &amp;wattrs );
+<span class="lineNum">    1148 </span><span class="lineNoCov">          0 :     ret-&gt;timer = GDrawRequestTimer( w, BackgroundTimerMS, BackgroundTimerMS, ret );</span>
+<span class="lineNum">    1149 </span><span class="lineNoCov">          0 :     ret-&gt;w = w;</span>
+<span class="lineNum">    1150 </span><span class="lineNoCov">          0 :     return ret;</span>
+<a name="1151"><span class="lineNum">    1151 </span>            : }</a>
+<span class="lineNum">    1152 </span>            : 
+<span class="lineNum">    1153 </span><span class="lineNoCov">          0 : void BackgroundTimer_remove( BackgroundTimer_t* t )</span>
+<span class="lineNum">    1154 </span>            : {
+<span class="lineNum">    1155 </span><span class="lineNoCov">          0 :     if( !t )</span>
+<span class="lineNum">    1156 </span><span class="lineNoCov">          0 :         return;</span>
+<span class="lineNum">    1157 </span>            : 
+<span class="lineNum">    1158 </span><span class="lineNoCov">          0 :     GDrawCancelTimer( t-&gt;timer );</span>
+<span class="lineNum">    1159 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow( t-&gt;w );</span>
+<span class="lineNum">    1160 </span><span class="lineNoCov">          0 :     free(t);</span>
+<a name="1161"><span class="lineNum">    1161 </span>            : }</a>
+<span class="lineNum">    1162 </span>            : 
+<span class="lineNum">    1163 </span><span class="lineNoCov">          0 : void BackgroundTimer_touch( BackgroundTimer_t* t )</span>
+<span class="lineNum">    1164 </span>            : {
+<span class="lineNum">    1165 </span><span class="lineNoCov">          0 :     if( !t )</span>
+<span class="lineNum">    1166 </span><span class="lineNoCov">          0 :         return;</span>
+<span class="lineNum">    1167 </span>            :     
+<span class="lineNum">    1168 </span><span class="lineNoCov">          0 :     GDrawCancelTimer( t-&gt;timer );</span>
+<span class="lineNum">    1169 </span><span class="lineNoCov">          0 :     t-&gt;timer = GDrawRequestTimer( t-&gt;w, t-&gt;BackgroundTimerMS, t-&gt;BackgroundTimerMS, t );</span>
+<span class="lineNum">    1170 </span>            : }
+<span class="lineNum">    1171 </span>            : 
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -1,0 +1,677 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforge/woff.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforge</a> - woff.c<span style="font-size: 80%;"> (source / <a href="woff.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">128</td>
+            <td class="headerCovTableEntry">343</td>
+            <td class="headerCovTableEntryLo">37.3 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">5</td>
+            <td class="headerCovTableEntry">8</td>
+            <td class="headerCovTableEntryLo">62.5 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2010-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            : /* Support for woff files */
+<span class="lineNum">      29 </span>            : /* Which are defined here: http://people.mozilla.com/~jkew/woff/woff-2009-09-16.html */
+<span class="lineNum">      30 </span>            : /* Basically sfnts with compressed tables and some more metadata */
+<span class="lineNum">      31 </span>            : 
+<span class="lineNum">      32 </span>            : #include &quot;woff.h&quot;
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span>            : #include &quot;fontforge.h&quot;
+<span class="lineNum">      35 </span>            : #include &quot;http.h&quot;
+<span class="lineNum">      36 </span>            : #include &quot;mem.h&quot;
+<span class="lineNum">      37 </span>            : #include &quot;parsettf.h&quot;
+<span class="lineNum">      38 </span>            : #include &quot;tottf.h&quot;
+<span class="lineNum">      39 </span>            : #include &lt;math.h&gt;
+<span class="lineNum">      40 </span>            : #include &lt;ctype.h&gt;
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            : #ifdef _NO_LIBPNG
+<span class="lineNum">      43 </span>            : 
+<span class="lineNum">      44 </span>            : SplineFont *_SFReadWOFF(FILE *woff,int flags,enum openflags openflags, char *filename,struct fontdict *fd) {
+<span class="lineNum">      45 </span>            :     ff_post_error(_(&quot;WOFF not supported&quot;), _(&quot;This version of fontforge cannot handle WOFF files. You need to recompile it with libpng and zlib&quot;) );
+<span class="lineNum">      46 </span>            : return( NULL );
+<span class="lineNum">      47 </span>            : }
+<span class="lineNum">      48 </span>            : 
+<span class="lineNum">      49 </span>            : int _WriteWOFFFont(FILE *woff,SplineFont *sf, enum fontformat format,
+<span class="lineNum">      50 </span>            :         int32 *bsizes, enum bitmapformat bf,int flags,EncMap *enc,int layer) {
+<span class="lineNum">      51 </span>            :     ff_post_error(_(&quot;WOFF not supported&quot;), _(&quot;This version of fontforge cannot handle WOFF files. You need to recompile it with libpng and zlib&quot;) );
+<span class="lineNum">      52 </span>            : return( 1 );
+<span class="lineNum">      53 </span>            : }
+<span class="lineNum">      54 </span>            : 
+<span class="lineNum">      55 </span>            : int WriteWOFFFont(char *fontname,SplineFont *sf, enum fontformat format,
+<span class="lineNum">      56 </span>            :         int32 *bsizes, enum bitmapformat bf,int flags,EncMap *enc,int layer) {
+<span class="lineNum">      57 </span>            :     ff_post_error(_(&quot;WOFF not supported&quot;), _(&quot;This version of fontforge cannot handle WOFF files. You need to recompile it with libpng and zlib&quot;) );
+<span class="lineNum">      58 </span>            : return( 1 );
+<span class="lineNum">      59 </span>            : }
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span>            : int CanWoff(void) {
+<span class="lineNum">      62 </span>            : return( 0 );
+<span class="lineNum">      63 </span>            : }
+<span class="lineNum">      64 </span>            : 
+<span class="lineNum">      65 </span>            : #else /* ! _NO_LIBPNG */
+<span class="lineNum">      66 </span>            : 
+<a name="67"><span class="lineNum">      67 </span>            : # include &lt;zlib.h&gt;</a>
+<span class="lineNum">      68 </span>            : 
+<span class="lineNum">      69 </span><span class="lineCov">         17 : static void copydata(FILE *to,int off_to,FILE *from,int off_from, int len) {</span>
+<span class="lineNum">      70 </span>            :     int ch, i;
+<span class="lineNum">      71 </span>            : 
+<span class="lineNum">      72 </span><span class="lineCov">         17 :     fseek(to  ,off_to  ,SEEK_SET);</span>
+<span class="lineNum">      73 </span><span class="lineCov">         17 :     fseek(from,off_from,SEEK_SET);</span>
+<span class="lineNum">      74 </span><span class="lineCov">      64376 :     for ( i=0; i&lt;len; ++i ) {</span>
+<span class="lineNum">      75 </span><span class="lineCov">      64359 :         ch = getc(from);</span>
+<span class="lineNum">      76 </span><span class="lineCov">      64359 :         putc(ch,to);</span>
+<span class="lineNum">      77 </span>            :     }
+<span class="lineNum">      78 </span><span class="lineCov">         17 : }</span>
+<span class="lineNum">      79 </span>            : 
+<span class="lineNum">      80 </span>            : #define CHUNK   (128*1024)
+<a name="81"><span class="lineNum">      81 </span>            : /* Copied with few mods from the zlib usage examples */</a>
+<span class="lineNum">      82 </span>            : 
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 : static int decompressdata(FILE *to,int off_to,FILE *from,int off_from,</span>
+<span class="lineNum">      84 </span>            :         int len, int uncomplen ) {
+<span class="lineNum">      85 </span>            :     /* Return whether an error occurred */
+<span class="lineNum">      86 </span>            :     char in[CHUNK];
+<span class="lineNum">      87 </span>            :     char out[CHUNK];
+<span class="lineNum">      88 </span>            :     z_stream strm;
+<span class="lineNum">      89 </span>            :     int ret;
+<span class="lineNum">      90 </span>            :     int amount;
+<span class="lineNum">      91 </span>            : 
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :     fseek(to  ,off_to  ,SEEK_SET);</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :     fseek(from,off_from,SEEK_SET);</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :     memset(&amp;strm,0,sizeof(strm));</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :     ret = inflateInit(&amp;strm);</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :     if ( ret!=Z_OK )</span>
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">      98 </span>            : 
+<span class="lineNum">      99 </span>            :     do {
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :         if ( len&lt;=0 ) {</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :             (void)inflateEnd(&amp;strm);</span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     103 </span>            :         }
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :         amount = len;</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :         if ( amount&gt;CHUNK )</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :             amount = CHUNK;</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :         strm.avail_in = fread(in, 1, amount, from);</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :         len -= strm.avail_in;</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :         if (ferror(from)) {</span>
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :             (void)inflateEnd(&amp;strm);</span>
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     112 </span>            :         }
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :         if (strm.avail_in == 0)</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :         strm.next_in = in;</span>
+<span class="lineNum">     116 </span>            :         do {
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :             strm.avail_out = CHUNK;</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :             strm.next_out = out;</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :             ret = inflate(&amp;strm, Z_NO_FLUSH);</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :             if ( ret!=Z_OK &amp;&amp; ret!=Z_STREAM_END ) {</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :                 (void)inflateEnd(&amp;strm);</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     123 </span>            :             }
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :             amount = CHUNK - strm.avail_out;</span>
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 :             if ( fwrite(out,1,amount,to)!= amount || ferror(to) ) {</span>
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :                 (void)inflateEnd(&amp;strm);</span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     128 </span>            :             }
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :         } while ( strm.avail_out==0 );</span>
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :     } while ( ret!=Z_STREAM_END );</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :     (void)inflateEnd(&amp;strm);</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :     if ( uncomplen!=strm.total_out ) {</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :         LogError(_(&quot;Decompressed length did not match expected length for table&quot;));</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     135 </span>            :     }
+<span class="lineNum">     136 </span>            : 
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 : return( false );</span>
+<a name="138"><span class="lineNum">     138 </span>            : }</a>
+<span class="lineNum">     139 </span>            : 
+<span class="lineNum">     140 </span><span class="lineCov">         17 : static int compressOrNot(FILE *to,int off_to, FILE *from,int off_from,</span>
+<span class="lineNum">     141 </span>            :         int len, int forcecompress ) {
+<span class="lineNum">     142 </span>            :     char in[CHUNK];
+<span class="lineNum">     143 </span>            :     char out[CHUNK];
+<span class="lineNum">     144 </span>            :     z_stream strm;
+<span class="lineNum">     145 </span><span class="lineCov">         17 :     int ret, err=0;</span>
+<span class="lineNum">     146 </span>            :     int amount;
+<span class="lineNum">     147 </span>            :     FILE *tmp;
+<span class="lineNum">     148 </span><span class="lineCov">         17 :     int uncompLen = len;</span>
+<span class="lineNum">     149 </span>            : 
+<span class="lineNum">     150 </span>            :     /* Empty table, nothing to do */
+<span class="lineNum">     151 </span><span class="lineCov">         17 :     if ( len==0 )</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 : return(0);</span>
+<span class="lineNum">     153 </span>            : 
+<span class="lineNum">     154 </span><span class="lineCov">         17 :     fseek(from,off_from,SEEK_SET);</span>
+<span class="lineNum">     155 </span><span class="lineCov">         17 :     memset(&amp;strm,0,sizeof(strm));</span>
+<span class="lineNum">     156 </span><span class="lineCov">         17 :     ret = deflateInit(&amp;strm,Z_DEFAULT_COMPRESSION);</span>
+<span class="lineNum">     157 </span><span class="lineCov">         17 :     if ( ret!=Z_OK ) {</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :         fprintf( stderr,&quot;Compression initialization failed.\n&quot; );</span>
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 : return(0);</span>
+<span class="lineNum">     160 </span>            :     }
+<span class="lineNum">     161 </span><span class="lineCov">         17 :     tmp = tmpfile();</span>
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span>            :     do {
+<span class="lineNum">     164 </span><span class="lineCov">         17 :         if ( len&lt;=0 ) {</span>
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :             (void)deflateEnd(&amp;strm);</span>
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     167 </span>            :         }
+<span class="lineNum">     168 </span><span class="lineCov">         17 :         amount = len;</span>
+<span class="lineNum">     169 </span><span class="lineCov">         17 :         if ( amount&gt;CHUNK )</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :             amount = CHUNK;</span>
+<span class="lineNum">     171 </span><span class="lineCov">         17 :         strm.avail_in = fread(in, 1, amount, from);</span>
+<span class="lineNum">     172 </span><span class="lineCov">         17 :         len -= strm.avail_in;</span>
+<span class="lineNum">     173 </span><span class="lineCov">         17 :         if (ferror(from)) {</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :             (void)deflateEnd(&amp;strm);</span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :             fprintf( stderr, &quot;IO error.\n&quot; );</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     177 </span>            :         }
+<span class="lineNum">     178 </span><span class="lineCov">         17 :         if (strm.avail_in == 0)</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     180 </span><span class="lineCov">         17 :         strm.next_in = in;</span>
+<span class="lineNum">     181 </span>            :         do {
+<span class="lineNum">     182 </span><span class="lineCov">         17 :             strm.avail_out = CHUNK;</span>
+<span class="lineNum">     183 </span><span class="lineCov">         17 :             strm.next_out = out;</span>
+<span class="lineNum">     184 </span><span class="lineCov">         17 :             ret = deflate(&amp;strm, len==0 ? Z_FINISH : Z_NO_FLUSH);</span>
+<span class="lineNum">     185 </span><span class="lineCov">         17 :             if ( ret==Z_STREAM_ERROR ) {</span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :                 (void)deflateEnd(&amp;strm);</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :                 fprintf( stderr, &quot;Compression failed somehow.\n&quot;);</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :                 err = 1;</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     190 </span>            :             }
+<span class="lineNum">     191 </span><span class="lineCov">         17 :             amount = CHUNK - strm.avail_out;</span>
+<span class="lineNum">     192 </span><span class="lineCov">         17 :             if ( fwrite(out,1,amount,tmp)!= amount || ferror(tmp) ) {</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :                 (void)deflateEnd(&amp;strm);</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :                 fprintf( stderr, &quot;IO Error.\n&quot;);</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :                 err=1;</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     197 </span>            :             }
+<span class="lineNum">     198 </span><span class="lineCov">         17 :         } while ( strm.avail_out==0 );</span>
+<span class="lineNum">     199 </span><span class="lineCov">         17 :         if ( err )</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     201 </span><span class="lineCov">         17 :     } while ( ret!=Z_STREAM_END );</span>
+<span class="lineNum">     202 </span><span class="lineCov">         17 :     (void)deflateEnd(&amp;strm);</span>
+<span class="lineNum">     203 </span>            : 
+<span class="lineNum">     204 </span><span class="lineCov">         17 :     if ( strm.total_out&gt;=uncompLen ) {</span>
+<span class="lineNum">     205 </span>            :         /* Didn't actually make the data smaller, so store uncompressed */
+<span class="lineNum">     206 </span><span class="lineCov">          2 :         fclose(tmp);</span>
+<span class="lineNum">     207 </span><span class="lineCov">          2 :         copydata(to,off_to,from,off_from,uncompLen);</span>
+<span class="lineNum">     208 </span><span class="lineCov">          2 : return( uncompLen );</span>
+<span class="lineNum">     209 </span>            :     } else {
+<span class="lineNum">     210 </span><span class="lineCov">         15 :         copydata(to,off_to,tmp,0,strm.total_out);</span>
+<span class="lineNum">     211 </span><span class="lineCov">         15 :         fclose(tmp);</span>
+<span class="lineNum">     212 </span><span class="lineCov">         15 : return( strm.total_out );</span>
+<span class="lineNum">     213 </span>            :     }
+<a name="214"><span class="lineNum">     214 </span>            : }</a>
+<span class="lineNum">     215 </span>            : 
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 : SplineFont *_SFReadWOFF(FILE *woff,int flags,enum openflags openflags, char *filename,struct fontdict *fd) {</span>
+<span class="lineNum">     217 </span>            :     int flavour;
+<span class="lineNum">     218 </span>            :     int iscff;
+<span class="lineNum">     219 </span>            :     int len, len_stated;
+<span class="lineNum">     220 </span>            :     int num_tabs;
+<span class="lineNum">     221 </span>            :     int major, minor;
+<span class="lineNum">     222 </span>            :     uint32_t metaOffset, metaLenCompressed, metaLenUncompressed;
+<span class="lineNum">     223 </span>            :     int privOffset, privLength;
+<span class="lineNum">     224 </span>            :     int i,j,err;
+<span class="lineNum">     225 </span>            :     int tag, offset, compLen, uncompLen, checksum;
+<span class="lineNum">     226 </span>            :     FILE *sfnt;
+<span class="lineNum">     227 </span>            :     int here, next, tab_start;
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :     int head_pos = -1;</span>
+<span class="lineNum">     229 </span>            :     SplineFont *sf;
+<span class="lineNum">     230 </span>            : 
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :     fseek(woff,0,SEEK_END);</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :     len = ftell(woff);</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :     rewind(woff);</span>
+<span class="lineNum">     234 </span>            :     {
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :         int signature = getlong(woff);</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :         if ( signature==CHR('w','O','F','2') ) {</span>
+<span class="lineNum">     237 </span>            :             // TODO: add support for WOFF2
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :             LogError(_(&quot;WOFF2 is not supported yet.&quot;));</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :             return NULL;</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :         } else if ( signature!=CHR('w','O','F','F') ) {</span>
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :             LogError(_(&quot;Bad signature in WOFF header.&quot;));</span>
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :             return NULL;</span>
+<span class="lineNum">     243 </span>            :         }
+<span class="lineNum">     244 </span>            :     }
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :     flavour = getlong(woff);</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :     iscff = (flavour==CHR('O','T','T','O'));</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :     len_stated = getlong(woff);</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :     if ( len!=len_stated ) {</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :         LogError(_(&quot;File length as specified in the WOFF header does not match the actual file length.&quot;));</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     251 </span>            :     }
+<span class="lineNum">     252 </span>            : 
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :     num_tabs = getushort(woff);</span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :     if ( getushort(woff)!=0 ) {</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :         LogError(_(&quot;Bad WOFF header, a field which must be 0 is not.&quot;));</span>
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     257 </span>            :     }
+<span class="lineNum">     258 </span>            : 
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :     /* total_uncompressed_sfnt_size = */ getlong(woff);</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :     major = getushort(woff);</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :     minor = getushort(woff);</span>
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :     metaOffset = (uint32_t)getlong(woff);</span>
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :     metaLenCompressed = (uint32_t)getlong(woff);</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :     metaLenUncompressed = (uint32_t)getlong(woff);</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :     privOffset = getlong(woff);</span>
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :     privLength = getlong(woff);</span>
+<span class="lineNum">     267 </span>            : 
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :     sfnt = tmpfile();</span>
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :     if ( sfnt==NULL ) {</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :         LogError(_(&quot;Could not open temporary file.&quot;));</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     272 </span>            :     }
+<span class="lineNum">     273 </span>            : 
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :     putlong(sfnt,flavour);</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :     putshort(sfnt,num_tabs);</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :     for ( i=1, j=0; 2*i&lt;=num_tabs; i&lt;&lt;=1, ++j );</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :     putshort(sfnt,i*16);</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :     putshort(sfnt,j);</span>
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 :     putshort(sfnt,(num_tabs-i)*16);</span>
+<span class="lineNum">     280 </span>            : 
+<span class="lineNum">     281 </span>            :     /* dummy space for table pointers */
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :     tab_start = ftell(sfnt);</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;4*num_tabs; ++i )</span>
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :         putlong(sfnt,0);</span>
+<span class="lineNum">     285 </span>            : 
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;num_tabs; ++i ) {</span>
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :         tag = getlong(woff);</span>
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :         offset = getlong(woff);</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :         compLen = getlong(woff);</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :         uncompLen = getlong(woff);</span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :         checksum = getlong(woff);</span>
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :         if ( compLen&gt;uncompLen || offset+compLen&gt;len ) {</span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :             fclose(sfnt);</span>
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :             if ( compLen&gt;uncompLen )</span>
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :                 LogError(_(&quot;Invalid compressed table length for '%c%c%c%c'.&quot;),</span>
+<span class="lineNum">     296 </span>            :                         tag&gt;&gt;24, tag&gt;&gt;16, tag&gt;&gt;8, tag);
+<span class="lineNum">     297 </span>            :             else
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :                 LogError(_(&quot;Table length stretches beyond end of file for '%c%c%c%c'.&quot;),</span>
+<span class="lineNum">     299 </span>            :                         tag&gt;&gt;24, tag&gt;&gt;16, tag&gt;&gt;8, tag);
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     301 </span>            :         }
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 :         here = ftell(woff);</span>
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :         next = ftell(sfnt);</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :         fseek(sfnt,tab_start,SEEK_SET);</span>
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 :         putlong(sfnt,tag);</span>
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :         putlong(sfnt,checksum);</span>
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :         putlong(sfnt,next);</span>
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 :         putlong(sfnt,uncompLen);</span>
+<span class="lineNum">     309 </span><span class="lineNoCov">          0 :         if ( tag==CHR('h','e','a','d'))</span>
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 :             head_pos = next;</span>
+<span class="lineNum">     311 </span><span class="lineNoCov">          0 :         tab_start = ftell(sfnt);</span>
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 :         fseek(sfnt,next,SEEK_SET);</span>
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :         if ( compLen==uncompLen ) {</span>
+<span class="lineNum">     314 </span>            :             /* Not compressed, copy verbatim */
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :             copydata(sfnt,next,woff,offset,compLen);</span>
+<span class="lineNum">     316 </span>            :         } else {
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :             err = decompressdata(sfnt,next,woff,offset,compLen,uncompLen);</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :             if ( err ) {</span>
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :                 LogError(_(&quot;Problem decompressing '%c%c%c%c' table.&quot;),</span>
+<span class="lineNum">     320 </span>            :                         tag&gt;&gt;24, tag&gt;&gt;16, tag&gt;&gt;8, tag);
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 :                 fclose(sfnt);</span>
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     323 </span>            :             }
+<span class="lineNum">     324 </span>            :         }
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :         if ( (ftell(sfnt)&amp;3)!=0 ) {</span>
+<span class="lineNum">     326 </span>            :             /* Pad to a 4 byte boundary */
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :             if ( ftell(sfnt)&amp;1 )</span>
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :                 putc('\0',sfnt);</span>
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :             if ( ftell(sfnt)&amp;2 )</span>
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 :                 putshort(sfnt,0);</span>
+<span class="lineNum">     331 </span>            :         }
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 :         fseek(woff,here,SEEK_SET);</span>
+<span class="lineNum">     333 </span>            :     }
+<span class="lineNum">     334 </span>            :     /* I assumed at first that the check sum would just be right */
+<span class="lineNum">     335 </span>            :     /*  but I've reordered the tables (probably) so I've got a different */
+<span class="lineNum">     336 </span>            :     /*  set of offsets and I must figure it out for myself */
+<span class="lineNum">     337 </span>            :     /* Usually, I don't care. But if fontlint is on, then do it right */
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 :     if ( (openflags &amp; of_fontlint) &amp;&amp; head_pos!=-1 ) {</span>
+<span class="lineNum">     339 </span>            :         int checksum;
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :         fseek(sfnt,head_pos+8,SEEK_SET);</span>
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :         putlong(sfnt,0);                /* Clear what was there */</span>
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :         checksum = filechecksum(sfnt);  /* Recalc */</span>
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :         checksum = 0xb1b0afba-checksum;</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :         fseek(sfnt,head_pos+8,SEEK_SET);</span>
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 :         putlong(sfnt,checksum);</span>
+<span class="lineNum">     346 </span>            :     }
+<span class="lineNum">     347 </span><span class="lineNoCov">          0 :     rewind(sfnt);</span>
+<span class="lineNum">     348 </span><span class="lineNoCov">          0 :     sf = _SFReadTTF(sfnt,flags,openflags,filename,fd);</span>
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :     fclose(sfnt);</span>
+<span class="lineNum">     350 </span>            : 
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :     if ( sf!=NULL ) {</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :         sf-&gt;woffMajor = major;</span>
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 :         sf-&gt;woffMinor = minor;</span>
+<span class="lineNum">     354 </span>            :     }
+<span class="lineNum">     355 </span>            : 
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :     if ( sf!=NULL &amp;&amp; metaOffset!=0 ) {</span>
+<span class="lineNum">     357 </span>            :         /*
+<span class="lineNum">     358 </span>            :         * Boundary/integer overflow checks:
+<span class="lineNum">     359 </span>            :         *
+<span class="lineNum">     360 </span>            :         * We don't want to actually dereference a null pointer (returned
+<span class="lineNum">     361 </span>            :         * by asking to allocate too much RAM) and we don't want to allocate
+<span class="lineNum">     362 </span>            :         * a 0-sized chunk (caused when one of the (metaLenxxx + 1) values overflows).
+<span class="lineNum">     363 </span>            :         *
+<span class="lineNum">     364 </span>            :         * We can safely pass sf-&gt;woffMetadata as a NULL pointer because
+<span class="lineNum">     365 </span>            :         * it's never accessed anywhere else without a check for it being
+<span class="lineNum">     366 </span>            :         * NULL first
+<span class="lineNum">     367 </span>            :         */
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :         if(metaLenUncompressed == UINT32_MAX) {</span>
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 :                 LogError(_(&quot;WOFF uncompressed metadata section too large.\n&quot;));</span>
+<span class="lineNum">     370 </span><span class="lineNoCov">          0 :                 sf-&gt;woffMetadata = NULL; </span>
+<span class="lineNum">     371 </span><span class="lineNoCov">          0 :                 return( sf );</span>
+<span class="lineNum">     372 </span>            :         }
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 :         if(metaLenCompressed == UINT32_MAX) {</span>
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 :                 LogError(_(&quot;WOFF compressed metadata section too large.\n&quot;));</span>
+<span class="lineNum">     375 </span><span class="lineNoCov">          0 :                 sf-&gt;woffMetadata = NULL;</span>
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 :                 return( sf );</span>
+<span class="lineNum">     377 </span>            :         }
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 :         sf-&gt;woffMetadata = malloc(metaLenUncompressed+1);</span>
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :         if(sf-&gt;woffMetadata == NULL) { </span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :                 LogError(_(&quot;WOFF uncompressed metadata section too large.\n&quot;));</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :                 return( sf );</span>
+<span class="lineNum">     382 </span>            :         }
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :         unsigned char *temp = malloc(metaLenCompressed+1);</span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :         if(temp == NULL) { </span>
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :                 LogError(_(&quot;WOFF compressed metadata section too large.\n&quot;));</span>
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :                 free(sf-&gt;woffMetadata); </span>
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :                 sf-&gt;woffMetadata = NULL;</span>
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 :                 free(temp);</span>
+<span class="lineNum">     389 </span><span class="lineNoCov">          0 :                 return( sf );</span>
+<span class="lineNum">     390 </span>            :         }
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 :         uLongf len = metaLenUncompressed;</span>
+<span class="lineNum">     392 </span><span class="lineNoCov">          0 :         fseek(woff,metaOffset,SEEK_SET);</span>
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 :         fread(temp,1,metaLenCompressed,woff);</span>
+<span class="lineNum">     394 </span><span class="lineNoCov">          0 :         sf-&gt;woffMetadata[metaLenUncompressed] ='\0';</span>
+<span class="lineNum">     395 </span><span class="lineNoCov">          0 :         uncompress((unsigned char *)sf-&gt;woffMetadata,&amp;len,temp,metaLenCompressed);</span>
+<span class="lineNum">     396 </span><span class="lineNoCov">          0 :         sf-&gt;woffMetadata[len] ='\0';</span>
+<span class="lineNum">     397 </span><span class="lineNoCov">          0 :         free(temp);</span>
+<span class="lineNum">     398 </span>            :     }
+<span class="lineNum">     399 </span>            : 
+<span class="lineNum">     400 </span><span class="lineNoCov">          0 : return( sf );</span>
+<span class="lineNum">     401 </span>            : }       
+<span class="lineNum">     402 </span>            : 
+<span class="lineNum">     403 </span>            : typedef struct {
+<span class="lineNum">     404 </span>            :     int index;
+<span class="lineNum">     405 </span>            :     int offset;
+<span class="lineNum">     406 </span>            : } tableOrderRec;
+<a name="407"><span class="lineNum">     407 </span>            : </a>
+<span class="lineNum">     408 </span>            : static int
+<span class="lineNum">     409 </span><span class="lineCov">         45 : compareOffsets(const void * lhs, const void * rhs)</span>
+<span class="lineNum">     410 </span>            : {
+<span class="lineNum">     411 </span><span class="lineCov">         45 :     const tableOrderRec * a = (const tableOrderRec *) lhs;</span>
+<span class="lineNum">     412 </span><span class="lineCov">         45 :     const tableOrderRec * b = (const tableOrderRec *) rhs;</span>
+<span class="lineNum">     413 </span>            :     /* don't simply return a-&gt;offset - b-&gt;offset because these are unsigned
+<span class="lineNum">     414 </span>            :        offset values; could convert to int, but possible integer overflow */
+<span class="lineNum">     415 </span><span class="lineCov">         62 :     return a-&gt;offset &gt; b-&gt;offset ? 1 :</span>
+<span class="lineNum">     416 </span><span class="lineCov">         17 :            a-&gt;offset &lt; b-&gt;offset ? -1 :</span>
+<span class="lineNum">     417 </span>            :            0;
+<a name="418"><span class="lineNum">     418 </span>            : }</a>
+<span class="lineNum">     419 </span>            : 
+<span class="lineNum">     420 </span><span class="lineCov">          1 : int _WriteWOFFFont(FILE *woff,SplineFont *sf, enum fontformat format,</span>
+<span class="lineNum">     421 </span>            :         int32 *bsizes, enum bitmapformat bf,int flags,EncMap *enc,int layer) {
+<span class="lineNum">     422 </span>            :     int ret;
+<span class="lineNum">     423 </span>            :     FILE *sfnt;
+<span class="lineNum">     424 </span><span class="lineCov">          1 :     int major=sf-&gt;woffMajor, minor=sf-&gt;woffMinor;</span>
+<span class="lineNum">     425 </span>            :     int flavour, num_tabs;
+<span class="lineNum">     426 </span>            :     int filelen, len;
+<span class="lineNum">     427 </span>            :     int i;
+<span class="lineNum">     428 </span>            :     int compLen, uncompLen, newoffset;
+<span class="lineNum">     429 </span>            :     int tag, checksum, offset;
+<span class="lineNum">     430 </span>            :     int tab_start;
+<span class="lineNum">     431 </span><span class="lineCov">          1 :     tableOrderRec *tableOrder = NULL;</span>
+<span class="lineNum">     432 </span>            : 
+<span class="lineNum">     433 </span><span class="lineCov">          1 :     if ( major==woffUnset ) {</span>
+<span class="lineNum">     434 </span>            :         struct ttflangname *useng;
+<span class="lineNum">     435 </span><span class="lineCov">          1 :         major = 1; minor = 0;</span>
+<span class="lineNum">     436 </span><span class="lineCov">          1 :         for ( useng=sf-&gt;names; useng!=NULL; useng=useng-&gt;next )</span>
+<span class="lineNum">     437 </span><span class="lineCov">          1 :             if ( useng-&gt;lang==0x409 )</span>
+<span class="lineNum">     438 </span><span class="lineCov">          1 :         break;</span>
+<span class="lineNum">     439 </span><span class="lineCov">          2 :         if ( useng!=NULL &amp;&amp; useng-&gt;names[ttf_version]!=NULL &amp;&amp;</span>
+<span class="lineNum">     440 </span><span class="lineCov">          1 :                 sscanf(useng-&gt;names[ttf_version], &quot;Version %d.%d&quot;, &amp;major, &amp;minor)&gt;=1 ) {</span>
+<span class="lineNum">     441 </span>            :             /* All done */
+<span class="lineNum">     442 </span><span class="lineNoCov">          0 :         } else if ( sf-&gt;subfontcnt!=0 ) {</span>
+<span class="lineNum">     443 </span><span class="lineNoCov">          0 :             major = floor(sf-&gt;cidversion);</span>
+<span class="lineNum">     444 </span><span class="lineNoCov">          0 :             minor = floor(1000.*(sf-&gt;cidversion-major));</span>
+<span class="lineNum">     445 </span><span class="lineNoCov">          0 :         } else if ( sf-&gt;version!=NULL ) {</span>
+<span class="lineNum">     446 </span><span class="lineNoCov">          0 :             char *pt=sf-&gt;version;</span>
+<span class="lineNum">     447 </span>            :             char *end;
+<span class="lineNum">     448 </span><span class="lineNoCov">          0 :             while ( *pt &amp;&amp; !isdigit(*pt) &amp;&amp; *pt!='.' ) ++pt;</span>
+<span class="lineNum">     449 </span><span class="lineNoCov">          0 :             if ( *pt ) {</span>
+<span class="lineNum">     450 </span><span class="lineNoCov">          0 :                 major = strtol(pt,&amp;end,10);</span>
+<span class="lineNum">     451 </span><span class="lineNoCov">          0 :                 if ( *end=='.' )</span>
+<span class="lineNum">     452 </span><span class="lineNoCov">          0 :                     minor = strtol(end+1,NULL,10);</span>
+<span class="lineNum">     453 </span>            :             }
+<span class="lineNum">     454 </span>            :         }
+<span class="lineNum">     455 </span>            :     }
+<span class="lineNum">     456 </span>            : 
+<span class="lineNum">     457 </span><span class="lineCov">          2 :     format = sf-&gt;subfonts!=NULL ? ff_otfcid :</span>
+<span class="lineNum">     458 </span><span class="lineCov">          1 :                 sf-&gt;layers[layer].order2 ? ff_ttf : ff_otf;</span>
+<span class="lineNum">     459 </span><span class="lineCov">          1 :     sfnt = tmpfile();</span>
+<span class="lineNum">     460 </span><span class="lineCov">          1 :     ret = _WriteTTFFont(sfnt,sf,format,bsizes,bf,flags,enc,layer);</span>
+<span class="lineNum">     461 </span><span class="lineCov">          1 :     if ( !ret ) {</span>
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 :         fclose(sfnt);</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 : return( ret );</span>
+<span class="lineNum">     464 </span>            :     }
+<span class="lineNum">     465 </span>            : 
+<span class="lineNum">     466 </span><span class="lineCov">          1 :     fseek(sfnt,0,SEEK_END);</span>
+<span class="lineNum">     467 </span><span class="lineCov">          1 :     filelen = ftell(sfnt);</span>
+<span class="lineNum">     468 </span><span class="lineCov">          1 :     rewind(sfnt);</span>
+<span class="lineNum">     469 </span>            : 
+<span class="lineNum">     470 </span><span class="lineCov">          1 :     flavour = getlong(sfnt);</span>
+<span class="lineNum">     471 </span>            :     /* The woff standard says we should accept all flavours of sfnt, so can't */
+<span class="lineNum">     472 </span>            :     /*  test flavour to make sure we've got a valid sfnt */
+<span class="lineNum">     473 </span>            :     /* But we can test the rest of the header for consistancy */
+<span class="lineNum">     474 </span><span class="lineCov">          1 :     num_tabs = getushort(sfnt);</span>
+<span class="lineNum">     475 </span><span class="lineCov">          1 :     (void) getushort(sfnt);</span>
+<span class="lineNum">     476 </span><span class="lineCov">          1 :     (void) getushort(sfnt);</span>
+<span class="lineNum">     477 </span><span class="lineCov">          1 :     (void) getushort(sfnt);</span>
+<span class="lineNum">     478 </span>            : 
+<span class="lineNum">     479 </span>            :     /*
+<span class="lineNum">     480 </span>            :      * At this point _WriteTTFFont should have generated an sfnt file with
+<span class="lineNum">     481 </span>            :      * valid checksums, correct padding and no extra gaps. However, the order
+<span class="lineNum">     482 </span>            :      * of the font tables in the original sfnt font must also be preserved so
+<span class="lineNum">     483 </span>            :      * that WOFF consumers can recover the original offsets as well as the
+<span class="lineNum">     484 </span>            :      * original font. Hence we will compress and write the font tables into
+<span class="lineNum">     485 </span>            :      * the WOFF file using the original offset order. Note that the order of
+<span class="lineNum">     486 </span>            :      * tables may not be the same as the one of table directory entries.
+<span class="lineNum">     487 </span>            :      * See https://github.com/fontforge/fontforge/issues/926
+<span class="lineNum">     488 </span>            :      */
+<span class="lineNum">     489 </span><span class="lineCov">          1 :     tableOrder = (tableOrderRec *) malloc(num_tabs * sizeof(tableOrderRec));</span>
+<span class="lineNum">     490 </span><span class="lineCov">          1 :     if (!tableOrder) {</span>
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 :         fclose(sfnt);</span>
+<span class="lineNum">     492 </span><span class="lineNoCov">          0 :         return false;</span>
+<span class="lineNum">     493 </span>            :     }
+<span class="lineNum">     494 </span><span class="lineCov">         18 :     for ( i=0; i&lt;num_tabs; ++i ) {</span>
+<span class="lineNum">     495 </span><span class="lineCov">         17 :         fseek(sfnt,(3 + 4*i + 2)*sizeof(int32),SEEK_SET);</span>
+<span class="lineNum">     496 </span><span class="lineCov">         17 :         tableOrder[i].index = i;</span>
+<span class="lineNum">     497 </span><span class="lineCov">         17 :         tableOrder[i].offset = getlong(sfnt);</span>
+<span class="lineNum">     498 </span>            :     }
+<span class="lineNum">     499 </span><span class="lineCov">          1 :     qsort(tableOrder, num_tabs, sizeof(tableOrderRec), compareOffsets);</span>
+<span class="lineNum">     500 </span>            : 
+<span class="lineNum">     501 </span>            :     /* Now generate the WOFF file */
+<span class="lineNum">     502 </span><span class="lineCov">          1 :     rewind(woff);</span>
+<span class="lineNum">     503 </span><span class="lineCov">          1 :     putlong(woff,CHR('w','O','F','F'));</span>
+<span class="lineNum">     504 </span><span class="lineCov">          1 :     putlong(woff,flavour);</span>
+<span class="lineNum">     505 </span><span class="lineCov">          1 :     putlong(woff,0);            /* Off: 8. total length of file, fill in later */</span>
+<span class="lineNum">     506 </span><span class="lineCov">          1 :     putshort(woff,num_tabs);</span>
+<span class="lineNum">     507 </span><span class="lineCov">          1 :     putshort(woff,0);           /* Must be zero */</span>
+<span class="lineNum">     508 </span><span class="lineCov">          1 :     putlong(woff,filelen);</span>
+<span class="lineNum">     509 </span><span class="lineCov">          1 :     putshort(woff,major);       /* Major and minor version numbers of font */</span>
+<span class="lineNum">     510 </span><span class="lineCov">          1 :     putshort(woff,minor);</span>
+<span class="lineNum">     511 </span><span class="lineCov">          1 :     putlong(woff,0);            /* Off: 24. Offset to metadata table */</span>
+<span class="lineNum">     512 </span><span class="lineCov">          1 :     putlong(woff,0);            /* Off: 28. Length (compressed) of metadata */</span>
+<span class="lineNum">     513 </span><span class="lineCov">          1 :     putlong(woff,0);            /* Off: 32. Length (uncompressed) */</span>
+<span class="lineNum">     514 </span><span class="lineCov">          1 :     putlong(woff,0);            /* Off: 36. Offset to private data */</span>
+<span class="lineNum">     515 </span><span class="lineCov">          1 :     putlong(woff,0);            /* Off: 40. Length of private data */</span>
+<span class="lineNum">     516 </span>            : 
+<span class="lineNum">     517 </span><span class="lineCov">          1 :     tab_start = ftell(woff);</span>
+<span class="lineNum">     518 </span><span class="lineCov">         86 :     for ( i=0; i&lt;5*num_tabs; ++i )</span>
+<span class="lineNum">     519 </span><span class="lineCov">         85 :         putlong(woff,0);</span>
+<span class="lineNum">     520 </span>            : 
+<span class="lineNum">     521 </span><span class="lineCov">         18 :     for ( i=0; i&lt;num_tabs; ++i ) {</span>
+<span class="lineNum">     522 </span><span class="lineCov">         17 :         fseek(sfnt,(3 + 4*tableOrder[i].index)*sizeof(int32),SEEK_SET);</span>
+<span class="lineNum">     523 </span><span class="lineCov">         17 :         tag = getlong(sfnt);</span>
+<span class="lineNum">     524 </span><span class="lineCov">         17 :         checksum = getlong(sfnt);</span>
+<span class="lineNum">     525 </span><span class="lineCov">         17 :         offset = getlong(sfnt);</span>
+<span class="lineNum">     526 </span><span class="lineCov">         17 :         uncompLen = getlong(sfnt);</span>
+<span class="lineNum">     527 </span><span class="lineCov">         17 :         newoffset = ftell(woff);</span>
+<span class="lineNum">     528 </span><span class="lineCov">         17 :         compLen = compressOrNot(woff,newoffset,sfnt,offset,uncompLen,false);</span>
+<span class="lineNum">     529 </span><span class="lineCov">         17 :         if ( (ftell(woff)&amp;3)!=0 ) {</span>
+<span class="lineNum">     530 </span>            :             /* Pad to a 4 byte boundary */
+<span class="lineNum">     531 </span><span class="lineCov">         15 :             if ( ftell(woff)&amp;1 )</span>
+<span class="lineNum">     532 </span><span class="lineCov">          9 :                 putc('\0',woff);</span>
+<span class="lineNum">     533 </span><span class="lineCov">         15 :             if ( ftell(woff)&amp;2 )</span>
+<span class="lineNum">     534 </span><span class="lineCov">          8 :                 putshort(woff,0);</span>
+<span class="lineNum">     535 </span>            :         }
+<span class="lineNum">     536 </span><span class="lineCov">         17 :         fseek(woff,tab_start+(5*tableOrder[i].index)*sizeof(int32),SEEK_SET);</span>
+<span class="lineNum">     537 </span><span class="lineCov">         17 :         putlong(woff,tag);</span>
+<span class="lineNum">     538 </span><span class="lineCov">         17 :         putlong(woff,newoffset);</span>
+<span class="lineNum">     539 </span><span class="lineCov">         17 :         putlong(woff,compLen);</span>
+<span class="lineNum">     540 </span><span class="lineCov">         17 :         putlong(woff,uncompLen);</span>
+<span class="lineNum">     541 </span><span class="lineCov">         17 :         putlong(woff,checksum);</span>
+<span class="lineNum">     542 </span><span class="lineCov">         17 :         fseek(woff,0,SEEK_END);</span>
+<span class="lineNum">     543 </span>            :     }
+<span class="lineNum">     544 </span><span class="lineCov">          1 :     fclose(sfnt);</span>
+<span class="lineNum">     545 </span>            : 
+<span class="lineNum">     546 </span><span class="lineCov">          1 :     if ( sf-&gt;woffMetadata!= NULL ) {</span>
+<span class="lineNum">     547 </span><span class="lineNoCov">          0 :         int uncomplen = strlen(sf-&gt;woffMetadata);</span>
+<span class="lineNum">     548 </span><span class="lineNoCov">          0 :         uLongf complen = 2*uncomplen;</span>
+<span class="lineNum">     549 </span><span class="lineNoCov">          0 :         unsigned char *temp=malloc(complen+1);</span>
+<span class="lineNum">     550 </span><span class="lineNoCov">          0 :         newoffset = ftell(woff);</span>
+<span class="lineNum">     551 </span><span class="lineNoCov">          0 :         compress(temp,&amp;complen,(unsigned char *)sf-&gt;woffMetadata,uncomplen);</span>
+<span class="lineNum">     552 </span><span class="lineNoCov">          0 :         fwrite(temp,1,complen,woff);</span>
+<span class="lineNum">     553 </span><span class="lineNoCov">          0 :         free(temp);</span>
+<span class="lineNum">     554 </span><span class="lineNoCov">          0 :         if ( (ftell(woff)&amp;3)!=0 ) {</span>
+<span class="lineNum">     555 </span>            :             /* Pad to a 4 byte boundary */
+<span class="lineNum">     556 </span><span class="lineNoCov">          0 :             if ( ftell(woff)&amp;1 )</span>
+<span class="lineNum">     557 </span><span class="lineNoCov">          0 :                 putc('\0',woff);</span>
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :             if ( ftell(woff)&amp;2 )</span>
+<span class="lineNum">     559 </span><span class="lineNoCov">          0 :                 putshort(woff,0);</span>
+<span class="lineNum">     560 </span>            :         }
+<span class="lineNum">     561 </span><span class="lineNoCov">          0 :         fseek(woff,24,SEEK_SET);</span>
+<span class="lineNum">     562 </span><span class="lineNoCov">          0 :         putlong(woff,newoffset);</span>
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 :         putlong(woff,complen);</span>
+<span class="lineNum">     564 </span><span class="lineNoCov">          0 :         putlong(woff,uncomplen);</span>
+<span class="lineNum">     565 </span><span class="lineNoCov">          0 :         fseek(woff,0,SEEK_END);</span>
+<span class="lineNum">     566 </span>            :     }
+<span class="lineNum">     567 </span>            : 
+<span class="lineNum">     568 </span><span class="lineCov">          1 :     fseek(woff,0,SEEK_END);</span>
+<span class="lineNum">     569 </span><span class="lineCov">          1 :     len = ftell(woff);</span>
+<span class="lineNum">     570 </span><span class="lineCov">          1 :     fseek(woff,8,SEEK_SET);</span>
+<span class="lineNum">     571 </span><span class="lineCov">          1 :     putlong(woff,len);</span>
+<span class="lineNum">     572 </span>            : 
+<span class="lineNum">     573 </span><span class="lineCov">          1 :     free(tableOrder);</span>
+<span class="lineNum">     574 </span><span class="lineCov">          1 : return( true );         /* No errors */</span>
+<a name="575"><span class="lineNum">     575 </span>            : }</a>
+<span class="lineNum">     576 </span>            : 
+<span class="lineNum">     577 </span><span class="lineCov">          1 : int WriteWOFFFont(char *fontname,SplineFont *sf, enum fontformat format,</span>
+<span class="lineNum">     578 </span>            :         int32 *bsizes, enum bitmapformat bf,int flags,EncMap *enc,int layer) {
+<span class="lineNum">     579 </span>            :     FILE *woff;
+<span class="lineNum">     580 </span>            :     int ret;
+<span class="lineNum">     581 </span>            : 
+<span class="lineNum">     582 </span><span class="lineCov">          1 :     if ( strstr(fontname,&quot;://&quot;)!=NULL ) {</span>
+<span class="lineNum">     583 </span><span class="lineNoCov">          0 :         if (( woff = tmpfile())==NULL )</span>
+<span class="lineNum">     584 </span><span class="lineNoCov">          0 : return( 0 );</span>
+<span class="lineNum">     585 </span>            :     } else {
+<span class="lineNum">     586 </span><span class="lineCov">          1 :         if (( woff=fopen(fontname,&quot;wb+&quot;))==NULL )</span>
+<span class="lineNum">     587 </span><span class="lineNoCov">          0 : return( 0 );</span>
+<span class="lineNum">     588 </span>            :     }
+<span class="lineNum">     589 </span><span class="lineCov">          1 :     ret = _WriteWOFFFont(woff,sf,format,bsizes,bf,flags,enc,layer);</span>
+<span class="lineNum">     590 </span><span class="lineCov">          1 :     if ( strstr(fontname,&quot;://&quot;)!=NULL &amp;&amp; ret )</span>
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 :         ret = URLFromFile(fontname,woff);</span>
+<span class="lineNum">     592 </span><span class="lineCov">          1 :     if ( fclose(woff)==-1 )</span>
+<span class="lineNum">     593 </span><span class="lineNoCov">          0 : return( 0 );</span>
+<span class="lineNum">     594 </span><span class="lineCov">          1 : return( ret );</span>
+<a name="595"><span class="lineNum">     595 </span>            : }</a>
+<span class="lineNum">     596 </span>            : 
+<span class="lineNum">     597 </span><span class="lineNoCov">          0 : int CanWoff(void) {</span>
+<span class="lineNum">     598 </span><span class="lineNoCov">          0 :     return( true );</span>
+<span class="lineNum">     599 </span>            : }
+<span class="lineNum">     600 </span>            : 
+<span class="lineNum">     601 </span>            : #endif /* ! _NO_LIBPNG */
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

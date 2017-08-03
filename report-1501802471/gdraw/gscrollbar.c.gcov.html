@@ -1,0 +1,733 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - gdraw/gscrollbar.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gdraw</a> - gscrollbar.c<span style="font-size: 80%;"> (source / <a href="gscrollbar.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">386</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">20</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &quot;gdraw.h&quot;
+<span class="lineNum">      28 </span>            : #include &quot;gresource.h&quot;
+<span class="lineNum">      29 </span>            : #include &quot;ggadgetP.h&quot;
+<span class="lineNum">      30 </span>            : #include &quot;ustring.h&quot;
+<span class="lineNum">      31 </span>            : 
+<span class="lineNum">      32 </span>            : static GBox scrollbar_box = GBOX_EMPTY; /* Don't initialize here */
+<span class="lineNum">      33 </span>            : static GBox thumb_box = GBOX_EMPTY; /* Don't initialize here */
+<span class="lineNum">      34 </span>            : int _GScrollBar_Width = 13;                     /* in points */
+<span class="lineNum">      35 </span>            : int _GScrollBar_StartTime=300, _GScrollBar_RepeatTime=200;
+<span class="lineNum">      36 </span>            : static int gscrollbar_inited = false;
+<span class="lineNum">      37 </span>            : 
+<span class="lineNum">      38 </span>            : static GGadget *GScrollBarCreateInitialized(struct gwindow *base, GGadgetData *gd,void *data);
+<span class="lineNum">      39 </span>            : static struct scrollbarinit sbinit = { 0, 40, 20, 10 };
+<span class="lineNum">      40 </span>            : static GGadgetCreateData scrollbar_gcd[] = {
+<span class="lineNum">      41 </span>            :     { GScrollBarCreateInitialized, { { 0, 0, 100, 13 }, NULL, 0, 0, 0, 0, 0, NULL, { (GTextInfo *) &amp;sbinit }, gg_visible, NULL, NULL }, NULL, NULL },
+<span class="lineNum">      42 </span>            :     { GScrollBarCreateInitialized, { { 0, 0, 100, 13 }, NULL, 0, 0, 0, 0, 0, NULL, { (GTextInfo *) &amp;sbinit }, gg_visible|gg_enabled, NULL, NULL }, NULL, NULL }
+<span class="lineNum">      43 </span>            : };
+<span class="lineNum">      44 </span>            : static GGadgetCreateData *sarray[] = { GCD_Glue, &amp;scrollbar_gcd[0], GCD_Glue, &amp;scrollbar_gcd[1], GCD_Glue, NULL, NULL };
+<span class="lineNum">      45 </span>            : static GGadgetCreateData scrollbarbox =
+<span class="lineNum">      46 </span>            :     { GHVGroupCreate, { { 2, 2, 0, 0 }, NULL, 0, 0, 0, 0, 0, NULL, { (GTextInfo *) sarray }, gg_visible|gg_enabled, NULL, NULL }, NULL, NULL };
+<span class="lineNum">      47 </span>            : static GResInfo gthumb_ri;
+<span class="lineNum">      48 </span>            : static GResInfo gscrollbar_ri = {
+<span class="lineNum">      49 </span>            :     &amp;gthumb_ri, &amp;ggadget_ri,&amp;gthumb_ri, NULL,
+<span class="lineNum">      50 </span>            :     &amp;scrollbar_box,
+<span class="lineNum">      51 </span>            :     NULL,
+<span class="lineNum">      52 </span>            :     &amp;scrollbarbox,
+<span class="lineNum">      53 </span>            :     NULL,
+<span class="lineNum">      54 </span>            :     N_(&quot;ScrollBar&quot;),
+<span class="lineNum">      55 </span>            :     N_(&quot;Scroll Bar&quot;),
+<span class="lineNum">      56 </span>            :     &quot;GScrollBar&quot;,
+<span class="lineNum">      57 </span>            :     &quot;Gdraw&quot;,
+<span class="lineNum">      58 </span>            :     false,
+<span class="lineNum">      59 </span>            :     box_foreground_border_outer|omf_border_type|omf_border_width|
+<span class="lineNum">      60 </span>            :         omf_padding|omf_main_background,
+<span class="lineNum">      61 </span>            :     NULL,
+<span class="lineNum">      62 </span>            :     GBOX_EMPTY,
+<span class="lineNum">      63 </span>            :     NULL,
+<span class="lineNum">      64 </span>            :     NULL,
+<span class="lineNum">      65 </span>            :     NULL
+<span class="lineNum">      66 </span>            : };
+<span class="lineNum">      67 </span>            : static GResInfo gthumb_ri = {
+<span class="lineNum">      68 </span>            :     NULL, &amp;ggadget_ri,&amp;gscrollbar_ri, NULL,
+<span class="lineNum">      69 </span>            :     &amp;thumb_box,
+<span class="lineNum">      70 </span>            :     NULL,
+<span class="lineNum">      71 </span>            :     &amp;scrollbarbox,
+<span class="lineNum">      72 </span>            :     NULL,
+<span class="lineNum">      73 </span>            :     N_(&quot;SB Thumb&quot;),
+<span class="lineNum">      74 </span>            :     N_(&quot;Scroll Bar Thumb&quot;),
+<span class="lineNum">      75 </span>            :     &quot;GScrollBarThumb&quot;,
+<span class="lineNum">      76 </span>            :     &quot;Gdraw&quot;,
+<span class="lineNum">      77 </span>            :     true,
+<span class="lineNum">      78 </span>            :     omf_main_background|omf_border_width|omf_padding,
+<span class="lineNum">      79 </span>            :     NULL,
+<span class="lineNum">      80 </span>            :     GBOX_EMPTY,
+<span class="lineNum">      81 </span>            :     NULL,
+<span class="lineNum">      82 </span>            :     NULL,
+<span class="lineNum">      83 </span>            :     NULL
+<a name="84"><span class="lineNum">      84 </span>            : };</a>
+<span class="lineNum">      85 </span>            : 
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 : static void GScrollBarChanged(GScrollBar *gsb, enum sb sbtype, int32 pos) {</span>
+<span class="lineNum">      87 </span>            :     GEvent e;
+<span class="lineNum">      88 </span>            :     int active_len;
+<span class="lineNum">      89 </span>            : 
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :     if ( gsb-&gt;g.vert ) {</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :         active_len = gsb-&gt;g.inner.height;</span>
+<span class="lineNum">      92 </span>            :     } else {
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :         active_len = gsb-&gt;g.inner.width;</span>
+<span class="lineNum">      94 </span>            :     }
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :     if ( active_len&lt;=0 )</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :         active_len = 1;</span>
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :     e.type = et_controlevent;</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :     e.w = gsb-&gt;g.base;</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :     e.u.control.subtype = et_scrollbarchange;</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :     e.u.control.g = &amp;gsb-&gt;g;</span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :     e.u.control.u.sb.type = sbtype;</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :     e.u.control.u.sb.pos = (pos-gsb-&gt;thumboff)*(gsb-&gt;sb_max-gsb-&gt;sb_min)/active_len +</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :             gsb-&gt;sb_min;</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :     if ( e.u.control.u.sb.pos &gt; gsb-&gt;sb_max-gsb-&gt;sb_mustshow )</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :         e.u.control.u.sb.pos = gsb-&gt;sb_max-gsb-&gt;sb_mustshow;</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :     if ( e.u.control.u.sb.pos &lt; gsb-&gt;sb_min )</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :         e.u.control.u.sb.pos = gsb-&gt;sb_min;</span>
+<span class="lineNum">     109 </span>            : 
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :     if ( gsb-&gt;g.handle_controlevent!=NULL )</span>
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :         (gsb-&gt;g.handle_controlevent)(&amp;gsb-&gt;g,&amp;e);</span>
+<span class="lineNum">     112 </span>            :     else
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :         GDrawPostEvent(&amp;e);</span>
+<a name="114"><span class="lineNum">     114 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     115 </span>            : 
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 : static void draw_thumb(GWindow pixmap, GScrollBar *gsb) {</span>
+<span class="lineNum">     117 </span>            :     GRect thumbrect, thumbinner, old;
+<span class="lineNum">     118 </span>            :     int lw, skip, i;
+<span class="lineNum">     119 </span>            : 
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :     GDrawPushClip(pixmap,&amp;gsb-&gt;g.inner,&amp;old);</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :     thumbrect = gsb-&gt;g.inner;</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :     if ( gsb-&gt;g.vert ) {</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :         thumbrect.y = gsb-&gt;g.inner.y+gsb-&gt;thumbpos;</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :         thumbrect.height = gsb-&gt;thumbsize;</span>
+<span class="lineNum">     125 </span>            :     } else {
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :         thumbrect.x = gsb-&gt;g.inner.x+gsb-&gt;thumbpos;</span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :         thumbrect.width = gsb-&gt;thumbsize;</span>
+<span class="lineNum">     128 </span>            :     }
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :     thumbinner.x = thumbrect.x+gsb-&gt;thumbborder;</span>
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :     thumbinner.y = thumbrect.y+gsb-&gt;thumbborder;</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :     thumbinner.width = thumbrect.width-2*gsb-&gt;thumbborder;</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :     thumbinner.height = thumbrect.height-2*gsb-&gt;thumbborder;</span>
+<span class="lineNum">     133 </span>            : 
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :     GBoxDrawBackground(pixmap,&amp;thumbrect,gsb-&gt;thumbbox, gsb-&gt;g.state,false);</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :     GBoxDrawBorder(pixmap,&amp;thumbrect,gsb-&gt;thumbbox,gsb-&gt;g.state,false);</span>
+<span class="lineNum">     136 </span>            : 
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :     lw = GDrawPointsToPixels(gsb-&gt;g.base,1);</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :     skip = GDrawPointsToPixels(gsb-&gt;g.base,3);</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :     GDrawSetLineWidth(pixmap,lw);</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :     if ( gsb-&gt;g.vert ) {</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :         for ( i = thumbinner.y + skip; i&lt;thumbinner.y+thumbinner.height-skip;</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :                 i += skip+2*lw ) {</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :             GDrawDrawLine(pixmap,thumbinner.x+lw, i, thumbinner.x+thumbinner.width-2*lw, i,</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :                     gsb-&gt;thumbbox-&gt;border_brightest );</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :             GDrawDrawLine(pixmap,thumbinner.x+lw, i+lw, thumbinner.x+thumbinner.width-2*lw, i+lw,</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :                     gsb-&gt;thumbbox-&gt;border_darkest );</span>
+<span class="lineNum">     147 </span>            :         }
+<span class="lineNum">     148 </span>            :     } else {
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :         for ( i = thumbinner.x + skip; i&lt;thumbinner.x+thumbinner.width-skip;</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :                 i += skip+2*lw ) {</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :             GDrawDrawLine(pixmap,i, thumbinner.y+lw, i, thumbinner.y+thumbinner.height-2*lw,</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :                     gsb-&gt;thumbbox-&gt;border_brightest );</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :             GDrawDrawLine(pixmap,i+lw, thumbinner.y+lw, i+lw, thumbinner.y+thumbinner.height-2*lw, </span>
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :                     gsb-&gt;thumbbox-&gt;border_darkest );</span>
+<span class="lineNum">     155 </span>            :         }
+<span class="lineNum">     156 </span>            :     }
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :     GDrawPopClip(pixmap,&amp;old);</span>
+<a name="158"><span class="lineNum">     158 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     159 </span>            : 
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 : static void draw_arrow(GWindow pixmap, GScrollBar *gsb, int which) {</span>
+<span class="lineNum">     161 </span>            :     GPoint pts[5];
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :     int point = GDrawPointsToPixels(gsb-&gt;g.base,1);</span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :     int cnt = 4;</span>
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :     Color fill = gsb-&gt;thumbbox-&gt;main_foreground;</span>
+<span class="lineNum">     165 </span>            : 
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :     if ( fill == COLOR_DEFAULT )</span>
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :         fill = GDrawGetDefaultForeground(GDrawGetDisplayOfWindow(pixmap));</span>
+<span class="lineNum">     168 </span>            : 
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :     switch ( which ) {</span>
+<span class="lineNum">     170 </span>            :       case 0:           /* Horizontal left arrow */
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :         pts[0].y = (gsb-&gt;g.r.y+(gsb-&gt;g.r.height-1)/2);</span>
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :                 pts[0].x = gsb-&gt;g.r.x + 2*point;</span>
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :         pts[1].y = gsb-&gt;g.r.y + point;</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :                 pts[1].x = pts[0].x + (gsb-&gt;g.r.height-1)/2-point ;</span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :         pts[2].y = gsb-&gt;g.r.y+gsb-&gt;g.r.height-1 - point;</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :                 pts[2].x = pts[1].x;</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :         pts[3] = pts[0];</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :         if ( !(gsb-&gt;g.inner.height&amp;1 )) {</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :             ++pts[3].y;</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :             pts[4] = pts[0];</span>
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 :             cnt = 5;</span>
+<span class="lineNum">     182 </span>            :         }
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :         GDrawFillPoly(pixmap,pts,cnt,fill);</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :         GDrawDrawLine(pixmap,pts[0].x,pts[0].y,pts[1].x,pts[1].y,</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :                 gsb-&gt;thumbbox-&gt;border_brightest);</span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :         GDrawDrawLine(pixmap,pts[2].x,pts[2].y,pts[3].x,pts[3].y,</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :                 gsb-&gt;thumbbox-&gt;border_darker);</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :         GDrawDrawLine(pixmap,pts[1].x,pts[1].y,pts[2].x,pts[2].y,</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :                 gsb-&gt;thumbbox-&gt;border_darkest);</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     191 </span>            :       case 1:           /* Vertical up arrow */
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :         pts[0].x = (gsb-&gt;g.r.x+(gsb-&gt;g.r.width-1)/2);</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :                 pts[0].y = gsb-&gt;g.r.y + 2*point;</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :         pts[1].x = gsb-&gt;g.r.x + point;</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :                 pts[1].y = pts[0].y + (gsb-&gt;g.r.width-1)/2-point ;</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :         pts[2].x = gsb-&gt;g.r.x+gsb-&gt;g.r.width-1 - point;</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :                 pts[2].y = pts[1].y;</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :         pts[3] = pts[0];</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :         if ( !(gsb-&gt;g.inner.width&amp;1 )) {</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :             ++pts[3].x;</span>
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :             pts[4] = pts[0];</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :             cnt = 5;</span>
+<span class="lineNum">     203 </span>            :         }
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :         GDrawFillPoly(pixmap,pts,cnt,fill);</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :         GDrawDrawLine(pixmap,pts[0].x,pts[0].y,pts[1].x,pts[1].y,</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :                 gsb-&gt;thumbbox-&gt;border_brightest);</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :         GDrawDrawLine(pixmap,pts[2].x,pts[2].y,pts[3].x,pts[3].y,</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :                 gsb-&gt;thumbbox-&gt;border_darker);</span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :         GDrawDrawLine(pixmap,pts[1].x,pts[1].y,pts[2].x,pts[2].y,</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :                 gsb-&gt;thumbbox-&gt;border_darkest);</span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     212 </span>            :       case 2:           /* Horizontal right arrow */
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :         pts[0].y = (gsb-&gt;g.r.y+(gsb-&gt;g.r.height-1)/2);</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :                 pts[0].x = gsb-&gt;g.r.x + gsb-&gt;g.r.width-1 - 2*point;</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :         pts[1].y = gsb-&gt;g.r.y + point;</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :                 pts[1].x = pts[0].x - ((gsb-&gt;g.r.height-1)/2-point);</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :         pts[2].y = gsb-&gt;g.r.y+gsb-&gt;g.r.height-1 - point;</span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :                 pts[2].x = pts[1].x;</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :         pts[3] = pts[0];</span>
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :         if ( !(gsb-&gt;g.inner.height&amp;1 )) {</span>
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :             ++pts[3].y;</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :             pts[4] = pts[0];</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :             cnt = 5;</span>
+<span class="lineNum">     224 </span>            :         }
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 :         GDrawFillPoly(pixmap,pts,cnt,fill);</span>
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :         GDrawDrawLine(pixmap,pts[0].x,pts[0].y,pts[1].x,pts[1].y,</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :                 gsb-&gt;thumbbox-&gt;border_darkest);</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :         GDrawDrawLine(pixmap,pts[2].x,pts[2].y,pts[3].x,pts[3].y,</span>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :                 gsb-&gt;thumbbox-&gt;border_darker);</span>
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :         GDrawDrawLine(pixmap,pts[1].x,pts[1].y,pts[2].x,pts[2].y,</span>
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :                 gsb-&gt;thumbbox-&gt;border_brightest);</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     233 </span>            :       case 3:           /* Vertical down arrow */
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :         pts[0].x = (gsb-&gt;g.r.x+(gsb-&gt;g.r.width-1)/2);</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :                 pts[0].y = gsb-&gt;g.r.y + gsb-&gt;g.r.height-1 - 2*point;</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :         pts[1].x = gsb-&gt;g.r.x + point;</span>
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :                 pts[1].y = pts[0].y - ((gsb-&gt;g.r.width-1)/2-point);</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :         pts[2].x = gsb-&gt;g.r.x+gsb-&gt;g.r.width-1 - point;</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :                 pts[2].y = pts[1].y;</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :         pts[3] = pts[0];</span>
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :         if ( !(gsb-&gt;g.inner.width&amp;1 )) {</span>
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :             ++pts[3].x;</span>
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :             pts[4] = pts[0];</span>
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :             cnt = 5;</span>
+<span class="lineNum">     245 </span>            :         }
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :         GDrawFillPoly(pixmap,pts,cnt,fill);</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :         GDrawDrawLine(pixmap,pts[0].x,pts[0].y,pts[1].x,pts[1].y,</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :                 gsb-&gt;thumbbox-&gt;border_darkest);</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :         GDrawDrawLine(pixmap,pts[2].x,pts[2].y,pts[3].x,pts[3].y,</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :                 gsb-&gt;thumbbox-&gt;border_darker);</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :         GDrawDrawLine(pixmap,pts[1].x,pts[1].y,pts[2].x,pts[2].y,</span>
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :                 gsb-&gt;thumbbox-&gt;border_brightest);</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     254 </span>            :     }
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     256 </span>            : 
+<a name="257"><span class="lineNum">     257 </span>            : static void GScrollBarFit(GScrollBar *gsb);</a>
+<span class="lineNum">     258 </span>            : 
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 : static int gscrollbar_expose(GWindow pixmap, GGadget *g, GEvent *event) {</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :     GScrollBar *gsb = (GScrollBar *) g;</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :     GBox box = *(g-&gt;box);</span>
+<span class="lineNum">     262 </span>            :     GRect old1;
+<span class="lineNum">     263 </span>            :     GRect r;
+<span class="lineNum">     264 </span>            :     int ar;
+<span class="lineNum">     265 </span>            : 
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :     if ( g-&gt;state == gs_invisible )</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     268 </span>            : 
+<span class="lineNum">     269 </span>            :     /* In case border was changed in resource editor, */
+<span class="lineNum">     270 </span>            :     /* the scrollbar thumb inside must be refitted. */
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :     GScrollBarFit(gsb);</span>
+<span class="lineNum">     272 </span>            : 
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :     GDrawPushClip(pixmap,&amp;g-&gt;r,&amp;old1);</span>
+<span class="lineNum">     274 </span>            : 
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :     r = g-&gt;r;</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :     ar = gsb-&gt;arrowsize - gsb-&gt;sbborder;</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :     if ( gsb-&gt;g.vert ) { r.y += ar ; r.height -= 2*ar; }</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :     else { r.x += ar; r.width -= 2*ar; }</span>
+<span class="lineNum">     279 </span>            : 
+<span class="lineNum">     280 </span>            :     /* Mimick old border behavior to retain compatibility with older themes, */
+<span class="lineNum">     281 </span>            :     /* but match border shape with that of background. */
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :     box.flags = box_foreground_border_outer;</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :     box.border_width = 0;</span>
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :     GBoxDrawBackground(pixmap,&amp;g-&gt;r,g-&gt;box,g-&gt;state,false);</span>
+<span class="lineNum">     285 </span><span class="lineNoCov">          0 :     GBoxDrawBackground(pixmap,&amp;r,g-&gt;box,gs_pressedactive,false);</span>
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :     GBoxDrawBorder(pixmap,&amp;g-&gt;r,&amp;box,g-&gt;state,false);</span>
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :     GBoxDrawBorder(pixmap,&amp;r,g-&gt;box,g-&gt;state,false);</span>
+<span class="lineNum">     288 </span>            : 
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :     draw_thumb(pixmap,gsb); /* sets line width for arrows too */</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :     draw_arrow(pixmap,gsb,gsb-&gt;g.vert);</span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :     draw_arrow(pixmap,gsb,gsb-&gt;g.vert|2);</span>
+<span class="lineNum">     292 </span>            : 
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :     GDrawPopClip(pixmap,&amp;old1);</span>
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="295"><span class="lineNum">     295 </span>            : }</a>
+<span class="lineNum">     296 </span>            : 
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 : static int gscrollbar_mouse(GGadget *g, GEvent *event) {</span>
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :     GScrollBar *gsb = (GScrollBar *) g;</span>
+<span class="lineNum">     299 </span>            :     int active_pos, active_len;
+<span class="lineNum">     300 </span>            : 
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :     if ( !g-&gt;takes_input || (g-&gt;state!=gs_enabled &amp;&amp; g-&gt;state!=gs_active &amp;&amp; g-&gt;state!=gs_focused ))</span>
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :     if ( event-&gt;type == et_crossing )</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     305 </span>            : 
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :     if ( gsb-&gt;g.vert ) {</span>
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :         active_pos = event-&gt;u.mouse.y-g-&gt;inner.y;</span>
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 :         active_len = g-&gt;inner.height;</span>
+<span class="lineNum">     309 </span>            :     } else {
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 :         active_pos = event-&gt;u.mouse.x-g-&gt;inner.x;</span>
+<span class="lineNum">     311 </span><span class="lineNoCov">          0 :         active_len = g-&gt;inner.width;</span>
+<span class="lineNum">     312 </span>            :     }
+<span class="lineNum">     313 </span>            : 
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :     if ( (event-&gt;type==et_mouseup || event-&gt;type==et_mousedown) &amp;&amp;</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :             (event-&gt;u.mouse.button&gt;=4 &amp;&amp; event-&gt;u.mouse.button&lt;=7) ) {</span>
+<span class="lineNum">     316 </span>            :         /* X treats scroll wheels as though they send events from buttons 4 and 5 */
+<span class="lineNum">     317 </span>            :         /* Badly configured wacom mice send &quot;p5 r5 p4 r4&quot; or &quot;p4 r4 p5 r5&quot; */
+<span class="lineNum">     318 </span>            :         /*  properly configured mice just send &quot;p4 r4&quot; or &quot;p5 r5&quot; */
+<span class="lineNum">     319 </span>            :         /* And apple's mouse with a scrollwheel sends buttons 6&amp;7 for horizontal*/
+<span class="lineNum">     320 </span>            :         /*  scrolling */
+<span class="lineNum">     321 </span>            :         /* Convention is that shift-vertical scroll=horizontal scroll */
+<span class="lineNum">     322 </span>            :         /*                    control-vertical scroll=minimize/maximize */
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :         if ( event-&gt;type==et_mousedown ) {</span>
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :             GDrawCancelTimer(gsb-&gt;pressed); gsb-&gt;pressed = NULL;</span>
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :             int isv = event-&gt;u.mouse.button&lt;=5;</span>
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :             if ( event-&gt;u.mouse.state&amp;ksm_shift ) isv = !isv;</span>
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :             if ( !isv &amp;&amp; g-&gt;vert )</span>
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 : return( false );        /* Allow horizontal scrolling with normal scroll but not vice versa */</span>
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :             else if ( event-&gt;u.mouse.state&amp;ksm_control )</span>
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :             if ( event-&gt;u.mouse.button==5 || event-&gt;u.mouse.button==7 ) {</span>
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 :                 GScrollBarChanged(gsb,et_sb_down,0);</span>
+<span class="lineNum">     333 </span><span class="lineNoCov">          0 :             } else if ( event-&gt;u.mouse.button==4 || event-&gt;u.mouse.button==6 ) {</span>
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :                 GScrollBarChanged(gsb,et_sb_up,0);</span>
+<span class="lineNum">     335 </span>            :             }
+<span class="lineNum">     336 </span>            :         }
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     338 </span>            :     }
+<span class="lineNum">     339 </span>            : 
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :     if ( event-&gt;type == et_mousedown &amp;&amp; GGadgetWithin(g,event-&gt;u.mouse.x,event-&gt;u.mouse.y)) {</span>
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :         GDrawCancelTimer(gsb-&gt;pressed); gsb-&gt;pressed = NULL;</span>
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :         if ( event-&gt;u.mouse.button!=1 ) {</span>
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :             gsb-&gt;thumbpressed = true;</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :             gsb-&gt;thumboff = 0;</span>
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 :             active_pos = event-&gt;u.mouse.y-g-&gt;inner.y;</span>
+<span class="lineNum">     346 </span><span class="lineNoCov">          0 :             GScrollBarChanged(gsb,et_sb_thumb,active_pos);</span>
+<span class="lineNum">     347 </span><span class="lineNoCov">          0 :         } else if ( active_pos &gt;= gsb-&gt;thumbpos &amp;&amp;</span>
+<span class="lineNum">     348 </span><span class="lineNoCov">          0 :                 active_pos &lt; gsb-&gt;thumbpos+gsb-&gt;thumbsize ) {</span>
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :             gsb-&gt;thumbpressed = true;</span>
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :             gsb-&gt;thumboff = active_pos-gsb-&gt;thumbpos;</span>
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :         } else if ( active_pos &lt; gsb-&gt;thumbpos &amp;&amp;</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :                 (event-&gt;u.mouse.state&amp;(ksm_control|ksm_meta)) ) {</span>
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 :             gsb-&gt;thumbpressed = true;</span>
+<span class="lineNum">     354 </span><span class="lineNoCov">          0 :             gsb-&gt;thumboff = active_pos;</span>
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :             GScrollBarChanged(gsb,et_sb_top,0);</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :         } else if ( active_pos &gt;= gsb-&gt;thumbpos+gsb-&gt;thumbsize &amp;&amp;</span>
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :                 (event-&gt;u.mouse.state&amp;(ksm_control|ksm_meta)) ) {</span>
+<span class="lineNum">     358 </span><span class="lineNoCov">          0 :             gsb-&gt;thumbpressed = true;</span>
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 :             gsb-&gt;thumboff = active_pos-active_len+gsb-&gt;thumbsize;</span>
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :             GScrollBarChanged(gsb,et_sb_bottom,0);</span>
+<span class="lineNum">     361 </span>            :         } else {
+<span class="lineNum">     362 </span><span class="lineNoCov">          0 :             if ( active_pos&lt;0 )</span>
+<span class="lineNum">     363 </span><span class="lineNoCov">          0 :                 gsb-&gt;repeatcmd = et_sb_up;</span>
+<span class="lineNum">     364 </span><span class="lineNoCov">          0 :             else if ( active_pos &gt;= active_len )</span>
+<span class="lineNum">     365 </span><span class="lineNoCov">          0 :                 gsb-&gt;repeatcmd = et_sb_down;</span>
+<span class="lineNum">     366 </span><span class="lineNoCov">          0 :             else if ( active_pos &lt; gsb-&gt;thumbpos )</span>
+<span class="lineNum">     367 </span><span class="lineNoCov">          0 :                 gsb-&gt;repeatcmd = et_sb_uppage;</span>
+<span class="lineNum">     368 </span>            :             else /* if ( active_pos &gt; gsb-&gt;thumbpos+gsb-&gt;thumbsize )*/
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 :                 gsb-&gt;repeatcmd = et_sb_downpage;</span>
+<span class="lineNum">     370 </span><span class="lineNoCov">          0 :             GScrollBarChanged(gsb,gsb-&gt;repeatcmd,0);</span>
+<span class="lineNum">     371 </span><span class="lineNoCov">          0 :             gsb-&gt;pressed = GDrawRequestTimer(g-&gt;base,_GScrollBar_StartTime,_GScrollBar_RepeatTime,NULL);</span>
+<span class="lineNum">     372 </span>            :         }
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_mousemove &amp;&amp; gsb-&gt;thumbpressed ) {</span>
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 :         GDrawSkipMouseMoveEvents(gsb-&gt;g.base,event);</span>
+<span class="lineNum">     375 </span><span class="lineNoCov">          0 :         if ( gsb-&gt;g.vert ) {</span>
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 :             active_pos = event-&gt;u.mouse.y-g-&gt;inner.y;</span>
+<span class="lineNum">     377 </span>            :         } else {
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 :             active_pos = event-&gt;u.mouse.x-g-&gt;inner.x;</span>
+<span class="lineNum">     379 </span>            :         }
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :         GScrollBarChanged(gsb,et_sb_thumb,active_pos);</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_mouseup &amp;&amp; (gsb-&gt;thumbpressed || gsb-&gt;pressed)) {</span>
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :         if ( gsb-&gt;thumbpressed )</span>
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :             GScrollBarChanged(gsb,et_sb_thumbrelease,active_pos);</span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :         GDrawCancelTimer(gsb-&gt;pressed); gsb-&gt;pressed = NULL;</span>
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :         gsb-&gt;thumbpressed = false;</span>
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_mousemove &amp;&amp; !gsb-&gt;pressed &amp;&amp;</span>
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :             g-&gt;popup_msg!=NULL &amp;&amp; GGadgetWithin(g,event-&gt;u.mouse.x,event-&gt;u.mouse.y)) {</span>
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 :         GGadgetPreparePopup(g-&gt;base,g-&gt;popup_msg);</span>
+<span class="lineNum">     389 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     390 </span>            :     } else
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     392 </span>            : 
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="394"><span class="lineNum">     394 </span>            : }</a>
+<span class="lineNum">     395 </span>            : 
+<span class="lineNum">     396 </span><span class="lineNoCov">          0 : static int gscrollbar_timer(GGadget *g, GEvent *event) {</span>
+<span class="lineNum">     397 </span><span class="lineNoCov">          0 :     GScrollBar *gsb = (GScrollBar *) g;</span>
+<span class="lineNum">     398 </span>            : 
+<span class="lineNum">     399 </span><span class="lineNoCov">          0 :     if ( event-&gt;u.timer.timer == gsb-&gt;pressed ) {</span>
+<span class="lineNum">     400 </span><span class="lineNoCov">          0 :         GScrollBarChanged(gsb,gsb-&gt;repeatcmd,0);</span>
+<span class="lineNum">     401 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     402 </span>            :     }
+<span class="lineNum">     403 </span><span class="lineNoCov">          0 : return( false );</span>
+<a name="404"><span class="lineNum">     404 </span>            : }</a>
+<span class="lineNum">     405 </span>            : 
+<span class="lineNum">     406 </span><span class="lineNoCov">          0 : static void gscrollbar_destroy(GGadget *g) {</span>
+<span class="lineNum">     407 </span><span class="lineNoCov">          0 :     GScrollBar *gsb = (GScrollBar *) g;</span>
+<span class="lineNum">     408 </span>            : 
+<span class="lineNum">     409 </span><span class="lineNoCov">          0 :     if ( gsb==NULL )</span>
+<span class="lineNum">     410 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     411 </span><span class="lineNoCov">          0 :     GDrawCancelTimer(gsb-&gt;pressed);</span>
+<span class="lineNum">     412 </span><span class="lineNoCov">          0 :     _ggadget_destroy(g);</span>
+<a name="413"><span class="lineNum">     413 </span>            : }</a>
+<span class="lineNum">     414 </span>            : 
+<span class="lineNum">     415 </span><span class="lineNoCov">          0 : static void gscrollbar_get_desired_size(GGadget *g, GRect *outer, GRect *inner) {</span>
+<span class="lineNum">     416 </span><span class="lineNoCov">          0 :     int bp = GBoxBorderWidth(g-&gt;base,g-&gt;box);</span>
+<span class="lineNum">     417 </span><span class="lineNoCov">          0 :     GScrollBar *gsb = (GScrollBar *) g;</span>
+<span class="lineNum">     418 </span>            :     int width, height;
+<span class="lineNum">     419 </span>            :     int minheight, sbw;
+<span class="lineNum">     420 </span>            : 
+<span class="lineNum">     421 </span><span class="lineNoCov">          0 :     sbw = GDrawPointsToPixels(gsb-&gt;g.base,_GScrollBar_Width);</span>
+<span class="lineNum">     422 </span><span class="lineNoCov">          0 :     minheight = 2*(gsb-&gt;thumbborder+gsb-&gt;arrowsize) + GDrawPointsToPixels(gsb-&gt;g.base,2);</span>
+<span class="lineNum">     423 </span><span class="lineNoCov">          0 :     if ( g-&gt;vert ) {</span>
+<span class="lineNum">     424 </span><span class="lineNoCov">          0 :         width = sbw;</span>
+<span class="lineNum">     425 </span><span class="lineNoCov">          0 :         height = minheight;</span>
+<span class="lineNum">     426 </span>            :     } else {
+<span class="lineNum">     427 </span><span class="lineNoCov">          0 :         width = minheight;</span>
+<span class="lineNum">     428 </span><span class="lineNoCov">          0 :         height = sbw;</span>
+<span class="lineNum">     429 </span>            :     }
+<span class="lineNum">     430 </span>            : 
+<span class="lineNum">     431 </span><span class="lineNoCov">          0 :     if ( inner!=NULL ) {</span>
+<span class="lineNum">     432 </span><span class="lineNoCov">          0 :         inner-&gt;x = inner-&gt;y = 0;</span>
+<span class="lineNum">     433 </span><span class="lineNoCov">          0 :         inner-&gt;width = width; inner-&gt;height = height;</span>
+<span class="lineNum">     434 </span>            :     }
+<span class="lineNum">     435 </span><span class="lineNoCov">          0 :     if ( outer!=NULL ) {</span>
+<span class="lineNum">     436 </span><span class="lineNoCov">          0 :         outer-&gt;x = outer-&gt;y = 0;</span>
+<span class="lineNum">     437 </span><span class="lineNoCov">          0 :         outer-&gt;width = width+2*bp; outer-&gt;height = height+2*bp;</span>
+<span class="lineNum">     438 </span>            :     }
+<span class="lineNum">     439 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     440 </span>            : 
+<span class="lineNum">     441 </span>            : struct gfuncs gscrollbar_funcs = {
+<span class="lineNum">     442 </span>            :     0,
+<span class="lineNum">     443 </span>            :     sizeof(struct gfuncs),
+<span class="lineNum">     444 </span>            : 
+<span class="lineNum">     445 </span>            :     gscrollbar_expose,
+<span class="lineNum">     446 </span>            :     gscrollbar_mouse,
+<span class="lineNum">     447 </span>            :     NULL,
+<span class="lineNum">     448 </span>            :     NULL,
+<span class="lineNum">     449 </span>            :     NULL,
+<span class="lineNum">     450 </span>            :     gscrollbar_timer,
+<span class="lineNum">     451 </span>            :     NULL,
+<span class="lineNum">     452 </span>            : 
+<span class="lineNum">     453 </span>            :     _ggadget_redraw,
+<span class="lineNum">     454 </span>            :     _ggadget_move,
+<span class="lineNum">     455 </span>            :     _ggadget_resize,
+<span class="lineNum">     456 </span>            :     _ggadget_setvisible,
+<span class="lineNum">     457 </span>            :     _ggadget_setenabled,
+<span class="lineNum">     458 </span>            :     _ggadget_getsize,
+<span class="lineNum">     459 </span>            :     _ggadget_getinnersize,
+<span class="lineNum">     460 </span>            : 
+<span class="lineNum">     461 </span>            :     gscrollbar_destroy,
+<span class="lineNum">     462 </span>            : 
+<span class="lineNum">     463 </span>            :     NULL,
+<span class="lineNum">     464 </span>            :     NULL,
+<span class="lineNum">     465 </span>            :     NULL,
+<span class="lineNum">     466 </span>            :     NULL,
+<span class="lineNum">     467 </span>            :     NULL,
+<span class="lineNum">     468 </span>            : 
+<span class="lineNum">     469 </span>            :     NULL,
+<span class="lineNum">     470 </span>            :     NULL,
+<span class="lineNum">     471 </span>            : 
+<span class="lineNum">     472 </span>            :     NULL,
+<span class="lineNum">     473 </span>            :     NULL,
+<span class="lineNum">     474 </span>            :     NULL,
+<span class="lineNum">     475 </span>            :     NULL,
+<span class="lineNum">     476 </span>            :     NULL,
+<span class="lineNum">     477 </span>            :     NULL,
+<span class="lineNum">     478 </span>            :     NULL,
+<span class="lineNum">     479 </span>            :     NULL,
+<span class="lineNum">     480 </span>            :     NULL,
+<span class="lineNum">     481 </span>            :     NULL,
+<span class="lineNum">     482 </span>            :     NULL,
+<span class="lineNum">     483 </span>            : 
+<span class="lineNum">     484 </span>            :     gscrollbar_get_desired_size,
+<span class="lineNum">     485 </span>            :     NULL,
+<span class="lineNum">     486 </span>            :     NULL,
+<span class="lineNum">     487 </span>            :     NULL
+<a name="488"><span class="lineNum">     488 </span>            : };</a>
+<span class="lineNum">     489 </span>            : 
+<span class="lineNum">     490 </span><span class="lineNoCov">          0 : static void GScrollBarInit() {</span>
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 :     _GGadgetCopyDefaultBox(&amp;scrollbar_box);</span>
+<span class="lineNum">     492 </span><span class="lineNoCov">          0 :     _GGadgetCopyDefaultBox(&amp;thumb_box);</span>
+<span class="lineNum">     493 </span><span class="lineNoCov">          0 :     scrollbar_box.border_type = bt_lowered;</span>
+<span class="lineNum">     494 </span><span class="lineNoCov">          0 :     scrollbar_box.border_width = 1;</span>
+<span class="lineNum">     495 </span><span class="lineNoCov">          0 :     scrollbar_box.padding = 0;</span>
+<span class="lineNum">     496 </span><span class="lineNoCov">          0 :     scrollbar_box.flags |= box_foreground_border_outer;</span>
+<span class="lineNum">     497 </span><span class="lineNoCov">          0 :     scrollbar_box.main_background = GDrawColorBrighten(scrollbar_box.main_background, 0x10);</span>
+<span class="lineNum">     498 </span><span class="lineNoCov">          0 :     thumb_box.main_background = GDrawColorDarken(thumb_box.main_background,0x8);</span>
+<span class="lineNum">     499 </span><span class="lineNoCov">          0 :     thumb_box.border_width = 1;</span>
+<span class="lineNum">     500 </span><span class="lineNoCov">          0 :     thumb_box.padding = 0;</span>
+<span class="lineNum">     501 </span><span class="lineNoCov">          0 :     _GGadgetInitDefaultBox(&quot;GScrollBar.&quot;,&amp;scrollbar_box,NULL);</span>
+<span class="lineNum">     502 </span><span class="lineNoCov">          0 :     _GGadgetInitDefaultBox(&quot;GScrollBarThumb.&quot;,&amp;thumb_box,NULL);</span>
+<span class="lineNum">     503 </span><span class="lineNoCov">          0 :     _GScrollBar_Width = GResourceFindInt(&quot;GScrollBar.Width&quot;,_GScrollBar_Width);</span>
+<span class="lineNum">     504 </span><span class="lineNoCov">          0 :     _GScrollBar_StartTime = GResourceFindInt(&quot;GScrollBar.StartupTime&quot;,_GScrollBar_StartTime);</span>
+<span class="lineNum">     505 </span><span class="lineNoCov">          0 :     _GScrollBar_RepeatTime = GResourceFindInt(&quot;GScrollBar.RepeatTime&quot;,_GScrollBar_RepeatTime);</span>
+<span class="lineNum">     506 </span><span class="lineNoCov">          0 :     gscrollbar_inited = true;</span>
+<a name="507"><span class="lineNum">     507 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     508 </span>            : 
+<span class="lineNum">     509 </span><span class="lineNoCov">          0 : static void GScrollBarFit(GScrollBar *gsb) {</span>
+<span class="lineNum">     510 </span>            :     int minheight;
+<span class="lineNum">     511 </span>            : 
+<span class="lineNum">     512 </span><span class="lineNoCov">          0 :     gsb-&gt;sbborder = GBoxBorderWidth(gsb-&gt;g.base,gsb-&gt;g.box);</span>
+<span class="lineNum">     513 </span><span class="lineNoCov">          0 :     gsb-&gt;thumbborder = GBoxBorderWidth(gsb-&gt;g.base,gsb-&gt;thumbbox);</span>
+<span class="lineNum">     514 </span>            :     /* FIXME: workaround for incorrect calculation. */
+<span class="lineNum">     515 </span><span class="lineNoCov">          0 :     if ( gsb-&gt;thumbborder &gt; 5 ) gsb-&gt;thumbborder = 5;</span>
+<span class="lineNum">     516 </span><span class="lineNoCov">          0 :     gsb-&gt;arrowsize = gsb-&gt;sbborder +</span>
+<span class="lineNum">     517 </span><span class="lineNoCov">          0 :             2*GDrawPointsToPixels(gsb-&gt;g.base,2) +</span>
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 :             GDrawPointsToPixels(gsb-&gt;g.base,_GScrollBar_Width)/2-</span>
+<span class="lineNum">     519 </span><span class="lineNoCov">          0 :             2*GDrawPointsToPixels(gsb-&gt;g.base,1);</span>
+<span class="lineNum">     520 </span><span class="lineNoCov">          0 :     minheight = 2*(gsb-&gt;thumbborder+gsb-&gt;arrowsize) + GDrawPointsToPixels(gsb-&gt;g.base,2);</span>
+<span class="lineNum">     521 </span>            : 
+<span class="lineNum">     522 </span><span class="lineNoCov">          0 :     if ( gsb-&gt;g.vert ) {</span>
+<span class="lineNum">     523 </span><span class="lineNoCov">          0 :         if ( gsb-&gt;g.r.width==0 )</span>
+<span class="lineNum">     524 </span><span class="lineNoCov">          0 :             gsb-&gt;g.r.width = GDrawPointsToPixels(gsb-&gt;g.base,_GScrollBar_Width);</span>
+<span class="lineNum">     525 </span><span class="lineNoCov">          0 :         if ( gsb-&gt;g.r.height&lt; minheight )</span>
+<span class="lineNum">     526 </span><span class="lineNoCov">          0 :             gsb-&gt;g.r.height = minheight;</span>
+<span class="lineNum">     527 </span><span class="lineNoCov">          0 :         gsb-&gt;g.inner.x = gsb-&gt;g.r.x+gsb-&gt;sbborder;</span>
+<span class="lineNum">     528 </span><span class="lineNoCov">          0 :         gsb-&gt;g.inner.width = gsb-&gt;g.r.width - 2*gsb-&gt;sbborder;</span>
+<span class="lineNum">     529 </span><span class="lineNoCov">          0 :         gsb-&gt;g.inner.y = gsb-&gt;g.r.y+gsb-&gt;arrowsize;</span>
+<span class="lineNum">     530 </span><span class="lineNoCov">          0 :         gsb-&gt;g.inner.height = gsb-&gt;g.r.height - 2*gsb-&gt;arrowsize;</span>
+<span class="lineNum">     531 </span>            :     } else {
+<span class="lineNum">     532 </span><span class="lineNoCov">          0 :         if ( gsb-&gt;g.r.height==0 )</span>
+<span class="lineNum">     533 </span><span class="lineNoCov">          0 :             gsb-&gt;g.r.height = GDrawPointsToPixels(gsb-&gt;g.base,_GScrollBar_Width);</span>
+<span class="lineNum">     534 </span><span class="lineNoCov">          0 :         if ( gsb-&gt;g.r.width&lt; minheight )</span>
+<span class="lineNum">     535 </span><span class="lineNoCov">          0 :             gsb-&gt;g.r.width = minheight;</span>
+<span class="lineNum">     536 </span><span class="lineNoCov">          0 :         gsb-&gt;g.inner.x = gsb-&gt;g.r.x+gsb-&gt;arrowsize;</span>
+<span class="lineNum">     537 </span><span class="lineNoCov">          0 :         gsb-&gt;g.inner.width = gsb-&gt;g.r.width - 2*gsb-&gt;arrowsize;</span>
+<span class="lineNum">     538 </span><span class="lineNoCov">          0 :         gsb-&gt;g.inner.y = gsb-&gt;g.r.y+gsb-&gt;sbborder;</span>
+<span class="lineNum">     539 </span><span class="lineNoCov">          0 :         gsb-&gt;g.inner.height = gsb-&gt;g.r.height - 2*gsb-&gt;sbborder;</span>
+<span class="lineNum">     540 </span>            :     }
+<a name="541"><span class="lineNum">     541 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     542 </span>            : 
+<span class="lineNum">     543 </span><span class="lineNoCov">          0 : static GScrollBar *_GScrollBarCreate(GScrollBar *gsb, struct gwindow *base, GGadgetData *gd,void *data, GBox *def) {</span>
+<span class="lineNum">     544 </span>            : 
+<span class="lineNum">     545 </span><span class="lineNoCov">          0 :     if ( !gscrollbar_inited )</span>
+<span class="lineNum">     546 </span><span class="lineNoCov">          0 :         GScrollBarInit();</span>
+<span class="lineNum">     547 </span><span class="lineNoCov">          0 :     gsb-&gt;g.funcs = &amp;gscrollbar_funcs;</span>
+<span class="lineNum">     548 </span><span class="lineNoCov">          0 :     gd-&gt;flags |= gg_pos_use0;</span>
+<span class="lineNum">     549 </span><span class="lineNoCov">          0 :     _GGadget_Create(&amp;gsb-&gt;g,base,gd,data,def);</span>
+<span class="lineNum">     550 </span>            : 
+<span class="lineNum">     551 </span><span class="lineNoCov">          0 :     gsb-&gt;g.takes_input = true;</span>
+<span class="lineNum">     552 </span><span class="lineNoCov">          0 :     if ( gd-&gt;flags &amp; gg_sb_vert )</span>
+<span class="lineNum">     553 </span><span class="lineNoCov">          0 :         gsb-&gt;g.vert = true;</span>
+<span class="lineNum">     554 </span><span class="lineNoCov">          0 :     gsb-&gt;thumbbox = &amp;thumb_box;</span>
+<span class="lineNum">     555 </span>            : 
+<span class="lineNum">     556 </span><span class="lineNoCov">          0 :     GScrollBarFit(gsb);</span>
+<span class="lineNum">     557 </span><span class="lineNoCov">          0 :     if ( gd-&gt;u.sbinit!=NULL )</span>
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :         GScrollBarSetMustShow(&amp;gsb-&gt;g,</span>
+<span class="lineNum">     559 </span><span class="lineNoCov">          0 :                 gd-&gt;u.sbinit-&gt;sb_min,</span>
+<span class="lineNum">     560 </span><span class="lineNoCov">          0 :                 gd-&gt;u.sbinit-&gt;sb_max,</span>
+<span class="lineNum">     561 </span><span class="lineNoCov">          0 :                 gd-&gt;u.sbinit-&gt;sb_pagesize,</span>
+<span class="lineNum">     562 </span><span class="lineNoCov">          0 :                 gd-&gt;u.sbinit-&gt;sb_pos);</span>
+<span class="lineNum">     563 </span>            : 
+<span class="lineNum">     564 </span><span class="lineNoCov">          0 :     if ( gd-&gt;flags &amp; gg_group_end )</span>
+<span class="lineNum">     565 </span><span class="lineNoCov">          0 :         _GGadgetCloseGroup(&amp;gsb-&gt;g);</span>
+<span class="lineNum">     566 </span><span class="lineNoCov">          0 : return( gsb );</span>
+<a name="567"><span class="lineNum">     567 </span>            : }</a>
+<span class="lineNum">     568 </span>            : 
+<span class="lineNum">     569 </span><span class="lineNoCov">          0 : static GGadget *GScrollBarCreateInitialized(struct gwindow *base, GGadgetData *gd,void *data) {</span>
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 :     GScrollBar *gsb = _GScrollBarCreate(calloc(1,sizeof(GScrollBar)),base,gd,data,&amp;scrollbar_box);</span>
+<span class="lineNum">     571 </span>            : 
+<span class="lineNum">     572 </span><span class="lineNoCov">          0 : return( &amp;gsb-&gt;g );</span>
+<a name="573"><span class="lineNum">     573 </span>            : }</a>
+<span class="lineNum">     574 </span>            : 
+<span class="lineNum">     575 </span><span class="lineNoCov">          0 : GGadget *GScrollBarCreate(struct gwindow *base, GGadgetData *gd,void *data) {</span>
+<span class="lineNum">     576 </span>            :     GScrollBar *gsb;
+<span class="lineNum">     577 </span><span class="lineNoCov">          0 :     struct scrollbarinit *hold = gd-&gt;u.sbinit;</span>
+<span class="lineNum">     578 </span>            : 
+<span class="lineNum">     579 </span><span class="lineNoCov">          0 :     gd-&gt;u.sbinit = NULL;</span>
+<span class="lineNum">     580 </span><span class="lineNoCov">          0 :     gsb = _GScrollBarCreate(calloc(1,sizeof(GScrollBar)),base,gd,data,&amp;scrollbar_box);</span>
+<span class="lineNum">     581 </span><span class="lineNoCov">          0 :     gd-&gt;u.sbinit = hold;</span>
+<span class="lineNum">     582 </span>            : 
+<span class="lineNum">     583 </span><span class="lineNoCov">          0 : return( &amp;gsb-&gt;g );</span>
+<a name="584"><span class="lineNum">     584 </span>            : }</a>
+<span class="lineNum">     585 </span>            : 
+<span class="lineNum">     586 </span><span class="lineNoCov">          0 : int32 GScrollBarGetPos(GGadget *g) {</span>
+<span class="lineNum">     587 </span><span class="lineNoCov">          0 : return( ((GScrollBar *) g)-&gt;sb_pos );</span>
+<a name="588"><span class="lineNum">     588 </span>            : }</a>
+<span class="lineNum">     589 </span>            : 
+<span class="lineNum">     590 </span><span class="lineNoCov">          0 : int32 GScrollBarAddToPos(GGadget *g,int32 pos) {</span>
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 :     return GScrollBarSetPos( g, GScrollBarGetPos(g) + pos );</span>
+<span class="lineNum">     592 </span>            : }
+<a name="593"><span class="lineNum">     593 </span>            : </a>
+<span class="lineNum">     594 </span>            : 
+<span class="lineNum">     595 </span><span class="lineNoCov">          0 : int32 GScrollBarSetPos(GGadget *g,int32 pos) {</span>
+<span class="lineNum">     596 </span><span class="lineNoCov">          0 :     GScrollBar *gsb = (GScrollBar *) g;</span>
+<span class="lineNum">     597 </span>            : 
+<span class="lineNum">     598 </span><span class="lineNoCov">          0 :     if ( pos&gt;gsb-&gt;sb_max-gsb-&gt;sb_mustshow )</span>
+<span class="lineNum">     599 </span><span class="lineNoCov">          0 :         pos = gsb-&gt;sb_max-gsb-&gt;sb_mustshow;</span>
+<span class="lineNum">     600 </span><span class="lineNoCov">          0 :     if ( pos&lt;gsb-&gt;sb_min )</span>
+<span class="lineNum">     601 </span><span class="lineNoCov">          0 :         pos = gsb-&gt;sb_min;</span>
+<span class="lineNum">     602 </span><span class="lineNoCov">          0 :     gsb-&gt;sb_pos = pos;</span>
+<span class="lineNum">     603 </span>            : 
+<span class="lineNum">     604 </span><span class="lineNoCov">          0 :     if ( pos==gsb-&gt;sb_min || gsb-&gt;sb_min==gsb-&gt;sb_max )</span>
+<span class="lineNum">     605 </span><span class="lineNoCov">          0 :         gsb-&gt;thumbpos = 0;</span>
+<span class="lineNum">     606 </span>            :     else
+<span class="lineNum">     607 </span><span class="lineNoCov">          0 :         gsb-&gt;thumbpos =</span>
+<span class="lineNum">     608 </span><span class="lineNoCov">          0 :             ((gsb-&gt;g.vert?gsb-&gt;g.inner.height:gsb-&gt;g.inner.width)-gsb-&gt;size_offset)</span>
+<span class="lineNum">     609 </span><span class="lineNoCov">          0 :               *(pos-gsb-&gt;sb_min)/(gsb-&gt;sb_max-gsb-&gt;sb_min);</span>
+<span class="lineNum">     610 </span><span class="lineNoCov">          0 :     _ggadget_redraw(g);</span>
+<span class="lineNum">     611 </span><span class="lineNoCov">          0 : return( pos );</span>
+<a name="612"><span class="lineNum">     612 </span>            : }</a>
+<span class="lineNum">     613 </span>            : 
+<span class="lineNum">     614 </span><span class="lineNoCov">          0 : void GScrollBarSetMustShow(GGadget *g, int32 sb_min, int32 sb_max, int32 sb_pagesize,</span>
+<span class="lineNum">     615 </span>            :         int32 sb_mustshow ) {
+<span class="lineNum">     616 </span><span class="lineNoCov">          0 :     GScrollBar *gsb = (GScrollBar *) g;</span>
+<span class="lineNum">     617 </span>            : 
+<span class="lineNum">     618 </span><span class="lineNoCov">          0 :     if ( sb_min&gt;sb_max || sb_pagesize&lt;=0 ) {</span>
+<span class="lineNum">     619 </span><span class="lineNoCov">          0 :         GDrawIError(&quot;Invalid scrollbar bounds min=%d max=%d, pagesize=%d&quot;,</span>
+<span class="lineNum">     620 </span>            :                 sb_min, sb_max, sb_pagesize );
+<span class="lineNum">     621 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     622 </span>            :     }
+<span class="lineNum">     623 </span><span class="lineNoCov">          0 :     gsb-&gt;sb_min = sb_min;</span>
+<span class="lineNum">     624 </span><span class="lineNoCov">          0 :     gsb-&gt;sb_max = sb_max;</span>
+<span class="lineNum">     625 </span><span class="lineNoCov">          0 :     gsb-&gt;sb_pagesize = sb_pagesize;</span>
+<span class="lineNum">     626 </span><span class="lineNoCov">          0 :     gsb-&gt;sb_mustshow = sb_mustshow;</span>
+<span class="lineNum">     627 </span><span class="lineNoCov">          0 :     gsb-&gt;size_offset = 0;</span>
+<span class="lineNum">     628 </span><span class="lineNoCov">          0 :     gsb-&gt;thumbsize = (gsb-&gt;g.vert?gsb-&gt;g.inner.height:gsb-&gt;g.inner.width);</span>
+<span class="lineNum">     629 </span><span class="lineNoCov">          0 :     if ( sb_max-sb_min &gt; sb_pagesize )</span>
+<span class="lineNum">     630 </span><span class="lineNoCov">          0 :         gsb-&gt;thumbsize = (gsb-&gt;thumbsize*gsb-&gt;sb_pagesize)/(sb_max-sb_min);</span>
+<span class="lineNum">     631 </span><span class="lineNoCov">          0 :     if ( gsb-&gt;thumbsize&lt;2*gsb-&gt;thumbborder+10 ) {</span>
+<span class="lineNum">     632 </span><span class="lineNoCov">          0 :         gsb-&gt;size_offset = 2*gsb-&gt;thumbborder+10 - gsb-&gt;thumbsize;</span>
+<span class="lineNum">     633 </span><span class="lineNoCov">          0 :         gsb-&gt;thumbsize = 2*gsb-&gt;thumbborder+10;</span>
+<span class="lineNum">     634 </span><span class="lineNoCov">          0 :         if ( gsb-&gt;thumbsize&gt;(gsb-&gt;g.vert?gsb-&gt;g.inner.height:gsb-&gt;g.inner.width) ) {</span>
+<span class="lineNum">     635 </span><span class="lineNoCov">          0 :             gsb-&gt;size_offset = 0;</span>
+<span class="lineNum">     636 </span><span class="lineNoCov">          0 :             gsb-&gt;thumbsize = (gsb-&gt;g.vert?gsb-&gt;g.inner.height:gsb-&gt;g.inner.width);</span>
+<span class="lineNum">     637 </span>            :         }
+<span class="lineNum">     638 </span>            :     }
+<span class="lineNum">     639 </span><span class="lineNoCov">          0 :     GScrollBarSetPos(g,gsb-&gt;sb_pos);</span>
+<a name="640"><span class="lineNum">     640 </span>            : }</a>
+<span class="lineNum">     641 </span>            : 
+<span class="lineNum">     642 </span><span class="lineNoCov">          0 : void GScrollBarSetBounds(GGadget *g, int32 sb_min, int32 sb_max, int32 sb_pagesize ) {</span>
+<span class="lineNum">     643 </span><span class="lineNoCov">          0 :     GScrollBarSetMustShow(g,sb_min,sb_max,sb_pagesize,sb_pagesize);</span>
+<a name="644"><span class="lineNum">     644 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     645 </span>            : 
+<span class="lineNum">     646 </span><span class="lineNoCov">          0 : void GScrollBarGetBounds(GGadget *g, int32 *sb_min, int32 *sb_max, int32 *sb_pagesize ) {</span>
+<span class="lineNum">     647 </span><span class="lineNoCov">          0 :     GScrollBar *gsb = (GScrollBar *) g;</span>
+<span class="lineNum">     648 </span><span class="lineNoCov">          0 :     *sb_min = gsb-&gt;sb_min;</span>
+<span class="lineNum">     649 </span><span class="lineNoCov">          0 :     *sb_max = gsb-&gt;sb_max;</span>
+<span class="lineNum">     650 </span><span class="lineNoCov">          0 :     *sb_pagesize = gsb-&gt;sb_pagesize;</span>
+<a name="651"><span class="lineNum">     651 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     652 </span>            : 
+<span class="lineNum">     653 </span><span class="lineNoCov">          0 : GResInfo *_GScrollBarRIHead(void) {</span>
+<span class="lineNum">     654 </span><span class="lineNoCov">          0 :     if ( !gscrollbar_inited )</span>
+<span class="lineNum">     655 </span><span class="lineNoCov">          0 :         GScrollBarInit();</span>
+<span class="lineNum">     656 </span><span class="lineNoCov">          0 : return( &amp;gscrollbar_ri );</span>
+<span class="lineNum">     657 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

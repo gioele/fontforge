@@ -1,0 +1,959 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforgeexe/cursors.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforgeexe</a> - cursors.c<span style="font-size: 80%;"> (source / <a href="cursors.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">149</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &quot;fontforgeui.h&quot;
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            : #ifndef _CursorsMustBe16x16
+<span class="lineNum">      30 </span>            : # define _CursorsMustBe16x16    0       /* X on Mac OSX can't handle anything bigger than 16x16 cursors (I think, it seems to manage smaller ones) */
+<span class="lineNum">      31 </span>            : #endif
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            : GCursor ct_magplus, ct_magminus, ct_mypointer, ct_circle, ct_square, ct_triangle,
+<span class="lineNum">      34 </span>            :         ct_ruler, ct_pen, ct_knife, ct_rotate, ct_skew, ct_scale, ct_flip,
+<span class="lineNum">      35 </span>            :         ct_3drotate, ct_perspective, ct_hvcircle, ct_g2circle;
+<span class="lineNum">      36 </span>            : GCursor ct_rect, ct_elipse, ct_poly, ct_star, ct_pencil, ct_shift, ct_line,
+<span class="lineNum">      37 </span>            :         ct_myhand, ct_filledrect, ct_filledelipse, ct_setwidth, ct_eyedropper;
+<span class="lineNum">      38 </span>            : GCursor ct_updown, ct_leftright, ct_nesw, ct_nwse;
+<span class="lineNum">      39 </span>            : GCursor ct_rbearing, ct_kerning, ct_lbearing;
+<span class="lineNum">      40 </span>            : GCursor ct_prohibition, ct_ddcursor, ct_features;
+<span class="lineNum">      41 </span>            : GCursor ct_spiroleft, ct_spiroright;
+<span class="lineNum">      42 </span>            : GWindow logo_icon;
+<span class="lineNum">      43 </span>            : 
+<span class="lineNum">      44 </span>            : #define magplus_width 16
+<span class="lineNum">      45 </span>            : #define magplus_height 16
+<span class="lineNum">      46 </span>            : #define magplus_x_hot 5
+<span class="lineNum">      47 </span>            : #define magplus_y_hot 5
+<span class="lineNum">      48 </span>            : static unsigned char magplus_bits[] = {
+<span class="lineNum">      49 </span>            :    0xf8, 0x00, 0x06, 0x03, 0x22, 0x02, 0x21, 0x04, 0x21, 0x04, 0xfd, 0x05,
+<span class="lineNum">      50 </span>            :    0x21, 0x04, 0x21, 0x04, 0x22, 0x02, 0x06, 0x03, 0xf8, 0x04, 0x00, 0x08,
+<span class="lineNum">      51 </span>            :    0x00, 0x10, 0x00, 0x20, 0x00, 0x40, 0x00, 0x80};
+<span class="lineNum">      52 </span>            : #define magminus_width 16
+<span class="lineNum">      53 </span>            : #define magminus_height 16
+<span class="lineNum">      54 </span>            : #define magminus_x_hot 5
+<span class="lineNum">      55 </span>            : #define magminus_y_hot 5
+<span class="lineNum">      56 </span>            : static unsigned char magminus_bits[] = {
+<span class="lineNum">      57 </span>            :    0xf8, 0x00, 0x06, 0x03, 0x02, 0x02, 0x01, 0x04, 0x01, 0x04, 0xfd, 0x05,
+<span class="lineNum">      58 </span>            :    0x01, 0x04, 0x01, 0x04, 0x02, 0x02, 0x06, 0x03, 0xf8, 0x04, 0x00, 0x08,
+<span class="lineNum">      59 </span>            :    0x00, 0x10, 0x00, 0x20, 0x00, 0x40, 0x00, 0x80};
+<span class="lineNum">      60 </span>            : #if _CursorsMustBe16x16
+<span class="lineNum">      61 </span>            : #define pointertri_width 16
+<span class="lineNum">      62 </span>            : #define pointertri_height 16
+<span class="lineNum">      63 </span>            : #define pointertri_x_hot 1
+<span class="lineNum">      64 </span>            : #define pointertri_y_hot 0
+<span class="lineNum">      65 </span>            : static unsigned char pointertri_bits[] = {
+<span class="lineNum">      66 </span>            :    0x02, 0x00, 0x06, 0x00, 0x0e, 0x00, 0x1e, 0x00, 0x3e, 0x00, 0x7e, 0x00,
+<span class="lineNum">      67 </span>            :    0xfe, 0x00, 0xfe, 0x01, 0x3e, 0x00, 0x36, 0x10, 0x62, 0x30, 0x60, 0x70,
+<span class="lineNum">      68 </span>            :    0xc0, 0xf0, 0xc0, 0x70, 0x80, 0x31, 0x80, 0x11};
+<span class="lineNum">      69 </span>            : #define pointertrimask_width 16
+<span class="lineNum">      70 </span>            : #define pointertrimask_height 16
+<span class="lineNum">      71 </span>            : static unsigned char pointertrimask_bits[] = {
+<span class="lineNum">      72 </span>            :    0x02, 0x00, 0x06, 0x00, 0x1f, 0x00, 0x3f, 0x00, 0x7f, 0x00, 0xff, 0x00,
+<span class="lineNum">      73 </span>            :    0xff, 0x01, 0xff, 0x03, 0xff, 0x03, 0x3f, 0x10, 0x67, 0x30, 0x63, 0x70,
+<span class="lineNum">      74 </span>            :    0xc0, 0xf0, 0xc0, 0x70, 0x80, 0x31, 0x80, 0x11};
+<span class="lineNum">      75 </span>            : #define pointersqr_width 16
+<span class="lineNum">      76 </span>            : #define pointersqr_height 16
+<span class="lineNum">      77 </span>            : #define pointersqr_x_hot 2
+<span class="lineNum">      78 </span>            : #define pointersqr_y_hot 0
+<span class="lineNum">      79 </span>            : static unsigned char pointersqr_bits[] = {
+<span class="lineNum">      80 </span>            :    0x04, 0x00, 0x0c, 0x00, 0x1c, 0x00, 0x3c, 0x00, 0x7c, 0x00, 0xfc, 0x00,
+<span class="lineNum">      81 </span>            :    0xfc, 0x01, 0xfc, 0x03, 0x7c, 0x00, 0x6c, 0x00, 0xc4, 0x00, 0xc0, 0x00,
+<span class="lineNum">      82 </span>            :    0x80, 0xf1, 0x80, 0xf1, 0x00, 0xf3, 0x00, 0xf3};
+<span class="lineNum">      83 </span>            : #define pointersqrmask_width 16
+<span class="lineNum">      84 </span>            : #define pointersqrmask_height 16
+<span class="lineNum">      85 </span>            : static unsigned char pointersqrmask_bits[] = {
+<span class="lineNum">      86 </span>            :    0x04, 0x00, 0x0c, 0x00, 0x3e, 0x00, 0x7e, 0x00, 0xfe, 0x00, 0xfe, 0x01,
+<span class="lineNum">      87 </span>            :    0xfe, 0x03, 0xfe, 0x07, 0xfe, 0x07, 0x7e, 0x00, 0xde, 0x00, 0xc6, 0x00,
+<span class="lineNum">      88 </span>            :    0x80, 0xf1, 0x80, 0xf1, 0x00, 0xf3, 0x00, 0xf3};
+<span class="lineNum">      89 </span>            : #define pointercic_width 16
+<span class="lineNum">      90 </span>            : #define pointercic_height 16
+<span class="lineNum">      91 </span>            : #define pointercic_x_hot 2
+<span class="lineNum">      92 </span>            : #define pointercic_y_hot 0
+<span class="lineNum">      93 </span>            : static unsigned char pointercic_bits[] = {
+<span class="lineNum">      94 </span>            :    0x04, 0x00, 0x0c, 0x00, 0x1c, 0x00, 0x3c, 0x00, 0x7c, 0x00, 0xfc, 0x00,
+<span class="lineNum">      95 </span>            :    0xfc, 0x01, 0xfc, 0x03, 0x7c, 0x00, 0x6c, 0x00, 0xc4, 0x00, 0xc0, 0x70,
+<span class="lineNum">      96 </span>            :    0x80, 0xf9, 0x80, 0xf9, 0x00, 0xfb, 0x00, 0x73};
+<span class="lineNum">      97 </span>            : #define pointercicmask_width 16
+<span class="lineNum">      98 </span>            : #define pointercicmask_height 16
+<span class="lineNum">      99 </span>            : static unsigned char pointercicmask_bits[] = {
+<span class="lineNum">     100 </span>            :    0x04, 0x00, 0x0c, 0x00, 0x3e, 0x00, 0x7e, 0x00, 0xfe, 0x00, 0xfe, 0x01,
+<span class="lineNum">     101 </span>            :    0xfe, 0x03, 0xfe, 0x07, 0xfe, 0x07, 0x7e, 0x00, 0xce, 0x00, 0xc6, 0x70,
+<span class="lineNum">     102 </span>            :    0x80, 0xf9, 0x80, 0xf9, 0x00, 0xfb, 0x00, 0x73};
+<span class="lineNum">     103 </span>            : #define pointerhvcic_width 16
+<span class="lineNum">     104 </span>            : #define pointerhvcic_height 16
+<span class="lineNum">     105 </span>            : #define pointerhvcic_x_hot 2
+<span class="lineNum">     106 </span>            : #define pointerhvcic_y_hot 0
+<span class="lineNum">     107 </span>            : static unsigned char pointerhvcic_bits[] = {
+<span class="lineNum">     108 </span>            :    0x04, 0x00, 0x0c, 0x00, 0x1c, 0x00, 0x3c, 0x00, 0x7c, 0x00, 0xfc, 0x00,
+<span class="lineNum">     109 </span>            :    0xfc, 0x01, 0xfc, 0x03, 0x7c, 0x00, 0x6c, 0x00, 0xc4, 0x00, 0xc0, 0x70,
+<span class="lineNum">     110 </span>            :    0x80, 0xf9, 0x80, 0xf9, 0x00, 0xfb, 0x00, 0x73};
+<span class="lineNum">     111 </span>            : #define pointerhvcicmask_width 16
+<span class="lineNum">     112 </span>            : #define pointerhvcicmask_height 16
+<span class="lineNum">     113 </span>            : static unsigned char pointerhvcicmask_bits[] = {
+<span class="lineNum">     114 </span>            :    0x04, 0x00, 0x0c, 0x00, 0x3e, 0x00, 0x7e, 0x00, 0xfe, 0x00, 0xfe, 0x01,
+<span class="lineNum">     115 </span>            :    0xfe, 0x03, 0xfe, 0x07, 0xfe, 0x07, 0x7e, 0x00, 0xce, 0x00, 0xc6, 0x70,
+<span class="lineNum">     116 </span>            :    0x80, 0xf9, 0x80, 0xf9, 0x00, 0xfb, 0x00, 0x73};
+<span class="lineNum">     117 </span>            : #define pointerright_width 16
+<span class="lineNum">     118 </span>            : #define pointerright_height 16
+<span class="lineNum">     119 </span>            : #define pointerright_x_hot 2
+<span class="lineNum">     120 </span>            : #define pointerright_y_hot 0
+<span class="lineNum">     121 </span>            : static unsigned char pointerright_bits[] = {
+<span class="lineNum">     122 </span>            :    0x04, 0x00, 0x0c, 0x00, 0x1c, 0x00, 0x3c, 0x00, 0x7c, 0x00, 0xfc, 0x00,
+<span class="lineNum">     123 </span>            :    0xfc, 0x01, 0xfc, 0x03, 0x7c, 0x00, 0x6c, 0xf0, 0xc4, 0xf0, 0xc0, 0x30,
+<span class="lineNum">     124 </span>            :    0x80, 0x31, 0x80, 0x31, 0x00, 0xf3, 0x00, 0xf3};
+<span class="lineNum">     125 </span>            : #define pointerrightmask_width 16
+<span class="lineNum">     126 </span>            : #define pointerrightmask_height 16
+<span class="lineNum">     127 </span>            : static unsigned char pointerrightmask_bits[] = {
+<span class="lineNum">     128 </span>            :    0x04, 0x00, 0x0c, 0x00, 0x3e, 0x00, 0x7e, 0x00, 0xfe, 0x00, 0xfe, 0x01,
+<span class="lineNum">     129 </span>            :    0xfe, 0x03, 0xfe, 0x07, 0xfe, 0x07, 0x7e, 0xf0, 0xce, 0xf0, 0xc6, 0x30,
+<span class="lineNum">     130 </span>            :    0x80, 0x31, 0x80, 0x31, 0x00, 0xf3, 0x00, 0xf3};
+<span class="lineNum">     131 </span>            : #define pointerleft_width 16
+<span class="lineNum">     132 </span>            : #define pointerleft_height 16
+<span class="lineNum">     133 </span>            : #define pointerleft_x_hot 2
+<span class="lineNum">     134 </span>            : #define pointerleft_y_hot 0
+<span class="lineNum">     135 </span>            : static unsigned char pointerleft_bits[] = {
+<span class="lineNum">     136 </span>            :    0x04, 0x00, 0x0c, 0x00, 0x1c, 0x00, 0x3c, 0x00, 0x7c, 0x00, 0xfc, 0x00,
+<span class="lineNum">     137 </span>            :    0xfc, 0x01, 0xfc, 0x03, 0x7c, 0x00, 0x6c, 0xf0, 0xc4, 0xf0, 0xc0, 0xc0,
+<span class="lineNum">     138 </span>            :    0x80, 0xc1, 0x80, 0xc1, 0x00, 0xf3, 0x00, 0xf3};
+<span class="lineNum">     139 </span>            : #define pointerleftmask_width 16
+<span class="lineNum">     140 </span>            : #define pointerleftmask_height 16
+<span class="lineNum">     141 </span>            : static unsigned char pointerleftmask_bits[] = {
+<span class="lineNum">     142 </span>            :    0x04, 0x00, 0x0c, 0x00, 0x3e, 0x00, 0x7e, 0x00, 0xfe, 0x00, 0xfe, 0x01,
+<span class="lineNum">     143 </span>            :    0xfe, 0x03, 0xfe, 0x07, 0xfe, 0x07, 0x7e, 0xf0, 0xce, 0xf0, 0xc6, 0xc0,
+<span class="lineNum">     144 </span>            :    0x80, 0xc1, 0x80, 0xc1, 0x00, 0xf3, 0x00, 0xf3};
+<span class="lineNum">     145 </span>            : #else
+<span class="lineNum">     146 </span>            : #define pointertri_width 16
+<span class="lineNum">     147 </span>            : #define pointertri_height 24
+<span class="lineNum">     148 </span>            : #define pointertri_x_hot 2
+<span class="lineNum">     149 </span>            : #define pointertri_y_hot 0
+<span class="lineNum">     150 </span>            : static unsigned char pointertri_bits[] = {
+<span class="lineNum">     151 </span>            :    0x04, 0x00, 0x0c, 0x00, 0x1c, 0x00, 0x3c, 0x00, 0x7c, 0x00, 0xfc, 0x00,
+<span class="lineNum">     152 </span>            :    0xfc, 0x01, 0xfc, 0x03, 0x7c, 0x00, 0x6c, 0x00, 0xc4, 0x00, 0xc0, 0x00,
+<span class="lineNum">     153 </span>            :    0x80, 0x01, 0x80, 0x01, 0x00, 0x03, 0x00, 0x03, 0x00, 0x08, 0x00, 0x1c,
+<span class="lineNum">     154 </span>            :    0x00, 0x3e, 0x00, 0x7f, 0x80, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+<span class="lineNum">     155 </span>            : #define pointertrimask_width 16
+<span class="lineNum">     156 </span>            : #define pointertrimask_height 24
+<span class="lineNum">     157 </span>            : static unsigned char pointertrimask_bits[] = {
+<span class="lineNum">     158 </span>            :    0x04, 0x00, 0x0c, 0x00, 0x3e, 0x00, 0x7e, 0x00, 0xfe, 0x00, 0xfe, 0x01,
+<span class="lineNum">     159 </span>            :    0xfe, 0x03, 0xfe, 0x07, 0xfe, 0x07, 0xfe, 0x00, 0xee, 0x01, 0xe6, 0x01,
+<span class="lineNum">     160 </span>            :    0xc0, 0x03, 0xc0, 0x03, 0x80, 0x07, 0x80, 0x07, 0x00, 0x0b, 0x00, 0x1c,
+<span class="lineNum">     161 </span>            :    0x00, 0x3e, 0x00, 0x7f, 0x80, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+<span class="lineNum">     162 </span>            : #define pointersqr_width 16
+<span class="lineNum">     163 </span>            : #define pointersqr_height 24
+<span class="lineNum">     164 </span>            : #define pointersqr_x_hot 2
+<span class="lineNum">     165 </span>            : #define pointersqr_y_hot 0
+<span class="lineNum">     166 </span>            : static unsigned char pointersqr_bits[] = {
+<span class="lineNum">     167 </span>            :    0x04, 0x00, 0x0c, 0x00, 0x1c, 0x00, 0x3c, 0x00, 0x7c, 0x00, 0xfc, 0x00,
+<span class="lineNum">     168 </span>            :    0xfc, 0x01, 0xfc, 0x03, 0x7c, 0x00, 0x6c, 0x00, 0xc4, 0x00, 0xc0, 0x00,
+<span class="lineNum">     169 </span>            :    0x80, 0x01, 0x80, 0x01, 0x00, 0x03, 0x00, 0x03, 0x00, 0x00, 0x00, 0x7c,
+<span class="lineNum">     170 </span>            :    0x00, 0x7c, 0x00, 0x7c, 0x00, 0x7c, 0x00, 0x7c, 0x00, 0x00, 0x00, 0x00};
+<span class="lineNum">     171 </span>            : #define pointersqrmask_width 16
+<span class="lineNum">     172 </span>            : #define pointersqrmask_height 24
+<span class="lineNum">     173 </span>            : static unsigned char pointersqrmask_bits[] = {
+<span class="lineNum">     174 </span>            :    0x04, 0x00, 0x0c, 0x00, 0x3e, 0x00, 0x7e, 0x00, 0xfe, 0x00, 0xfe, 0x01,
+<span class="lineNum">     175 </span>            :    0xfe, 0x03, 0xfe, 0x07, 0xfe, 0x07, 0xfe, 0x00, 0xe6, 0x01, 0xe0, 0x01,
+<span class="lineNum">     176 </span>            :    0xc0, 0x03, 0xc0, 0x03, 0x80, 0x07, 0x80, 0x07, 0x00, 0x03, 0x00, 0x7c,
+<span class="lineNum">     177 </span>            :    0x00, 0x7c, 0x00, 0x7c, 0x00, 0x7c, 0x00, 0x7c, 0x00, 0x00, 0x00, 0x00};
+<span class="lineNum">     178 </span>            : #define pointercic_width 16
+<span class="lineNum">     179 </span>            : #define pointercic_height 24
+<span class="lineNum">     180 </span>            : #define pointercic_x_hot 2
+<span class="lineNum">     181 </span>            : #define pointercic_y_hot 0
+<span class="lineNum">     182 </span>            : static unsigned char pointercic_bits[] = {
+<span class="lineNum">     183 </span>            :    0x04, 0x00, 0x0c, 0x00, 0x1c, 0x00, 0x3c, 0x00, 0x7c, 0x00, 0xfc, 0x00,
+<span class="lineNum">     184 </span>            :    0xfc, 0x01, 0xfc, 0x03, 0x7c, 0x00, 0x6c, 0x00, 0xc4, 0x00, 0xc0, 0x00,
+<span class="lineNum">     185 </span>            :    0x80, 0x01, 0x80, 0x01, 0x00, 0x03, 0x00, 0x03, 0x00, 0x38, 0x00, 0x7c,
+<span class="lineNum">     186 </span>            :    0x00, 0xfe, 0x00, 0xfe, 0x00, 0xfe, 0x00, 0x7c, 0x00, 0x38, 0x00, 0x00};
+<span class="lineNum">     187 </span>            : #define pointercicmask_width 16
+<span class="lineNum">     188 </span>            : #define pointercicmask_height 24
+<span class="lineNum">     189 </span>            : static unsigned char pointercicmask_bits[] = {
+<span class="lineNum">     190 </span>            :    0x04, 0x00, 0x0c, 0x00, 0x3e, 0x00, 0x7e, 0x00, 0xfe, 0x00, 0xfe, 0x01,
+<span class="lineNum">     191 </span>            :    0xfe, 0x03, 0xfe, 0x07, 0xfe, 0x07, 0xfe, 0x00, 0xee, 0x01, 0xe6, 0x01,
+<span class="lineNum">     192 </span>            :    0xc0, 0x03, 0xc0, 0x03, 0x80, 0x07, 0x80, 0x07, 0x00, 0x3b, 0x00, 0x7c,
+<span class="lineNum">     193 </span>            :    0x00, 0xfe, 0x00, 0xfe, 0x00, 0xfe, 0x00, 0x7c, 0x00, 0x38, 0x00, 0x00};
+<span class="lineNum">     194 </span>            : #define pointerhvcic_width 32
+<span class="lineNum">     195 </span>            : #define pointerhvcic_height 32
+<span class="lineNum">     196 </span>            : #define pointerhvcic_x_hot 2
+<span class="lineNum">     197 </span>            : #define pointerhvcic_y_hot 0
+<span class="lineNum">     198 </span>            : static unsigned char pointerhvcic_bits[] = {
+<span class="lineNum">     199 </span>            :    0x04, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x1c, 0x00, 0x00, 0x00,
+<span class="lineNum">     200 </span>            :    0x3c, 0x00, 0x00, 0x00, 0x7c, 0x00, 0x00, 0x00, 0xfc, 0x00, 0x00, 0x00,
+<span class="lineNum">     201 </span>            :    0xfc, 0x01, 0x00, 0x00, 0xfc, 0x03, 0x00, 0x00, 0x7c, 0x00, 0x00, 0x00,
+<span class="lineNum">     202 </span>            :    0x6c, 0x00, 0x00, 0x00, 0xc4, 0x00, 0x00, 0x00, 0xc0, 0x00, 0x00, 0x00,
+<span class="lineNum">     203 </span>            :    0x80, 0x11, 0x00, 0x00, 0x80, 0x01, 0x00, 0x00, 0x00, 0x13, 0x00, 0x00,
+<span class="lineNum">     204 </span>            :    0x00, 0x03, 0x00, 0x00, 0x00, 0x38, 0x00, 0x00, 0x00, 0x7c, 0x00, 0x00,
+<span class="lineNum">     205 </span>            :    0x00, 0xfe, 0x00, 0x00, 0xa0, 0xfe, 0x0a, 0x00, 0x00, 0xfe, 0x00, 0x00,
+<span class="lineNum">     206 </span>            :    0x00, 0x7c, 0x00, 0x00, 0x00, 0x38, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+<span class="lineNum">     207 </span>            :    0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00,
+<span class="lineNum">     208 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+<span class="lineNum">     209 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+<span class="lineNum">     210 </span>            : #define pointerhvcicmask_width 32
+<span class="lineNum">     211 </span>            : #define pointerhvcicmask_height 32
+<span class="lineNum">     212 </span>            : static unsigned char pointerhvcicmask_bits[] = {
+<span class="lineNum">     213 </span>            :    0x04, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x3e, 0x00, 0x00, 0x00,
+<span class="lineNum">     214 </span>            :    0x7e, 0x00, 0x00, 0x00, 0xfe, 0x00, 0x00, 0x00, 0xfe, 0x01, 0x00, 0x00,
+<span class="lineNum">     215 </span>            :    0xfe, 0x03, 0x00, 0x00, 0xfe, 0x07, 0x00, 0x00, 0xfe, 0x07, 0x00, 0x00,
+<span class="lineNum">     216 </span>            :    0xfe, 0x00, 0x00, 0x00, 0xee, 0x01, 0x00, 0x00, 0xe6, 0x01, 0x00, 0x00,
+<span class="lineNum">     217 </span>            :    0xc0, 0x13, 0x00, 0x00, 0xc0, 0x03, 0x00, 0x00, 0x80, 0x17, 0x00, 0x00,
+<span class="lineNum">     218 </span>            :    0x80, 0x07, 0x00, 0x00, 0x00, 0x3b, 0x00, 0x00, 0x00, 0x7c, 0x00, 0x00,
+<span class="lineNum">     219 </span>            :    0x00, 0xfe, 0x00, 0x00, 0xa0, 0xfe, 0x0a, 0x00, 0x00, 0xfe, 0x00, 0x00,
+<span class="lineNum">     220 </span>            :    0x00, 0x7c, 0x00, 0x00, 0x00, 0x38, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+<span class="lineNum">     221 </span>            :    0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00,
+<span class="lineNum">     222 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+<span class="lineNum">     223 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+<span class="lineNum">     224 </span>            : #define pointerg2cic_width 32
+<span class="lineNum">     225 </span>            : #define pointerg2cic_height 32
+<span class="lineNum">     226 </span>            : #define pointerg2cic_x_hot 2
+<span class="lineNum">     227 </span>            : #define pointerg2cic_y_hot 0
+<span class="lineNum">     228 </span>            : static unsigned char pointerg2cic_bits[] = {
+<span class="lineNum">     229 </span>            :    0x04, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x1c, 0x00, 0x00, 0x00,
+<span class="lineNum">     230 </span>            :    0x3c, 0x00, 0x00, 0x00, 0x7c, 0x00, 0x00, 0x00, 0xfc, 0x00, 0x00, 0x00,
+<span class="lineNum">     231 </span>            :    0xfc, 0x01, 0x00, 0x00, 0xfc, 0x03, 0x00, 0x00, 0x7c, 0x00, 0x00, 0x00,
+<span class="lineNum">     232 </span>            :    0x6c, 0x00, 0x00, 0x00, 0xc4, 0x00, 0x00, 0x00, 0xc0, 0x00, 0x00, 0x00,
+<span class="lineNum">     233 </span>            :    0x80, 0x01, 0x00, 0x00, 0x80, 0x01, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00,
+<span class="lineNum">     234 </span>            :    0x00, 0x13, 0x00, 0x00, 0x00, 0x38, 0x00, 0x00, 0x00, 0x7c, 0x00, 0x00,
+<span class="lineNum">     235 </span>            :    0x00, 0xfe, 0x00, 0x00, 0x00, 0xff, 0x01, 0x00, 0x00, 0xfe, 0x00, 0x00,
+<span class="lineNum">     236 </span>            :    0x00, 0x7c, 0x00, 0x00, 0x00, 0x38, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00,
+<span class="lineNum">     237 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+<span class="lineNum">     238 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+<span class="lineNum">     239 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+<span class="lineNum">     240 </span>            : #define pointerg2cicmask_width 32
+<span class="lineNum">     241 </span>            : #define pointerg2cicmask_height 32
+<span class="lineNum">     242 </span>            : static unsigned char pointerg2cicmask_bits[] = {
+<span class="lineNum">     243 </span>            :    0x04, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x3e, 0x00, 0x00, 0x00,
+<span class="lineNum">     244 </span>            :    0x7e, 0x00, 0x00, 0x00, 0xfe, 0x00, 0x00, 0x00, 0xfe, 0x01, 0x00, 0x00,
+<span class="lineNum">     245 </span>            :    0xfe, 0x03, 0x00, 0x00, 0xfe, 0x07, 0x00, 0x00, 0xfe, 0x07, 0x00, 0x00,
+<span class="lineNum">     246 </span>            :    0xfe, 0x00, 0x00, 0x00, 0xee, 0x01, 0x00, 0x00, 0xe6, 0x01, 0x00, 0x00,
+<span class="lineNum">     247 </span>            :    0xc0, 0x03, 0x00, 0x00, 0xc0, 0x03, 0x00, 0x00, 0x80, 0x07, 0x00, 0x00,
+<span class="lineNum">     248 </span>            :    0x80, 0x17, 0x00, 0x00, 0x00, 0x3b, 0x00, 0x00, 0x00, 0x7c, 0x00, 0x00,
+<span class="lineNum">     249 </span>            :    0x00, 0xfe, 0x00, 0x00, 0x00, 0xff, 0x01, 0x00, 0x00, 0xfe, 0x00, 0x00,
+<span class="lineNum">     250 </span>            :    0x00, 0x7c, 0x00, 0x00, 0x00, 0x38, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00,
+<span class="lineNum">     251 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+<span class="lineNum">     252 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+<span class="lineNum">     253 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+<span class="lineNum">     254 </span>            : #define pointerright_width 16
+<span class="lineNum">     255 </span>            : #define pointerright_height 24
+<span class="lineNum">     256 </span>            : #define pointerright_x_hot 2
+<span class="lineNum">     257 </span>            : #define pointerright_y_hot 0
+<span class="lineNum">     258 </span>            : static unsigned char pointerright_bits[] = {
+<span class="lineNum">     259 </span>            :    0x04, 0x00, 0x0c, 0x00, 0x1c, 0x00, 0x3c, 0x00, 0x7c, 0x00, 0xfc, 0x00,
+<span class="lineNum">     260 </span>            :    0xfc, 0x01, 0xfc, 0x03, 0x7c, 0x00, 0x6c, 0x00, 0xc4, 0x00, 0xc0, 0x00,
+<span class="lineNum">     261 </span>            :    0x80, 0x01, 0x80, 0x01, 0x00, 0x03, 0x00, 0x7b, 0x00, 0x78, 0x00, 0x60,
+<span class="lineNum">     262 </span>            :    0x00, 0x60, 0x00, 0x60, 0x00, 0x60, 0x00, 0x60, 0x00, 0x78, 0x00, 0x78};
+<span class="lineNum">     263 </span>            : #define pointerrightmask_width 16
+<span class="lineNum">     264 </span>            : #define pointerrightmask_height 24
+<span class="lineNum">     265 </span>            : static unsigned char pointerrightmask_bits[] = {
+<span class="lineNum">     266 </span>            :    0x04, 0x00, 0x0c, 0x00, 0x3e, 0x00, 0x7e, 0x00, 0xfe, 0x00, 0xfe, 0x01,
+<span class="lineNum">     267 </span>            :    0xfe, 0x03, 0xfe, 0x07, 0xfe, 0x07, 0xfe, 0x00, 0xee, 0x01, 0xe6, 0x01,
+<span class="lineNum">     268 </span>            :    0xc0, 0x03, 0xc0, 0x03, 0x80, 0x03, 0x80, 0x7f, 0x00, 0x7f, 0x00, 0x60,
+<span class="lineNum">     269 </span>            :    0x00, 0x60, 0x00, 0x60, 0x00, 0x60, 0x00, 0x60, 0x00, 0x78, 0x00, 0x78};
+<span class="lineNum">     270 </span>            : #define pointerleft_width 16
+<span class="lineNum">     271 </span>            : #define pointerleft_height 24
+<span class="lineNum">     272 </span>            : #define pointerleft_x_hot 2
+<span class="lineNum">     273 </span>            : #define pointerleft_y_hot 0
+<span class="lineNum">     274 </span>            : static unsigned char pointerleft_bits[] = {
+<span class="lineNum">     275 </span>            :    0x04, 0x00, 0x0c, 0x00, 0x1c, 0x00, 0x3c, 0x00, 0x7c, 0x00, 0xfc, 0x00,
+<span class="lineNum">     276 </span>            :    0xfc, 0x01, 0xfc, 0x03, 0x7c, 0x00, 0x6c, 0x00, 0xc4, 0x00, 0xc0, 0x00,
+<span class="lineNum">     277 </span>            :    0x80, 0x01, 0x80, 0x01, 0x00, 0x03, 0x00, 0x7b, 0x00, 0x78, 0x00, 0x18,
+<span class="lineNum">     278 </span>            :    0x00, 0x18, 0x00, 0x18, 0x00, 0x18, 0x00, 0x18, 0x00, 0x78, 0x00, 0x78};
+<span class="lineNum">     279 </span>            : #define pointerleftmask_width 16
+<span class="lineNum">     280 </span>            : #define pointerleftmask_height 24
+<span class="lineNum">     281 </span>            : static unsigned char pointerleftmask_bits[] = {
+<span class="lineNum">     282 </span>            :    0x04, 0x00, 0x0c, 0x00, 0x3e, 0x00, 0x7e, 0x00, 0xfe, 0x00, 0xfe, 0x01,
+<span class="lineNum">     283 </span>            :    0xfe, 0x03, 0xfe, 0x07, 0xfe, 0x07, 0xfe, 0x00, 0xee, 0x01, 0xe6, 0x01,
+<span class="lineNum">     284 </span>            :    0xc0, 0x03, 0xc0, 0x03, 0x80, 0x03, 0x80, 0x7f, 0x00, 0x7f, 0x00, 0x18,
+<span class="lineNum">     285 </span>            :    0x00, 0x18, 0x00, 0x18, 0x00, 0x18, 0x00, 0x18, 0x00, 0x78, 0x00, 0x78};
+<span class="lineNum">     286 </span>            : #endif
+<span class="lineNum">     287 </span>            : #define pointercur_width 16
+<span class="lineNum">     288 </span>            : #define pointercur_height 16
+<span class="lineNum">     289 </span>            : #define pointercur_x_hot 2
+<span class="lineNum">     290 </span>            : #define pointercur_y_hot 0
+<span class="lineNum">     291 </span>            : static unsigned char pointercur_bits[] = {
+<span class="lineNum">     292 </span>            :    0x04, 0x00, 0x0c, 0x00, 0x1c, 0x00, 0x3c, 0x00, 0x7c, 0x00, 0xfc, 0x00,
+<span class="lineNum">     293 </span>            :    0xfc, 0x01, 0xfc, 0x03, 0x7c, 0x00, 0x6c, 0x00, 0xc4, 0x00, 0xc0, 0x00,
+<span class="lineNum">     294 </span>            :    0x80, 0x01, 0x80, 0x01, 0x00, 0x03, 0x00, 0x03};
+<span class="lineNum">     295 </span>            : #define pointercurmask_width 16
+<span class="lineNum">     296 </span>            : #define pointercurmask_height 16
+<span class="lineNum">     297 </span>            : static unsigned char pointercurmask_bits[] = {
+<span class="lineNum">     298 </span>            :    0x04, 0x00, 0x0c, 0x00, 0x3c, 0x00, 0x7e, 0x00, 0xfe, 0x00, 0xfe, 0x01,
+<span class="lineNum">     299 </span>            :    0xfe, 0x03, 0xfe, 0x07, 0xfe, 0x07, 0xfe, 0x00, 0xee, 0x01, 0xe6, 0x01,
+<span class="lineNum">     300 </span>            :    0xc0, 0x03, 0xc0, 0x03, 0x80, 0x07, 0x80, 0x07};
+<span class="lineNum">     301 </span>            : #if _CursorsMustBe16x16
+<span class="lineNum">     302 </span>            : #define rulercur_width 16
+<span class="lineNum">     303 </span>            : #define rulercur_height 16
+<span class="lineNum">     304 </span>            : #define rulercur_x_hot 0
+<span class="lineNum">     305 </span>            : #define rulercur_y_hot 3
+<span class="lineNum">     306 </span>            : static unsigned char rulercur_bits[] = {
+<span class="lineNum">     307 </span>            :    0x00, 0x00, 0x04, 0x00, 0x02, 0x00, 0x3f, 0x40, 0x22, 0x40, 0x24, 0x40,
+<span class="lineNum">     308 </span>            :    0x20, 0x40, 0x20, 0x49, 0x20, 0x49, 0x20, 0x49, 0xe0, 0x7f, 0x00, 0x00,
+<span class="lineNum">     309 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+<span class="lineNum">     310 </span>            : #else
+<span class="lineNum">     311 </span>            : #define rulercur_width 24
+<span class="lineNum">     312 </span>            : #define rulercur_height 12
+<span class="lineNum">     313 </span>            : #define rulercur_x_hot 0
+<span class="lineNum">     314 </span>            : #define rulercur_y_hot 3
+<span class="lineNum">     315 </span>            : static unsigned char rulercur_bits[] = {
+<span class="lineNum">     316 </span>            :    0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x02, 0x00, 0x00, 0x3f, 0x00, 0x80,
+<span class="lineNum">     317 </span>            :    0x22, 0x00, 0x80, 0x24, 0x40, 0x80, 0x20, 0x40, 0x80, 0x20, 0x49, 0x92,
+<span class="lineNum">     318 </span>            :    0x20, 0x49, 0x92, 0x20, 0x49, 0x92, 0xe0, 0xff, 0xff, 0x00, 0x00, 0x00};
+<span class="lineNum">     319 </span>            : #endif
+<span class="lineNum">     320 </span>            : #define pencur_width 16
+<span class="lineNum">     321 </span>            : #define pencur_height 16
+<span class="lineNum">     322 </span>            : #define pencur_x_hot 6
+<span class="lineNum">     323 </span>            : #define pencur_y_hot 0
+<span class="lineNum">     324 </span>            : static unsigned char pencur_bits[] = {
+<span class="lineNum">     325 </span>            :    0x40, 0x00, 0xe0, 0x00, 0xe0, 0x00, 0x50, 0x01, 0x50, 0x01, 0x50, 0x01,
+<span class="lineNum">     326 </span>            :    0x48, 0x02, 0x48, 0x02, 0x44, 0x04, 0xa4, 0x04, 0x44, 0x04, 0x08, 0x02,
+<span class="lineNum">     327 </span>            :    0xf0, 0x01, 0x10, 0x01, 0x10, 0x01, 0x10, 0x01};
+<span class="lineNum">     328 </span>            : #define pencurmask_width 16
+<span class="lineNum">     329 </span>            : #define pencurmask_height 16
+<span class="lineNum">     330 </span>            : static unsigned char pencurmask_bits[] = {
+<span class="lineNum">     331 </span>            :    0x40, 0x00, 0xe0, 0x00, 0xf0, 0x01, 0x58, 0x03, 0x58, 0x03, 0x58, 0x03,
+<span class="lineNum">     332 </span>            :    0x4c, 0x06, 0x4c, 0x06, 0x46, 0x0c, 0xe6, 0x0c, 0x46, 0x0c, 0x0c, 0x06,
+<span class="lineNum">     333 </span>            :    0xf8, 0x03, 0x18, 0x03, 0x18, 0x03, 0x18, 0x03};
+<span class="lineNum">     334 </span>            : #define knifecur_width 16
+<span class="lineNum">     335 </span>            : #define knifecur_height 16
+<span class="lineNum">     336 </span>            : #define knifecur_x_hot 0
+<span class="lineNum">     337 </span>            : #define knifecur_y_hot 2
+<span class="lineNum">     338 </span>            : static unsigned char knifecur_bits[] = {
+<span class="lineNum">     339 </span>            :    0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0x38, 0x20, 0x40, 0x21, 0x00, 0xee,
+<span class="lineNum">     340 </span>            :    0x00, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+<span class="lineNum">     341 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+<span class="lineNum">     342 </span>            : #define knifecurmask_width 16
+<span class="lineNum">     343 </span>            : #define knifecurmask_height 16
+<span class="lineNum">     344 </span>            : static unsigned char knifecurmask_bits[] = {
+<span class="lineNum">     345 </span>            :    0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x3f, 0xfe, 0xf8, 0xff, 0x00, 0xfe,
+<span class="lineNum">     346 </span>            :    0x00, 0x7e, 0x00, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+<span class="lineNum">     347 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+<span class="lineNum">     348 </span>            : #define flipcur_width 16
+<span class="lineNum">     349 </span>            : #define flipcur_height 16
+<span class="lineNum">     350 </span>            : #define flipcur_x_hot 8
+<span class="lineNum">     351 </span>            : #define flipcur_y_hot 8
+<span class="lineNum">     352 </span>            : static unsigned char flipcur_bits[] = {
+<span class="lineNum">     353 </span>            :    0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x01, 0x00, 0x01, 0x20, 0x09,
+<span class="lineNum">     354 </span>            :    0x20, 0x09, 0x30, 0x11, 0x30, 0x09, 0x28, 0x21, 0x28, 0x09, 0x24, 0x41,
+<span class="lineNum">     355 </span>            :    0x3c, 0x69, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00};
+<span class="lineNum">     356 </span>            : #define flipcurmask_width 16
+<span class="lineNum">     357 </span>            : #define flipcurmask_height 16
+<span class="lineNum">     358 </span>            : static unsigned char flipcurmask_bits[] = {
+<span class="lineNum">     359 </span>            :    0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x01, 0x00, 0x01, 0x20, 0x09,
+<span class="lineNum">     360 </span>            :    0x20, 0x09, 0x30, 0x19, 0x30, 0x19, 0x28, 0x29, 0x28, 0x29, 0x24, 0x49,
+<span class="lineNum">     361 </span>            :    0x3c, 0x79, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00};
+<span class="lineNum">     362 </span>            : #define rotatecur_width 16
+<span class="lineNum">     363 </span>            : #define rotatecur_height 16
+<span class="lineNum">     364 </span>            : #define rotatecur_x_hot 3
+<span class="lineNum">     365 </span>            : #define rotatecur_y_hot 12
+<span class="lineNum">     366 </span>            : static unsigned char rotatecur_bits[] = {
+<span class="lineNum">     367 </span>            :    0x08, 0x01, 0x88, 0x07, 0x08, 0x09, 0x08, 0x10, 0x08, 0x20, 0x08, 0x20,
+<span class="lineNum">     368 </span>            :    0x08, 0x80, 0x08, 0x60, 0x08, 0x18, 0x08, 0x06, 0x88, 0x01, 0x68, 0x00,
+<span class="lineNum">     369 </span>            :    0xff, 0xff, 0x08, 0x00, 0x08, 0x00, 0x08, 0x00};
+<span class="lineNum">     370 </span>            : #define scalecur_width 16
+<span class="lineNum">     371 </span>            : #define scalecur_height 16
+<span class="lineNum">     372 </span>            : #define scalecur_x_hot 0
+<span class="lineNum">     373 </span>            : #define scalecur_y_hot 15
+<span class="lineNum">     374 </span>            : static unsigned char scalecur_bits[] = {
+<span class="lineNum">     375 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x55, 0x05, 0x00, 0x00, 0x01, 0x04,
+<span class="lineNum">     376 </span>            :    0x00, 0x00, 0x7f, 0x04, 0x41, 0x00, 0x41, 0x04, 0x41, 0x00, 0x41, 0x04,
+<span class="lineNum">     377 </span>            :    0x41, 0x00, 0x41, 0x04, 0x41, 0x00, 0x7f, 0x05};
+<span class="lineNum">     378 </span>            : #define scalecurmask_width 16
+<span class="lineNum">     379 </span>            : #define scalecurmask_height 16
+<span class="lineNum">     380 </span>            : static unsigned char scalecurmask_bits[] = {
+<span class="lineNum">     381 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0x07, 0x01, 0x04, 0x01, 0x04,
+<span class="lineNum">     382 </span>            :    0x01, 0x04, 0x7f, 0x04, 0x41, 0x04, 0x41, 0x04, 0x41, 0x04, 0x41, 0x04,
+<span class="lineNum">     383 </span>            :    0x41, 0x04, 0x41, 0x04, 0x41, 0x04, 0xff, 0x07};
+<span class="lineNum">     384 </span>            : #define skewcur_width 16
+<span class="lineNum">     385 </span>            : #define skewcur_height 16
+<span class="lineNum">     386 </span>            : #define skewcur_x_hot 0
+<span class="lineNum">     387 </span>            : #define skewcur_y_hot 15
+<span class="lineNum">     388 </span>            : static unsigned char skewcur_bits[] = {
+<span class="lineNum">     389 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+<span class="lineNum">     390 </span>            :    0x00, 0x00, 0x7f, 0x05, 0x41, 0x00, 0x49, 0x02, 0x41, 0x00, 0x45, 0x01,
+<span class="lineNum">     391 </span>            :    0x41, 0x00, 0xc3, 0x00, 0x41, 0x00, 0x7f, 0x00};
+<span class="lineNum">     392 </span>            : #define skewcurmask_width 16
+<span class="lineNum">     393 </span>            : #define skewcurmask_height 16
+<span class="lineNum">     394 </span>            : static unsigned char skewcurmask_bits[] = {
+<span class="lineNum">     395 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+<span class="lineNum">     396 </span>            :    0x00, 0x00, 0xff, 0x07, 0x49, 0x02, 0x49, 0x02, 0x45, 0x01, 0x45, 0x01,
+<span class="lineNum">     397 </span>            :    0xc3, 0x00, 0xc3, 0x00, 0x41, 0x00, 0x7f, 0x00};
+<span class="lineNum">     398 </span>            : #define rotate3dcur_width 16
+<span class="lineNum">     399 </span>            : #define rotate3dcur_height 16
+<span class="lineNum">     400 </span>            : #define rotate3dcur_x_hot 1
+<span class="lineNum">     401 </span>            : #define rotate3dcur_y_hot 13
+<span class="lineNum">     402 </span>            : static unsigned char rotate3dcur_bits[] = {
+<span class="lineNum">     403 </span>            :    0x02, 0x00, 0xfa, 0x00, 0x8a, 0x00, 0x8a, 0x00, 0x8a, 0x00, 0x8a, 0x00,
+<span class="lineNum">     404 </span>            :    0x8a, 0x00, 0xfa, 0x00, 0x02, 0x1c, 0xaa, 0x22, 0x02, 0xaa, 0xaa, 0x72,
+<span class="lineNum">     405 </span>            :    0x02, 0x22, 0xff, 0x8f, 0x02, 0x02, 0x02, 0x3c};
+<span class="lineNum">     406 </span>            : #define perspectivecur_width 16
+<span class="lineNum">     407 </span>            : #define perspectivecur_height 16
+<span class="lineNum">     408 </span>            : #define perspectivecur_x_hot 0
+<span class="lineNum">     409 </span>            : #define perspectivecur_y_hot 15
+<span class="lineNum">     410 </span>            : static unsigned char perspectivecur_bits[] = {
+<span class="lineNum">     411 </span>            :    0x41, 0x04, 0x41, 0x04, 0x21, 0x08, 0x21, 0x08, 0x11, 0x10, 0xf1, 0x1f,
+<span class="lineNum">     412 </span>            :    0x31, 0x19, 0x29, 0x28, 0xa9, 0x2a, 0x25, 0x48, 0x65, 0x4c, 0x25, 0x48,
+<span class="lineNum">     413 </span>            :    0xe3, 0x8f, 0x03, 0x80, 0x01, 0x00, 0xff, 0xff};
+<span class="lineNum">     414 </span>            : #define setwidthcur_width 16
+<span class="lineNum">     415 </span>            : #define setwidthcur_height 16
+<span class="lineNum">     416 </span>            : #define setwidthcur_x_hot 14
+<span class="lineNum">     417 </span>            : #define setwidthcur_y_hot 7
+<span class="lineNum">     418 </span>            : static unsigned char setwidthcur_bits[] = {
+<span class="lineNum">     419 </span>            :    0x00, 0x00, 0x01, 0x40, 0x00, 0x40, 0x01, 0x40, 0x00, 0x40, 0x09, 0x48,
+<span class="lineNum">     420 </span>            :    0x04, 0x50, 0xab, 0x6a, 0x04, 0x50, 0x09, 0x48, 0x00, 0x40, 0x01, 0x40,
+<span class="lineNum">     421 </span>            :    0x00, 0x40, 0x01, 0x40, 0x00, 0x00, 0x00, 0x00};
+<span class="lineNum">     422 </span>            : /*static unsigned char setwidthmask_bits[] = {                               */
+<span class="lineNum">     423 </span>            : /*   0x00, 0x00, 0x01, 0x40, 0x01, 0x40, 0x01, 0x40, 0x01, 0x40, 0x09, 0x48, */
+<span class="lineNum">     424 </span>            : /*   0x05, 0x50, 0xff, 0x7f, 0x05, 0x50, 0x09, 0x48, 0x01, 0x40, 0x01, 0x40, */
+<span class="lineNum">     425 </span>            : /*   0x01, 0x40, 0x01, 0x40, 0x00, 0x00, 0x00, 0x00};                        */
+<span class="lineNum">     426 </span>            : 
+<span class="lineNum">     427 </span>            : #define updown_width 8
+<span class="lineNum">     428 </span>            : #define updown_height 15
+<span class="lineNum">     429 </span>            : #define updown_x_hot 3
+<span class="lineNum">     430 </span>            : #define updown_y_hot 7
+<span class="lineNum">     431 </span>            : static unsigned char updown_bits[] = {
+<span class="lineNum">     432 </span>            :    0x08, 0x14, 0x36, 0x55, 0x14, 0x14, 0x14, 0x7f, 0x14, 0x14, 0x14, 0x55,
+<span class="lineNum">     433 </span>            :    0x36, 0x14, 0x08};
+<span class="lineNum">     434 </span>            : #define leftright_width 16
+<span class="lineNum">     435 </span>            : #define leftright_height 9
+<span class="lineNum">     436 </span>            : #define leftright_x_hot 7
+<span class="lineNum">     437 </span>            : #define leftright_y_hot 4
+<span class="lineNum">     438 </span>            : static unsigned char leftright_bits[] = {
+<span class="lineNum">     439 </span>            :    0x80, 0x00, 0x88, 0x08, 0x84, 0x10, 0xfe, 0x3f, 0x81, 0x40, 0xfe, 0x3f,
+<span class="lineNum">     440 </span>            :    0x84, 0x10, 0x88, 0x08, 0x80, 0x00};
+<span class="lineNum">     441 </span>            : #define nesw_width 16
+<span class="lineNum">     442 </span>            : #define nesw_height 15
+<span class="lineNum">     443 </span>            : #define nesw_x_hot 8
+<span class="lineNum">     444 </span>            : #define nesw_y_hot 7
+<span class="lineNum">     445 </span>            : static unsigned char nesw_bits[] = {
+<span class="lineNum">     446 </span>            :    0x00, 0xfc, 0x00, 0x90, 0x00, 0x88, 0x10, 0xc4, 0x20, 0xa2, 0x40, 0x91,
+<span class="lineNum">     447 </span>            :    0x80, 0x08, 0x40, 0x05, 0x20, 0x02, 0x12, 0x05, 0x8a, 0x08, 0x46, 0x10,
+<span class="lineNum">     448 </span>            :    0x22, 0x00, 0x12, 0x00, 0x7e, 0x00};
+<span class="lineNum">     449 </span>            : #define nwse_width 16
+<span class="lineNum">     450 </span>            : #define nwse_height 15
+<span class="lineNum">     451 </span>            : #define nwse_x_hot 8
+<span class="lineNum">     452 </span>            : #define nwse_y_hot 7
+<span class="lineNum">     453 </span>            : static unsigned char nwse_bits[] = {
+<span class="lineNum">     454 </span>            :    0x7e, 0x00, 0x12, 0x00, 0x22, 0x00, 0x46, 0x10, 0x8a, 0x08, 0x12, 0x05,
+<span class="lineNum">     455 </span>            :    0x20, 0x02, 0x40, 0x05, 0x80, 0x08, 0x40, 0x91, 0x20, 0xa2, 0x10, 0xc4,
+<span class="lineNum">     456 </span>            :    0x00, 0x88, 0x00, 0x90, 0x00, 0xfc};
+<span class="lineNum">     457 </span>            : #define rectcur_width 16
+<span class="lineNum">     458 </span>            : #define rectcur_height 8
+<span class="lineNum">     459 </span>            : #define rectcur_x_hot 0
+<span class="lineNum">     460 </span>            : #define rectcur_y_hot 2
+<span class="lineNum">     461 </span>            : static unsigned char rectcur_bits[] = {
+<span class="lineNum">     462 </span>            :    0x04, 0x00, 0x02, 0x00, 0xff, 0x7f, 0x12, 0x40, 0x14, 0x40, 0x10, 0x40,
+<span class="lineNum">     463 </span>            :    0xf0, 0x7f, 0x00, 0x00};
+<span class="lineNum">     464 </span>            : #define elipsecur_width 16
+<span class="lineNum">     465 </span>            : #define elipsecur_height 8
+<span class="lineNum">     466 </span>            : #define elipsecur_x_hot 0
+<span class="lineNum">     467 </span>            : #define elipsecur_y_hot 2
+<span class="lineNum">     468 </span>            : static unsigned char elipsecur_bits[] = {
+<span class="lineNum">     469 </span>            :    0x04, 0x00, 0x02, 0x00, 0x3f, 0x1f, 0xc2, 0x60, 0x24, 0x80, 0xc0, 0x60,
+<span class="lineNum">     470 </span>            :    0x00, 0x1f, 0x00, 0x00};
+<span class="lineNum">     471 </span>            : #define polycur_width 16
+<span class="lineNum">     472 </span>            : #define polycur_height 16
+<span class="lineNum">     473 </span>            : #define polycur_x_hot 1
+<span class="lineNum">     474 </span>            : #define polycur_y_hot 7
+<span class="lineNum">     475 </span>            : static unsigned char polycur_bits[] = {
+<span class="lineNum">     476 </span>            :    0x80, 0x01, 0x60, 0x06, 0x18, 0x18, 0x06, 0x60, 0x02, 0x40, 0x02, 0x40,
+<span class="lineNum">     477 </span>            :    0x02, 0x40, 0x02, 0x40, 0x02, 0x40, 0x02, 0x40, 0x02, 0x40, 0x06, 0x60,
+<span class="lineNum">     478 </span>            :    0x18, 0x18, 0x60, 0x06, 0x80, 0x01, 0x00, 0x00};
+<span class="lineNum">     479 </span>            : #define starcur_width 16
+<span class="lineNum">     480 </span>            : #define starcur_height 16
+<span class="lineNum">     481 </span>            : #define starcur_x_hot 0
+<span class="lineNum">     482 </span>            : #define starcur_y_hot 6
+<span class="lineNum">     483 </span>            : static unsigned char starcur_bits[] = {
+<span class="lineNum">     484 </span>            :    0x10, 0x08, 0x70, 0x0e, 0x90, 0x09, 0x10, 0x08, 0x08, 0x10, 0x06, 0x60,
+<span class="lineNum">     485 </span>            :    0x01, 0x80, 0x06, 0x60, 0x08, 0x10, 0x10, 0x08, 0x90, 0x09, 0x70, 0x0e,
+<span class="lineNum">     486 </span>            :    0x10, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+<span class="lineNum">     487 </span>            : 
+<span class="lineNum">     488 </span>            : #define pencil_width 16
+<span class="lineNum">     489 </span>            : #define pencil_height 16
+<span class="lineNum">     490 </span>            : #define pencil_x_hot 1
+<span class="lineNum">     491 </span>            : #define pencil_y_hot 1
+<span class="lineNum">     492 </span>            : static unsigned char pencil_bits[] = {
+<span class="lineNum">     493 </span>            :    0x00, 0x00, 0x0e, 0x00, 0x16, 0x00, 0x22, 0x00, 0x44, 0x00, 0x88, 0x00,
+<span class="lineNum">     494 </span>            :    0x10, 0x01, 0x20, 0x02, 0x40, 0x04, 0x80, 0x08, 0x00, 0x11, 0x00, 0x22,
+<span class="lineNum">     495 </span>            :    0x00, 0x64, 0x00, 0x98, 0x00, 0x50, 0x00, 0x20};
+<span class="lineNum">     496 </span>            : #define pencilmask_width 16
+<span class="lineNum">     497 </span>            : #define pencilmask_height 16
+<span class="lineNum">     498 </span>            : static unsigned char pencilmask_bits[] = {
+<span class="lineNum">     499 </span>            :    0x00, 0x00, 0x0e, 0x00, 0x1e, 0x00, 0x3e, 0x00, 0x7c, 0x00, 0xf8, 0x00,
+<span class="lineNum">     500 </span>            :    0xf0, 0x01, 0xe0, 0x03, 0xc0, 0x07, 0x80, 0x0f, 0x00, 0x1f, 0x00, 0x3e,
+<span class="lineNum">     501 </span>            :    0x00, 0x7c, 0x00, 0x98, 0x00, 0x50, 0x00, 0x20};
+<span class="lineNum">     502 </span>            : #define eyedropper_width 16
+<span class="lineNum">     503 </span>            : #define eyedropper_height 16
+<span class="lineNum">     504 </span>            : #define eyedropper_x_hot 0
+<span class="lineNum">     505 </span>            : #define eyedropper_y_hot 0
+<span class="lineNum">     506 </span>            : static unsigned char eyedropper_bits[] = {
+<span class="lineNum">     507 </span>            :    0x02, 0x00, 0x0d, 0x00, 0x12, 0x00, 0x22, 0x00, 0x44, 0x00, 0x88, 0x00,
+<span class="lineNum">     508 </span>            :    0x10, 0x09, 0x20, 0x0e, 0x40, 0x0e, 0x80, 0x1f, 0x80, 0x7f, 0xc0, 0xff,
+<span class="lineNum">     509 </span>            :    0x00, 0xfe, 0x00, 0xfc, 0x00, 0xfc, 0x00, 0x78};
+<span class="lineNum">     510 </span>            : #define eyedroppermask_width 16
+<span class="lineNum">     511 </span>            : #define eyedroppermask_height 16
+<span class="lineNum">     512 </span>            : static unsigned char eyedroppermask_bits[] = {
+<span class="lineNum">     513 </span>            :    0x03, 0x00, 0x0f, 0x00, 0x1e, 0x00, 0x3e, 0x00, 0x7c, 0x00, 0xf8, 0x00,
+<span class="lineNum">     514 </span>            :    0xf0, 0x09, 0xe0, 0x0f, 0xc0, 0x0f, 0x80, 0x1f, 0x80, 0x7f, 0xc0, 0xff,
+<span class="lineNum">     515 </span>            :    0x00, 0xfe, 0x00, 0xfc, 0x00, 0xfc, 0x00, 0x78};
+<span class="lineNum">     516 </span>            : #define shift_width 16
+<span class="lineNum">     517 </span>            : #define shift_height 16
+<span class="lineNum">     518 </span>            : #define shift_x_hot 7
+<span class="lineNum">     519 </span>            : #define shift_y_hot 7
+<span class="lineNum">     520 </span>            : static unsigned char shift_bits[] = {
+<span class="lineNum">     521 </span>            :    0x80, 0x00, 0xc0, 0x01, 0xa0, 0x02, 0x80, 0x00, 0x80, 0x00, 0x84, 0x10,
+<span class="lineNum">     522 </span>            :    0x82, 0x20, 0xff, 0x7f, 0x82, 0x20, 0x84, 0x10, 0x80, 0x00, 0x80, 0x00,
+<span class="lineNum">     523 </span>            :    0xa0, 0x02, 0xc0, 0x01, 0x80, 0x00, 0x00, 0x00};
+<span class="lineNum">     524 </span>            : #define linecur_width 16
+<span class="lineNum">     525 </span>            : #define linecur_height 16
+<span class="lineNum">     526 </span>            : #define linecur_x_hot 0
+<span class="lineNum">     527 </span>            : #define linecur_y_hot 0
+<span class="lineNum">     528 </span>            : static unsigned char linecur_bits[] = {
+<span class="lineNum">     529 </span>            :    0xc1, 0xff, 0x62, 0xa0, 0xc4, 0xff, 0x08, 0x00, 0x10, 0x00, 0x20, 0x00,
+<span class="lineNum">     530 </span>            :    0x40, 0x00, 0x80, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x04, 0x00, 0x08,
+<span class="lineNum">     531 </span>            :    0x00, 0x10, 0x00, 0x20, 0x00, 0x40, 0x00, 0x80};
+<span class="lineNum">     532 </span>            : #if _CursorsMustBe16x16
+<span class="lineNum">     533 </span>            : #define hand_width 16
+<span class="lineNum">     534 </span>            : #define hand_height 16
+<span class="lineNum">     535 </span>            : #define hand_x_hot 8
+<span class="lineNum">     536 </span>            : #define hand_y_hot 12
+<span class="lineNum">     537 </span>            : static unsigned char hand_bits[] = {
+<span class="lineNum">     538 </span>            :    0x80, 0x01, 0x40, 0x02, 0x48, 0x0e, 0x54, 0x12, 0x54, 0x52, 0x64, 0xb2,
+<span class="lineNum">     539 </span>            :    0x68, 0xb2, 0x48, 0x92, 0x17, 0x80, 0x19, 0x40, 0x11, 0x40, 0x02, 0x40,
+<span class="lineNum">     540 </span>            :    0x04, 0x20, 0x08, 0x20, 0x08, 0x20, 0x10, 0x10};
+<span class="lineNum">     541 </span>            : #define handmask_width 16
+<span class="lineNum">     542 </span>            : #define handmask_height 16
+<span class="lineNum">     543 </span>            : static unsigned char handmask_bits[] = {
+<span class="lineNum">     544 </span>            :    0x80, 0x01, 0xc0, 0x03, 0xc8, 0x0f, 0xdc, 0x1f, 0xdc, 0x5f, 0xfc, 0xff,
+<span class="lineNum">     545 </span>            :    0xf8, 0xff, 0xf8, 0xff, 0xff, 0xff, 0xff, 0x7f, 0xff, 0x7f, 0xfe, 0x7f,
+<span class="lineNum">     546 </span>            :    0xfc, 0x3f, 0xf8, 0x3f, 0xf8, 0x3f, 0xf0, 0x1f};
+<span class="lineNum">     547 </span>            : #else
+<span class="lineNum">     548 </span>            : #define hand_width 24
+<span class="lineNum">     549 </span>            : #define hand_height 24
+<span class="lineNum">     550 </span>            : #define hand_x_hot 11
+<span class="lineNum">     551 </span>            : #define hand_y_hot 15
+<span class="lineNum">     552 </span>            : static unsigned char hand_bits[] = {
+<span class="lineNum">     553 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0c, 0x00,
+<span class="lineNum">     554 </span>            :    0x00, 0x12, 0x00, 0x40, 0x72, 0x00, 0xa0, 0x92, 0x00, 0xa0, 0x92, 0x02,
+<span class="lineNum">     555 </span>            :    0x20, 0x93, 0x05, 0x40, 0x93, 0x05, 0x40, 0x92, 0x04, 0xb8, 0x00, 0x04,
+<span class="lineNum">     556 </span>            :    0xc8, 0x00, 0x02, 0x88, 0x00, 0x02, 0x10, 0x00, 0x02, 0x20, 0x00, 0x01,
+<span class="lineNum">     557 </span>            :    0x40, 0x00, 0x01, 0x40, 0x00, 0x01, 0x80, 0x80, 0x00, 0x00, 0x81, 0x00,
+<span class="lineNum">     558 </span>            :    0x00, 0x82, 0x00, 0x00, 0x82, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+<span class="lineNum">     559 </span>            : #define handmask_width 24
+<span class="lineNum">     560 </span>            : #define handmask_height 24
+<span class="lineNum">     561 </span>            : static unsigned char handmask_bits[] = {
+<span class="lineNum">     562 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0c, 0x00,
+<span class="lineNum">     563 </span>            :    0x00, 0x1e, 0x00, 0x40, 0x7e, 0x00, 0xe0, 0xfe, 0x00, 0xe0, 0xfe, 0x02,
+<span class="lineNum">     564 </span>            :    0xe0, 0xff, 0x07, 0xc0, 0xff, 0x07, 0xc0, 0xff, 0x07, 0xb8, 0xff, 0x07,
+<span class="lineNum">     565 </span>            :    0xf8, 0xff, 0x03, 0xf8, 0xff, 0x03, 0xf0, 0xff, 0x03, 0xe0, 0xff, 0x01,
+<span class="lineNum">     566 </span>            :    0xc0, 0xff, 0x01, 0xc0, 0xff, 0x01, 0x80, 0xff, 0x00, 0x00, 0xff, 0x00,
+<span class="lineNum">     567 </span>            :    0x00, 0xfe, 0x00, 0x00, 0xfe, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+<span class="lineNum">     568 </span>            : #endif
+<span class="lineNum">     569 </span>            : #define filledrectcur_width 16
+<span class="lineNum">     570 </span>            : #define filledrectcur_height 8
+<span class="lineNum">     571 </span>            : #define filledrectcur_x_hot 0
+<span class="lineNum">     572 </span>            : #define filledrectcur_y_hot 2
+<span class="lineNum">     573 </span>            : static unsigned char filledrectcur_bits[] = {
+<span class="lineNum">     574 </span>            :    0x04, 0x00, 0x02, 0x00, 0xff, 0xff, 0xe2, 0xff, 0xe4, 0xff, 0xe0, 0xff,
+<span class="lineNum">     575 </span>            :    0xe0, 0xff, 0x00, 0x00};
+<span class="lineNum">     576 </span>            : #define filledelipsecur_width 16
+<span class="lineNum">     577 </span>            : #define filledelipsecur_height 8
+<span class="lineNum">     578 </span>            : #define filledelipsecur_x_hot 0
+<span class="lineNum">     579 </span>            : #define filledelipsecur_y_hot 2
+<span class="lineNum">     580 </span>            : static unsigned char filledelipsecur_bits[] = {
+<span class="lineNum">     581 </span>            :    0x04, 0x00, 0x02, 0x00, 0x3f, 0x1f, 0xc2, 0x7f, 0xe4, 0xff, 0xc0, 0x7f,
+<span class="lineNum">     582 </span>            :    0x00, 0x1f, 0x00, 0x00};
+<span class="lineNum">     583 </span>            : #define kerncur_width 16
+<span class="lineNum">     584 </span>            : #define kerncur_height 15
+<span class="lineNum">     585 </span>            : #define kerncur_x_hot 7
+<span class="lineNum">     586 </span>            : #define kerncur_y_hot 7
+<span class="lineNum">     587 </span>            : static unsigned char kerncur_bits[] = {
+<span class="lineNum">     588 </span>            :    0x80, 0x00, 0x80, 0x00, 0xf8, 0x0f, 0x08, 0x08, 0x28, 0x0a, 0x28, 0x09,
+<span class="lineNum">     589 </span>            :    0xaa, 0x28, 0x6f, 0x78, 0xaa, 0x28, 0x28, 0x09, 0x28, 0x0a, 0x08, 0x08,
+<span class="lineNum">     590 </span>            :    0xf8, 0x0f, 0x80, 0x00, 0x80, 0x00};
+<span class="lineNum">     591 </span>            : #define rbearcur_width 16
+<span class="lineNum">     592 </span>            : #define rbearcur_height 15
+<span class="lineNum">     593 </span>            : #define rbearcur_x_hot 7
+<span class="lineNum">     594 </span>            : #define rbearcur_y_hot 7
+<span class="lineNum">     595 </span>            : static unsigned char rbearcur_bits[] = {
+<span class="lineNum">     596 </span>            :    0x80, 0x00, 0x80, 0x00, 0xf8, 0x0f, 0x08, 0x08, 0xe8, 0x09, 0x28, 0x0a,
+<span class="lineNum">     597 </span>            :    0x2a, 0x2a, 0xef, 0x79, 0x2a, 0x29, 0x28, 0x09, 0x28, 0x0a, 0x08, 0x08,
+<span class="lineNum">     598 </span>            :    0xf8, 0x0f, 0x80, 0x00, 0x80, 0x00};
+<span class="lineNum">     599 </span>            : #define rbearmask_width 16
+<span class="lineNum">     600 </span>            : #define rbearmask_height 15
+<span class="lineNum">     601 </span>            : static unsigned char rbearmask_bits[] = {
+<span class="lineNum">     602 </span>            :    0x80, 0x00, 0xfc, 0x1f, 0xfc, 0x1f, 0xfc, 0x1f, 0xfc, 0x1f, 0xfe, 0x3f,
+<span class="lineNum">     603 </span>            :    0xff, 0x7f, 0xff, 0x7f, 0xff, 0x7f, 0xfe, 0x3f, 0xfc, 0x1f, 0xfc, 0x1f,
+<span class="lineNum">     604 </span>            :    0xfc, 0x1f, 0xfc, 0x1f, 0x80, 0x00};
+<span class="lineNum">     605 </span>            : #define lbearcur_width 16
+<span class="lineNum">     606 </span>            : #define lbearcur_height 15
+<span class="lineNum">     607 </span>            : #define lbearcur_x_hot 7
+<span class="lineNum">     608 </span>            : #define lbearcur_y_hot 7
+<span class="lineNum">     609 </span>            : static unsigned char lbearcur_bits[] = {
+<span class="lineNum">     610 </span>            :    0x80, 0x00, 0x80, 0x00, 0xf0, 0x07, 0x10, 0x04, 0x50, 0x04, 0x54, 0x14,
+<span class="lineNum">     611 </span>            :    0x52, 0x24, 0x5f, 0x7c, 0x52, 0x24, 0x54, 0x14, 0xd0, 0x05, 0x10, 0x04,
+<span class="lineNum">     612 </span>            :    0xf0, 0x07, 0x80, 0x00, 0x80, 0x00};
+<span class="lineNum">     613 </span>            : #define lbearmask_width 16
+<span class="lineNum">     614 </span>            : #define lbearmask_height 15
+<span class="lineNum">     615 </span>            : static unsigned char lbearmask_bits[] = {
+<span class="lineNum">     616 </span>            :    0x80, 0x00, 0xf8, 0x0f, 0xf8, 0x0f, 0xf8, 0x0f, 0xfc, 0x1f, 0xfe, 0x3f,
+<span class="lineNum">     617 </span>            :    0xff, 0x7f, 0xff, 0x7f, 0xff, 0x7f, 0xfe, 0x3f, 0xfc, 0x1f, 0xf8, 0x0f,
+<span class="lineNum">     618 </span>            :    0xf8, 0x0f, 0xf8, 0x0f, 0x80, 0x00};
+<span class="lineNum">     619 </span>            : 
+<span class="lineNum">     620 </span>            : #define logo_width 32
+<span class="lineNum">     621 </span>            : #define logo_height 32
+<span class="lineNum">     622 </span>            : static unsigned char logo_bits[] = {
+<span class="lineNum">     623 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3c, 0xf0, 0x00, 0x00,
+<span class="lineNum">     624 </span>            :    0x6c, 0xb0, 0x01, 0x00, 0xe0, 0x86, 0xfb, 0x01, 0xc0, 0x28, 0x53, 0x03,
+<span class="lineNum">     625 </span>            :    0xd0, 0x55, 0xa7, 0x02, 0x80, 0x01, 0x06, 0x03, 0xf0, 0xdf, 0x7f, 0x02,
+<span class="lineNum">     626 </span>            :    0xf0, 0xdf, 0x7f, 0x03, 0x00, 0x03, 0x0c, 0x02, 0x30, 0x57, 0x5d, 0x03,
+<span class="lineNum">     627 </span>            :    0x50, 0xa6, 0x98, 0x02, 0xb0, 0x4e, 0x39, 0x03, 0x50, 0xae, 0x3a, 0x02,
+<span class="lineNum">     628 </span>            :    0xb0, 0x4c, 0x31, 0x03, 0x50, 0x9d, 0x72, 0x02, 0xb0, 0x18, 0x65, 0x02,
+<span class="lineNum">     629 </span>            :    0x50, 0x39, 0xe0, 0x00, 0xb0, 0x72, 0xc6, 0x19, 0x50, 0xe5, 0x97, 0x1f,
+<span class="lineNum">     630 </span>            :    0xb0, 0x8a, 0x23, 0x0e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+<span class="lineNum">     631 </span>            :    0xf0, 0x3f, 0xff, 0x03, 0xe0, 0x3f, 0xff, 0x01, 0x00, 0x00, 0x00, 0x00,
+<span class="lineNum">     632 </span>            :    0x00, 0x00, 0x00, 0x00, 0xf0, 0x3f, 0xff, 0x03, 0xf0, 0x3f, 0xff, 0x03,
+<span class="lineNum">     633 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+<span class="lineNum">     634 </span>            : 
+<span class="lineNum">     635 </span>            : #define prohibition_width 16
+<span class="lineNum">     636 </span>            : #define prohibition_height 16
+<span class="lineNum">     637 </span>            : #define prohibition_x_hot 7
+<span class="lineNum">     638 </span>            : #define prohibition_y_hot 7
+<span class="lineNum">     639 </span>            : static unsigned char prohibition_bits[] = {
+<span class="lineNum">     640 </span>            :    0xc0, 0x01, 0x30, 0x06, 0x0c, 0x18, 0x0c, 0x10, 0x12, 0x20, 0x22, 0x20,
+<span class="lineNum">     641 </span>            :    0x41, 0x40, 0x81, 0x40, 0x01, 0x41, 0x02, 0x22, 0x02, 0x24, 0x04, 0x18,
+<span class="lineNum">     642 </span>            :    0x0c, 0x18, 0x30, 0x06, 0xc0, 0x01, 0x00, 0x00};
+<span class="lineNum">     643 </span>            : static unsigned char prohibitionmask_bits[] = {
+<span class="lineNum">     644 </span>            :    0xc0, 0x01, 0xf0, 0x07, 0xfc, 0x1f, 0xfc, 0x1f, 0xfe, 0x3f, 0xfe, 0x3f,
+<span class="lineNum">     645 </span>            :    0xff, 0x7f, 0xff, 0x7f, 0xff, 0x7f, 0xfe, 0x3f, 0xfe, 0x3f, 0xfc, 0x1f,
+<span class="lineNum">     646 </span>            :    0xfc, 0x1f, 0xf0, 0x07, 0xc0, 0x01, 0x00, 0x00};
+<span class="lineNum">     647 </span>            : #define ddcursor_width 16
+<span class="lineNum">     648 </span>            : #define ddcursor_height 16
+<span class="lineNum">     649 </span>            : #define ddcursor_x_hot 0
+<span class="lineNum">     650 </span>            : #define ddcursor_y_hot 0
+<span class="lineNum">     651 </span>            : static unsigned char ddcursor_bits[] = {
+<span class="lineNum">     652 </span>            :    0x0f, 0x00, 0x03, 0x00, 0x05, 0x00, 0x09, 0x00, 0x10, 0x00, 0x00, 0x00,
+<span class="lineNum">     653 </span>            :    0x00, 0x02, 0x00, 0x02, 0x60, 0xc6, 0x50, 0x2a, 0x50, 0x2a, 0xa0, 0xc6,
+<span class="lineNum">     654 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+<span class="lineNum">     655 </span>            : #define featurescursor_width 16
+<span class="lineNum">     656 </span>            : #define featurescursor_height 16
+<span class="lineNum">     657 </span>            : #define featurescursor_x_hot 0
+<span class="lineNum">     658 </span>            : #define featurescursor_y_hot 0
+<span class="lineNum">     659 </span>            : static unsigned char featurescursor_bits[] = {
+<span class="lineNum">     660 </span>            :    0x0f, 0x00, 0x03, 0x00, 0x05, 0x00, 0x09, 0x00, 0x10, 0x00, 0x00, 0x00,
+<span class="lineNum">     661 </span>            :    0x04, 0x00, 0x02, 0x40, 0x67, 0xec, 0xf2, 0x4a, 0x12, 0x4a, 0x62, 0x94,
+<span class="lineNum">     662 </span>            :    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+<a name="663"><span class="lineNum">     663 </span>            : </a>
+<span class="lineNum">     664 </span>            : 
+<span class="lineNum">     665 </span><span class="lineNoCov">          0 : void InitCursors(void) {</span>
+<span class="lineNum">     666 </span>            :     GWindow mask, image;
+<span class="lineNum">     667 </span>            :     /* The XServer shipping with redhat 7.1 seems to suffer a protocol change */
+<span class="lineNum">     668 </span>            :     /*  with the red and blue members of XColor structure reversed */
+<span class="lineNum">     669 </span>            :     /* So all of my cursors which should be red (to match the points drawn */
+<span class="lineNum">     670 </span>            :     /*  on the screen) come out blue. If I run the same image on another server*/
+<span class="lineNum">     671 </span>            :     /*  it's red. Oh well. */
+<span class="lineNum">     672 </span>            : 
+<span class="lineNum">     673 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,magplus_width,magplus_height,magplus_bits);</span>
+<span class="lineNum">     674 </span><span class="lineNoCov">          0 :     ct_magplus = GDrawCreateCursor(image,image,0x000000,0xffffff,magplus_x_hot,</span>
+<span class="lineNum">     675 </span>            :             magplus_y_hot);
+<span class="lineNum">     676 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     677 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,magminus_width,magminus_height,magminus_bits);</span>
+<span class="lineNum">     678 </span><span class="lineNoCov">          0 :     ct_magminus = GDrawCreateCursor(image,image,0x000000,0xffffff,magminus_x_hot,</span>
+<span class="lineNum">     679 </span>            :             magminus_y_hot);
+<span class="lineNum">     680 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     681 </span>            : 
+<span class="lineNum">     682 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,pointercur_width,pointercur_height,pointercur_bits);</span>
+<span class="lineNum">     683 </span><span class="lineNoCov">          0 :     mask = GDrawCreateBitmap(NULL,pointercurmask_width,pointercurmask_height,pointercurmask_bits);</span>
+<span class="lineNum">     684 </span><span class="lineNoCov">          0 :     ct_mypointer = GDrawCreateCursor(image,mask,0x000000,0xffffff,pointercur_x_hot,</span>
+<span class="lineNum">     685 </span>            :             pointercur_y_hot);
+<span class="lineNum">     686 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image); GDrawDestroyWindow(mask);</span>
+<span class="lineNum">     687 </span>            : 
+<span class="lineNum">     688 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,pointercic_width,pointercic_height,pointercic_bits);</span>
+<span class="lineNum">     689 </span><span class="lineNoCov">          0 :     mask = GDrawCreateBitmap(NULL,pointercic_width,pointercic_height,pointercicmask_bits);</span>
+<span class="lineNum">     690 </span><span class="lineNoCov">          0 :     ct_circle = GDrawCreateCursor(image,mask,0xff0000,0xffffff,pointercic_x_hot,</span>
+<span class="lineNum">     691 </span>            :             pointercic_y_hot);
+<span class="lineNum">     692 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image); GDrawDestroyWindow(mask);</span>
+<span class="lineNum">     693 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,pointerhvcic_width,pointerhvcic_height,pointerhvcic_bits);</span>
+<span class="lineNum">     694 </span><span class="lineNoCov">          0 :     mask = GDrawCreateBitmap(NULL,pointerhvcic_width,pointerhvcic_height,pointerhvcicmask_bits);</span>
+<span class="lineNum">     695 </span><span class="lineNoCov">          0 :     ct_hvcircle = GDrawCreateCursor(image,mask,0xff0000,0xffffff,pointerhvcic_x_hot,</span>
+<span class="lineNum">     696 </span>            :             pointerhvcic_y_hot);
+<span class="lineNum">     697 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image); GDrawDestroyWindow(mask);</span>
+<span class="lineNum">     698 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,pointertri_width,pointertri_height,pointertri_bits);</span>
+<span class="lineNum">     699 </span><span class="lineNoCov">          0 :     mask = GDrawCreateBitmap(NULL,pointertri_width,pointertri_height,pointertrimask_bits);</span>
+<span class="lineNum">     700 </span><span class="lineNoCov">          0 :     ct_triangle = GDrawCreateCursor(image,mask,0xff0000,0xffffff,pointertri_x_hot,</span>
+<span class="lineNum">     701 </span>            :             pointertri_y_hot);
+<span class="lineNum">     702 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image); GDrawDestroyWindow(mask);</span>
+<span class="lineNum">     703 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,pointersqr_width,pointersqr_height,pointersqr_bits);</span>
+<span class="lineNum">     704 </span><span class="lineNoCov">          0 :     mask = GDrawCreateBitmap(NULL,pointersqr_width,pointersqr_height,pointersqrmask_bits);</span>
+<span class="lineNum">     705 </span><span class="lineNoCov">          0 :     ct_square = GDrawCreateCursor(image,mask,0xff0000,0xffffff,pointersqr_x_hot,</span>
+<span class="lineNum">     706 </span>            :             pointersqr_y_hot);
+<span class="lineNum">     707 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image); GDrawDestroyWindow(mask);</span>
+<span class="lineNum">     708 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,pencur_width,pencur_height,pencur_bits);</span>
+<span class="lineNum">     709 </span><span class="lineNoCov">          0 :     mask = GDrawCreateBitmap(NULL,pencur_width,pencur_height,pencurmask_bits);</span>
+<span class="lineNum">     710 </span><span class="lineNoCov">          0 :     ct_pen = GDrawCreateCursor(image,mask,0xff0000,0xffffff,pencur_x_hot,</span>
+<span class="lineNum">     711 </span>            :             pencur_y_hot);
+<span class="lineNum">     712 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image); GDrawDestroyWindow(mask);</span>
+<span class="lineNum">     713 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,setwidthcur_width,setwidthcur_height,setwidthcur_bits);</span>
+<span class="lineNum">     714 </span>            :     /*mask = GDrawCreateBitmap(NULL,setwidthcur_width,setwidthcur_height,setwidthmask_bits);*/
+<span class="lineNum">     715 </span><span class="lineNoCov">          0 :     ct_setwidth = GDrawCreateCursor(image,image,0xff0000,0xffffff,setwidthcur_x_hot,</span>
+<span class="lineNum">     716 </span>            :             setwidthcur_y_hot);
+<span class="lineNum">     717 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     718 </span>            : #if _CursorsMustBe16x16
+<span class="lineNum">     719 </span>            :     ct_g2circle = ct_hvcircle;
+<span class="lineNum">     720 </span>            : #else
+<span class="lineNum">     721 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,pointerg2cic_width,pointerg2cic_height,pointerg2cic_bits);</span>
+<span class="lineNum">     722 </span><span class="lineNoCov">          0 :     mask = GDrawCreateBitmap(NULL,pointerg2cic_width,pointerg2cic_height,pointerg2cicmask_bits);</span>
+<span class="lineNum">     723 </span><span class="lineNoCov">          0 :     ct_g2circle = GDrawCreateCursor(image,mask,0xff0000,0xffffff,pointerg2cic_x_hot,</span>
+<span class="lineNum">     724 </span>            :             pointerg2cic_y_hot);
+<span class="lineNum">     725 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image); GDrawDestroyWindow(mask);</span>
+<span class="lineNum">     726 </span>            : #endif
+<span class="lineNum">     727 </span>            : 
+<span class="lineNum">     728 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,pointerleft_width,pointerleft_height,pointerleft_bits);</span>
+<span class="lineNum">     729 </span><span class="lineNoCov">          0 :     mask = GDrawCreateBitmap(NULL,pointerleft_width,pointerleft_height,pointerleftmask_bits);</span>
+<span class="lineNum">     730 </span><span class="lineNoCov">          0 :     ct_spiroleft = GDrawCreateCursor(image,mask,0xff0000,0xffffff,pointerleft_x_hot,</span>
+<span class="lineNum">     731 </span>            :             pointerleft_y_hot);
+<span class="lineNum">     732 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image); GDrawDestroyWindow(mask);</span>
+<span class="lineNum">     733 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,pointerright_width,pointerright_height,pointerright_bits);</span>
+<span class="lineNum">     734 </span><span class="lineNoCov">          0 :     mask = GDrawCreateBitmap(NULL,pointerright_width,pointerright_height,pointerrightmask_bits);</span>
+<span class="lineNum">     735 </span><span class="lineNoCov">          0 :     ct_spiroright = GDrawCreateCursor(image,mask,0xff0000,0xffffff,pointerright_x_hot,</span>
+<span class="lineNum">     736 </span>            :             pointerright_y_hot);
+<span class="lineNum">     737 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image); GDrawDestroyWindow(mask);</span>
+<span class="lineNum">     738 </span>            : 
+<span class="lineNum">     739 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,rulercur_width,rulercur_height,rulercur_bits);</span>
+<span class="lineNum">     740 </span><span class="lineNoCov">          0 :     ct_ruler = GDrawCreateCursor(image,image,0x000000,0xffffff,rulercur_x_hot,</span>
+<span class="lineNum">     741 </span>            :             rulercur_y_hot);
+<span class="lineNum">     742 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     743 </span>            : 
+<span class="lineNum">     744 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,knifecur_width,knifecur_height,knifecur_bits);</span>
+<span class="lineNum">     745 </span><span class="lineNoCov">          0 :     mask = GDrawCreateBitmap(NULL,knifecur_width,knifecur_height,knifecurmask_bits);</span>
+<span class="lineNum">     746 </span><span class="lineNoCov">          0 :     ct_knife = GDrawCreateCursor(image,mask,0xff0000,0xffffff,knifecur_x_hot,</span>
+<span class="lineNum">     747 </span>            :             knifecur_y_hot);
+<span class="lineNum">     748 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image); GDrawDestroyWindow(mask);</span>
+<span class="lineNum">     749 </span>            : 
+<span class="lineNum">     750 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,flipcur_width,flipcur_height,flipcur_bits);</span>
+<span class="lineNum">     751 </span><span class="lineNoCov">          0 :     mask = GDrawCreateBitmap(NULL,flipcur_width,flipcur_height,flipcurmask_bits);</span>
+<span class="lineNum">     752 </span><span class="lineNoCov">          0 :     ct_flip = GDrawCreateCursor(image,image,0xff0000,0xffffff,flipcur_x_hot,</span>
+<span class="lineNum">     753 </span>            :             flipcur_y_hot);
+<span class="lineNum">     754 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image); GDrawDestroyWindow(mask);</span>
+<span class="lineNum">     755 </span>            : 
+<span class="lineNum">     756 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,rotatecur_width,rotatecur_height,rotatecur_bits);</span>
+<span class="lineNum">     757 </span><span class="lineNoCov">          0 :     ct_rotate = GDrawCreateCursor(image,image,0x000000,0xffffff,rotatecur_x_hot,</span>
+<span class="lineNum">     758 </span>            :             rotatecur_y_hot);
+<span class="lineNum">     759 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     760 </span>            : 
+<span class="lineNum">     761 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,scalecur_width,scalecur_height,scalecur_bits);</span>
+<span class="lineNum">     762 </span><span class="lineNoCov">          0 :     mask = GDrawCreateBitmap(NULL,scalecur_width,scalecur_height,scalecurmask_bits);</span>
+<span class="lineNum">     763 </span><span class="lineNoCov">          0 :     ct_scale = GDrawCreateCursor(image,image,0xff0000,0xffffff,scalecur_x_hot,</span>
+<span class="lineNum">     764 </span>            :             scalecur_y_hot);
+<span class="lineNum">     765 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image); GDrawDestroyWindow(mask);</span>
+<span class="lineNum">     766 </span>            : 
+<span class="lineNum">     767 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,skewcur_width,skewcur_height,skewcur_bits);</span>
+<span class="lineNum">     768 </span><span class="lineNoCov">          0 :     mask = GDrawCreateBitmap(NULL,skewcur_width,skewcur_height,skewcurmask_bits);</span>
+<span class="lineNum">     769 </span><span class="lineNoCov">          0 :     ct_skew = GDrawCreateCursor(image,image,0xff0000,0xffffff,skewcur_x_hot,</span>
+<span class="lineNum">     770 </span>            :             skewcur_y_hot);
+<span class="lineNum">     771 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image); GDrawDestroyWindow(mask);</span>
+<span class="lineNum">     772 </span>            : 
+<span class="lineNum">     773 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,rotate3dcur_width,rotate3dcur_height,rotate3dcur_bits);</span>
+<span class="lineNum">     774 </span><span class="lineNoCov">          0 :     ct_3drotate = GDrawCreateCursor(image,image,0xff0000,0xffffff,rotate3dcur_x_hot,</span>
+<span class="lineNum">     775 </span>            :             rotate3dcur_y_hot);
+<span class="lineNum">     776 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     777 </span>            : 
+<span class="lineNum">     778 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,perspectivecur_width,perspectivecur_height,perspectivecur_bits);</span>
+<span class="lineNum">     779 </span><span class="lineNoCov">          0 :     ct_perspective = GDrawCreateCursor(image,image,0xff0000,0xffffff,perspectivecur_x_hot,</span>
+<span class="lineNum">     780 </span>            :             perspectivecur_y_hot);
+<span class="lineNum">     781 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     782 </span>            : 
+<span class="lineNum">     783 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,rectcur_width,rectcur_height,rectcur_bits);</span>
+<span class="lineNum">     784 </span><span class="lineNoCov">          0 :     ct_rect = GDrawCreateCursor(image,image,0xff0000,0xffffff,rectcur_x_hot,</span>
+<span class="lineNum">     785 </span>            :             rectcur_y_hot);
+<span class="lineNum">     786 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     787 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,elipsecur_width,elipsecur_height,elipsecur_bits);</span>
+<span class="lineNum">     788 </span><span class="lineNoCov">          0 :     ct_elipse = GDrawCreateCursor(image,image,0xff0000,0xffffff,elipsecur_x_hot,</span>
+<span class="lineNum">     789 </span>            :             elipsecur_y_hot);
+<span class="lineNum">     790 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     791 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,polycur_width,polycur_height,polycur_bits);</span>
+<span class="lineNum">     792 </span><span class="lineNoCov">          0 :     ct_poly = GDrawCreateCursor(image,image,0xff0000,0xffffff,polycur_x_hot,</span>
+<span class="lineNum">     793 </span>            :             polycur_y_hot);
+<span class="lineNum">     794 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     795 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,starcur_width,starcur_height,starcur_bits);</span>
+<span class="lineNum">     796 </span><span class="lineNoCov">          0 :     ct_star = GDrawCreateCursor(image,image,0xff0000,0xffffff,starcur_x_hot,</span>
+<span class="lineNum">     797 </span>            :             starcur_y_hot);
+<span class="lineNum">     798 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     799 </span>            : 
+<span class="lineNum">     800 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,nwse_width,nwse_height,nwse_bits);</span>
+<span class="lineNum">     801 </span><span class="lineNoCov">          0 :     ct_nwse = GDrawCreateCursor(image,image,0xff0000,0xffffff,nwse_x_hot,</span>
+<span class="lineNum">     802 </span>            :             nwse_y_hot);
+<span class="lineNum">     803 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image); </span>
+<span class="lineNum">     804 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,nesw_width,nesw_height,nesw_bits);</span>
+<span class="lineNum">     805 </span><span class="lineNoCov">          0 :     ct_nesw = GDrawCreateCursor(image,image,0xff0000,0xffffff,nesw_x_hot,</span>
+<span class="lineNum">     806 </span>            :             nesw_y_hot);
+<span class="lineNum">     807 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     808 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,leftright_width,leftright_height,leftright_bits);</span>
+<span class="lineNum">     809 </span><span class="lineNoCov">          0 :     ct_leftright = GDrawCreateCursor(image,image,0xff0000,0xffffff,leftright_x_hot,</span>
+<span class="lineNum">     810 </span>            :             leftright_y_hot);
+<span class="lineNum">     811 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     812 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,updown_width,updown_height,updown_bits);</span>
+<span class="lineNum">     813 </span><span class="lineNoCov">          0 :     ct_updown = GDrawCreateCursor(image,image,0xff0000,0xffffff,updown_x_hot,</span>
+<span class="lineNum">     814 </span>            :             updown_y_hot);
+<span class="lineNum">     815 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     816 </span>            : 
+<span class="lineNum">     817 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,pencil_width,pencil_height,pencil_bits);</span>
+<span class="lineNum">     818 </span><span class="lineNoCov">          0 :     mask = GDrawCreateBitmap(NULL,pencil_width,pencil_height,pencilmask_bits);</span>
+<span class="lineNum">     819 </span><span class="lineNoCov">          0 :     ct_pencil = GDrawCreateCursor(image,mask,0xff0000,0xffffff,pencil_x_hot,</span>
+<span class="lineNum">     820 </span>            :             pencil_y_hot);
+<span class="lineNum">     821 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image); GDrawDestroyWindow(mask);</span>
+<span class="lineNum">     822 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,eyedropper_width,eyedropper_height,eyedropper_bits);</span>
+<span class="lineNum">     823 </span><span class="lineNoCov">          0 :     mask = GDrawCreateBitmap(NULL,eyedropper_width,eyedropper_height,eyedroppermask_bits);</span>
+<span class="lineNum">     824 </span><span class="lineNoCov">          0 :     ct_eyedropper = GDrawCreateCursor(image,mask,0xff0000,0xffffff,eyedropper_x_hot,</span>
+<span class="lineNum">     825 </span>            :             eyedropper_y_hot);
+<span class="lineNum">     826 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image); GDrawDestroyWindow(mask);</span>
+<span class="lineNum">     827 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,shift_width,shift_height,shift_bits);</span>
+<span class="lineNum">     828 </span><span class="lineNoCov">          0 :     ct_shift = GDrawCreateCursor(image,image,0xff0000,0xffffff,shift_x_hot,</span>
+<span class="lineNum">     829 </span>            :             shift_y_hot);
+<span class="lineNum">     830 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     831 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,linecur_width,linecur_height,linecur_bits);</span>
+<span class="lineNum">     832 </span><span class="lineNoCov">          0 :     ct_line = GDrawCreateCursor(image,image,0xff0000,0xffffff,linecur_x_hot,</span>
+<span class="lineNum">     833 </span>            :             linecur_y_hot);
+<span class="lineNum">     834 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     835 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,hand_width,hand_height,hand_bits);</span>
+<span class="lineNum">     836 </span><span class="lineNoCov">          0 :     mask = GDrawCreateBitmap(NULL,hand_width,hand_height,handmask_bits);</span>
+<span class="lineNum">     837 </span><span class="lineNoCov">          0 :     ct_myhand = GDrawCreateCursor(image,mask,0xff0000,0xffffff,hand_x_hot,</span>
+<span class="lineNum">     838 </span>            :             hand_y_hot);
+<span class="lineNum">     839 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image); GDrawDestroyWindow(mask);</span>
+<span class="lineNum">     840 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,filledrectcur_width,filledrectcur_height,filledrectcur_bits);</span>
+<span class="lineNum">     841 </span><span class="lineNoCov">          0 :     ct_filledrect = GDrawCreateCursor(image,image,0xff0000,0xffffff,filledrectcur_x_hot,</span>
+<span class="lineNum">     842 </span>            :             filledrectcur_y_hot);
+<span class="lineNum">     843 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     844 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,filledelipsecur_width,filledelipsecur_height,filledelipsecur_bits);</span>
+<span class="lineNum">     845 </span><span class="lineNoCov">          0 :     ct_filledelipse = GDrawCreateCursor(image,image,0xff0000,0xffffff,filledelipsecur_x_hot,</span>
+<span class="lineNum">     846 </span>            :             filledelipsecur_y_hot);
+<span class="lineNum">     847 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     848 </span>            : 
+<span class="lineNum">     849 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,kerncur_width,kerncur_height,kerncur_bits);</span>
+<span class="lineNum">     850 </span><span class="lineNoCov">          0 :     mask = GDrawCreateBitmap(NULL,rbearmask_width,rbearmask_height,rbearmask_bits);</span>
+<span class="lineNum">     851 </span><span class="lineNoCov">          0 :     ct_kerning = GDrawCreateCursor(image,mask,0xff0000,0xffffff,kerncur_x_hot,</span>
+<span class="lineNum">     852 </span>            :             kerncur_y_hot);
+<span class="lineNum">     853 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     854 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,rbearcur_width,rbearcur_height,rbearcur_bits);</span>
+<span class="lineNum">     855 </span><span class="lineNoCov">          0 :     ct_rbearing = GDrawCreateCursor(image,mask,0xff0000,0xffffff,rbearcur_x_hot,</span>
+<span class="lineNum">     856 </span>            :             rbearcur_y_hot);
+<span class="lineNum">     857 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     858 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(mask);</span>
+<span class="lineNum">     859 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,lbearcur_width,lbearcur_height,lbearcur_bits);</span>
+<span class="lineNum">     860 </span><span class="lineNoCov">          0 :     mask = GDrawCreateBitmap(NULL,lbearmask_width,lbearmask_height,lbearmask_bits);</span>
+<span class="lineNum">     861 </span><span class="lineNoCov">          0 :     ct_lbearing = GDrawCreateCursor(image,mask,0xff0000,0xffffff,lbearcur_x_hot,</span>
+<span class="lineNum">     862 </span>            :             lbearcur_y_hot);
+<span class="lineNum">     863 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     864 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(mask);</span>
+<span class="lineNum">     865 </span>            : 
+<span class="lineNum">     866 </span><span class="lineNoCov">          0 :     logo_icon = GDrawCreateBitmap(NULL,logo_width,logo_height,logo_bits);</span>
+<span class="lineNum">     867 </span><span class="lineNoCov">          0 :     GDrawSetDefaultIcon(logo_icon);</span>
+<span class="lineNum">     868 </span>            : 
+<span class="lineNum">     869 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,prohibition_width,prohibition_height,prohibition_bits);</span>
+<span class="lineNum">     870 </span><span class="lineNoCov">          0 :     mask = GDrawCreateBitmap(NULL,prohibition_width,prohibition_height,prohibitionmask_bits);</span>
+<span class="lineNum">     871 </span><span class="lineNoCov">          0 :     ct_prohibition = GDrawCreateCursor(image,mask,0xff0000,0xffffff,prohibition_x_hot,</span>
+<span class="lineNum">     872 </span>            :             prohibition_y_hot);
+<span class="lineNum">     873 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     874 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(mask);</span>
+<span class="lineNum">     875 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,ddcursor_width,ddcursor_height,ddcursor_bits);</span>
+<span class="lineNum">     876 </span><span class="lineNoCov">          0 :     ct_ddcursor = GDrawCreateCursor(image,image,0xff0000,0xffffff,ddcursor_x_hot,</span>
+<span class="lineNum">     877 </span>            :             ddcursor_y_hot);
+<span class="lineNum">     878 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     879 </span><span class="lineNoCov">          0 :     image = GDrawCreateBitmap(NULL,featurescursor_width,featurescursor_height,featurescursor_bits);</span>
+<span class="lineNum">     880 </span><span class="lineNoCov">          0 :     ct_features = GDrawCreateCursor(image,image,0xff0000,0xffffff,featurescursor_x_hot,</span>
+<span class="lineNum">     881 </span>            :             featurescursor_y_hot);
+<span class="lineNum">     882 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(image);</span>
+<span class="lineNum">     883 </span><span class="lineNoCov">          0 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

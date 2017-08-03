@@ -1,0 +1,403 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - gutils/gimagereadrgb.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gutils</a> - gimagereadrgb.c<span style="font-size: 80%;"> (source / <a href="gimagereadrgb.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">175</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">8</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &quot;gimage.h&quot;
+<span class="lineNum">      28 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            : struct sgiheader {
+<span class="lineNum">      31 </span>            :     short magic;                /* Magic (SGI identification) number    */
+<span class="lineNum">      32 </span>            :     char format;                /* Storage format (RLE=1 or VERBATIM=0) */
+<span class="lineNum">      33 </span>            :     char bpc;                   /* Bytes per pixel channel (1or2 bytes) */
+<span class="lineNum">      34 </span>            :     unsigned short dim;         /* Number of dimensions (1,2,3)         */
+<span class="lineNum">      35 </span>            :     unsigned short width;       /* Width of image in pixels     X-size  */
+<span class="lineNum">      36 </span>            :     unsigned short height;      /* Height of image in pixels    Y-size  */
+<span class="lineNum">      37 </span>            :     unsigned short chans;       /* Number of channels (1,3,4)   Z-size  */
+<span class="lineNum">      38 </span>            :     long pixmin;                /* Minimum pixel value  (darkest)       */
+<span class="lineNum">      39 </span>            :     long pixmax;                /* Maximum pixel value  (brightest)     */
+<span class="lineNum">      40 </span>            :     char dummy[4];              /* Ignored                              */
+<span class="lineNum">      41 </span>            :     char imagename[80];         /* Image name   (0..79chars + '\0')     */
+<span class="lineNum">      42 </span>            :     long colormap;              /* Colormap ID  (0,1,2,3)               */
+<span class="lineNum">      43 </span>            :     char pad[404];              /* Ignored      (total=512bytes)        */
+<span class="lineNum">      44 </span>            : };
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span>            : #define SGI_MAGIC       474
+<span class="lineNum">      47 </span>            : #define VERBATIM        0
+<a name="48"><span class="lineNum">      48 </span>            : #define RLE             1</a>
+<span class="lineNum">      49 </span>            : 
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 : static int getlong(FILE *fp, long *value) {</span>
+<span class="lineNum">      51 </span>            : /* Get Big-Endian long (32bit int) value. Return 0 if okay, -1 if error */
+<span class="lineNum">      52 </span>            :     int ch1, ch2, ch3, ch4;
+<span class="lineNum">      53 </span>            : 
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :     if ( (ch1=fgetc(fp))&lt;0 || (ch2=fgetc(fp))&lt;0 || \</span>
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :          (ch3=fgetc(fp))&lt;0 || (ch4=fgetc(fp))&lt;0 ) {</span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :         *value=0;</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :         return( -1 );</span>
+<span class="lineNum">      58 </span>            :     }
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :     *value=(long)( (ch1&lt;&lt;24)|(ch2&lt;&lt;16)|(ch3&lt;&lt;8)|ch4 );</span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 :     return( 0 );</span>
+<a name="61"><span class="lineNum">      61 </span>            : }</a>
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 : static int getshort(FILE *fp) {</span>
+<span class="lineNum">      64 </span>            : /* Get Big-Endian short 16bit value. Return value if okay, -1 if error  */
+<span class="lineNum">      65 </span>            :     int ch1, ch2;
+<span class="lineNum">      66 </span>            : 
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :     if ( (ch1=fgetc(fp))&lt;0 || (ch2=fgetc(fp))&lt;0 )</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :         return( -1 );</span>
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :     return( (ch1&lt;&lt;8) | ch2 );</span>
+<a name="71"><span class="lineNum">      71 </span>            : }</a>
+<span class="lineNum">      72 </span>            : 
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 : static int getsgiheader(struct sgiheader *head,FILE *fp) {</span>
+<span class="lineNum">      74 </span>            : /* Get Header info. Return 0 if read input file okay, -1 if read error  */
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :     if ( (head-&gt;magic=getshort(fp))&lt;0     || head-&gt;magic!=SGI_MAGIC || \</span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :          (head-&gt;format=fgetc(fp))&lt;0       || \</span>
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :          (head-&gt;bpc=fgetc(fp))&lt;0  || \</span>
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :          (head-&gt;dim=getshort(fp))==(unsigned short)-1        ||      \</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :          (head-&gt;width=getshort(fp))==(unsigned short)-1      ||      \</span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :          (head-&gt;height=getshort(fp))==(unsigned short)-1||      \</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :          (head-&gt;chans=getshort(fp))==(unsigned short)-1      ||      \</span>
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :          getlong(fp,&amp;head-&gt;pixmin)       || \</span>
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :          getlong(fp,&amp;head-&gt;pixmax)       || \</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :          fread(head-&gt;dummy,sizeof(head-&gt;dummy),1,fp)&lt;1 || \</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :          fread(head-&gt;imagename,sizeof(head-&gt;imagename),1,fp)&lt;1 || \</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :          getlong(fp,&amp;head-&gt;colormap)     || \</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :          fread(head-&gt;pad,sizeof(head-&gt;pad),1,fp)&lt;1 )</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :     return( -1 );</span>
+<span class="lineNum">      89 </span>            : 
+<span class="lineNum">      90 </span>            :     /* Check if header information okay (for us to use here ) */
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :     if ( (head-&gt;format!=VERBATIM &amp;&amp; head-&gt;format!=RLE) || \</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :          (head-&gt;bpc!=1 &amp;&amp; head-&gt;bpc!=2) || \</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :          head-&gt;dim&lt;1 || head-&gt;dim&gt;3 || \</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :          head-&gt;pixmax&gt;65535 || (head-&gt;pixmax&gt;255 &amp;&amp; head-&gt;bpc==1) || \</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :          (head-&gt;chans!=1 &amp;&amp; head-&gt;chans!=3 &amp;&amp; head-&gt;chans!=4) || \</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :          head-&gt;pixmax&lt;0 || head-&gt;pixmin&lt;0 || head-&gt;pixmin&gt;=head-&gt;pixmax || \</span>
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :          head-&gt;colormap!=0 )</span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :     return( -1 );</span>
+<span class="lineNum">      99 </span>            : 
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :     return( 0 );</span>
+<a name="101"><span class="lineNum">     101 </span>            : }</a>
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 : static long scalecolor(struct sgiheader *header,long value) {</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :     return( (value-header-&gt;pixmin)*255L/(header-&gt;pixmax-header-&gt;pixmin) );</span>
+<a name="105"><span class="lineNum">     105 </span>            : }</a>
+<span class="lineNum">     106 </span>            : 
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 : static int readlongtab(FILE *fp,unsigned long *tab,long tablen) {</span>
+<span class="lineNum">     108 </span>            : /* RLE table info, exit=0 if okay, return -1 if error */
+<span class="lineNum">     109 </span>            :     long i;
+<span class="lineNum">     110 </span>            : 
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;tablen; ++i )</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :         if ( getlong(fp,(long *)&amp;tab[i]) )</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :             return( -1 ); /* had a read error */</span>
+<span class="lineNum">     114 </span>            : 
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :     return( 0 ); /* read everything okay */</span>
+<a name="116"><span class="lineNum">     116 </span>            : }</a>
+<span class="lineNum">     117 </span>            : 
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 : static int find_scanline(FILE *fp,struct sgiheader *header,int cur,</span>
+<span class="lineNum">     119 </span>            :         unsigned long *starttab,unsigned char **ptrtab) {
+<span class="lineNum">     120 </span>            : /* Find and expand a scanline. Return 0 if okay, else -ve if error */
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :     int ch = 0,i,cnt;</span>
+<span class="lineNum">     122 </span>            :     long val;
+<span class="lineNum">     123 </span>            :     unsigned char *pt;
+<span class="lineNum">     124 </span>            : 
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;cur; ++i )</span>
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :         if ( starttab[i]==starttab[cur] ) {</span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :             ptrtab[cur] = ptrtab[i];</span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :             return( 0 );</span>
+<span class="lineNum">     129 </span>            :         }
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :     if ( (pt=ptrtab[cur]=(unsigned char *) malloc(header-&gt;width))==NULL ) {</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :         NoMoreMemMessage();</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :         return( -1 );</span>
+<span class="lineNum">     133 </span>            :     }
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :     if ( fseek(fp,starttab[cur],0)!= 0 ) return( -2 );</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :     while ( header-&gt;bpc==1 ) {</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :         if ( (ch=fgetc(fp))&lt;0 ) return( -2 );</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :         if ( (cnt=(ch&amp;0x7f))==0 ) return( 0 );</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :         if ( ch&amp;0x80 ) {</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :             while ( --cnt&gt;=0 ) {</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :                 if ( (ch=fgetc(fp))&lt;0 ) return( -2 );</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :                 *pt++ = scalecolor(header,ch);</span>
+<span class="lineNum">     142 </span>            :             }
+<span class="lineNum">     143 </span>            :         } else {
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :             if ( (ch=fgetc(fp))&lt;0 ) return( -2 );</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :             ch = scalecolor(header,ch);</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :             while ( --cnt&gt;=0 )</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :                 *pt++ = ch;</span>
+<span class="lineNum">     148 </span>            :         }
+<span class="lineNum">     149 </span>            :     }
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :     while ( header-&gt;bpc!=1 ) {</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :         if ( getlong(fp,&amp;val) ) return( -2 );</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :         if ( (cnt=(ch&amp;0x7f))==0 ) return( 0 );</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :         if ( ch&amp;0x80 ) {</span>
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :             while ( --cnt&gt;=0 ) {</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :                 if ( getlong(fp,&amp;val) ) return( -2 );</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :                 *pt++ = scalecolor(header,val);</span>
+<span class="lineNum">     157 </span>            :             }
+<span class="lineNum">     158 </span>            :         } else {
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :             if ( getlong(fp,&amp;val) ) return( -2 );</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :             val = scalecolor(header,val);</span>
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :             while ( --cnt&gt;=0 )</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :                 *pt++ = val;</span>
+<span class="lineNum">     163 </span>            :         }
+<span class="lineNum">     164 </span>            :     }
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :     return( -2 );</span>
+<a name="166"><span class="lineNum">     166 </span>            : }</a>
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 : static void freeptrtab(unsigned char **ptrtab,long tot) {</span>
+<span class="lineNum">     169 </span>            :     long i,j;
+<span class="lineNum">     170 </span>            : 
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :     if ( ptrtab!=NULL )</span>
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;tot; ++i )</span>
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :             if ( ptrtab[i]!=NULL ) {</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :                 for ( j=i+1; j&lt;tot; ++j )</span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :                     if ( ptrtab[j]==ptrtab[i] )</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :                         ptrtab[j] = NULL;</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :                 free(ptrtab[i]);</span>
+<span class="lineNum">     178 </span>            :             }
+<a name="179"><span class="lineNum">     179 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     180 </span>            : 
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 : GImage *GImageReadRgb(char *filename) {</span>
+<span class="lineNum">     182 </span>            :     FILE *fp;                   /* source file */
+<span class="lineNum">     183 </span>            :     struct sgiheader header;
+<span class="lineNum">     184 </span>            :     int i,j,k;
+<span class="lineNum">     185 </span>            :     unsigned char *pt, *end;
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :     unsigned char *r=NULL,*g=NULL,*b=NULL,*a=NULL;      /* Colors */</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :     unsigned long *starttab=NULL /*, *lengthtab=NULL */;</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :     unsigned char **ptrtab=NULL;</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :     long tablen=0;</span>
+<span class="lineNum">     190 </span>            :     unsigned long *ipt, *iend;
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :     GImage *ret = NULL;</span>
+<span class="lineNum">     192 </span>            :     struct _GImage *base;
+<span class="lineNum">     193 </span>            : 
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :     if ( (fp=fopen(filename,&quot;rb&quot;))==NULL ) {</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :         fprintf(stderr,&quot;Can't open \&quot;%s\&quot;\n&quot;, filename);</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :         return( NULL );</span>
+<span class="lineNum">     197 </span>            :     }
+<span class="lineNum">     198 </span>            : 
+<span class="lineNum">     199 </span>            :     /* Check, and Get, Header information */
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :     if ( getsgiheader(&amp;header,fp) )</span>
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :         goto errorGImageReadRgbFile;</span>
+<span class="lineNum">     202 </span>            : 
+<span class="lineNum">     203 </span>            :     /* Create memory to hold image, exit with NULL if not enough memory */
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :     if ( (ret=GImageCreate(header.dim==3?it_true:it_index,header.width,header.height))==NULL ) {</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :         fclose(fp);</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :         return( NULL );</span>
+<span class="lineNum">     207 </span>            :     }
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :     base = ret-&gt;u.image;</span>
+<span class="lineNum">     209 </span>            : 
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :     if ( header.format==RLE ) {</span>
+<span class="lineNum">     211 </span>            :         /* Working with RLE image data*/
+<span class="lineNum">     212 </span>            : 
+<span class="lineNum">     213 </span>            :         /* First, get offset table info */
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :         tablen = header.height*header.chans;</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :         if ( (starttab=(unsigned long *)calloc(1,tablen*sizeof(long)))==NULL || \</span>
+<span class="lineNum">     216 </span>            :            /*(lengthtab=(unsigned long *)calloc(1,tablen*sizeof(long)))==NULL || \ */
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :              (ptrtab=(unsigned char **)calloc(1,tablen*sizeof(unsigned char *)))==NULL ) {</span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :             NoMoreMemMessage();</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :             goto errorGImageReadRgbMem;</span>
+<span class="lineNum">     220 </span>            :         }
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :         if ( readlongtab(fp,starttab,tablen) )</span>
+<span class="lineNum">     222 </span>            :             /* || readlongtab(fp,lengthtab,tablen) */
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :             goto errorGImageReadRgbFile;</span>
+<span class="lineNum">     224 </span>            : 
+<span class="lineNum">     225 </span>            :         /* Next, get image data */
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;tablen; ++i )</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :             if ( (k=find_scanline(fp,&amp;header,i,starttab,ptrtab)) ) {</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :                 if ( k==-1 ) goto errorGImageReadRgbMem; else goto errorGImageReadRgbFile;</span>
+<span class="lineNum">     229 </span>            :             }
+<span class="lineNum">     230 </span>            : 
+<span class="lineNum">     231 </span>            :         /* Then, build image */
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :         if ( header.chans==1 ) {</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;header.height; ++i )</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :                 memcpy(base-&gt;data + (header.height-1-i)*base-&gt;bytes_per_line,ptrtab[i],header.width);</span>
+<span class="lineNum">     235 </span>            :         } else {
+<span class="lineNum">     236 </span>            :             unsigned long *ipt;
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;header.height; ++i ) {</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :                 ipt = (unsigned long *) (base-&gt;data + (header.height-1-i)*base-&gt;bytes_per_line);</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :                 for ( j=0; j&lt;header.width; ++j )</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :                     *ipt++ = COLOR_CREATE(ptrtab[i][j],</span>
+<span class="lineNum">     241 </span>            :                             ptrtab[i+header.height][j], ptrtab[i+2*header.height][j]);
+<span class="lineNum">     242 </span>            :             }
+<span class="lineNum">     243 </span>            :         }
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :         freeptrtab(ptrtab,tablen);</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :         free(ptrtab); free(starttab); /*free(lengthtab);*/</span>
+<span class="lineNum">     246 </span>            :     } else {
+<span class="lineNum">     247 </span>            :         /* working with Verbatim image data*/
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :         if ( header.chans==1 &amp;&amp; header.bpc==1 ) {</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;header.height; ++i ) {</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :                 fread(base-&gt;data + (header.height-1-i)*base-&gt;bytes_per_line,header.width,1,fp);</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :                 if ( header.pixmax!=255 ) {</span>
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :                     pt = (unsigned char *) (base-&gt;data+(header.height-1-i)*base-&gt;bytes_per_line);</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :                     for ( end=pt+header.width; pt&lt;end; ++pt )</span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :                         *pt = (*pt*255)/header.pixmax;</span>
+<span class="lineNum">     255 </span>            :                 }
+<span class="lineNum">     256 </span>            :             }
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :         } else if ( header.chans==1 ) {</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;header.height; ++i ) {</span>
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :                 pt = (unsigned char *) (base-&gt;data + (header.height-1-i)*base-&gt;bytes_per_line);</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :                 for ( end=pt+header.width; pt&lt;end; ) {</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :                     if ( (k=getshort(fp))&lt;0 ) goto errorGImageReadRgbFile;</span>
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :                     *pt++ = (k*255L)/header.pixmax;</span>
+<span class="lineNum">     263 </span>            :                 }
+<span class="lineNum">     264 </span>            :             }
+<span class="lineNum">     265 </span>            :         } else {
+<span class="lineNum">     266 </span>            :             /* import RGB=3 or RGBA=4 Verbatim images */
+<span class="lineNum">     267 </span>            :             unsigned char *rpt, *gpt, *bpt;
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :             if ( (r=(unsigned char *) malloc(header.width*sizeof(unsigned char)))==NULL || \</span>
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :                  (g=(unsigned char *) malloc(header.width*sizeof(unsigned char)))==NULL || \</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :                  (b=(unsigned char *) malloc(header.width*sizeof(unsigned char)))==NULL || \</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :                  (header.chans==4 &amp;&amp; \</span>
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :                  (a=(unsigned char *) malloc(header.width*sizeof(unsigned char)))==NULL) ) {</span>
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :                 NoMoreMemMessage();</span>
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :                 goto errorGImageReadRgbMem;</span>
+<span class="lineNum">     275 </span>            :             }
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :             if ( header.bpc==1 ) {</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :                 for ( i=0; i&lt;header.height; ++i ) {</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :                     if ( (fread(r,header.width,1,fp))&lt;1 || \</span>
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 :                          (fread(g,header.width,1,fp))&lt;1 || \</span>
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 :                          (fread(b,header.width,1,fp))&lt;1 || \</span>
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :                          (header.chans==4 &amp;&amp; (fread(a,header.width,1,fp))&lt;1) )</span>
+<span class="lineNum">     282 </span>            :                         goto errorGImageReadRgbFile;
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :                 ipt = (unsigned long *) (base-&gt;data + (header.height-1-i)*base-&gt;bytes_per_line);</span>
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :                 rpt = r; gpt = g; bpt = b;</span>
+<span class="lineNum">     285 </span><span class="lineNoCov">          0 :                 for ( iend=ipt+header.width; ipt&lt;iend; )</span>
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :                     *ipt++ = COLOR_CREATE(*rpt++*255L/header.pixmax,</span>
+<span class="lineNum">     287 </span>            :                             *gpt++*255L/header.pixmax,*bpt++*255L/header.pixmax);
+<span class="lineNum">     288 </span>            :                 }
+<span class="lineNum">     289 </span>            :             } else {
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;header.height; ++i ) {</span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :                 for ( j=0; j&lt;header.width; ++j ) {</span>
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :                     if ( (k=getshort(fp))&lt;0 ) goto errorGImageReadRgbFile;</span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :                     r[j] = k*255L/header.pixmax;</span>
+<span class="lineNum">     294 </span>            :                 }
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :                 for ( j=0; j&lt;header.width; ++j ) {</span>
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :                     if ( (k=getshort(fp))&lt;0 ) goto errorGImageReadRgbFile;</span>
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 :                     g[j] = k*255L/header.pixmax;</span>
+<span class="lineNum">     298 </span>            :                 }
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :                 for ( j=0; j&lt;header.width; ++j ) {</span>
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :                     if ( (k=getshort(fp))&lt;0 ) goto errorGImageReadRgbFile;</span>
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :                     b[j] = k*255L/header.pixmax;</span>
+<span class="lineNum">     302 </span>            :                 }
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :                 if ( header.chans==4 ) {</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :                     fread(a,header.width,1,fp);</span>
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 :                     fread(a,header.width,1,fp);</span>
+<span class="lineNum">     306 </span>            :                 }
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :                 ipt = (unsigned long *) (base-&gt;data + (header.height-1-i)*base-&gt;bytes_per_line);</span>
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 :                 rpt = r; gpt = g; bpt = b;</span>
+<span class="lineNum">     309 </span><span class="lineNoCov">          0 :                 for ( iend=ipt+header.width; ipt&lt;iend; )</span>
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 :                     *ipt++ = COLOR_CREATE(*rpt++,*gpt++,*bpt++);</span>
+<span class="lineNum">     311 </span>            :             }
+<span class="lineNum">     312 </span>            :             }
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :             free(r); free(g); free(b); free(a);</span>
+<span class="lineNum">     314 </span>            :         }
+<span class="lineNum">     315 </span>            :     }
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :     return( ret );</span>
+<span class="lineNum">     317 </span>            : 
+<span class="lineNum">     318 </span>            : errorGImageReadRgbFile:
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :     fprintf(stderr,&quot;Bad input file \&quot;%s\&quot;\n&quot;,filename );</span>
+<span class="lineNum">     320 </span>            : errorGImageReadRgbMem:
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 :     freeptrtab(ptrtab,tablen);</span>
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 :     free(ptrtab); free(starttab); /*free(lengthtab);*/</span>
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :     free(r); free(g); free(b); free(a);</span>
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :     GImageDestroy(ret);</span>
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :     fclose(fp);</span>
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :     return( NULL );</span>
+<span class="lineNum">     327 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

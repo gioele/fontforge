@@ -1,0 +1,1484 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforgeexe/startui.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforgeexe</a> - startui.c<span style="font-size: 80%;"> (source / <a href="startui.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">54</td>
+            <td class="headerCovTableEntry">540</td>
+            <td class="headerCovTableEntryLo">10.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">21</td>
+            <td class="headerCovTableEntryLo">4.8 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            : #include &quot;ffglib.h&quot;
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            : #include &lt;fontforge-config.h&gt;
+<span class="lineNum">      31 </span>            : #include &quot;autosave.h&quot;
+<span class="lineNum">      32 </span>            : #include &quot;bitmapchar.h&quot;
+<span class="lineNum">      33 </span>            : #include &quot;clipnoui.h&quot;
+<span class="lineNum">      34 </span>            : #include &quot;encoding.h&quot;
+<span class="lineNum">      35 </span>            : #include &quot;fontforgeui.h&quot;
+<span class="lineNum">      36 </span>            : #include &quot;lookups.h&quot;
+<span class="lineNum">      37 </span>            : #include &quot;start.h&quot;
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            : #ifndef _NO_LIBUNICODENAMES
+<span class="lineNum">      40 </span>            : #include &lt;libunicodenames.h&gt;      /* need to open a database when we start */
+<span class="lineNum">      41 </span>            : extern uninm_names_db names_db; /* Unicode character names and annotations database */
+<span class="lineNum">      42 </span>            : extern uninm_blocks_db blocks_db;
+<span class="lineNum">      43 </span>            : #endif
+<span class="lineNum">      44 </span>            : #include &lt;gfile.h&gt;
+<span class="lineNum">      45 </span>            : #include &lt;gresource.h&gt;
+<span class="lineNum">      46 </span>            : #include &lt;ustring.h&gt;
+<span class="lineNum">      47 </span>            : #include &lt;ltdl.h&gt;
+<span class="lineNum">      48 </span>            : #include &lt;time.h&gt;
+<span class="lineNum">      49 </span>            : #include &lt;sys/time.h&gt;
+<span class="lineNum">      50 </span>            : #include &lt;locale.h&gt;
+<span class="lineNum">      51 </span>            : #include &lt;unistd.h&gt;
+<span class="lineNum">      52 </span>            : #include &lt;dynamic.h&gt;
+<span class="lineNum">      53 </span>            : #include &lt;stdlib.h&gt;               /* getenv,setenv */
+<span class="lineNum">      54 </span>            : #include &lt;sys/stat.h&gt;
+<span class="lineNum">      55 </span>            : #include &lt;sys/types.h&gt;
+<span class="lineNum">      56 </span>            : #include &quot;../gdraw/hotkeys.h&quot;
+<span class="lineNum">      57 </span>            : #include &quot;gutils/prefs.h&quot;
+<span class="lineNum">      58 </span>            : 
+<span class="lineNum">      59 </span>            : 
+<span class="lineNum">      60 </span>            : #define GTimer GTimer_GTK
+<span class="lineNum">      61 </span>            : #include &lt;glib.h&gt;
+<span class="lineNum">      62 </span>            : #include &lt;glib-object.h&gt;
+<span class="lineNum">      63 </span>            : #undef GTimer
+<span class="lineNum">      64 </span>            : 
+<span class="lineNum">      65 </span>            : #ifdef __Mac
+<span class="lineNum">      66 </span>            : extern void setup_cocoa_app();
+<span class="lineNum">      67 </span>            : #endif
+<span class="lineNum">      68 </span>            : 
+<span class="lineNum">      69 </span>            : #ifdef _NO_LIBPNG
+<span class="lineNum">      70 </span>            : #  define PNGLIBNAME    &quot;libpng&quot;
+<span class="lineNum">      71 </span>            : #else
+<span class="lineNum">      72 </span>            : #  include &lt;png.h&gt;                /* for version number to find up shared image name */
+<span class="lineNum">      73 </span>            : #  if !defined(PNG_LIBPNG_VER_MAJOR) || (PNG_LIBPNG_VER_MAJOR==1 &amp;&amp; PNG_LIBPNG_VER_MINOR&lt;2)
+<span class="lineNum">      74 </span>            : #    define PNGLIBNAME  &quot;libpng&quot;
+<span class="lineNum">      75 </span>            : #  else
+<span class="lineNum">      76 </span>            : #    define xstr(s) str(s)
+<span class="lineNum">      77 </span>            : #    define str(s) #s
+<span class="lineNum">      78 </span>            : #    define PNGLIBNAME  &quot;libpng&quot; xstr(PNG_LIBPNG_VER_MAJOR) xstr(PNG_LIBPNG_VER_MINOR)
+<span class="lineNum">      79 </span>            : #  endif
+<span class="lineNum">      80 </span>            : #endif
+<span class="lineNum">      81 </span>            : #ifdef __Mac
+<span class="lineNum">      82 </span>            : #  include &lt;carbon.h&gt;
+<span class="lineNum">      83 </span>            : /* For reasons obscure to me RunApplicationEventLoop is not defined in */
+<span class="lineNum">      84 </span>            : /*  the mac header files if we are in 64 bit mode. Strangely it seems to */
+<span class="lineNum">      85 </span>            : /*  be in the libraries and functional */
+<span class="lineNum">      86 </span>            : /*
+<span class="lineNum">      87 </span>            :  * It was found in Dec 2014 that using RunApplicationEventLoop() could induce strange
+<span class="lineNum">      88 </span>            :  * and extremely frustrating pausing issues on osx. The main generic event handling
+<span class="lineNum">      89 </span>            :  * seems to work just fine, so there doesn't seem to be a need for this specialized
+<span class="lineNum">      90 </span>            :  * Application Event Loop.
+<span class="lineNum">      91 </span>            :  * 
+<span class="lineNum">      92 </span>            :  * See this issue bringing back Breakpad usage and the issues linked in comments 2,3
+<span class="lineNum">      93 </span>            :  * by adrientetar:
+<span class="lineNum">      94 </span>            :  * https://github.com/fontforge/fontforge/issues/2120
+<span class="lineNum">      95 </span>            :  */
+<span class="lineNum">      96 </span>            : //#  if __LP64__
+<span class="lineNum">      97 </span>            : //extern void RunApplicationEventLoop(void);
+<span class="lineNum">      98 </span>            : //#  endif
+<span class="lineNum">      99 </span>            : #endif
+<span class="lineNum">     100 </span>            : 
+<span class="lineNum">     101 </span>            : #if defined(__MINGW32__)
+<span class="lineNum">     102 </span>            : #include &lt;windows.h&gt;
+<span class="lineNum">     103 </span>            : #define sleep(n) Sleep(1000 * (n))
+<span class="lineNum">     104 </span>            : #endif
+<span class="lineNum">     105 </span>            : 
+<span class="lineNum">     106 </span>            : #include &quot;collabclientui.h&quot;
+<span class="lineNum">     107 </span>            : #include &quot;scripting.h&quot;
+<span class="lineNum">     108 </span>            : 
+<span class="lineNum">     109 </span>            : extern int AutoSaveFrequency;
+<span class="lineNum">     110 </span>            : int splash = 1;
+<span class="lineNum">     111 </span>            : static int localsplash;
+<span class="lineNum">     112 </span>            : static int unique = 0;
+<span class="lineNum">     113 </span>            : 
+<span class="lineNum">     114 </span>            : /**
+<span class="lineNum">     115 </span>            :  * In osx versions prior to 10.9.x a special -psn_ flag was supplied
+<span class="lineNum">     116 </span>            :  * when fontforge was run by osx in some cases. For opening an sfd
+<span class="lineNum">     117 </span>            :  * file from finder we need to register the openWith event in order to
+<span class="lineNum">     118 </span>            :  * get the name of the file to open. So it makes sense to always
+<span class="lineNum">     119 </span>            :  * register for Apple events on OSX so that we can get those file
+<span class="lineNum">     120 </span>            :  * names as they come through.
+<span class="lineNum">     121 </span>            :  */
+<span class="lineNum">     122 </span>            : #if defined(__Mac)
+<span class="lineNum">     123 </span>            :     static int listen_to_apple_events = true; // This was once true, but Apple broke it.
+<span class="lineNum">     124 </span>            : #else
+<span class="lineNum">     125 </span>            :     static int listen_to_apple_events = false;
+<span class="lineNum">     126 </span>            : #endif
+<a name="127"><span class="lineNum">     127 </span>            : static bool ProcessPythonInitFiles = 1;</a>
+<span class="lineNum">     128 </span>            : 
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 : static void _dousage(void) {</span>
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :     printf( &quot;fontforge [options] [fontfiles]\n&quot; );</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :     printf( &quot;\t-new\t\t\t (creates a new font)\n&quot; );</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :     printf( &quot;\t-last\t\t\t (loads the last sfd file closed)\n&quot; );</span>
+<span class="lineNum">     133 </span>            : #if HANYANG
+<span class="lineNum">     134 </span>            :     printf( &quot;\t-newkorean\t\t (creates a new korean font)\n&quot; );
+<span class="lineNum">     135 </span>            : #endif
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :     printf( &quot;\t-recover none|auto|inquire|clean (control error recovery)\n&quot; );</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :     printf( &quot;\t-allglyphs\t\t (load all glyphs in the 'glyf' table\n\t\t\t of a truetype collection)\n&quot; );</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :     printf( &quot;\t-nosplash\t\t (no splash screen)\n&quot; );</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :     printf( &quot;\t-quiet\t\t\t (don't print non-essential information to stderr)\n&quot; );</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :     printf( &quot;\t-unique\t\t\t (if a fontforge is already running open\n\t\t\t all arguments in it and have this process exit)\n&quot; );</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :     printf( &quot;\t-display display-name\t (sets the X display)\n&quot; );</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :     printf( &quot;\t-depth val\t\t (sets the display depth if possible)\n&quot; );</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :     printf( &quot;\t-vc val\t\t\t (sets the visual class if possible)\n&quot; );</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :     printf( &quot;\t-cmap current|copy|private\t (sets the type of colormap)\n&quot; );</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :     printf( &quot;\t-dontopenxdevices\t (in case that fails)\n&quot; );</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :     printf( &quot;\t-sync\t\t\t (syncs the display, debugging)\n&quot; );</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :     printf( &quot;\t-keyboard ibm|mac|sun|ppc  (generates appropriate hotkeys in menus)\n&quot; );</span>
+<span class="lineNum">     148 </span>            : #if MyMemory
+<span class="lineNum">     149 </span>            :     printf( &quot;\t-memory\t\t\t (turns on memory checks, debugging)\n&quot; );
+<span class="lineNum">     150 </span>            : #endif
+<span class="lineNum">     151 </span>            : #ifndef _NO_LIBCAIRO
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :     printf( &quot;\t-usecairo=yes|no  Use (or not) the cairo library for drawing\n&quot; );</span>
+<span class="lineNum">     153 </span>            : #endif
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :     printf( &quot;\t-help\t\t\t (displays this message, and exits)\n&quot; );</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :     printf( &quot;\t-docs\t\t\t (displays this message, invokes a browser)\n\t\t\t\t (Using the BROWSER environment variable)\n&quot; );</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :     printf( &quot;\t-version\t\t (prints the version of fontforge and exits)\n&quot; );</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :     printf( &quot;\t-library-status\t (prints information about optional libraries\n\t\t\t\t and exits)\n&quot; );</span>
+<span class="lineNum">     158 </span>            : #ifndef _NO_PYTHON
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :     printf( &quot;\t-lang=py\t\t use python for scripts (may precede -script)\n&quot; );</span>
+<span class="lineNum">     160 </span>            : #endif
+<span class="lineNum">     161 </span>            : #ifndef _NO_FFSCRIPT
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :     printf( &quot;\t-lang=ff\t\t use fontforge's legacy scripting language\n&quot; );</span>
+<span class="lineNum">     163 </span>            : #endif
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :     printf( &quot;\t-script scriptfile\t (executes scriptfile)\n&quot; );</span>
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :     printf( &quot;\t\tmust be the first option (or follow -lang).\n&quot; );</span>
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :     printf( &quot;\t\tAll others passed to scriptfile.\n&quot; );</span>
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :     printf( &quot;\t-dry scriptfile\t\t (syntax checks scriptfile)\n&quot; );</span>
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :     printf( &quot;\t\tmust be the first option. All others passed to scriptfile.\n&quot; );</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :     printf( &quot;\t\tOnly for fontforge's own scripting language, not python.\n&quot; );</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :     printf( &quot;\t-c script-string\t (executes argument as scripting cmds)\n&quot; );</span>
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :     printf( &quot;\t\tmust be the first option. All others passed to the script.\n&quot; );</span>
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :     printf( &quot;\n&quot; );</span>
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :     printf( &quot;FontForge will read postscript (pfa, pfb, ps, cid), opentype (otf),\n&quot; );</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :     printf( &quot;\ttruetype (ttf,ttc), macintosh resource fonts (dfont,bin,hqx),\n&quot; );</span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :     printf( &quot;\tand bdf and pcf fonts. It will also read its own format --\n&quot; );</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :     printf( &quot;\tsfd files.\n&quot; );</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :     printf( &quot;If no fontfiles are specified (and -new is not either and there's nothing\n&quot; );</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :     printf( &quot;\tto recover) then fontforge will produce an open font dlg.\n&quot; );</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :     printf( &quot;If a scriptfile is specified then FontForge will not open the X display\n&quot; );</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :     printf( &quot;\tnor will it process any additional arguments. It will execute the\n&quot; );</span>
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 :     printf( &quot;\tscriptfile and give it any remaining arguments\n&quot; );</span>
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :     printf( &quot;If the first argument is an executable filename, and that file's first\n&quot; );</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :     printf( &quot;\tline contains \&quot;fontforge\&quot; then it will be treated as a scriptfile.\n\n&quot; );</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :     printf( &quot;For more information see:\n\thttp://fontforge.sourceforge.net/\n&quot; );</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :     printf( &quot;Send bug reports to:\tfontforge-devel@lists.sourceforge.net\n&quot; );</span>
+<a name="186"><span class="lineNum">     186 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     187 </span>            : 
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 : static void dousage(void) {</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :     _dousage();</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 : exit(0);</span>
+<a name="191"><span class="lineNum">     191 </span>            : }</a>
+<span class="lineNum">     192 </span>            : 
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 : static void dohelp(void) {</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :     _dousage();</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :     help(&quot;overview.html&quot;);</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 : exit(0);</span>
+<span class="lineNum">     197 </span>            : }
+<span class="lineNum">     198 </span>            : 
+<span class="lineNum">     199 </span>            : struct delayed_event {
+<span class="lineNum">     200 </span>            :     void *data;
+<span class="lineNum">     201 </span>            :     void (*func)(void *);
+<a name="202"><span class="lineNum">     202 </span>            : };</a>
+<span class="lineNum">     203 </span>            : 
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 : static void BuildCharHook(GDisplay *gd) {</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :     GWidgetCreateInsChar();</span>
+<a name="206"><span class="lineNum">     206 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     207 </span>            : 
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 : static void InsCharHook(GDisplay *gd,unichar_t ch) {</span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :     GInsCharSetChar(ch);</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     211 </span>            : 
+<span class="lineNum">     212 </span>            : extern GImage splashimage;
+<span class="lineNum">     213 </span>            : static GWindow splashw;
+<span class="lineNum">     214 </span>            : static GTimer *autosave_timer, *splasht;
+<span class="lineNum">     215 </span>            : static GFont *splash_font, *splash_italic;
+<span class="lineNum">     216 </span>            : static int as,fh, linecnt;
+<span class="lineNum">     217 </span>            : static unichar_t msg[470];
+<a name="218"><span class="lineNum">     218 </span>            : static unichar_t *lines[30], *is, *ie;</a>
+<span class="lineNum">     219 </span>            : 
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 : void ShowAboutScreen(void) {</span>
+<span class="lineNum">     221 </span>            :     static int first=1;
+<span class="lineNum">     222 </span>            : 
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :     if ( first ) {</span>
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :         GDrawResize(splashw,splashimage.u.image-&gt;width,splashimage.u.image-&gt;height+linecnt*fh);</span>
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 :         first = false;</span>
+<span class="lineNum">     226 </span>            :     }
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :     if ( splasht!=NULL )</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :         GDrawCancelTimer(splasht);</span>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :     splasht=NULL;</span>
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :     GDrawSetVisible(splashw,true);</span>
+<a name="231"><span class="lineNum">     231 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     232 </span>            : 
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 : static void SplashLayout() {</span>
+<span class="lineNum">     234 </span>            :     unichar_t *start, *pt, *lastspace;
+<span class="lineNum">     235 </span>            :     extern const char *source_modtime_str;
+<span class="lineNum">     236 </span>            :     extern const char *source_version_str;
+<span class="lineNum">     237 </span>            : 
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :     uc_strcpy(msg, &quot;When my father finished his book on Renaissance printing (The Craft of Printing and the Publication of Shakespeare's Works) he told me that I would have to write the chapter on computer typography. This is my attempt to do so.&quot;);</span>
+<span class="lineNum">     239 </span>            : 
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :     GDrawSetFont(splashw,splash_font);</span>
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :     linecnt = 0;</span>
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :     lines[linecnt++] = msg-1;</span>
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :     for ( start = msg; *start!='\0'; start = pt ) {</span>
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :         lastspace = NULL;</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :         for ( pt=start; ; ++pt ) {</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :             if ( *pt==' ' || *pt=='\0' ) {</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :                 if ( GDrawGetTextWidth(splashw,start,pt-start)&lt;splashimage.u.image-&gt;width-10 )</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :                     lastspace = pt;</span>
+<span class="lineNum">     249 </span>            :                 else
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :                 if ( *pt=='\0' )</span>
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     253 </span>            :             }
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :         }</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :         if ( lastspace!=NULL )</span>
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :             pt = lastspace;</span>
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :         lines[linecnt++] = pt;</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :         if ( *pt ) ++pt;</span>
+<span class="lineNum">     259 </span>            :     }
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :     uc_strcpy(pt, &quot; FontForge used to be named PfaEdit.&quot;);</span>
+<span class="lineNum">     261 </span>            : 
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :     pt += u_strlen(pt);</span>
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :     lines[linecnt++] = pt;</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :     uc_strcpy(pt,&quot;  git hash: &quot;);</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :     pt += u_strlen(pt);</span>
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :     lines[linecnt++] = pt;</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :     uc_strcat(pt, &quot; &quot;);</span>
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :     uc_strcat(pt, FONTFORGE_GIT_VERSION);</span>
+<span class="lineNum">     269 </span>            : 
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :     pt += u_strlen(pt);</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :     lines[linecnt++] = pt;</span>
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :     uc_strcpy(pt,&quot;  Version: &quot;);</span>
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :     uc_strcat(pt,FONTFORGE_MODTIME_STR);</span>
+<span class="lineNum">     274 </span>            : 
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :     pt += u_strlen(pt);</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :     lines[linecnt++] = pt;</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :     uc_strcat(pt,&quot;           (&quot;);</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :     uc_strcat(pt,FONTFORGE_MODTIME_STR);</span>
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 :     uc_strcat(pt,&quot;-ML&quot;);</span>
+<span class="lineNum">     280 </span>            : #ifdef FREETYPE_HAS_DEBUGGER
+<span class="lineNum">     281 </span>            :     uc_strcat(pt,&quot;-TtfDb&quot;);
+<span class="lineNum">     282 </span>            : #endif
+<span class="lineNum">     283 </span>            : #ifdef _NO_PYTHON
+<span class="lineNum">     284 </span>            :     uc_strcat(pt,&quot;-NoPython&quot;);
+<span class="lineNum">     285 </span>            : #endif
+<span class="lineNum">     286 </span>            : #ifdef FONTFORGE_CONFIG_USE_DOUBLE
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :     uc_strcat(pt,&quot;-D&quot;);</span>
+<span class="lineNum">     288 </span>            : #endif
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :     uc_strcat(pt,&quot;)&quot;);</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :     pt += u_strlen(pt);</span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :     lines[linecnt++] = pt;</span>
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :     uc_strcpy(pt,&quot;  Lib Version: &quot;);</span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :     uc_strcat(pt,FONTFORGE_MODTIME_STR);</span>
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :     lines[linecnt++] = pt+u_strlen(pt);</span>
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :     lines[linecnt] = NULL;</span>
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :     is = u_strchr(msg,'(');</span>
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 :     ie = u_strchr(msg,')');</span>
+<a name="298"><span class="lineNum">     298 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     299 </span>            : 
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 : void DelayEvent(void (*func)(void *), void *data) {</span>
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :     struct delayed_event *info = calloc(1,sizeof(struct delayed_event));</span>
+<span class="lineNum">     302 </span>            : 
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :     info-&gt;data = data;</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :     info-&gt;func = func;</span>
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 :     GDrawRequestTimer(splashw,100,0,info);</span>
+<a name="306"><span class="lineNum">     306 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     307 </span>            : 
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 : static void DoDelayedEvents(GEvent *event) {</span>
+<span class="lineNum">     309 </span><span class="lineNoCov">          0 :     GTimer *t = event-&gt;u.timer.timer;</span>
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 :     struct delayed_event *info = (struct delayed_event *) (event-&gt;u.timer.userdata);</span>
+<span class="lineNum">     311 </span>            : 
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 :     if ( info!=NULL ) {</span>
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :         (info-&gt;func)(info-&gt;data);</span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :         free(info);</span>
+<span class="lineNum">     315 </span>            :     }
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :     GDrawCancelTimer(t);</span>
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     318 </span>            : 
+<span class="lineNum">     319 </span>            : struct argsstruct {
+<span class="lineNum">     320 </span>            :     int next;
+<span class="lineNum">     321 </span>            :     int argc;
+<span class="lineNum">     322 </span>            :     char **argv;
+<span class="lineNum">     323 </span>            :     int any;
+<a name="324"><span class="lineNum">     324 </span>            : };</a>
+<span class="lineNum">     325 </span>            : 
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 : static void SendNextArg(struct argsstruct *args) {</span>
+<span class="lineNum">     327 </span>            :     int i;
+<span class="lineNum">     328 </span>            :     char *msg;
+<span class="lineNum">     329 </span>            :     static GTimer *timeout;
+<span class="lineNum">     330 </span>            : 
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :     if ( timeout!=NULL ) {</span>
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 :         GDrawCancelTimer(timeout);</span>
+<span class="lineNum">     333 </span><span class="lineNoCov">          0 :         timeout = NULL;</span>
+<span class="lineNum">     334 </span>            :     }
+<span class="lineNum">     335 </span>            : 
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :     for ( i=args-&gt;next; i&lt;args-&gt;argc; ++i ) {</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :         if ( *args-&gt;argv[i]!='-' ||</span>
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 :                 strcmp(args-&gt;argv[i],&quot;-quit&quot;)==0 || strcmp(args-&gt;argv[i],&quot;--quit&quot;)==0 ||</span>
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 :                 strcmp(args-&gt;argv[i],&quot;-new&quot;)==0 || strcmp(args-&gt;argv[i],&quot;--new&quot;)==0 )</span>
+<span class="lineNum">     340 </span>            :     break;
+<span class="lineNum">     341 </span>            :     }
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :     if ( i&gt;=args-&gt;argc ) {</span>
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :         if ( args-&gt;any )</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 : exit(0);                /* Sent everything */</span>
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 :         msg = &quot;-open&quot;;</span>
+<span class="lineNum">     346 </span>            :     } else
+<span class="lineNum">     347 </span><span class="lineNoCov">          0 :         msg = args-&gt;argv[i];</span>
+<span class="lineNum">     348 </span><span class="lineNoCov">          0 :     args-&gt;next = i+1;</span>
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :     args-&gt;any  = true;</span>
+<span class="lineNum">     350 </span>            : 
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :     GDrawGrabSelection(splashw,sn_user1);</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :     GDrawAddSelectionType(splashw,sn_user1,&quot;STRING&quot;,</span>
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 :             copy(msg),strlen(msg),1,</span>
+<span class="lineNum">     354 </span>            :             NULL,NULL);
+<span class="lineNum">     355 </span>            : 
+<span class="lineNum">     356 </span>            :         /* If we just sent the other fontforge a request to die, it will never*/
+<span class="lineNum">     357 </span>            :         /*  take the selection back. So we should just die quietly */
+<span class="lineNum">     358 </span>            :         /*  But we can't die instantly, or it will never get our death threat */
+<span class="lineNum">     359 </span>            :         /*  (it won't have a chance to ask us for the selection if we're dead)*/
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :     timeout = GDrawRequestTimer(splashw,1000,0,NULL);</span>
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     362 </span>            : 
+<span class="lineNum">     363 </span>            : /* When we want to send filenames to another running fontforge we want a */
+<span class="lineNum">     364 </span>            : /*  different event handler. We won't have a splash window in that case, */
+<a name="365"><span class="lineNum">     365 </span>            : /*  just an invisible utility window on which we perform a little selection */</a>
+<span class="lineNum">     366 </span>            : /*  dance */
+<span class="lineNum">     367 </span><span class="lineNoCov">          0 : static int request_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     368 </span>            : 
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 :     if ( event-&gt;type == et_selclear ) {</span>
+<span class="lineNum">     370 </span><span class="lineNoCov">          0 :         SendNextArg( GDrawGetUserData(gw));</span>
+<span class="lineNum">     371 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_timer )</span>
+<span class="lineNum">     372 </span><span class="lineNoCov">          0 : exit( 0 );</span>
+<span class="lineNum">     373 </span>            : 
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="375"><span class="lineNum">     375 </span>            : }</a>
+<span class="lineNum">     376 </span>            : 
+<span class="lineNum">     377 </span><span class="lineNoCov">          0 : static void PingOtherFontForge(int argc, char **argv) {</span>
+<span class="lineNum">     378 </span>            :     struct argsstruct args;
+<span class="lineNum">     379 </span>            : 
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :     args.next = 1;</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :     args.argc = argc;</span>
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :     args.argv = argv;</span>
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :     args.any  = false;</span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :     GDrawSetUserData(splashw,&amp;args);</span>
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :     SendNextArg(&amp;args);</span>
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :     GDrawEventLoop(NULL);</span>
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 : exit( 0 );              /* But the event loop should never return */</span>
+<a name="388"><span class="lineNum">     388 </span>            : }</a>
+<span class="lineNum">     389 </span>            : 
+<span class="lineNum">     390 </span><span class="lineNoCov">          0 : static void start_splash_screen(void){</span>
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 :     GDrawSetVisible(splashw,true);</span>
+<span class="lineNum">     392 </span><span class="lineNoCov">          0 :     GDrawSync(NULL);</span>
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 :     GDrawProcessPendingEvents(NULL);</span>
+<span class="lineNum">     394 </span><span class="lineNoCov">          0 :     GDrawProcessPendingEvents(NULL);</span>
+<span class="lineNum">     395 </span><span class="lineNoCov">          0 :     splasht = GDrawRequestTimer(splashw,1000,1000,NULL);</span>
+<span class="lineNum">     396 </span>            : 
+<span class="lineNum">     397 </span><span class="lineNoCov">          0 :     localsplash = false;</span>
+<span class="lineNum">     398 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     399 </span>            : 
+<span class="lineNum">     400 </span>            : #if defined(__Mac)
+<span class="lineNum">     401 </span>            : static FILE *logfile;
+<span class="lineNum">     402 </span>            : 
+<span class="lineNum">     403 </span>            : /* These are the four apple events to which we currently respond */
+<span class="lineNum">     404 </span>            : static pascal OSErr OpenApplicationAE( const AppleEvent * theAppleEvent,
+<span class="lineNum">     405 </span>            :         AppleEvent * reply, SInt32 handlerRefcon) {
+<span class="lineNum">     406 </span>            :  fprintf( logfile, &quot;OPENAPP event received.\n&quot; ); fflush( logfile );
+<span class="lineNum">     407 </span>            :     if ( localsplash )
+<span class="lineNum">     408 </span>            :         start_splash_screen();
+<span class="lineNum">     409 </span>            :     system( &quot;DYLD_LIBRARY_PATH=\&quot;\&quot;; osascript -e 'tell application \&quot;X11\&quot; to activate'&quot; );
+<span class="lineNum">     410 </span>            :     if ( fv_list==NULL )
+<span class="lineNum">     411 </span>            :         _FVMenuOpen(NULL);
+<span class="lineNum">     412 </span>            :  fprintf( logfile, &quot; event processed %d.\n&quot;, noErr ); fflush( logfile );
+<span class="lineNum">     413 </span>            : return( noErr );
+<span class="lineNum">     414 </span>            : }
+<span class="lineNum">     415 </span>            : 
+<span class="lineNum">     416 </span>            : static pascal OSErr ReopenApplicationAE( const AppleEvent * theAppleEvent,
+<span class="lineNum">     417 </span>            :         AppleEvent * reply, SInt32 handlerRefcon) {
+<span class="lineNum">     418 </span>            :  fprintf( logfile, &quot;ReOPEN event received.\n&quot; ); fflush( logfile );
+<span class="lineNum">     419 </span>            :     if ( localsplash )
+<span class="lineNum">     420 </span>            :         start_splash_screen();
+<span class="lineNum">     421 </span>            :     system( &quot;DYLD_LIBRARY_PATH=\&quot;\&quot;; osascript -e 'tell application \&quot;X11\&quot; to activate'&quot; );
+<span class="lineNum">     422 </span>            :     if ( fv_list==NULL )
+<span class="lineNum">     423 </span>            :         _FVMenuOpen(NULL);
+<span class="lineNum">     424 </span>            :  fprintf( logfile, &quot; event processed %d.\n&quot;, noErr ); fflush( logfile );
+<span class="lineNum">     425 </span>            : return( noErr );
+<span class="lineNum">     426 </span>            : }
+<span class="lineNum">     427 </span>            : 
+<span class="lineNum">     428 </span>            : static pascal OSErr ShowPreferencesAE( const AppleEvent * theAppleEvent,
+<span class="lineNum">     429 </span>            :         AppleEvent * reply, SInt32 handlerRefcon) {
+<span class="lineNum">     430 </span>            :  fprintf( logfile, &quot;PREFS event received.\n&quot; ); fflush( logfile );
+<span class="lineNum">     431 </span>            :     if ( localsplash )
+<span class="lineNum">     432 </span>            :         start_splash_screen();
+<span class="lineNum">     433 </span>            :     system( &quot;DYLD_LIBRARY_PATH=\&quot;\&quot;; osascript -e 'tell application \&quot;X11\&quot; to activate'&quot; );
+<span class="lineNum">     434 </span>            :     DoPrefs();
+<span class="lineNum">     435 </span>            :  fprintf( logfile, &quot; event processed %d.\n&quot;, noErr ); fflush( logfile );
+<span class="lineNum">     436 </span>            : return( noErr );
+<span class="lineNum">     437 </span>            : }
+<span class="lineNum">     438 </span>            : 
+<span class="lineNum">     439 </span>            : static pascal OSErr OpenDocumentsAE( const AppleEvent * theAppleEvent,
+<span class="lineNum">     440 </span>            :         AppleEvent * reply, SInt32 handlerRefcon) {
+<span class="lineNum">     441 </span>            :     AEDescList  docList;
+<span class="lineNum">     442 </span>            :     FSRef       theFSRef;
+<span class="lineNum">     443 </span>            :     long        index;
+<span class="lineNum">     444 </span>            :     long        count = 0;
+<span class="lineNum">     445 </span>            :     OSErr       err;
+<span class="lineNum">     446 </span>            :     char        buffer[2048];
+<span class="lineNum">     447 </span>            : 
+<span class="lineNum">     448 </span>            :  fprintf( logfile, &quot;OPEN event received.\n&quot; ); fflush( logfile );
+<span class="lineNum">     449 </span>            :     if ( localsplash )
+<span class="lineNum">     450 </span>            :         start_splash_screen();
+<span class="lineNum">     451 </span>            : 
+<span class="lineNum">     452 </span>            :     err = AEGetParamDesc(theAppleEvent, keyDirectObject,
+<span class="lineNum">     453 </span>            :                          typeAEList, &amp;docList);
+<span class="lineNum">     454 </span>            :     err = AECountItems(&amp;docList, &amp;count);
+<span class="lineNum">     455 </span>            :     for(index = 1; index &lt;= count; index++) {
+<span class="lineNum">     456 </span>            :         err = AEGetNthPtr(&amp;docList, index, typeFSRef,
+<span class="lineNum">     457 </span>            :                         NULL, NULL, &amp;theFSRef,
+<span class="lineNum">     458 </span>            :                         sizeof(theFSRef), NULL);// 4
+<span class="lineNum">     459 </span>            :         err = FSRefMakePath(&amp;theFSRef,(unsigned char *) buffer,sizeof(buffer));
+<span class="lineNum">     460 </span>            :         ViewPostScriptFont(buffer,0);
+<span class="lineNum">     461 </span>            :  fprintf( logfile, &quot; file: %s\n&quot;, buffer );
+<span class="lineNum">     462 </span>            :     }
+<span class="lineNum">     463 </span>            :     system( &quot;DYLD_LIBRARY_PATH=\&quot;\&quot;; osascript -e 'tell application \&quot;X11\&quot; to activate'&quot; );
+<span class="lineNum">     464 </span>            :     AEDisposeDesc(&amp;docList);
+<span class="lineNum">     465 </span>            :  fprintf( logfile, &quot; event processed %d.\n&quot;, err ); fflush( logfile );
+<span class="lineNum">     466 </span>            : 
+<span class="lineNum">     467 </span>            : return( err );
+<span class="lineNum">     468 </span>            : }
+<span class="lineNum">     469 </span>            : 
+<span class="lineNum">     470 </span>            : static void AttachErrorCode(AppleEvent *event,OSStatus err) {
+<span class="lineNum">     471 </span>            :     OSStatus returnVal;
+<span class="lineNum">     472 </span>            : 
+<span class="lineNum">     473 </span>            :     if ( event==NULL )
+<span class="lineNum">     474 </span>            : return;
+<span class="lineNum">     475 </span>            : 
+<span class="lineNum">     476 </span>            :     if (event-&gt;descriptorType != typeNull) {
+<span class="lineNum">     477 </span>            :         /* Check there isn't already an error attached */
+<span class="lineNum">     478 </span>            :         returnVal = AESizeOfParam(event, keyErrorNumber, NULL, NULL);
+<span class="lineNum">     479 </span>            :         if (returnVal != noErr ) {      /* Add success if no previous error */
+<span class="lineNum">     480 </span>            :             AEPutParamPtr(event, keyErrorNumber,
+<span class="lineNum">     481 </span>            :                         typeSInt32, &amp;err, sizeof(err));
+<span class="lineNum">     482 </span>            :         }
+<span class="lineNum">     483 </span>            :     }
+<span class="lineNum">     484 </span>            : }
+<span class="lineNum">     485 </span>            : 
+<span class="lineNum">     486 </span>            : static AppleEvent *quit_event = NULL;
+<span class="lineNum">     487 </span>            : static void we_are_dead(void) {
+<span class="lineNum">     488 </span>            :     AttachErrorCode(quit_event,noErr);
+<span class="lineNum">     489 </span>            :     /* Send the reply (I hope) */
+<span class="lineNum">     490 </span>            :     AESendMessage(quit_event,NULL, kAENoReply, kAEDefaultTimeout);
+<span class="lineNum">     491 </span>            :     AEDisposeDesc(quit_event);
+<span class="lineNum">     492 </span>            :     /* fall off the end of the world and die */
+<span class="lineNum">     493 </span>            :  fprintf( logfile, &quot; event succeded.\n&quot;); fflush( logfile );
+<span class="lineNum">     494 </span>            : }
+<span class="lineNum">     495 </span>            : 
+<span class="lineNum">     496 </span>            : static pascal OSErr QuitApplicationAE( const AppleEvent * theAppleEvent,
+<span class="lineNum">     497 </span>            :         AppleEvent * reply, SInt32 handlerRefcon) {
+<span class="lineNum">     498 </span>            :     static int first_time = true;
+<span class="lineNum">     499 </span>            : 
+<span class="lineNum">     500 </span>            :  fprintf( logfile, &quot;QUIT event received.\n&quot; ); fflush( logfile );
+<span class="lineNum">     501 </span>            :     quit_event = reply;
+<span class="lineNum">     502 </span>            :     if ( first_time ) {
+<span class="lineNum">     503 </span>            :         atexit( we_are_dead );
+<span class="lineNum">     504 </span>            :         first_time = false;
+<span class="lineNum">     505 </span>            :     }
+<span class="lineNum">     506 </span>            :     MenuExit(NULL,NULL,NULL);
+<span class="lineNum">     507 </span>            :     /* if we get here, they canceled the quit, so we return a failure */
+<span class="lineNum">     508 </span>            :     quit_event = NULL;
+<span class="lineNum">     509 </span>            :  fprintf( logfile, &quot; event failed %d.\n&quot;, errAEEventFailed ); fflush( logfile );
+<span class="lineNum">     510 </span>            : return(errAEEventFailed);
+<span class="lineNum">     511 </span>            : }
+<span class="lineNum">     512 </span>            : 
+<span class="lineNum">     513 </span>            : /* Install event handlers for the Apple Events we care about */
+<span class="lineNum">     514 </span>            : static  OSErr install_apple_event_handlers(void) {
+<span class="lineNum">     515 </span>            :     OSErr       err;
+<span class="lineNum">     516 </span>            : 
+<span class="lineNum">     517 </span>            :     err     = AEInstallEventHandler(kCoreEventClass, kAEOpenApplication,
+<span class="lineNum">     518 </span>            :                 NewAEEventHandlerUPP(OpenApplicationAE), 0, false);
+<span class="lineNum">     519 </span>            :     require_noerr(err, CantInstallAppleEventHandler);
+<span class="lineNum">     520 </span>            : 
+<span class="lineNum">     521 </span>            :     err     = AEInstallEventHandler(kCoreEventClass, kAEReopenApplication,
+<span class="lineNum">     522 </span>            :                 NewAEEventHandlerUPP(ReopenApplicationAE), 0, false);
+<span class="lineNum">     523 </span>            :     require_noerr(err, CantInstallAppleEventHandler);
+<span class="lineNum">     524 </span>            : 
+<span class="lineNum">     525 </span>            :     err     = AEInstallEventHandler(kCoreEventClass, kAEOpenDocuments,
+<span class="lineNum">     526 </span>            :                 NewAEEventHandlerUPP(OpenDocumentsAE), 0, false);
+<span class="lineNum">     527 </span>            :     require_noerr(err, CantInstallAppleEventHandler);
+<span class="lineNum">     528 </span>            : 
+<span class="lineNum">     529 </span>            :     err     = AEInstallEventHandler(kCoreEventClass, kAEQuitApplication,
+<span class="lineNum">     530 </span>            :                 NewAEEventHandlerUPP(QuitApplicationAE), 0, false);
+<span class="lineNum">     531 </span>            :     require_noerr(err, CantInstallAppleEventHandler);
+<span class="lineNum">     532 </span>            : 
+<span class="lineNum">     533 </span>            :     err     = AEInstallEventHandler(kCoreEventClass, kAEShowPreferences,
+<span class="lineNum">     534 </span>            :                 NewAEEventHandlerUPP(ShowPreferencesAE), 0, false);
+<span class="lineNum">     535 </span>            :     require_noerr(err, CantInstallAppleEventHandler);
+<span class="lineNum">     536 </span>            : 
+<span class="lineNum">     537 </span>            :  /* some debugging code, for now */
+<span class="lineNum">     538 </span>            :  if ( getenv(&quot;HOME&quot;)!=NULL ) {
+<span class="lineNum">     539 </span>            :   char buffer[1024];
+<span class="lineNum">     540 </span>            :   sprintf( buffer, &quot;%s/.FontForge-LogFile.txt&quot;, getenv(&quot;HOME&quot;));
+<span class="lineNum">     541 </span>            :   logfile = fopen(&quot;/tmp/LogFile.txt&quot;,&quot;w&quot;);
+<span class="lineNum">     542 </span>            :  }
+<span class="lineNum">     543 </span>            :  if ( logfile==NULL )
+<span class="lineNum">     544 </span>            :   logfile = stderr;
+<span class="lineNum">     545 </span>            : 
+<span class="lineNum">     546 </span>            : CantInstallAppleEventHandler:
+<span class="lineNum">     547 </span>            :     return err;
+<span class="lineNum">     548 </span>            : 
+<span class="lineNum">     549 </span>            : }
+<span class="lineNum">     550 </span>            : 
+<span class="lineNum">     551 </span>            : static pascal void DoRealStuff(EventLoopTimerRef timer,void *ignored_data) {
+<span class="lineNum">     552 </span>            :     GDrawProcessPendingEvents(NULL);
+<span class="lineNum">     553 </span>            :     MacServiceReadFDs();
+<span class="lineNum">     554 </span>            : }
+<span class="lineNum">     555 </span>            : 
+<span class="lineNum">     556 </span>            : static void install_mac_timer(void) {
+<span class="lineNum">     557 </span>            :     EventLoopTimerRef timer;
+<span class="lineNum">     558 </span>            : 
+<span class="lineNum">     559 </span>            :     InstallEventLoopTimer(GetMainEventLoop(),
+<span class="lineNum">     560 </span>            :             .001*kEventDurationSecond,.001*kEventDurationSecond,
+<span class="lineNum">     561 </span>            :             NewEventLoopTimerUPP(DoRealStuff), NULL,
+<span class="lineNum">     562 </span>            :             &amp;timer);
+<span class="lineNum">     563 </span>            : }
+<a name="564"><span class="lineNum">     564 </span>            : #endif</a>
+<span class="lineNum">     565 </span>            : 
+<span class="lineNum">     566 </span><span class="lineNoCov">          0 : static int splash_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     567 </span>            :     static int splash_cnt;
+<span class="lineNum">     568 </span>            :     GRect old;
+<span class="lineNum">     569 </span>            :     int i, y, x;
+<span class="lineNum">     570 </span>            :     static char *foolishness[] = {
+<span class="lineNum">     571 </span>            : /* GT: These strings are for fun. If they are offensive or incomprehensible */
+<span class="lineNum">     572 </span>            : /* GT: simply translate them as something dull like: &quot;FontForge&quot; */
+<span class="lineNum">     573 </span>            : /* GT: This is a spoof of political slogans, designed to point out how foolish they are */
+<span class="lineNum">     574 </span>            :             N_(&quot;A free press discriminates\nagainst the illiterate.&quot;),
+<span class="lineNum">     575 </span>            :             N_(&quot;A free press discriminates\nagainst the illiterate.&quot;),
+<span class="lineNum">     576 </span>            : /* GT: This is a pun on the old latin drinking song &quot;Gaudeamus igature!&quot; */
+<span class="lineNum">     577 </span>            :             N_(&quot;Gaudeamus Ligature!&quot;),
+<span class="lineNum">     578 </span>            :             N_(&quot;Gaudeamus Ligature!&quot;),
+<span class="lineNum">     579 </span>            : /* GT: Spoof on the bible */
+<span class="lineNum">     580 </span>            :             N_(&quot;In the beginning was the letter...&quot;),
+<span class="lineNum">     581 </span>            : /* GT: Some wit at MIT came up with this (&quot;ontology recapitulates phylogony&quot; is the original) */
+<span class="lineNum">     582 </span>            :             N_(&quot;fontology recapitulates file-ogeny&quot;)
+<span class="lineNum">     583 </span>            :     };
+<span class="lineNum">     584 </span>            : 
+<span class="lineNum">     585 </span><span class="lineNoCov">          0 :     switch ( event-&gt;type ) {</span>
+<span class="lineNum">     586 </span>            :       case et_create:
+<span class="lineNum">     587 </span><span class="lineNoCov">          0 :         GDrawGrabSelection(gw,sn_user1);</span>
+<span class="lineNum">     588 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     589 </span>            :       case et_expose:
+<span class="lineNum">     590 </span><span class="lineNoCov">          0 :         GDrawPushClip(gw,&amp;event-&gt;u.expose.rect,&amp;old);</span>
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 :         GDrawDrawImage(gw,&amp;splashimage,NULL,0,0);</span>
+<span class="lineNum">     592 </span><span class="lineNoCov">          0 :         GDrawSetFont(gw,splash_font);</span>
+<span class="lineNum">     593 </span><span class="lineNoCov">          0 :         y = splashimage.u.image-&gt;height + as + fh/2;</span>
+<span class="lineNum">     594 </span><span class="lineNoCov">          0 :         for ( i=1; i&lt;linecnt; ++i ) {</span>
+<span class="lineNum">     595 </span><span class="lineNoCov">          0 :             if ( is&gt;=lines[i-1]+1 &amp;&amp; is&lt;lines[i] ) {</span>
+<span class="lineNum">     596 </span><span class="lineNoCov">          0 :                 x = 8+GDrawDrawText(gw,8,y,lines[i-1]+1,is-lines[i-1]-1,0x000000);</span>
+<span class="lineNum">     597 </span><span class="lineNoCov">          0 :                 GDrawSetFont(gw,splash_italic);</span>
+<span class="lineNum">     598 </span><span class="lineNoCov">          0 :                 GDrawDrawText(gw,x,y,is,lines[i]-is,0x000000);</span>
+<span class="lineNum">     599 </span><span class="lineNoCov">          0 :             } else if ( ie&gt;=lines[i-1]+1 &amp;&amp; ie&lt;lines[i] ) {</span>
+<span class="lineNum">     600 </span><span class="lineNoCov">          0 :                 x = 8+GDrawDrawText(gw,8,y,lines[i-1]+1,ie-lines[i-1]-1,0x000000);</span>
+<span class="lineNum">     601 </span><span class="lineNoCov">          0 :                 GDrawSetFont(gw,splash_font);</span>
+<span class="lineNum">     602 </span><span class="lineNoCov">          0 :                 GDrawDrawText(gw,x,y,ie,lines[i]-ie,0x000000);</span>
+<span class="lineNum">     603 </span>            :             } else
+<span class="lineNum">     604 </span><span class="lineNoCov">          0 :                 GDrawDrawText(gw,8,y,lines[i-1]+1,lines[i]-lines[i-1]-1,0x000000);</span>
+<span class="lineNum">     605 </span><span class="lineNoCov">          0 :             y += fh;</span>
+<span class="lineNum">     606 </span>            :         }
+<span class="lineNum">     607 </span><span class="lineNoCov">          0 :         GDrawPopClip(gw,&amp;old);</span>
+<span class="lineNum">     608 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     609 </span>            :       case et_map:
+<span class="lineNum">     610 </span><span class="lineNoCov">          0 :         splash_cnt = 0;</span>
+<span class="lineNum">     611 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     612 </span>            :       case et_timer:
+<span class="lineNum">     613 </span><span class="lineNoCov">          0 :         if ( event-&gt;u.timer.timer==autosave_timer ) {</span>
+<span class="lineNum">     614 </span><span class="lineNoCov">          0 :             DoAutoSaves();</span>
+<span class="lineNum">     615 </span><span class="lineNoCov">          0 :         } else if ( event-&gt;u.timer.timer==splasht ) {</span>
+<span class="lineNum">     616 </span><span class="lineNoCov">          0 :             if ( ++splash_cnt==1 )</span>
+<span class="lineNum">     617 </span><span class="lineNoCov">          0 :                 GDrawResize(gw,splashimage.u.image-&gt;width,splashimage.u.image-&gt;height-30);</span>
+<span class="lineNum">     618 </span><span class="lineNoCov">          0 :             else if ( splash_cnt==2 )</span>
+<span class="lineNum">     619 </span><span class="lineNoCov">          0 :                 GDrawResize(gw,splashimage.u.image-&gt;width,splashimage.u.image-&gt;height);</span>
+<span class="lineNum">     620 </span><span class="lineNoCov">          0 :             else if ( splash_cnt&gt;=7 ) {</span>
+<span class="lineNum">     621 </span><span class="lineNoCov">          0 :                 GGadgetEndPopup();</span>
+<span class="lineNum">     622 </span><span class="lineNoCov">          0 :                 GDrawSetVisible(gw,false);</span>
+<span class="lineNum">     623 </span><span class="lineNoCov">          0 :                 GDrawCancelTimer(splasht);</span>
+<span class="lineNum">     624 </span><span class="lineNoCov">          0 :                 splasht = NULL;</span>
+<span class="lineNum">     625 </span>            :             }
+<span class="lineNum">     626 </span>            :         } else {
+<span class="lineNum">     627 </span><span class="lineNoCov">          0 :             DoDelayedEvents(event);</span>
+<span class="lineNum">     628 </span>            :         }
+<span class="lineNum">     629 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     630 </span>            :       case et_char:
+<span class="lineNum">     631 </span>            :       case et_mousedown:
+<span class="lineNum">     632 </span>            :       case et_close:
+<span class="lineNum">     633 </span><span class="lineNoCov">          0 :         GGadgetEndPopup();</span>
+<span class="lineNum">     634 </span><span class="lineNoCov">          0 :         GDrawSetVisible(gw,false);</span>
+<span class="lineNum">     635 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     636 </span>            :       case et_mousemove:
+<span class="lineNum">     637 </span><span class="lineNoCov">          0 :         GGadgetPreparePopup8(gw,_(foolishness[rand()%(sizeof(foolishness)/sizeof(foolishness[0]))]) );</span>
+<span class="lineNum">     638 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     639 </span>            :       case et_selclear:
+<span class="lineNum">     640 </span>            :         /* If this happens, it means someone wants to send us a message with a*/
+<span class="lineNum">     641 </span>            :         /*  filename to open. So we need to ask for it, process it, and then  */
+<span class="lineNum">     642 </span>            :         /*  take the selection back again */
+<span class="lineNum">     643 </span><span class="lineNoCov">          0 :         if ( event-&gt;u.selclear.sel == sn_user1 ) {</span>
+<span class="lineNum">     644 </span>            :             int len;
+<span class="lineNum">     645 </span>            :             char *arg;
+<span class="lineNum">     646 </span><span class="lineNoCov">          0 :             arg = GDrawRequestSelection(splashw,sn_user1,&quot;STRING&quot;,&amp;len);</span>
+<span class="lineNum">     647 </span><span class="lineNoCov">          0 :             if ( arg==NULL )</span>
+<span class="lineNum">     648 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     649 </span><span class="lineNoCov">          0 :             if ( strcmp(arg,&quot;-new&quot;)==0 || strcmp(arg,&quot;--new&quot;)==0 )</span>
+<span class="lineNum">     650 </span><span class="lineNoCov">          0 :                 FontNew();</span>
+<span class="lineNum">     651 </span><span class="lineNoCov">          0 :             else if ( strcmp(arg,&quot;-open&quot;)==0 || strcmp(arg,&quot;--open&quot;)==0 )</span>
+<span class="lineNum">     652 </span><span class="lineNoCov">          0 :                 _FVMenuOpen(NULL);</span>
+<span class="lineNum">     653 </span><span class="lineNoCov">          0 :             else if ( strcmp(arg,&quot;-quit&quot;)==0 || strcmp(arg,&quot;--quit&quot;)==0 )</span>
+<span class="lineNum">     654 </span><span class="lineNoCov">          0 :                 MenuExit(NULL,NULL,NULL);</span>
+<span class="lineNum">     655 </span>            :             else
+<span class="lineNum">     656 </span><span class="lineNoCov">          0 :                 ViewPostScriptFont(arg,0);</span>
+<span class="lineNum">     657 </span><span class="lineNoCov">          0 :             free(arg);</span>
+<span class="lineNum">     658 </span><span class="lineNoCov">          0 :             GDrawGrabSelection(splashw,sn_user1);</span>
+<span class="lineNum">     659 </span>            :         }
+<span class="lineNum">     660 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     661 </span>            :       case et_destroy:
+<span class="lineNum">     662 </span><span class="lineNoCov">          0 :         IError(&quot;Who killed the splash screen?&quot;);</span>
+<span class="lineNum">     663 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     664 </span>            :     }
+<span class="lineNum">     665 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="666"><span class="lineNum">     666 </span>            : }</a>
+<span class="lineNum">     667 </span>            : 
+<span class="lineNum">     668 </span><span class="lineNoCov">          0 : static void  AddR(char *program_name, char *window_name, char *cmndline_val) {</span>
+<span class="lineNum">     669 </span>            : /* Add this command line value to this GUI resource.                    */
+<span class="lineNum">     670 </span>            : /* These are the command line options expected when using this routine: */
+<span class="lineNum">     671 </span>            : /*      -depth, -vc,-cmap or -colormap,-dontopenxdevices, -keyboard     */
+<span class="lineNum">     672 </span>            :     char *full;
+<span class="lineNum">     673 </span><span class="lineNoCov">          0 :     if ((full = malloc(strlen(window_name)+strlen(cmndline_val)+4))!=NULL) {</span>
+<span class="lineNum">     674 </span><span class="lineNoCov">          0 :         strcpy(full,window_name);</span>
+<span class="lineNum">     675 </span><span class="lineNoCov">          0 :         strcat(full,&quot;: &quot;);</span>
+<span class="lineNum">     676 </span><span class="lineNoCov">          0 :         strcat(full,cmndline_val);</span>
+<span class="lineNum">     677 </span><span class="lineNoCov">          0 :         GResourceAddResourceString(full,program_name);</span>
+<span class="lineNum">     678 </span><span class="lineNoCov">          0 :         free(full);</span>
+<span class="lineNum">     679 </span>            :     }
+<a name="680"><span class="lineNum">     680 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     681 </span>            : 
+<span class="lineNum">     682 </span><span class="lineNoCov">          0 : static int ReopenLastFonts(void) {</span>
+<span class="lineNum">     683 </span>            :     char buffer[1024];
+<span class="lineNum">     684 </span><span class="lineNoCov">          0 :     char *ffdir = getFontForgeUserDir(Config);</span>
+<span class="lineNum">     685 </span>            :     FILE *old;
+<span class="lineNum">     686 </span><span class="lineNoCov">          0 :     int any = 0;</span>
+<span class="lineNum">     687 </span>            : 
+<span class="lineNum">     688 </span><span class="lineNoCov">          0 :     if ( ffdir==NULL ) return false;</span>
+<span class="lineNum">     689 </span>            : 
+<span class="lineNum">     690 </span><span class="lineNoCov">          0 :     sprintf( buffer, &quot;%s/FontsOpenAtLastQuit&quot;, ffdir );</span>
+<span class="lineNum">     691 </span><span class="lineNoCov">          0 :     old = fopen(buffer,&quot;r&quot;);</span>
+<span class="lineNum">     692 </span><span class="lineNoCov">          0 :     if ( old==NULL ) {</span>
+<span class="lineNum">     693 </span><span class="lineNoCov">          0 :         free(ffdir);</span>
+<span class="lineNum">     694 </span><span class="lineNoCov">          0 :         return false;</span>
+<span class="lineNum">     695 </span>            :     }
+<span class="lineNum">     696 </span><span class="lineNoCov">          0 :     while ( fgets(buffer,sizeof(buffer),old)!=NULL ) {</span>
+<span class="lineNum">     697 </span><span class="lineNoCov">          0 :     if ( ViewPostScriptFont(g_strchomp(buffer),0)!=0 )</span>
+<span class="lineNum">     698 </span><span class="lineNoCov">          0 :         any = 1;</span>
+<span class="lineNum">     699 </span>            :     }
+<span class="lineNum">     700 </span><span class="lineNoCov">          0 :     fclose(old);</span>
+<span class="lineNum">     701 </span><span class="lineNoCov">          0 :     free(ffdir);</span>
+<span class="lineNum">     702 </span><span class="lineNoCov">          0 :     return any;</span>
+<span class="lineNum">     703 </span>            : }
+<span class="lineNum">     704 </span>            : 
+<span class="lineNum">     705 </span>            : #if defined(__Mac)
+<span class="lineNum">     706 </span>            : /* Read a property from the x11 properties files */
+<span class="lineNum">     707 </span>            : /* At the moment we want to know if we get the command key, or if the menubar */
+<span class="lineNum">     708 </span>            : /*    eats it */
+<span class="lineNum">     709 </span>            : static int get_mac_x11_prop(char *keystr) {
+<span class="lineNum">     710 </span>            :     CFPropertyListRef ret;
+<span class="lineNum">     711 </span>            :     CFStringRef key, appID;
+<span class="lineNum">     712 </span>            :     int val;
+<span class="lineNum">     713 </span>            : 
+<span class="lineNum">     714 </span>            :     appID = CFStringCreateWithBytes(NULL,(uint8 *) &quot;com.apple.x11&quot;,strlen(&quot;com.apple.x11&quot;), kCFStringEncodingISOLatin1, 0);
+<span class="lineNum">     715 </span>            :     key   = CFStringCreateWithBytes(NULL,(uint8 *) keystr,strlen(keystr), kCFStringEncodingISOLatin1, 0);
+<span class="lineNum">     716 </span>            :     ret = CFPreferencesCopyAppValue(key,appID);
+<span class="lineNum">     717 </span>            :     if ( ret==NULL ) {
+<span class="lineNum">     718 </span>            :         /* Sigh. Apple uses a different preference file under 10.5.6 I really */
+<span class="lineNum">     719 </span>            :         /*  wish they'd stop making stupid, unnecessary changes */
+<span class="lineNum">     720 </span>            :         appID = CFStringCreateWithBytes(NULL,(uint8 *) &quot;org.x.X11&quot;,strlen(&quot;org.x.X11&quot;), kCFStringEncodingISOLatin1, 0);
+<span class="lineNum">     721 </span>            :         ret = CFPreferencesCopyAppValue(key,appID);
+<span class="lineNum">     722 </span>            :     }
+<span class="lineNum">     723 </span>            :     if ( ret==NULL )
+<span class="lineNum">     724 </span>            : return( -1 );
+<span class="lineNum">     725 </span>            :     if ( CFGetTypeID(ret)!=CFBooleanGetTypeID())
+<span class="lineNum">     726 </span>            : return( -2 );
+<span class="lineNum">     727 </span>            :     val = CFBooleanGetValue(ret);
+<span class="lineNum">     728 </span>            :     CFRelease(ret);
+<span class="lineNum">     729 </span>            : return( val );
+<span class="lineNum">     730 </span>            : }
+<span class="lineNum">     731 </span>            : 
+<span class="lineNum">     732 </span>            : static int uses_local_x(int argc,char **argv) {
+<span class="lineNum">     733 </span>            :     int i;
+<span class="lineNum">     734 </span>            :     char *arg;
+<span class="lineNum">     735 </span>            : 
+<span class="lineNum">     736 </span>            :     for ( i=1; i&lt;argc; ++i ) {
+<span class="lineNum">     737 </span>            :         arg = argv[i];
+<span class="lineNum">     738 </span>            :         if ( *arg=='-' ) {
+<span class="lineNum">     739 </span>            :             if ( arg[0]=='-' &amp;&amp; arg[1]=='-' &amp;&amp; arg[2]!='\0')
+<span class="lineNum">     740 </span>            :                 ++arg;
+<span class="lineNum">     741 </span>            :             if ( strcmp(arg,&quot;-display&quot;)==0 )
+<span class="lineNum">     742 </span>            : return( i+1&lt;argc &amp;&amp; strcmp(argv[i+1],&quot;:0&quot;)!=0 &amp;&amp; strcmp(argv[i+1],&quot;:0.0&quot;)!=0? 2 : 0 );
+<span class="lineNum">     743 </span>            :             if ( strcmp(argv[i],&quot;-c&quot;)==0 )
+<span class="lineNum">     744 </span>            : return( false );                /* we use a script string, no x display at all */
+<span class="lineNum">     745 </span>            :             if ( strcmp(arg,&quot;-script&quot;)==0 )
+<span class="lineNum">     746 </span>            : return( false );                /* we use a script, no x display at all */
+<span class="lineNum">     747 </span>            :             if ( strcmp(argv[i],&quot;-&quot;)==0 )
+<span class="lineNum">     748 </span>            : return( false );                /* script on stdin */
+<span class="lineNum">     749 </span>            :         } else {
+<span class="lineNum">     750 </span>            :             /* Is this argument a script file ? */
+<span class="lineNum">     751 </span>            :             FILE *temp = fopen(argv[i],&quot;r&quot;);
+<span class="lineNum">     752 </span>            :             char buffer[200];
+<span class="lineNum">     753 </span>            :             if ( temp==NULL )
+<span class="lineNum">     754 </span>            : return( true );                 /* not a script file, so need local local X */
+<span class="lineNum">     755 </span>            :             buffer[0] = '\0';
+<span class="lineNum">     756 </span>            :             fgets(buffer,sizeof(buffer),temp);
+<span class="lineNum">     757 </span>            :             fclose(temp);
+<span class="lineNum">     758 </span>            :             if ( buffer[0]=='#' &amp;&amp; buffer[1]=='!' &amp;&amp;
+<span class="lineNum">     759 </span>            :                     (strstr(buffer,&quot;pfaedit&quot;)!=NULL || strstr(buffer,&quot;fontforge&quot;)!=NULL )) {
+<span class="lineNum">     760 </span>            : return( false );                /* is a script file, so no need for X */
+<span class="lineNum">     761 </span>            : 
+<span class="lineNum">     762 </span>            : return( true );                 /* not a script, so needs X */
+<span class="lineNum">     763 </span>            :             }
+<span class="lineNum">     764 </span>            :         }
+<span class="lineNum">     765 </span>            :     }
+<span class="lineNum">     766 </span>            : return( true );
+<span class="lineNum">     767 </span>            : }
+<span class="lineNum">     768 </span>            : #endif
+<span class="lineNum">     769 </span>            : 
+<span class="lineNum">     770 </span>            : 
+<span class="lineNum">     771 </span>            : #if defined(__Mac)
+<span class="lineNum">     772 </span>            : static int hasquit( int argc, char **argv ) {
+<span class="lineNum">     773 </span>            :     int i;
+<span class="lineNum">     774 </span>            : 
+<span class="lineNum">     775 </span>            :     for ( i=1; i&lt;argc; ++i )
+<span class="lineNum">     776 </span>            :         if ( strcmp(argv[i],&quot;-quit&quot;)==0 || strcmp(argv[i],&quot;--quit&quot;)==0 )
+<span class="lineNum">     777 </span>            : return( true );
+<span class="lineNum">     778 </span>            : 
+<span class="lineNum">     779 </span>            : return( false );
+<span class="lineNum">     780 </span>            : }
+<a name="781"><span class="lineNum">     781 </span>            : #endif</a>
+<span class="lineNum">     782 </span>            : 
+<span class="lineNum">     783 </span><span class="lineNoCov">          0 : static void GrokNavigationMask(void) {</span>
+<span class="lineNum">     784 </span>            :     extern int navigation_mask;
+<span class="lineNum">     785 </span>            : 
+<span class="lineNum">     786 </span><span class="lineNoCov">          0 :     navigation_mask = GMenuItemParseMask(H_(&quot;NavigationMask|None&quot;));</span>
+<span class="lineNum">     787 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     788 </span>            : 
+<span class="lineNum">     789 </span>            : /**
+<span class="lineNum">     790 </span>            :  * Create the directory basedir/dirname with the given mode.
+<a name="791"><span class="lineNum">     791 </span>            :  * Silently ignore any errors that might happen.</a>
+<span class="lineNum">     792 </span>            :  */
+<span class="lineNum">     793 </span><span class="lineNoCov">          0 : static void ffensuredir( const char* basedir, const char* dirname, mode_t mode ) {</span>
+<span class="lineNum">     794 </span><span class="lineNoCov">          0 :     const int buffersz = PATH_MAX;</span>
+<span class="lineNum">     795 </span><span class="lineNoCov">          0 :     char buffer[buffersz+1];</span>
+<span class="lineNum">     796 </span>            : 
+<span class="lineNum">     797 </span><span class="lineNoCov">          0 :     snprintf(buffer,buffersz,&quot;%s/%s&quot;, basedir, dirname );</span>
+<span class="lineNum">     798 </span>            :     // ignore errors, this is just to help the user aftre all.
+<span class="lineNum">     799 </span><span class="lineNoCov">          0 :     mkdir( buffer, mode );</span>
+<a name="800"><span class="lineNum">     800 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     801 </span>            : 
+<span class="lineNum">     802 </span><span class="lineNoCov">          0 : static void ensureDotFontForgeIsSetup() {</span>
+<span class="lineNum">     803 </span><span class="lineNoCov">          0 :     char *basedir = getFontForgeUserDir(Config);</span>
+<span class="lineNum">     804 </span><span class="lineNoCov">          0 :     if ( !basedir ) {</span>
+<span class="lineNum">     805 </span><span class="lineNoCov">          0 :         return;</span>
+<span class="lineNum">     806 </span>            :     }
+<span class="lineNum">     807 </span><span class="lineNoCov">          0 :     ffensuredir( basedir, &quot;&quot;,       S_IRWXU );</span>
+<span class="lineNum">     808 </span><span class="lineNoCov">          0 :     ffensuredir( basedir, &quot;python&quot;, S_IRWXU );</span>
+<span class="lineNum">     809 </span><span class="lineNoCov">          0 :     free(basedir);</span>
+<a name="810"><span class="lineNum">     810 </span>            : }</a>
+<span class="lineNum">     811 </span>            : 
+<span class="lineNum">     812 </span><span class="lineNoCov">          0 : static void DoAutoRecoveryPostRecover_PromptUserGraphically(SplineFont *sf)</span>
+<span class="lineNum">     813 </span>            : {
+<span class="lineNum">     814 </span>            :     /* Ask user to save-as file */
+<span class="lineNum">     815 </span>            :     char *buts[4];
+<span class="lineNum">     816 </span><span class="lineNoCov">          0 :     buts[0] = _(&quot;_OK&quot;);</span>
+<span class="lineNum">     817 </span><span class="lineNoCov">          0 :     buts[1] = 0;</span>
+<span class="lineNum">     818 </span><span class="lineNoCov">          0 :     gwwv_ask( _(&quot;Recovery Complete&quot;),(const char **) buts,0,1,_(&quot;Your file %s has been recovered.\nYou must now Save your file to continue working on it.&quot;), sf-&gt;filename );</span>
+<span class="lineNum">     819 </span><span class="lineNoCov">          0 :     _FVMenuSaveAs( (FontView*)sf-&gt;fv );</span>
+<span class="lineNum">     820 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     821 </span>            : 
+<span class="lineNum">     822 </span>            : #if defined(__MINGW32__) &amp;&amp; !defined(_NO_LIBCAIRO)
+<span class="lineNum">     823 </span>            : /**
+<span class="lineNum">     824 </span>            :  * \brief Load fonts from the specified folder for the UI to use.
+<span class="lineNum">     825 </span>            :  * This should only be used if Cairo is used on Windows, which defaults to the
+<span class="lineNum">     826 </span>            :  * Win32 font backend.
+<span class="lineNum">     827 </span>            :  * This is an ANSI version, so files which contain characters outside of the
+<span class="lineNum">     828 </span>            :  * user's locale will fail to be loaded.
+<span class="lineNum">     829 </span>            :  * \param prefix The folder to read fonts from. Currently the pixmaps folder
+<span class="lineNum">     830 </span>            :  *               and the folder 'ui-fonts' in the FontForge preferences folder.
+<span class="lineNum">     831 </span>            :  */
+<span class="lineNum">     832 </span>            : static void WinLoadUserFonts(const char *prefix) {
+<span class="lineNum">     833 </span>            :     HANDLE fileHandle;
+<span class="lineNum">     834 </span>            :     WIN32_FIND_DATA fileData;
+<span class="lineNum">     835 </span>            :     char path[MAX_PATH], *ext;
+<span class="lineNum">     836 </span>            :     HRESULT ret;
+<span class="lineNum">     837 </span>            :     int i;
+<span class="lineNum">     838 </span>            : 
+<span class="lineNum">     839 </span>            :     if (prefix == NULL) {
+<span class="lineNum">     840 </span>            :         return;
+<span class="lineNum">     841 </span>            :     }
+<span class="lineNum">     842 </span>            :     ret = snprintf(path, MAX_PATH, &quot;%s/*.???&quot;, prefix);
+<span class="lineNum">     843 </span>            :     if (ret &lt;= 0 || ret &gt;= MAX_PATH) {
+<span class="lineNum">     844 </span>            :         return;
+<span class="lineNum">     845 </span>            :     }
+<span class="lineNum">     846 </span>            : 
+<span class="lineNum">     847 </span>            :     fileHandle = FindFirstFileA(path, &amp;fileData);
+<span class="lineNum">     848 </span>            :     if (fileHandle != INVALID_HANDLE_VALUE) do {
+<span class="lineNum">     849 </span>            :         ext = strrchr(fileData.cFileName, '.');
+<span class="lineNum">     850 </span>            :         if (!ext || (strcasecmp(ext, &quot;.ttf&quot;) &amp;&amp; strcasecmp(ext, &quot;.ttc&quot;) &amp;&amp;
+<span class="lineNum">     851 </span>            :                      strcasecmp(ext,&quot;.otf&quot;)))
+<span class="lineNum">     852 </span>            :         {
+<span class="lineNum">     853 </span>            :             continue;
+<span class="lineNum">     854 </span>            :         }
+<span class="lineNum">     855 </span>            :         ret = snprintf(path, MAX_PATH, &quot;%s/%s&quot;, prefix, fileData.cFileName);
+<span class="lineNum">     856 </span>            :         if (ret &gt; 0 &amp;&amp; ret &lt; MAX_PATH) {
+<span class="lineNum">     857 </span>            :             //printf(&quot;WIN32-FONT-TEST: %s\n&quot;, path);
+<span class="lineNum">     858 </span>            :             ret = AddFontResourceExA(path, FR_PRIVATE, NULL);
+<span class="lineNum">     859 </span>            :             //if (ret &gt; 0) {
+<span class="lineNum">     860 </span>            :             //    printf(&quot;\tLOADED FONT OK!\n&quot;);
+<span class="lineNum">     861 </span>            :             //}
+<span class="lineNum">     862 </span>            :         }
+<span class="lineNum">     863 </span>            :     } while (FindNextFileA(fileHandle, &amp;fileData) != 0);
+<span class="lineNum">     864 </span>            : }
+<span class="lineNum">     865 </span>            : #endif
+<a name="866"><span class="lineNum">     866 </span>            : </a>
+<span class="lineNum">     867 </span>            : 
+<span class="lineNum">     868 </span><span class="lineCov">         40 : int fontforge_main( int argc, char **argv ) {</span>
+<span class="lineNum">     869 </span>            :     extern const char *source_modtime_str;
+<span class="lineNum">     870 </span>            :     extern const char *source_version_str;
+<span class="lineNum">     871 </span><span class="lineCov">         40 :     const char *load_prefs = getenv(&quot;FONTFORGE_LOADPREFS&quot;);</span>
+<span class="lineNum">     872 </span>            :     int i;
+<span class="lineNum">     873 </span><span class="lineCov">         40 :     int recover=2;</span>
+<span class="lineNum">     874 </span>            :     int any;
+<span class="lineNum">     875 </span><span class="lineCov">         40 :     int next_recent=0;</span>
+<span class="lineNum">     876 </span>            :     GRect pos;
+<span class="lineNum">     877 </span>            :     GWindowAttrs wattrs;
+<span class="lineNum">     878 </span><span class="lineCov">         40 :     char *display = NULL;</span>
+<span class="lineNum">     879 </span>            :     FontRequest rq;
+<span class="lineNum">     880 </span>            :     int ds, ld;
+<span class="lineNum">     881 </span><span class="lineCov">         40 :     int openflags=0;</span>
+<span class="lineNum">     882 </span><span class="lineCov">         40 :     int doopen=0, quit_request=0;</span>
+<span class="lineNum">     883 </span><span class="lineCov">         40 :     bool use_cairo = true;</span>
+<span class="lineNum">     884 </span>            : 
+<span class="lineNum">     885 </span>            : #if !(GLIB_CHECK_VERSION(2, 35, 0))
+<span class="lineNum">     886 </span>            :     g_type_init();
+<span class="lineNum">     887 </span>            : #endif
+<span class="lineNum">     888 </span>            : 
+<span class="lineNum">     889 </span>            :     /* Must be done before we cache the current directory */
+<span class="lineNum">     890 </span>            :     /* Change to HOME dir if specified on the commandline */
+<span class="lineNum">     891 </span><span class="lineCov">        408 :     for ( i=1; i&lt;argc; ++i ) {</span>
+<span class="lineNum">     892 </span><span class="lineCov">        368 :         char *pt = argv[i];</span>
+<span class="lineNum">     893 </span><span class="lineCov">        368 :         if ( pt[0]=='-' &amp;&amp; pt[1]=='-' ) ++pt;</span>
+<span class="lineNum">     894 </span><span class="lineCov">        368 :         if (strcmp(pt,&quot;-home&quot;)==0 || strncmp(pt,&quot;-psn_&quot;,5)==0) {</span>
+<span class="lineNum">     895 </span>            :             /* OK, I don't know what _-psn_ means, but to GW it means */
+<span class="lineNum">     896 </span>            :             /* we've been started on the mac from the FontForge.app   */
+<span class="lineNum">     897 </span>            :             /* structure, and the current directory is (shudder) &quot;/&quot;  */
+<span class="lineNum">     898 </span><span class="lineNoCov">          0 :             if (getenv(&quot;HOME&quot;)!=NULL) chdir(getenv(&quot;HOME&quot;));</span>
+<span class="lineNum">     899 </span><span class="lineNoCov">          0 :             break;      /* Done - Unnecessary to check more arguments */</span>
+<span class="lineNum">     900 </span>            :         }
+<span class="lineNum">     901 </span><span class="lineCov">        368 :         if (strcmp(pt,&quot;-quiet&quot;)==0)</span>
+<span class="lineNum">     902 </span><span class="lineNoCov">          0 :             quiet = 1;</span>
+<span class="lineNum">     903 </span>            :     }
+<span class="lineNum">     904 </span>            : 
+<span class="lineNum">     905 </span><span class="lineCov">         40 :     if (!quiet) {</span>
+<span class="lineNum">     906 </span><span class="lineCov">         40 :         fprintf( stderr, &quot;Copyright (c) 2000-2014 by George Williams. See AUTHORS for Contributors.\n&quot; );</span>
+<span class="lineNum">     907 </span><span class="lineCov">         40 :         fprintf( stderr, &quot; License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt;\n&quot; );</span>
+<span class="lineNum">     908 </span><span class="lineCov">         40 :         fprintf( stderr, &quot; with many parts BSD &lt;http://fontforge.org/license.html&gt;. Please read LICENSE.\n&quot; );</span>
+<span class="lineNum">     909 </span><span class="lineCov">         40 :         fprintf( stderr, &quot; Based on sources from %s&quot;</span>
+<span class="lineNum">     910 </span>            :                 &quot;-ML&quot;
+<span class="lineNum">     911 </span>            : #ifdef FREETYPE_HAS_DEBUGGER
+<span class="lineNum">     912 </span>            :                 &quot;-TtfDb&quot;
+<span class="lineNum">     913 </span>            : #endif
+<span class="lineNum">     914 </span>            : #ifdef _NO_PYTHON
+<span class="lineNum">     915 </span>            :                 &quot;-NoPython&quot;
+<span class="lineNum">     916 </span>            : #endif
+<span class="lineNum">     917 </span>            : #ifdef FONTFORGE_CONFIG_USE_DOUBLE
+<span class="lineNum">     918 </span>            :                 &quot;-D&quot;
+<span class="lineNum">     919 </span>            : #endif
+<span class="lineNum">     920 </span>            :                 &quot;.\n&quot;,
+<span class="lineNum">     921 </span>            :                 FONTFORGE_MODTIME_STR );
+<span class="lineNum">     922 </span><span class="lineCov">         40 :         fprintf( stderr, &quot; Based on source from git with hash: %s\n&quot;, FONTFORGE_GIT_VERSION );</span>
+<span class="lineNum">     923 </span>            :     }
+<span class="lineNum">     924 </span>            : 
+<span class="lineNum">     925 </span>            : #if defined(__Mac)
+<span class="lineNum">     926 </span>            :     /* Start X if they haven't already done so. Well... try anyway */
+<span class="lineNum">     927 </span>            :     /* Must be before we change DYLD_LIBRARY_PATH or X won't start */
+<span class="lineNum">     928 </span>            :     /* (osascript depends on a libjpeg which isn't found if we look in /sw/lib first */
+<span class="lineNum">     929 </span>            :     int local_x = uses_local_x(argc,argv);
+<span class="lineNum">     930 </span>            :     if ( local_x==1 &amp;&amp; getenv(&quot;DISPLAY&quot;)==NULL ) {
+<span class="lineNum">     931 </span>            :         /* Don't start X if we're just going to quit. */
+<span class="lineNum">     932 </span>            :         /* if X exists, it isn't needed. If X doesn't exist it's wrong */
+<span class="lineNum">     933 </span>            :         if ( !hasquit(argc,argv)) {
+<span class="lineNum">     934 </span>            :             /* This sequence is supposed to bring up an app without a window */
+<span class="lineNum">     935 </span>            :             /*  but X still opens an xterm */
+<span class="lineNum">     936 </span>            :             system( &quot;osascript -e 'tell application \&quot;X11\&quot; to launch'&quot; );
+<span class="lineNum">     937 </span>            :             system( &quot;osascript -e 'tell application \&quot;X11\&quot; to activate'&quot; );
+<span class="lineNum">     938 </span>            :         }
+<span class="lineNum">     939 </span>            :         setenv(&quot;DISPLAY&quot;,&quot;:0.0&quot;,0);
+<span class="lineNum">     940 </span>            :     } else if ( local_x==1 &amp;&amp; *getenv(&quot;DISPLAY&quot;)!='/' &amp;&amp; strcmp(getenv(&quot;DISPLAY&quot;),&quot;:0.0&quot;)!=0 &amp;&amp; strcmp(getenv(&quot;DISPLAY&quot;),&quot;:0&quot;)!=0 )
+<span class="lineNum">     941 </span>            :         /* 10.5.7 uses a named socket or something &quot;/tmp/launch-01ftWX:0&quot; */
+<span class="lineNum">     942 </span>            :         local_x = 0;
+<span class="lineNum">     943 </span>            : #endif
+<span class="lineNum">     944 </span>            : 
+<span class="lineNum">     945 </span>            : #if defined(__MINGW32__)
+<span class="lineNum">     946 </span>            :     if( getenv(&quot;DISPLAY&quot;)==NULL ) {
+<span class="lineNum">     947 </span>            :         putenv(&quot;DISPLAY=127.0.0.1:0.0&quot;);
+<span class="lineNum">     948 </span>            :     }
+<span class="lineNum">     949 </span>            :     if( getenv(&quot;LC_ALL&quot;)==NULL ){
+<span class="lineNum">     950 </span>            :         char lang[8];
+<span class="lineNum">     951 </span>            :         char env[32];
+<span class="lineNum">     952 </span>            :         if( GetLocaleInfoA(LOCALE_USER_DEFAULT, LOCALE_SISO639LANGNAME, lang, 8) &gt; 0 ){
+<span class="lineNum">     953 </span>            :             strcpy(env, &quot;LC_ALL=&quot;);
+<span class="lineNum">     954 </span>            :             strcat(env, lang);
+<span class="lineNum">     955 </span>            :             putenv(env);
+<span class="lineNum">     956 </span>            :         }
+<span class="lineNum">     957 </span>            :     }
+<span class="lineNum">     958 </span>            : #endif
+<span class="lineNum">     959 </span>            : 
+<span class="lineNum">     960 </span><span class="lineCov">         40 :     FF_SetUiInterface(&amp;gdraw_ui_interface);</span>
+<span class="lineNum">     961 </span><span class="lineCov">         40 :     FF_SetPrefsInterface(&amp;gdraw_prefs_interface);</span>
+<span class="lineNum">     962 </span><span class="lineCov">         40 :     FF_SetSCInterface(&amp;gdraw_sc_interface);</span>
+<span class="lineNum">     963 </span><span class="lineCov">         40 :     FF_SetCVInterface(&amp;gdraw_cv_interface);</span>
+<span class="lineNum">     964 </span><span class="lineCov">         40 :     FF_SetBCInterface(&amp;gdraw_bc_interface);</span>
+<span class="lineNum">     965 </span><span class="lineCov">         40 :     FF_SetFVInterface(&amp;gdraw_fv_interface);</span>
+<span class="lineNum">     966 </span><span class="lineCov">         40 :     FF_SetFIInterface(&amp;gdraw_fi_interface);</span>
+<span class="lineNum">     967 </span><span class="lineCov">         40 :     FF_SetMVInterface(&amp;gdraw_mv_interface);</span>
+<span class="lineNum">     968 </span><span class="lineCov">         40 :     FF_SetClipInterface(&amp;gdraw_clip_interface);</span>
+<span class="lineNum">     969 </span>            : #ifndef _NO_PYTHON
+<span class="lineNum">     970 </span><span class="lineCov">         40 :     PythonUI_Init();</span>
+<span class="lineNum">     971 </span>            : #endif
+<span class="lineNum">     972 </span>            : 
+<span class="lineNum">     973 </span><span class="lineCov">         40 :     FindProgDir(argv[0]);</span>
+<span class="lineNum">     974 </span><span class="lineCov">         40 :     InitSimpleStuff();</span>
+<span class="lineNum">     975 </span>            : 
+<span class="lineNum">     976 </span>            : #if defined(__MINGW32__)
+<span class="lineNum">     977 </span>            :     {
+<span class="lineNum">     978 </span>            :         char path[MAX_PATH];
+<span class="lineNum">     979 </span>            :         unsigned int len = GetModuleFileNameA(NULL, path, MAX_PATH);
+<span class="lineNum">     980 </span>            :         path[len] = '\0';
+<span class="lineNum">     981 </span>            :         
+<span class="lineNum">     982 </span>            :         //The '.exe' must be removed as resources presumes it's not there.
+<span class="lineNum">     983 </span>            :         GResourceSetProg(GFileRemoveExtension(GFileNormalizePath(path)));
+<span class="lineNum">     984 </span>            :     }
+<span class="lineNum">     985 </span>            : #else
+<span class="lineNum">     986 </span><span class="lineCov">         40 :     GResourceSetProg(argv[0]);</span>
+<span class="lineNum">     987 </span>            : #endif
+<span class="lineNum">     988 </span>            : 
+<span class="lineNum">     989 </span>            : #if defined(__Mac)
+<span class="lineNum">     990 </span>            :     /* The mac seems to default to the &quot;C&quot; locale, LANG and LC_MESSAGES are not*/
+<span class="lineNum">     991 </span>            :     /*  defined. This means that gettext will not bother to look up any message*/
+<span class="lineNum">     992 </span>            :     /*  files -- even if we have a &quot;C&quot; or &quot;POSIX&quot; entry in the locale diretory */
+<span class="lineNum">     993 </span>            :     /* Now if X11 gives us the command key, I want to force a rebinding to use */
+<span class="lineNum">     994 </span>            :     /*  Cmd rather than Control key -- more mac-like. But I can't do that if   */
+<span class="lineNum">     995 </span>            :     /*  there is no locale. So I force a locale if there is none specified */
+<span class="lineNum">     996 </span>            :     /* I force the US English locale, because that's the what the messages are */
+<span class="lineNum">     997 </span>            :     /*  by default so I'm changing as little as I can. I think. */
+<span class="lineNum">     998 </span>            :     /* Now the locale command will treat a LANG which is &quot;&quot; as undefined, but */
+<span class="lineNum">     999 </span>            :     /*  gettext will not. So I don't bother to check for null strings or &quot;C&quot;  */
+<span class="lineNum">    1000 </span>            :     /*  or &quot;POSIX&quot;. If they've mucked with the locale perhaps they know what  */
+<span class="lineNum">    1001 </span>            :     /*  they are doing */
+<span class="lineNum">    1002 </span>            :     {
+<span class="lineNum">    1003 </span>            :         int did_keybindings = 0;
+<span class="lineNum">    1004 </span>            :         int useCommandKey = get_mac_x11_prop(&quot;enable_key_equivalents&quot;) &lt;= 0;
+<span class="lineNum">    1005 </span>            : 
+<span class="lineNum">    1006 </span>            :         if ( local_x &amp;&amp; useCommandKey ) {
+<span class="lineNum">    1007 </span>            :             hotkeySystemSetCanUseMacCommand( 1 );
+<span class="lineNum">    1008 </span>            : 
+<span class="lineNum">    1009 </span>            :             /* Ok, we get the command key */
+<span class="lineNum">    1010 </span>            :             if ( getenv(&quot;LANG&quot;)==NULL &amp;&amp; getenv(&quot;LC_MESSAGES&quot;)==NULL ) {
+<span class="lineNum">    1011 </span>            :                 setenv(&quot;LC_MESSAGES&quot;,&quot;en_US.UTF-8&quot;,0);
+<span class="lineNum">    1012 </span>            :             }
+<span class="lineNum">    1013 </span>            :             /* Can we find a set of keybindings designed for the mac with cmd key? */
+<span class="lineNum">    1014 </span>            :             bind_textdomain_codeset(&quot;Mac-FontForge-MenuShortCuts&quot;,&quot;UTF-8&quot;);
+<span class="lineNum">    1015 </span>            :             bindtextdomain(&quot;Mac-FontForge-MenuShortCuts&quot;, getLocaleDir());
+<span class="lineNum">    1016 </span>            :             if ( *dgettext(&quot;Mac-FontForge-MenuShortCuts&quot;,&quot;Flag0x10+&quot;)!='F' ) {
+<span class="lineNum">    1017 </span>            :                 GMenuSetShortcutDomain(&quot;Mac-FontForge-MenuShortCuts&quot;);
+<span class="lineNum">    1018 </span>            :                 did_keybindings = 1;
+<span class="lineNum">    1019 </span>            :             }
+<span class="lineNum">    1020 </span>            :         }
+<span class="lineNum">    1021 </span>            :         if ( !did_keybindings ) {
+<span class="lineNum">    1022 </span>            :             /* Nope. we can't. Fall back to the normal stuff */
+<span class="lineNum">    1023 </span>            : #endif
+<span class="lineNum">    1024 </span><span class="lineCov">         40 :             GMenuSetShortcutDomain(&quot;FontForge-MenuShortCuts&quot;);</span>
+<span class="lineNum">    1025 </span><span class="lineCov">         40 :             bind_textdomain_codeset(&quot;FontForge-MenuShortCuts&quot;,&quot;UTF-8&quot;);</span>
+<span class="lineNum">    1026 </span><span class="lineCov">         40 :             bindtextdomain(&quot;FontForge-MenuShortCuts&quot;, getLocaleDir());</span>
+<span class="lineNum">    1027 </span>            : #if defined(__Mac)
+<span class="lineNum">    1028 </span>            :         }
+<span class="lineNum">    1029 </span>            :     }
+<span class="lineNum">    1030 </span>            : #endif
+<span class="lineNum">    1031 </span><span class="lineCov">         40 :     bind_textdomain_codeset(&quot;FontForge&quot;,&quot;UTF-8&quot;);</span>
+<span class="lineNum">    1032 </span><span class="lineCov">         40 :     bindtextdomain(&quot;FontForge&quot;, getLocaleDir());</span>
+<span class="lineNum">    1033 </span><span class="lineCov">         40 :     textdomain(&quot;FontForge&quot;);</span>
+<span class="lineNum">    1034 </span><span class="lineCov">         40 :     GResourceUseGetText();</span>
+<span class="lineNum">    1035 </span>            :     {
+<span class="lineNum">    1036 </span>            :         char shareDir[PATH_MAX];
+<span class="lineNum">    1037 </span><span class="lineCov">         40 :         char* sd = getShareDir();</span>
+<span class="lineNum">    1038 </span><span class="lineCov">         40 :         strncpy( shareDir, sd, PATH_MAX );</span>
+<span class="lineNum">    1039 </span><span class="lineCov">         40 :     shareDir[PATH_MAX-1] = '\0';</span>
+<span class="lineNum">    1040 </span><span class="lineCov">         40 :         if(!sd) {</span>
+<span class="lineNum">    1041 </span><span class="lineNoCov">          0 :             strcpy( shareDir, SHAREDIR );</span>
+<span class="lineNum">    1042 </span>            :         }
+<span class="lineNum">    1043 </span>            : 
+<span class="lineNum">    1044 </span>            :         char path[PATH_MAX];
+<span class="lineNum">    1045 </span><span class="lineCov">         40 :         snprintf(path, PATH_MAX, &quot;%s%s&quot;, shareDir, &quot;/pixmaps&quot; );</span>
+<span class="lineNum">    1046 </span><span class="lineCov">         40 :         GGadgetSetImageDir( path );</span>
+<span class="lineNum">    1047 </span>            : 
+<span class="lineNum">    1048 </span><span class="lineCov">         40 :         snprintf(path, PATH_MAX, &quot;%s%s&quot;, shareDir, &quot;/resources/fontforge.resource&quot; );</span>
+<span class="lineNum">    1049 </span><span class="lineCov">         40 :         GResourceAddResourceFile(path, GResourceProgramName,false);</span>
+<span class="lineNum">    1050 </span>            :     }
+<span class="lineNum">    1051 </span><span class="lineCov">         40 :     hotkeysLoad();</span>
+<span class="lineNum">    1052 </span>            : //    loadPrefsFiles();
+<span class="lineNum">    1053 </span><span class="lineCov">         40 :     Prefs_LoadDefaultPreferences();</span>
+<span class="lineNum">    1054 </span>            : 
+<span class="lineNum">    1055 </span><span class="lineCov">         40 :     if ( load_prefs!=NULL &amp;&amp; strcasecmp(load_prefs,&quot;Always&quot;)==0 )</span>
+<span class="lineNum">    1056 </span><span class="lineNoCov">          0 :         LoadPrefs();</span>
+<span class="lineNum">    1057 </span><span class="lineCov">         40 :     if ( default_encoding==NULL )</span>
+<span class="lineNum">    1058 </span><span class="lineCov">         40 :         default_encoding=FindOrMakeEncoding(&quot;ISO8859-1&quot;);</span>
+<span class="lineNum">    1059 </span><span class="lineCov">         40 :     if ( default_encoding==NULL )</span>
+<span class="lineNum">    1060 </span><span class="lineNoCov">          0 :         default_encoding=&amp;custom;   /* In case iconv is broken */</span>
+<span class="lineNum">    1061 </span>            : 
+<span class="lineNum">    1062 </span>            :     // This no longer starts embedded Python unless control passes to the Python executors,
+<span class="lineNum">    1063 </span>            :     // which exit independently rather than returning here.
+<span class="lineNum">    1064 </span><span class="lineCov">         40 :     CheckIsScript(argc,argv); /* Will run the script and exit if it is a script */</span>
+<span class="lineNum">    1065 </span>            :                                         /* If there is no UI, there is always a script */
+<span class="lineNum">    1066 </span>            :                                         /*  and we will never return from the above */
+<span class="lineNum">    1067 </span><span class="lineNoCov">          0 :     if ( load_prefs==NULL ||</span>
+<span class="lineNum">    1068 </span><span class="lineNoCov">          0 :             (strcasecmp(load_prefs,&quot;Always&quot;)!=0 &amp;&amp;    /* Already loaded */</span>
+<span class="lineNum">    1069 </span><span class="lineNoCov">          0 :              strcasecmp(load_prefs,&quot;Never&quot;)!=0 ))</span>
+<span class="lineNum">    1070 </span><span class="lineNoCov">          0 :         LoadPrefs();</span>
+<span class="lineNum">    1071 </span><span class="lineNoCov">          0 :     GrokNavigationMask();</span>
+<span class="lineNum">    1072 </span><span class="lineNoCov">          0 :     for ( i=1; i&lt;argc; ++i ) {</span>
+<span class="lineNum">    1073 </span><span class="lineNoCov">          0 :         char *pt = argv[i];</span>
+<span class="lineNum">    1074 </span><span class="lineNoCov">          0 :         if ( pt[0]=='-' &amp;&amp; pt[1]=='-' )</span>
+<span class="lineNum">    1075 </span><span class="lineNoCov">          0 :             ++pt;</span>
+<span class="lineNum">    1076 </span><span class="lineNoCov">          0 :         if ( strcmp(pt,&quot;-sync&quot;)==0 )</span>
+<span class="lineNum">    1077 </span><span class="lineNoCov">          0 :             GResourceAddResourceString(&quot;Gdraw.Synchronize: true&quot;,argv[0]);</span>
+<span class="lineNum">    1078 </span><span class="lineNoCov">          0 :         else if ( strcmp(pt,&quot;-depth&quot;)==0 &amp;&amp; i&lt;argc-1 )</span>
+<span class="lineNum">    1079 </span><span class="lineNoCov">          0 :             AddR(argv[0],&quot;Gdraw.Depth&quot;, argv[++i]);</span>
+<span class="lineNum">    1080 </span><span class="lineNoCov">          0 :         else if ( strcmp(pt,&quot;-vc&quot;)==0 &amp;&amp; i&lt;argc-1 )</span>
+<span class="lineNum">    1081 </span><span class="lineNoCov">          0 :             AddR(argv[0],&quot;Gdraw.VisualClass&quot;, argv[++i]);</span>
+<span class="lineNum">    1082 </span><span class="lineNoCov">          0 :         else if ( (strcmp(pt,&quot;-cmap&quot;)==0 || strcmp(pt,&quot;-colormap&quot;)==0) &amp;&amp; i&lt;argc-1 )</span>
+<span class="lineNum">    1083 </span><span class="lineNoCov">          0 :             AddR(argv[0],&quot;Gdraw.Colormap&quot;, argv[++i]);</span>
+<span class="lineNum">    1084 </span><span class="lineNoCov">          0 :         else if ( (strcmp(pt,&quot;-dontopenxdevices&quot;)==0) )</span>
+<span class="lineNum">    1085 </span><span class="lineNoCov">          0 :             AddR(argv[0],&quot;Gdraw.DontOpenXDevices&quot;, &quot;true&quot;);</span>
+<span class="lineNum">    1086 </span><span class="lineNoCov">          0 :         else if ( strcmp(pt,&quot;-keyboard&quot;)==0 &amp;&amp; i&lt;argc-1 )</span>
+<span class="lineNum">    1087 </span><span class="lineNoCov">          0 :             AddR(argv[0],&quot;Gdraw.Keyboard&quot;, argv[++i]);</span>
+<span class="lineNum">    1088 </span><span class="lineNoCov">          0 :         else if ( strcmp(pt,&quot;-display&quot;)==0 &amp;&amp; i&lt;argc-1 )</span>
+<span class="lineNum">    1089 </span><span class="lineNoCov">          0 :             display = argv[++i];</span>
+<span class="lineNum">    1090 </span>            : # if MyMemory
+<span class="lineNum">    1091 </span>            :         else if ( strcmp(pt,&quot;-memory&quot;)==0 )
+<span class="lineNum">    1092 </span>            :             __malloc_debug(5);
+<span class="lineNum">    1093 </span>            : # endif
+<span class="lineNum">    1094 </span><span class="lineNoCov">          0 :         else if ( strncmp(pt,&quot;-usecairo&quot;,strlen(&quot;-usecairo&quot;))==0 ) {</span>
+<span class="lineNum">    1095 </span><span class="lineNoCov">          0 :             if ( strcmp(pt,&quot;-usecairo=no&quot;)==0 )</span>
+<span class="lineNum">    1096 </span><span class="lineNoCov">          0 :                 use_cairo = false;</span>
+<span class="lineNum">    1097 </span>            :             else
+<span class="lineNum">    1098 </span><span class="lineNoCov">          0 :                 use_cairo = true;</span>
+<span class="lineNum">    1099 </span><span class="lineNoCov">          0 :             GDrawEnableCairo(use_cairo);</span>
+<span class="lineNum">    1100 </span><span class="lineNoCov">          0 :         } else if ( strcmp(pt,&quot;-nosplash&quot;)==0 )</span>
+<span class="lineNum">    1101 </span><span class="lineNoCov">          0 :             splash = 0;</span>
+<span class="lineNum">    1102 </span><span class="lineNoCov">          0 :         else if ( strcmp(pt,&quot;-quiet&quot;)==0 )</span>
+<span class="lineNum">    1103 </span>            :             /* already checked for this earlier, no need to do it again */;
+<span class="lineNum">    1104 </span><span class="lineNoCov">          0 :         else if ( strcmp(pt,&quot;-unique&quot;)==0 )</span>
+<span class="lineNum">    1105 </span><span class="lineNoCov">          0 :             unique = 1;</span>
+<span class="lineNum">    1106 </span><span class="lineNoCov">          0 :         else if ( strcmp(pt,&quot;-forceuihidden&quot;)==0 )</span>
+<span class="lineNum">    1107 </span><span class="lineNoCov">          0 :             cmdlinearg_forceUIHidden = 0;</span>
+<span class="lineNum">    1108 </span><span class="lineNoCov">          0 :         else if ( strcmp(pt,&quot;-recover&quot;)==0 &amp;&amp; i&lt;argc-1 ) {</span>
+<span class="lineNum">    1109 </span><span class="lineNoCov">          0 :             ++i;</span>
+<span class="lineNum">    1110 </span><span class="lineNoCov">          0 :             if ( strcmp(argv[i],&quot;none&quot;)==0 )</span>
+<span class="lineNum">    1111 </span><span class="lineNoCov">          0 :                 recover=0;</span>
+<span class="lineNum">    1112 </span><span class="lineNoCov">          0 :             else if ( strcmp(argv[i],&quot;clean&quot;)==0 )</span>
+<span class="lineNum">    1113 </span><span class="lineNoCov">          0 :                 recover= -1;</span>
+<span class="lineNum">    1114 </span><span class="lineNoCov">          0 :             else if ( strcmp(argv[i],&quot;auto&quot;)==0 )</span>
+<span class="lineNum">    1115 </span><span class="lineNoCov">          0 :                 recover= 1;</span>
+<span class="lineNum">    1116 </span><span class="lineNoCov">          0 :             else if ( strcmp(argv[i],&quot;inquire&quot;)==0 )</span>
+<span class="lineNum">    1117 </span><span class="lineNoCov">          0 :                 recover= 2;</span>
+<span class="lineNum">    1118 </span>            :             else {
+<span class="lineNum">    1119 </span><span class="lineNoCov">          0 :                 fprintf( stderr, &quot;Invalid argument to -recover, must be none, auto, inquire or clean\n&quot; );</span>
+<span class="lineNum">    1120 </span><span class="lineNoCov">          0 :                 dousage();</span>
+<span class="lineNum">    1121 </span>            :             }
+<span class="lineNum">    1122 </span><span class="lineNoCov">          0 :         } else if ( strcmp(pt,&quot;-recover=none&quot;)==0 ) {</span>
+<span class="lineNum">    1123 </span><span class="lineNoCov">          0 :             recover = 0;</span>
+<span class="lineNum">    1124 </span><span class="lineNoCov">          0 :         } else if ( strcmp(pt,&quot;-recover=clean&quot;)==0 ) {</span>
+<span class="lineNum">    1125 </span><span class="lineNoCov">          0 :             recover = -1;</span>
+<span class="lineNum">    1126 </span><span class="lineNoCov">          0 :         } else if ( strcmp(pt,&quot;-recover=auto&quot;)==0 ) {</span>
+<span class="lineNum">    1127 </span><span class="lineNoCov">          0 :             recover = 1;</span>
+<span class="lineNum">    1128 </span><span class="lineNoCov">          0 :         } else if ( strcmp(pt,&quot;-recover=inquire&quot;)==0 ) {</span>
+<span class="lineNum">    1129 </span><span class="lineNoCov">          0 :             recover = 2;</span>
+<span class="lineNum">    1130 </span><span class="lineNoCov">          0 :         } else if ( strcmp(pt,&quot;-docs&quot;)==0 )</span>
+<span class="lineNum">    1131 </span><span class="lineNoCov">          0 :             dohelp();</span>
+<span class="lineNum">    1132 </span><span class="lineNoCov">          0 :         else if ( strcmp(pt,&quot;-help&quot;)==0 )</span>
+<span class="lineNum">    1133 </span><span class="lineNoCov">          0 :             dousage();</span>
+<span class="lineNum">    1134 </span><span class="lineNoCov">          0 :         else if ( strcmp(pt,&quot;-version&quot;)==0 || strcmp(pt,&quot;-v&quot;)==0 || strcmp(pt,&quot;-V&quot;)==0 )</span>
+<span class="lineNum">    1135 </span><span class="lineNoCov">          0 :             doversion(FONTFORGE_MODTIME_STR);</span>
+<span class="lineNum">    1136 </span><span class="lineNoCov">          0 :         else if ( strcmp(pt,&quot;-quit&quot;)==0 )</span>
+<span class="lineNum">    1137 </span><span class="lineNoCov">          0 :             quit_request = true;</span>
+<span class="lineNum">    1138 </span><span class="lineNoCov">          0 :         else if ( strcmp(pt,&quot;-home&quot;)==0 )</span>
+<span class="lineNum">    1139 </span>            :             /* already did a chdir earlier, don't need to do it again */;
+<span class="lineNum">    1140 </span>            : #if defined(__Mac)
+<span class="lineNum">    1141 </span>            :         else if ( strncmp(pt,&quot;-psn_&quot;,5)==0 ) {
+<span class="lineNum">    1142 </span>            :             /* OK, I don't know what _-psn_ means, but to GW it means */
+<span class="lineNum">    1143 </span>            :             /* we've been started on the mac from the FontForge.app   */
+<span class="lineNum">    1144 </span>            :             /* structure, and the current directory was (shudder) &quot;/&quot; */
+<span class="lineNum">    1145 </span>            :             /* (however, we changed to HOME earlier in main routine). */
+<span class="lineNum">    1146 </span>            :             unique = 1;
+<span class="lineNum">    1147 </span>            :             listen_to_apple_events = true; // This has been problematic on Mavericks and later.
+<span class="lineNum">    1148 </span>            :         }
+<span class="lineNum">    1149 </span>            : #endif
+<span class="lineNum">    1150 </span>            :     }
+<span class="lineNum">    1151 </span>            : 
+<span class="lineNum">    1152 </span><span class="lineNoCov">          0 :     ensureDotFontForgeIsSetup();</span>
+<span class="lineNum">    1153 </span>            : #if defined(__MINGW32__) &amp;&amp; !defined(_NO_LIBCAIRO)
+<span class="lineNum">    1154 </span>            :     //Load any custom fonts for the user interface
+<span class="lineNum">    1155 </span>            :     if (use_cairo) {
+<span class="lineNum">    1156 </span>            :         char *system_load = getGResourceProgramDir();
+<span class="lineNum">    1157 </span>            :         char *user_load = getFontForgeUserDir(Data);
+<span class="lineNum">    1158 </span>            :         char lbuf[MAX_PATH];
+<span class="lineNum">    1159 </span>            :         int lret;
+<span class="lineNum">    1160 </span>            : 
+<span class="lineNum">    1161 </span>            :         if (system_load != NULL) {
+<span class="lineNum">    1162 </span>            :             //Follow the FontConfig APPSHAREFONTDIR location
+<span class="lineNum">    1163 </span>            :             lret = snprintf(lbuf, MAX_PATH, &quot;%s/../share/fonts&quot;, system_load);
+<span class="lineNum">    1164 </span>            :             if (lret &gt; 0 &amp;&amp; lret &lt; MAX_PATH) {
+<span class="lineNum">    1165 </span>            :                 WinLoadUserFonts(lbuf);
+<span class="lineNum">    1166 </span>            :             }
+<span class="lineNum">    1167 </span>            :         }
+<span class="lineNum">    1168 </span>            :         if (user_load != NULL) {
+<span class="lineNum">    1169 </span>            :             lret = snprintf(lbuf, MAX_PATH, &quot;%s/%s&quot;, user_load, &quot;ui-fonts&quot;);
+<span class="lineNum">    1170 </span>            :             if (lret &gt; 0 &amp;&amp; lret &lt; MAX_PATH) {
+<span class="lineNum">    1171 </span>            :                 WinLoadUserFonts(lbuf);
+<span class="lineNum">    1172 </span>            :             }
+<span class="lineNum">    1173 </span>            :             free(user_load);
+<span class="lineNum">    1174 </span>            :         }
+<span class="lineNum">    1175 </span>            :     }
+<span class="lineNum">    1176 </span>            : #endif
+<span class="lineNum">    1177 </span><span class="lineNoCov">          0 :     InitImageCache(); // This is in gtextinfo.c. It zeroes imagecache for us.</span>
+<span class="lineNum">    1178 </span><span class="lineNoCov">          0 :     atexit(&amp;ClearImageCache); // We register the destructor, which is also in gtextinfo.c.</span>
+<span class="lineNum">    1179 </span><span class="lineNoCov">          0 :     GDrawCreateDisplays(display,argv[0]);</span>
+<span class="lineNum">    1180 </span><span class="lineNoCov">          0 :     atexit(&amp;GDrawDestroyDisplays); // We register the destructor so that it runs even if we call exit without finishing this function.</span>
+<span class="lineNum">    1181 </span><span class="lineNoCov">          0 :     default_background = GDrawGetDefaultBackground(screen_display);</span>
+<span class="lineNum">    1182 </span><span class="lineNoCov">          0 :     InitToolIconClut(default_background);</span>
+<span class="lineNum">    1183 </span><span class="lineNoCov">          0 :     InitToolIcons();</span>
+<span class="lineNum">    1184 </span><span class="lineNoCov">          0 :     InitCursors();</span>
+<span class="lineNum">    1185 </span>            : 
+<span class="lineNum">    1186 </span>            :     /**
+<span class="lineNum">    1187 </span>            :      * we have to do a quick sniff of argv[] here to see if the user
+<span class="lineNum">    1188 </span>            :      * wanted to skip loading these python init files.
+<span class="lineNum">    1189 </span>            :      */
+<span class="lineNum">    1190 </span><span class="lineNoCov">          0 :     for ( i=1; i&lt;argc; ++i ) {</span>
+<span class="lineNum">    1191 </span><span class="lineNoCov">          0 :         char *pt = argv[i];</span>
+<span class="lineNum">    1192 </span>            : 
+<span class="lineNum">    1193 </span><span class="lineNoCov">          0 :         if ( !strcmp(pt,&quot;-SkipPythonInitFiles&quot;)) {</span>
+<span class="lineNum">    1194 </span><span class="lineNoCov">          0 :             ProcessPythonInitFiles = 0;</span>
+<span class="lineNum">    1195 </span>            :         }
+<span class="lineNum">    1196 </span>            :     }
+<span class="lineNum">    1197 </span>            :     
+<span class="lineNum">    1198 </span>            : #ifndef _NO_PYTHON
+<span class="lineNum">    1199 </span>            : /*# ifndef GWW_TEST*/
+<span class="lineNum">    1200 </span><span class="lineNoCov">          0 :     FontForge_InitializeEmbeddedPython(); /* !!!!!! debug (valgrind doesn't like python) */</span>
+<span class="lineNum">    1201 </span>            : /*# endif*/
+<span class="lineNum">    1202 </span>            : #endif
+<span class="lineNum">    1203 </span>            : 
+<span class="lineNum">    1204 </span>            : #ifndef _NO_PYTHON
+<span class="lineNum">    1205 </span><span class="lineNoCov">          0 :     if( ProcessPythonInitFiles )</span>
+<span class="lineNum">    1206 </span><span class="lineNoCov">          0 :         PyFF_ProcessInitFiles();</span>
+<span class="lineNum">    1207 </span>            : #endif
+<span class="lineNum">    1208 </span>            : 
+<span class="lineNum">    1209 </span>            :     /* the splash screen used not to have a title bar (wam_nodecor) */
+<span class="lineNum">    1210 </span>            :     /*  but I found I needed to know how much the window manager moved */
+<span class="lineNum">    1211 </span>            :     /*  the window around, which I can determine if I have a positioned */
+<span class="lineNum">    1212 </span>            :     /*  decorated window created at the begining */
+<span class="lineNum">    1213 </span>            :     /* Actually I don't care any more */
+<span class="lineNum">    1214 </span><span class="lineNoCov">          0 :     wattrs.mask = wam_events|wam_cursor|wam_bordwidth|wam_backcol|wam_positioned|wam_utf8_wtitle|wam_isdlg;</span>
+<span class="lineNum">    1215 </span><span class="lineNoCov">          0 :     wattrs.event_masks = ~(1&lt;&lt;et_charup);</span>
+<span class="lineNum">    1216 </span><span class="lineNoCov">          0 :     wattrs.positioned = 1;</span>
+<span class="lineNum">    1217 </span><span class="lineNoCov">          0 :     wattrs.cursor = ct_pointer;</span>
+<span class="lineNum">    1218 </span><span class="lineNoCov">          0 :     wattrs.utf8_window_title = &quot;FontForge&quot;;</span>
+<span class="lineNum">    1219 </span><span class="lineNoCov">          0 :     wattrs.border_width = 2;</span>
+<span class="lineNum">    1220 </span><span class="lineNoCov">          0 :     wattrs.background_color = 0xffffff;</span>
+<span class="lineNum">    1221 </span><span class="lineNoCov">          0 :     wattrs.is_dlg = !listen_to_apple_events;</span>
+<span class="lineNum">    1222 </span><span class="lineNoCov">          0 :     pos.x = pos.y = 200;</span>
+<span class="lineNum">    1223 </span><span class="lineNoCov">          0 :     pos.width = splashimage.u.image-&gt;width;</span>
+<span class="lineNum">    1224 </span><span class="lineNoCov">          0 :     pos.height = splashimage.u.image-&gt;height-56;             /* 54 */</span>
+<span class="lineNum">    1225 </span><span class="lineNoCov">          0 :     GDrawBindSelection(NULL,sn_user1,&quot;FontForge&quot;);</span>
+<span class="lineNum">    1226 </span><span class="lineNoCov">          0 :     if ( unique &amp;&amp; GDrawSelectionOwned(NULL,sn_user1)) {</span>
+<span class="lineNum">    1227 </span>            :         /* Different event handler, not a dialog */
+<span class="lineNum">    1228 </span><span class="lineNoCov">          0 :         wattrs.is_dlg = false;</span>
+<span class="lineNum">    1229 </span><span class="lineNoCov">          0 :         splashw = GDrawCreateTopWindow(NULL,&amp;pos,request_e_h,NULL,&amp;wattrs);</span>
+<span class="lineNum">    1230 </span><span class="lineNoCov">          0 :         PingOtherFontForge(argc,argv);</span>
+<span class="lineNum">    1231 </span>            :     } else {
+<span class="lineNum">    1232 </span><span class="lineNoCov">          0 :         if ( quit_request )</span>
+<span class="lineNum">    1233 </span><span class="lineNoCov">          0 : exit( 0 );</span>
+<span class="lineNum">    1234 </span><span class="lineNoCov">          0 :         splashw = GDrawCreateTopWindow(NULL,&amp;pos,splash_e_h,NULL,&amp;wattrs);</span>
+<span class="lineNum">    1235 </span>            :     }
+<span class="lineNum">    1236 </span>            : 
+<span class="lineNum">    1237 </span><span class="lineNoCov">          0 :     memset(&amp;rq,0,sizeof(rq));</span>
+<span class="lineNum">    1238 </span><span class="lineNoCov">          0 :     rq.utf8_family_name = SERIF_UI_FAMILIES;</span>
+<span class="lineNum">    1239 </span><span class="lineNoCov">          0 :     rq.point_size = 12;</span>
+<span class="lineNum">    1240 </span><span class="lineNoCov">          0 :     rq.weight = 400;</span>
+<span class="lineNum">    1241 </span><span class="lineNoCov">          0 :     splash_font = GDrawInstanciateFont(NULL,&amp;rq);</span>
+<span class="lineNum">    1242 </span><span class="lineNoCov">          0 :     splash_font = GResourceFindFont(&quot;Splash.Font&quot;,splash_font);</span>
+<span class="lineNum">    1243 </span><span class="lineNoCov">          0 :     GDrawDecomposeFont(splash_font, &amp;rq);</span>
+<span class="lineNum">    1244 </span><span class="lineNoCov">          0 :     rq.style = fs_italic;</span>
+<span class="lineNum">    1245 </span><span class="lineNoCov">          0 :     splash_italic = GDrawInstanciateFont(NULL,&amp;rq);</span>
+<span class="lineNum">    1246 </span><span class="lineNoCov">          0 :     splash_italic = GResourceFindFont(&quot;Splash.ItalicFont&quot;,splash_italic);</span>
+<span class="lineNum">    1247 </span><span class="lineNoCov">          0 :     GDrawSetFont(splashw,splash_font);</span>
+<span class="lineNum">    1248 </span>            : 
+<span class="lineNum">    1249 </span><span class="lineNoCov">          0 :     SplashLayout();</span>
+<span class="lineNum">    1250 </span><span class="lineNoCov">          0 :     localsplash = splash;</span>
+<span class="lineNum">    1251 </span>            : 
+<span class="lineNum">    1252 </span><span class="lineNoCov">          0 :    if ( localsplash &amp;&amp; !listen_to_apple_events )</span>
+<span class="lineNum">    1253 </span><span class="lineNoCov">          0 :         start_splash_screen();</span>
+<span class="lineNum">    1254 </span>            : 
+<span class="lineNum">    1255 </span>            :     //
+<span class="lineNum">    1256 </span>            :     // The below call will initialize the fontconfig cache if required.
+<span class="lineNum">    1257 </span>            :     // That can take a while the first time it happens.
+<span class="lineNum">    1258 </span>            :     //
+<span class="lineNum">    1259 </span><span class="lineNoCov">          0 :    GDrawWindowFontMetrics(splashw,splash_font,&amp;as,&amp;ds,&amp;ld);</span>
+<span class="lineNum">    1260 </span><span class="lineNoCov">          0 :    fh = as+ds+ld;</span>
+<span class="lineNum">    1261 </span>            : 
+<span class="lineNum">    1262 </span><span class="lineNoCov">          0 :     if ( AutoSaveFrequency&gt;0 )</span>
+<span class="lineNum">    1263 </span><span class="lineNoCov">          0 :         autosave_timer=GDrawRequestTimer(splashw,2*AutoSaveFrequency*1000,AutoSaveFrequency*1000,NULL);</span>
+<span class="lineNum">    1264 </span>            : 
+<span class="lineNum">    1265 </span><span class="lineNoCov">          0 :     GDrawProcessPendingEvents(NULL);</span>
+<span class="lineNum">    1266 </span><span class="lineNoCov">          0 :     GDrawSetBuildCharHooks(BuildCharHook,InsCharHook);</span>
+<span class="lineNum">    1267 </span>            : 
+<span class="lineNum">    1268 </span><span class="lineNoCov">          0 :     any = 0;</span>
+<span class="lineNum">    1269 </span><span class="lineNoCov">          0 :     if ( recover==-1 )</span>
+<span class="lineNum">    1270 </span><span class="lineNoCov">          0 :         CleanAutoRecovery();</span>
+<span class="lineNum">    1271 </span><span class="lineNoCov">          0 :     else if ( recover )</span>
+<span class="lineNum">    1272 </span><span class="lineNoCov">          0 :         any = DoAutoRecoveryExtended( recover-1 );</span>
+<span class="lineNum">    1273 </span>            :                         
+<span class="lineNum">    1274 </span><span class="lineNoCov">          0 :     openflags = 0;</span>
+<span class="lineNum">    1275 </span><span class="lineNoCov">          0 :     for ( i=1; i&lt;argc; ++i ) {</span>
+<span class="lineNum">    1276 </span>            :         char buffer[1025];
+<span class="lineNum">    1277 </span><span class="lineNoCov">          0 :         char *pt = argv[i];</span>
+<span class="lineNum">    1278 </span>            : 
+<span class="lineNum">    1279 </span><span class="lineNoCov">          0 :         GDrawProcessPendingEvents(NULL);</span>
+<span class="lineNum">    1280 </span><span class="lineNoCov">          0 :         if ( pt[0]=='-' &amp;&amp; pt[1]=='-' &amp;&amp; pt[2]!='\0')</span>
+<span class="lineNum">    1281 </span><span class="lineNoCov">          0 :             ++pt;</span>
+<span class="lineNum">    1282 </span><span class="lineNoCov">          0 :         if ( strcmp(pt,&quot;-new&quot;)==0 ) {</span>
+<span class="lineNum">    1283 </span><span class="lineNoCov">          0 :             FontNew();</span>
+<span class="lineNum">    1284 </span><span class="lineNoCov">          0 :             any = 1;</span>
+<span class="lineNum">    1285 </span>            : #  if HANYANG
+<span class="lineNum">    1286 </span>            :         } else if ( strcmp(pt,&quot;-newkorean&quot;)==0 ) {
+<span class="lineNum">    1287 </span>            :             MenuNewComposition(NULL,NULL,NULL);
+<span class="lineNum">    1288 </span>            :             any = 1;
+<span class="lineNum">    1289 </span>            : #  endif
+<span class="lineNum">    1290 </span><span class="lineNoCov">          0 :         } else if ( !strcmp(pt,&quot;-SkipPythonInitFiles&quot;)) {</span>
+<span class="lineNum">    1291 </span>            :             // already handled above.
+<span class="lineNum">    1292 </span><span class="lineNoCov">          0 :         } else if ( strcmp(pt,&quot;-last&quot;)==0 ) {</span>
+<span class="lineNum">    1293 </span><span class="lineNoCov">          0 :             if ( next_recent&lt;RECENT_MAX &amp;&amp; RecentFiles[next_recent]!=NULL )</span>
+<span class="lineNum">    1294 </span><span class="lineNoCov">          0 :                 if ( ViewPostScriptFont(RecentFiles[next_recent++],openflags))</span>
+<span class="lineNum">    1295 </span><span class="lineNoCov">          0 :                     any = 1;</span>
+<span class="lineNum">    1296 </span><span class="lineNoCov">          0 :         } else if ( strcmp(pt,&quot;-sync&quot;)==0 || strcmp(pt,&quot;-memory&quot;)==0 ||</span>
+<span class="lineNum">    1297 </span><span class="lineNoCov">          0 :                     strcmp(pt,&quot;-nosplash&quot;)==0 || strcmp(pt,&quot;-recover=none&quot;)==0 ||</span>
+<span class="lineNum">    1298 </span><span class="lineNoCov">          0 :                     strcmp(pt,&quot;-recover=clean&quot;)==0 || strcmp(pt,&quot;-recover=auto&quot;)==0 ||</span>
+<span class="lineNum">    1299 </span><span class="lineNoCov">          0 :                     strcmp(pt,&quot;-dontopenxdevices&quot;)==0 || strcmp(pt,&quot;-unique&quot;)==0 ||</span>
+<span class="lineNum">    1300 </span><span class="lineNoCov">          0 :                     strncmp(pt,&quot;-usecairo&quot;,strlen(&quot;-usecairo&quot;))==0 ||</span>
+<span class="lineNum">    1301 </span><span class="lineNoCov">          0 :                     strcmp(pt,&quot;-home&quot;)==0 || strcmp(pt,&quot;-quiet&quot;)==0</span>
+<span class="lineNum">    1302 </span><span class="lineNoCov">          0 :                     || strcmp(pt,&quot;-forceuihidden&quot;)==0 )</span>
+<span class="lineNum">    1303 </span>            :             /* Already done, needed to be before display opened */;
+<span class="lineNum">    1304 </span><span class="lineNoCov">          0 :         else if ( strncmp(pt,&quot;-psn_&quot;,5)==0 )</span>
+<span class="lineNum">    1305 </span>            :             /* Already done */;
+<span class="lineNum">    1306 </span><span class="lineNoCov">          0 :         else if ( (strcmp(pt,&quot;-depth&quot;)==0 || strcmp(pt,&quot;-vc&quot;)==0 ||</span>
+<span class="lineNum">    1307 </span><span class="lineNoCov">          0 :                     strcmp(pt,&quot;-cmap&quot;)==0 || strcmp(pt,&quot;-colormap&quot;)==0 ||</span>
+<span class="lineNum">    1308 </span><span class="lineNoCov">          0 :                     strcmp(pt,&quot;-keyboard&quot;)==0 ||</span>
+<span class="lineNum">    1309 </span><span class="lineNoCov">          0 :                     strcmp(pt,&quot;-display&quot;)==0 || strcmp(pt,&quot;-recover&quot;)==0 ) &amp;&amp;</span>
+<span class="lineNum">    1310 </span><span class="lineNoCov">          0 :                 i&lt;argc-1 )</span>
+<span class="lineNum">    1311 </span><span class="lineNoCov">          0 :             ++i; /* Already done, needed to be before display opened */</span>
+<span class="lineNum">    1312 </span><span class="lineNoCov">          0 :         else if ( strcmp(pt,&quot;-allglyphs&quot;)==0 )</span>
+<span class="lineNum">    1313 </span><span class="lineNoCov">          0 :             openflags |= of_all_glyphs_in_ttc;</span>
+<span class="lineNum">    1314 </span><span class="lineNoCov">          0 :         else if ( strcmp(pt,&quot;-open&quot;)==0 )</span>
+<span class="lineNum">    1315 </span><span class="lineNoCov">          0 :             doopen = true;</span>
+<span class="lineNum">    1316 </span>            :         else {
+<span class="lineNum">    1317 </span><span class="lineNoCov">          0 :             printf(&quot;else argv[i]:%s\n&quot;, argv[i] );</span>
+<span class="lineNum">    1318 </span><span class="lineNoCov">          0 :             if ( strstr(argv[i],&quot;://&quot;)!=NULL ) {              /* Assume an absolute URL */</span>
+<span class="lineNum">    1319 </span><span class="lineNoCov">          0 :                 strncpy(buffer,argv[i],sizeof(buffer));</span>
+<span class="lineNum">    1320 </span><span class="lineNoCov">          0 :                 buffer[sizeof(buffer)-1]= '\0';</span>
+<span class="lineNum">    1321 </span>            :             } else
+<span class="lineNum">    1322 </span><span class="lineNoCov">          0 :                 GFileGetAbsoluteName(argv[i],buffer,sizeof(buffer));</span>
+<span class="lineNum">    1323 </span><span class="lineNoCov">          0 :             if ( GFileIsDir(buffer) || (strstr(buffer,&quot;://&quot;)!=NULL &amp;&amp; buffer[strlen(buffer)-1]=='/')) {</span>
+<span class="lineNum">    1324 </span>            :                 char *fname;
+<span class="lineNum">    1325 </span><span class="lineNoCov">          0 :                 fname = malloc(strlen(buffer)+strlen(&quot;/glyphs/contents.plist&quot;)+1);</span>
+<span class="lineNum">    1326 </span><span class="lineNoCov">          0 :                 strcpy(fname,buffer); strcat(fname,&quot;/glyphs/contents.plist&quot;);</span>
+<span class="lineNum">    1327 </span><span class="lineNoCov">          0 :                 if ( GFileExists(fname)) {</span>
+<span class="lineNum">    1328 </span>            :                     /* It's probably a Unified Font Object directory */
+<span class="lineNum">    1329 </span><span class="lineNoCov">          0 :                     free(fname);</span>
+<span class="lineNum">    1330 </span><span class="lineNoCov">          0 :                     if ( ViewPostScriptFont(buffer,openflags) )</span>
+<span class="lineNum">    1331 </span><span class="lineNoCov">          0 :                         any = 1;</span>
+<span class="lineNum">    1332 </span>            :                 } else {
+<span class="lineNum">    1333 </span><span class="lineNoCov">          0 :                     strcpy(fname,buffer); strcat(fname,&quot;/font.props&quot;);</span>
+<span class="lineNum">    1334 </span><span class="lineNoCov">          0 :                     if ( GFileExists(fname)) {</span>
+<span class="lineNum">    1335 </span>            :                         /* It's probably a sf dir collection */
+<span class="lineNum">    1336 </span><span class="lineNoCov">          0 :                         free(fname);</span>
+<span class="lineNum">    1337 </span><span class="lineNoCov">          0 :                         if ( ViewPostScriptFont(buffer,openflags) )</span>
+<span class="lineNum">    1338 </span><span class="lineNoCov">          0 :                             any = 1;</span>
+<span class="lineNum">    1339 </span>            :                     } else {
+<span class="lineNum">    1340 </span><span class="lineNoCov">          0 :                         free(fname);</span>
+<span class="lineNum">    1341 </span><span class="lineNoCov">          0 :                         if ( buffer[strlen(buffer)-1]!='/' ) {</span>
+<span class="lineNum">    1342 </span>            :                             /* If dirname doesn't end in &quot;/&quot; we'll be looking in parent dir */
+<span class="lineNum">    1343 </span><span class="lineNoCov">          0 :                             buffer[strlen(buffer)+1]='\0';</span>
+<span class="lineNum">    1344 </span><span class="lineNoCov">          0 :                             buffer[strlen(buffer)] = '/';</span>
+<span class="lineNum">    1345 </span>            :                         }
+<span class="lineNum">    1346 </span><span class="lineNoCov">          0 :                         fname = GetPostScriptFontName(buffer,false);</span>
+<span class="lineNum">    1347 </span><span class="lineNoCov">          0 :                         if ( fname!=NULL )</span>
+<span class="lineNum">    1348 </span><span class="lineNoCov">          0 :                             ViewPostScriptFont(fname,openflags);</span>
+<span class="lineNum">    1349 </span><span class="lineNoCov">          0 :                         any = 1;        /* Even if we didn't get a font, don't bring up dlg again */</span>
+<span class="lineNum">    1350 </span><span class="lineNoCov">          0 :                         free(fname);</span>
+<span class="lineNum">    1351 </span>            :                     }
+<span class="lineNum">    1352 </span>            :                 }
+<span class="lineNum">    1353 </span><span class="lineNoCov">          0 :             } else if ( ViewPostScriptFont(buffer,openflags)!=0 )</span>
+<span class="lineNum">    1354 </span><span class="lineNoCov">          0 :                 any = 1;</span>
+<span class="lineNum">    1355 </span>            :         }
+<span class="lineNum">    1356 </span>            :     }
+<span class="lineNum">    1357 </span><span class="lineNoCov">          0 :     if ( !any &amp;&amp; !doopen )</span>
+<span class="lineNum">    1358 </span><span class="lineNoCov">          0 :         any = ReopenLastFonts();</span>
+<span class="lineNum">    1359 </span>            : 
+<span class="lineNum">    1360 </span><span class="lineNoCov">          0 :     collabclient_ensureClientBeacon();</span>
+<span class="lineNum">    1361 </span><span class="lineNoCov">          0 :     collabclient_sniffForLocalServer();</span>
+<span class="lineNum">    1362 </span>            : #ifndef _NO_PYTHON
+<span class="lineNum">    1363 </span><span class="lineNoCov">          0 :     PythonUI_namedpipe_Init();</span>
+<span class="lineNum">    1364 </span>            : #endif
+<span class="lineNum">    1365 </span>            : 
+<span class="lineNum">    1366 </span>            : #if defined(__Mac)
+<span class="lineNum">    1367 </span>            :     if ( listen_to_apple_events ) {
+<span class="lineNum">    1368 </span>            :         install_apple_event_handlers();
+<span class="lineNum">    1369 </span>            :         install_mac_timer();
+<span class="lineNum">    1370 </span>            :         setup_cocoa_app();
+<span class="lineNum">    1371 </span>            : 
+<span class="lineNum">    1372 </span>            :         
+<span class="lineNum">    1373 </span>            :         // WARNING: See declaration of RunApplicationEventLoop() above as to
+<span class="lineNum">    1374 </span>            :         // why you might not want to call that function anymore.
+<span class="lineNum">    1375 </span>            :         // RunApplicationEventLoop();
+<span class="lineNum">    1376 </span>            :         
+<span class="lineNum">    1377 </span>            :     } else
+<span class="lineNum">    1378 </span>            : #endif
+<span class="lineNum">    1379 </span><span class="lineNoCov">          0 :     if ( doopen || !any )</span>
+<span class="lineNum">    1380 </span><span class="lineNoCov">          0 :         _FVMenuOpen(NULL);</span>
+<span class="lineNum">    1381 </span><span class="lineNoCov">          0 :     GDrawEventLoop(NULL);</span>
+<span class="lineNum">    1382 </span><span class="lineNoCov">          0 :     GDrawDestroyDisplays();</span>
+<span class="lineNum">    1383 </span>            : 
+<span class="lineNum">    1384 </span>            : #ifndef _NO_PYTHON
+<span class="lineNum">    1385 </span>            : /*# ifndef GWW_TEST*/
+<span class="lineNum">    1386 </span><span class="lineNoCov">          0 :     FontForge_FinalizeEmbeddedPython(); /* !!!!!! debug (valgrind doesn't like python) */</span>
+<span class="lineNum">    1387 </span>            : /*# endif*/
+<span class="lineNum">    1388 </span>            : #endif
+<span class="lineNum">    1389 </span>            : 
+<span class="lineNum">    1390 </span>            :     // These free menu translations, mostly.
+<span class="lineNum">    1391 </span><span class="lineNoCov">          0 :     BitmapViewFinishNonStatic();</span>
+<span class="lineNum">    1392 </span><span class="lineNoCov">          0 :     MetricsViewFinishNonStatic();</span>
+<span class="lineNum">    1393 </span><span class="lineNoCov">          0 :     CharViewFinishNonStatic();</span>
+<span class="lineNum">    1394 </span><span class="lineNoCov">          0 :     FontViewFinishNonStatic();</span>
+<span class="lineNum">    1395 </span>            : 
+<span class="lineNum">    1396 </span><span class="lineNoCov">          0 :     ClearImageCache(); // This frees the contents of imagecache.</span>
+<span class="lineNum">    1397 </span><span class="lineNoCov">          0 :     hotkeysSave();</span>
+<span class="lineNum">    1398 </span><span class="lineNoCov">          0 :     LastFonts_Save();</span>
+<span class="lineNum">    1399 </span>            : 
+<span class="lineNum">    1400 </span>            : #ifndef _NO_LIBUNICODENAMES
+<span class="lineNum">    1401 </span>            :     uninm_names_db_close(names_db);     /* close this database before exiting */
+<span class="lineNum">    1402 </span>            :     uninm_blocks_db_close(blocks_db);
+<span class="lineNum">    1403 </span>            : #endif
+<span class="lineNum">    1404 </span>            : 
+<span class="lineNum">    1405 </span><span class="lineNoCov">          0 :     lt_dlexit();</span>
+<span class="lineNum">    1406 </span>            : 
+<span class="lineNum">    1407 </span><span class="lineNoCov">          0 : return( 0 );</span>
+<span class="lineNum">    1408 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

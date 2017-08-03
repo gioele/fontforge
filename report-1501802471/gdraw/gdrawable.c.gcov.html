@@ -1,0 +1,356 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - gdraw/gdrawable.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gdraw</a> - gdrawable.c<span style="font-size: 80%;"> (source / <a href="gdrawable.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">119</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">15</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2007-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &quot;gdraw.h&quot;
+<span class="lineNum">      28 </span>            : #include &quot;gkeysym.h&quot;
+<span class="lineNum">      29 </span>            : #include &quot;gresource.h&quot;
+<span class="lineNum">      30 </span>            : #include &quot;gwidget.h&quot;
+<span class="lineNum">      31 </span>            : #include &quot;ggadgetP.h&quot;
+<span class="lineNum">      32 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span>            : static GBox gdrawable_box = GBOX_EMPTY; /* Don't initialize here */
+<span class="lineNum">      35 </span>            : static FontInstance *gdrawable_font = NULL;
+<span class="lineNum">      36 </span>            : static int gdrawable_inited = false;
+<span class="lineNum">      37 </span>            : 
+<span class="lineNum">      38 </span>            : static GResInfo gdrawable_ri = {
+<span class="lineNum">      39 </span>            :     NULL, &amp;ggadget_ri, NULL,NULL,
+<span class="lineNum">      40 </span>            :     &amp;gdrawable_box,
+<span class="lineNum">      41 </span>            :     NULL,
+<span class="lineNum">      42 </span>            :     NULL,
+<span class="lineNum">      43 </span>            :     NULL,
+<span class="lineNum">      44 </span>            :     N_(&quot;Drawing Area&quot;),
+<span class="lineNum">      45 </span>            :     N_(&quot;A canvas (sub-window) wrapped up in a gadget, for drawing&quot;),
+<span class="lineNum">      46 </span>            :     &quot;GDrawable&quot;,
+<span class="lineNum">      47 </span>            :     &quot;Gdraw&quot;,
+<span class="lineNum">      48 </span>            :     false,
+<span class="lineNum">      49 </span>            :     omf_border_width|omf_padding|omf_border_type,
+<span class="lineNum">      50 </span>            :     NULL,
+<span class="lineNum">      51 </span>            :     GBOX_EMPTY,
+<span class="lineNum">      52 </span>            :     NULL,
+<span class="lineNum">      53 </span>            :     NULL,
+<span class="lineNum">      54 </span>            :     NULL
+<a name="55"><span class="lineNum">      55 </span>            : };</a>
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 : static void GDrawableInit() {</span>
+<span class="lineNum">      58 </span>            : 
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :     GGadgetInit();</span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 :     _GGadgetCopyDefaultBox(&amp;gdrawable_box);</span>
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :     gdrawable_box.border_width = gdrawable_box.padding = 0;</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :     gdrawable_box.border_type = bt_none;</span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :     gdrawable_font = _GGadgetInitDefaultBox(&quot;GDrawable.&quot;,&amp;gdrawable_box,NULL);</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :     gdrawable_inited = true;</span>
+<a name="65"><span class="lineNum">      65 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      66 </span>            : 
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 : static int gdrawable_expose(GWindow pixmap, GGadget *g, GEvent *event) {</span>
+<span class="lineNum">      68 </span>            :     GRect old;
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :     if ( g-&gt;state == gs_invisible )</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">      72 </span>            : 
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :     GDrawPushClip(pixmap,&amp;g-&gt;r,&amp;old);</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :     GBoxDrawBorder(pixmap,&amp;g-&gt;r,g-&gt;box,g-&gt;state,false);</span>
+<span class="lineNum">      75 </span>            : 
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :     GDrawPopClip(pixmap,&amp;old);</span>
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="78"><span class="lineNum">      78 </span>            : }</a>
+<span class="lineNum">      79 </span>            : 
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 : static int gdrawable_mouse(GGadget *g, GEvent *event) {</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 : return( event-&gt;type==et_mousedown || event-&gt;type==et_mouseup );</span>
+<a name="82"><span class="lineNum">      82 </span>            : }</a>
+<span class="lineNum">      83 </span>            : 
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 : static int gdrawable_key(GGadget *g, GEvent *event) {</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 : return(false);</span>
+<a name="86"><span class="lineNum">      86 </span>            : }</a>
+<span class="lineNum">      87 </span>            : 
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 : static void gdrawable_redraw(GGadget *g ) {</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :     GDrawable *gd = (GDrawable *) g;</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :     if ( gd-&gt;gw!=NULL )</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(gd-&gt;gw,NULL,true);</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :     _ggadget_redraw(g);</span>
+<a name="93"><span class="lineNum">      93 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      94 </span>            : 
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 : static void gdrawable_move(GGadget *g, int32 x, int32 y) {</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :     GDrawable *gd = (GDrawable *) g;</span>
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :     if ( gd-&gt;gw!=NULL )</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :         GDrawMove(gd-&gt;gw,x+(g-&gt;inner.x-g-&gt;r.x),y+(g-&gt;inner.y-g-&gt;r.y));</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :     _ggadget_move(g,x,y);</span>
+<a name="101"><span class="lineNum">     101 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 : static void gdrawable_resize(GGadget *g, int32 width, int32 height ) {</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :     GDrawable *gd = (GDrawable *) g;</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :     int bp = GBoxBorderWidth(g-&gt;base,g-&gt;box);</span>
+<span class="lineNum">     106 </span>            : 
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :     if ( gd-&gt;gw!=NULL )</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :         GDrawResize(gd-&gt;gw,width - 2*bp, height - 2*bp);</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :     _ggadget_resize(g,width, height);</span>
+<a name="110"><span class="lineNum">     110 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     111 </span>            : 
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 : static void gdrawable_setvisible(GGadget *g, int visible ) {</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :     GDrawable *gd = (GDrawable *) g;</span>
+<span class="lineNum">     114 </span>            : 
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :     if ( gd-&gt;gw!=NULL )</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :         GDrawSetVisible(gd-&gt;gw,visible);</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :     _ggadget_setvisible(g,visible);</span>
+<a name="118"><span class="lineNum">     118 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     119 </span>            : 
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 : static void gdrawable_destroy(GGadget *g) {</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :     GDrawable *gd = (GDrawable *) g;</span>
+<span class="lineNum">     122 </span>            : 
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :     if ( gd-&gt;gw!=NULL ) {</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :         GDrawSetUserData(gd-&gt;gw,NULL);</span>
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 :         GDrawDestroyWindow(gd-&gt;gw);</span>
+<span class="lineNum">     126 </span>            :     }
+<span class="lineNum">     127 </span>            : 
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :     _ggadget_destroy(g);</span>
+<a name="129"><span class="lineNum">     129 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     130 </span>            : 
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 : static void GDrawableGetDesiredSize(GGadget *g, GRect *outer, GRect *inner) {</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :     int bp = GBoxBorderWidth(g-&gt;base,g-&gt;box);</span>
+<span class="lineNum">     133 </span>            : 
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :     if ( outer!=NULL ) {</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :         *outer = g-&gt;r;</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :         outer-&gt;width = g-&gt;desired_width; outer-&gt;height = g-&gt;desired_height;</span>
+<span class="lineNum">     137 </span>            :     }
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :     if ( inner!=NULL ) {</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :         *inner = g-&gt;inner;</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :         inner-&gt;width = g-&gt;desired_width-2*bp; inner-&gt;height = g-&gt;desired_height-2*bp;</span>
+<span class="lineNum">     141 </span>            :     }
+<a name="142"><span class="lineNum">     142 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     143 </span>            : 
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 : static int gdrawable_FillsWindow(GGadget *g) {</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 : return( g-&gt;prev==NULL &amp;&amp; _GWidgetGetGadgets(g-&gt;base)==g );</span>
+<span class="lineNum">     146 </span>            : }
+<span class="lineNum">     147 </span>            : 
+<span class="lineNum">     148 </span>            : struct gfuncs gdrawable_funcs = {
+<span class="lineNum">     149 </span>            :     0,
+<span class="lineNum">     150 </span>            :     sizeof(struct gfuncs),
+<span class="lineNum">     151 </span>            : 
+<span class="lineNum">     152 </span>            :     gdrawable_expose,
+<span class="lineNum">     153 </span>            :     gdrawable_mouse,
+<span class="lineNum">     154 </span>            :     gdrawable_key,
+<span class="lineNum">     155 </span>            :     NULL,
+<span class="lineNum">     156 </span>            :     NULL,
+<span class="lineNum">     157 </span>            :     NULL,
+<span class="lineNum">     158 </span>            :     NULL,
+<span class="lineNum">     159 </span>            : 
+<span class="lineNum">     160 </span>            :     gdrawable_redraw,
+<span class="lineNum">     161 </span>            :     gdrawable_move,
+<span class="lineNum">     162 </span>            :     gdrawable_resize,
+<span class="lineNum">     163 </span>            :     gdrawable_setvisible,
+<span class="lineNum">     164 </span>            :     _ggadget_setenabled,
+<span class="lineNum">     165 </span>            :     _ggadget_getsize,
+<span class="lineNum">     166 </span>            :     _ggadget_getinnersize,
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span>            :     gdrawable_destroy,
+<span class="lineNum">     169 </span>            : 
+<span class="lineNum">     170 </span>            :     NULL,
+<span class="lineNum">     171 </span>            :     NULL,
+<span class="lineNum">     172 </span>            :     NULL,
+<span class="lineNum">     173 </span>            :     NULL,
+<span class="lineNum">     174 </span>            :     NULL,
+<span class="lineNum">     175 </span>            :     NULL,
+<span class="lineNum">     176 </span>            :     NULL,
+<span class="lineNum">     177 </span>            : 
+<span class="lineNum">     178 </span>            :     NULL,
+<span class="lineNum">     179 </span>            :     NULL,
+<span class="lineNum">     180 </span>            :     NULL,
+<span class="lineNum">     181 </span>            :     NULL,
+<span class="lineNum">     182 </span>            :     NULL,
+<span class="lineNum">     183 </span>            :     NULL,
+<span class="lineNum">     184 </span>            :     NULL,
+<span class="lineNum">     185 </span>            :     NULL,
+<span class="lineNum">     186 </span>            :     NULL,
+<span class="lineNum">     187 </span>            :     NULL,
+<span class="lineNum">     188 </span>            :     NULL,
+<span class="lineNum">     189 </span>            : 
+<span class="lineNum">     190 </span>            :     GDrawableGetDesiredSize,
+<span class="lineNum">     191 </span>            :     _ggadget_setDesiredSize,
+<span class="lineNum">     192 </span>            :     gdrawable_FillsWindow,
+<span class="lineNum">     193 </span>            :     NULL
+<a name="194"><span class="lineNum">     194 </span>            : };</a>
+<span class="lineNum">     195 </span>            : 
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 : static int drawable_e_h(GWindow pixmap, GEvent *event) {</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :     GWindow gw = event-&gt;type==et_expose ? event-&gt;w : pixmap;</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :     GGadget *g = _GWidgetGetGadgets(GDrawGetParentWindow(gw));</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :     GDrawable *gdr = NULL;</span>
+<span class="lineNum">     200 </span>            : 
+<span class="lineNum">     201 </span>            :     /* Figure out our ggadget */
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :     while ( g!=NULL ) {</span>
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :         if ( g-&gt;funcs == &amp;gdrawable_funcs &amp;&amp; ((GDrawable *) g)-&gt;gw==gw ) {</span>
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :             gdr = (GDrawable *) g;</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     206 </span>            :         }
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :         g = g-&gt;prev;</span>
+<span class="lineNum">     208 </span>            :     }
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :     if ( gdr==NULL )</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :     if ( event-&gt;type == et_destroy ) {</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :         gdr-&gt;gw = NULL;</span>
+<span class="lineNum">     213 </span>            :     }
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :     if ( gdr-&gt;e_h!=NULL )</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 : return( (gdr-&gt;e_h)(pixmap,event));</span>
+<span class="lineNum">     216 </span>            : 
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 : return( false );</span>
+<a name="218"><span class="lineNum">     218 </span>            : }</a>
+<span class="lineNum">     219 </span>            : 
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 : GGadget *GDrawableCreate(struct gwindow *base, GGadgetData *gd,void *data) {</span>
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :     GDrawable *gdr = calloc(1,sizeof(GTabSet));</span>
+<span class="lineNum">     222 </span>            :     int bp;
+<span class="lineNum">     223 </span>            :     GRect r;
+<span class="lineNum">     224 </span>            :     GWindowAttrs childattrs;
+<span class="lineNum">     225 </span>            : 
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :     if ( !gdrawable_inited )</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :         GDrawableInit();</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :     gdr-&gt;g.funcs = &amp;gdrawable_funcs;</span>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :     _GGadget_Create(&amp;gdr-&gt;g,base,gd,data,&amp;gdrawable_box);</span>
+<span class="lineNum">     230 </span>            : 
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :     gdr-&gt;g.takes_input = false; gdr-&gt;g.takes_keyboard = false; gdr-&gt;g.focusable = false;</span>
+<span class="lineNum">     232 </span>            : 
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :     GDrawGetSize(base,&amp;r);</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :     if ( gd-&gt;pos.x &lt;= 0 )</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :         gdr-&gt;g.r.x = GDrawPointsToPixels(base,2);</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :     if ( gd-&gt;pos.y &lt;= 0 )</span>
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :         gdr-&gt;g.r.y = GDrawPointsToPixels(base,2);</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :     if ( gd-&gt;pos.width&lt;=0 )</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :         gdr-&gt;g.r.width = r.width - gdr-&gt;g.r.x - GDrawPointsToPixels(base,2);</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :     if ( gd-&gt;pos.height&lt;=0 ) {</span>
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :         gdr-&gt;g.r.height = r.height - gdr-&gt;g.r.y - GDrawPointsToPixels(base,26);</span>
+<span class="lineNum">     242 </span>            :     }
+<span class="lineNum">     243 </span>            : 
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :     bp = GBoxBorderWidth(base,gdr-&gt;g.box);</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :     gdr-&gt;g.inner = gdr-&gt;g.r;</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :     gdr-&gt;g.inner.x += bp; gdr-&gt;g.inner.width -= 2*bp;</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :     gdr-&gt;g.inner.y += bp; gdr-&gt;g.inner.height -= 2*bp;</span>
+<span class="lineNum">     248 </span>            : 
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :     gdr-&gt;g.desired_width = gdr-&gt;g.r.width;</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :     gdr-&gt;g.desired_height = gdr-&gt;g.r.height;</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :     gdr-&gt;e_h = gd-&gt;u.drawable_e_h;</span>
+<span class="lineNum">     252 </span>            : 
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :     memset(&amp;childattrs,0,sizeof(childattrs));</span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :     childattrs.mask = wam_events|wam_backcol;</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :     childattrs.event_masks = -1;</span>
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :     childattrs.background_color = gdr-&gt;g.box-&gt;main_background;</span>
+<span class="lineNum">     257 </span>            : 
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :     if ( !(gd-&gt;flags&amp;gg_tabset_nowindow) ) {</span>
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :         gdr-&gt;gw = GWidgetCreateSubWindow(base,&amp;gdr-&gt;g.inner,drawable_e_h,GDrawGetUserData(base),&amp;childattrs);</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :         if ( gd-&gt;flags&amp;gg_visible )</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :             GDrawSetVisible(gdr-&gt;gw,true);</span>
+<span class="lineNum">     262 </span>            :     }
+<span class="lineNum">     263 </span>            : 
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :     if ( gd-&gt;flags &amp; gg_group_end )</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :         _GGadgetCloseGroup(&amp;gdr-&gt;g);</span>
+<span class="lineNum">     266 </span>            : 
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 : return( &amp;gdr-&gt;g );</span>
+<a name="268"><span class="lineNum">     268 </span>            : }</a>
+<span class="lineNum">     269 </span>            : 
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 : GWindow GDrawableGetWindow(GGadget *g) {</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :     GDrawable *gd = (GDrawable *) g;</span>
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 : return( gd-&gt;gw );</span>
+<a name="273"><span class="lineNum">     273 </span>            : }</a>
+<span class="lineNum">     274 </span>            : 
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 : GResInfo *_GDrawableRIHead(void) {</span>
+<span class="lineNum">     276 </span>            : 
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :     if ( !gdrawable_inited )</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :         GDrawableInit();</span>
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 : return( &amp;gdrawable_ri );</span>
+<span class="lineNum">     280 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

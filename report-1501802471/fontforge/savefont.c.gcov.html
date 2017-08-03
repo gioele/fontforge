@@ -1,0 +1,1348 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforge/savefont.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforge</a> - savefont.c<span style="font-size: 80%;"> (source / <a href="savefont.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">321</td>
+            <td class="headerCovTableEntry">859</td>
+            <td class="headerCovTableEntryLo">37.4 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">9</td>
+            <td class="headerCovTableEntry">15</td>
+            <td class="headerCovTableEntryLo">60.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &lt;fontforge-config.h&gt;
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            : #include &quot;savefont.h&quot;
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span>            : #include &quot;autohint.h&quot;
+<span class="lineNum">      32 </span>            : #include &quot;cvundoes.h&quot;
+<span class="lineNum">      33 </span>            : #include &quot;dumpbdf.h&quot;
+<span class="lineNum">      34 </span>            : #include &quot;dumppfa.h&quot;
+<span class="lineNum">      35 </span>            : #include &quot;fontforgevw.h&quot;
+<span class="lineNum">      36 </span>            : #include &quot;fvfonts.h&quot;
+<span class="lineNum">      37 </span>            : #include &quot;http.h&quot;
+<span class="lineNum">      38 </span>            : #include &quot;macbinary.h&quot;
+<span class="lineNum">      39 </span>            : #include &quot;namelist.h&quot;
+<span class="lineNum">      40 </span>            : #include &quot;palmfonts.h&quot;
+<span class="lineNum">      41 </span>            : #include &quot;splinefill.h&quot;
+<span class="lineNum">      42 </span>            : #include &quot;splineoverlap.h&quot;
+<span class="lineNum">      43 </span>            : #include &quot;splinesaveafm.h&quot;
+<span class="lineNum">      44 </span>            : #include &quot;splineutil.h&quot;
+<span class="lineNum">      45 </span>            : #include &quot;svg.h&quot;
+<span class="lineNum">      46 </span>            : #include &quot;tottf.h&quot;
+<span class="lineNum">      47 </span>            : #include &quot;winfonts.h&quot;
+<span class="lineNum">      48 </span>            : #include &quot;woff.h&quot;
+<span class="lineNum">      49 </span>            : #include &quot;ustring.h&quot;
+<span class="lineNum">      50 </span>            : #include &quot;gfile.h&quot;
+<span class="lineNum">      51 </span>            : #include &quot;gresource.h&quot;
+<span class="lineNum">      52 </span>            : #include &quot;utype.h&quot;
+<span class="lineNum">      53 </span>            : #include &quot;gio.h&quot;
+<span class="lineNum">      54 </span>            : #include &lt;stdlib.h&gt;
+<span class="lineNum">      55 </span>            : #include &lt;math.h&gt;
+<span class="lineNum">      56 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">      57 </span>            : #include &quot;psfont.h&quot;
+<span class="lineNum">      58 </span>            : 
+<span class="lineNum">      59 </span>            : int old_sfnt_flags = ttf_flag_otmode;
+<span class="lineNum">      60 </span>            : int old_ps_flags = ps_flag_afm|ps_flag_round;
+<span class="lineNum">      61 </span>            : int old_psotb_flags = ps_flag_afm;
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span>            : int oldformatstate = ff_pfb;
+<span class="lineNum">      64 </span>            : int oldbitmapstate = 0;
+<span class="lineNum">      65 </span>            : #if __Mac
+<span class="lineNum">      66 </span>            : const char *savefont_extensions[] = { &quot;.pfa&quot;, &quot;.pfb&quot;, &quot;.res&quot;, &quot;%s.pfb&quot;, &quot;.pfa&quot;, &quot;.pfb&quot;, &quot;.pt3&quot;, &quot;.ps&quot;,
+<span class="lineNum">      67 </span>            :         &quot;.cid&quot;, &quot;.cff&quot;, &quot;.cid.cff&quot;,
+<span class="lineNum">      68 </span>            :         &quot;.t42&quot;, &quot;.t11&quot;,
+<span class="lineNum">      69 </span>            :         &quot;.ttf&quot;, &quot;.ttf&quot;, &quot;.suit&quot;, &quot;.ttc&quot;, &quot;.dfont&quot;, &quot;.otf&quot;, &quot;.otf.dfont&quot;, &quot;.otf&quot;,
+<span class="lineNum">      70 </span>            :         &quot;.otf.dfont&quot;, &quot;.svg&quot;, &quot;.ufo&quot;, &quot;.woff&quot;, NULL };
+<span class="lineNum">      71 </span>            : const char *bitmapextensions[] = { &quot;-*.bdf&quot;, &quot;.ttf&quot;, &quot;.dfont&quot;, &quot;.ttf&quot;, &quot;.otb&quot;, &quot;.bmap&quot;, &quot;.dfont&quot;, &quot;.fon&quot;, &quot;-*.fnt&quot;, &quot;.pdb&quot;, &quot;-*.pt3&quot;, &quot;.none&quot;, NULL };
+<span class="lineNum">      72 </span>            : #else
+<span class="lineNum">      73 </span>            : const char *savefont_extensions[] = { &quot;.pfa&quot;, &quot;.pfb&quot;, &quot;.bin&quot;, &quot;%s.pfb&quot;, &quot;.pfa&quot;, &quot;.pfb&quot;, &quot;.pt3&quot;, &quot;.ps&quot;,
+<span class="lineNum">      74 </span>            :         &quot;.cid&quot;, &quot;.cff&quot;, &quot;.cid.cff&quot;,
+<span class="lineNum">      75 </span>            :         &quot;.t42&quot;, &quot;.t11&quot;,
+<span class="lineNum">      76 </span>            :         &quot;.ttf&quot;, &quot;.ttf&quot;, &quot;.ttf.bin&quot;, &quot;.ttc&quot;, &quot;.dfont&quot;, &quot;.otf&quot;, &quot;.otf.dfont&quot;, &quot;.otf&quot;,
+<span class="lineNum">      77 </span>            :         &quot;.otf.dfont&quot;, &quot;.svg&quot;,
+<span class="lineNum">      78 </span>            :         &quot;.ufo&quot;,
+<span class="lineNum">      79 </span>            :         &quot;.woff&quot;,
+<span class="lineNum">      80 </span>            : NULL };
+<span class="lineNum">      81 </span>            : const char *bitmapextensions[] = { &quot;-*.bdf&quot;, &quot;.ttf&quot;, &quot;.dfont&quot;, &quot;.ttf&quot;, &quot;.otb&quot;, &quot;.bmap.bin&quot;, &quot;.fon&quot;, &quot;-*.fnt&quot;, &quot;.pdb&quot;, &quot;-*.pt3&quot;, &quot;.none&quot;, NULL };
+<a name="82"><span class="lineNum">      82 </span>            : #endif</a>
+<span class="lineNum">      83 </span>            : 
+<span class="lineNum">      84 </span><span class="lineCov">          6 : static int WriteAfmFile(char *filename,SplineFont *sf, int formattype,</span>
+<span class="lineNum">      85 </span>            :         EncMap *map, int flags, SplineFont *fullsf, int layer) {
+<span class="lineNum">      86 </span><span class="lineCov">          6 :     char *buf = malloc(strlen(filename)+6), *pt, *pt2;</span>
+<span class="lineNum">      87 </span>            :     FILE *afm;
+<span class="lineNum">      88 </span>            :     int ret;
+<span class="lineNum">      89 </span><span class="lineCov">          6 :     int subtype = formattype;</span>
+<span class="lineNum">      90 </span>            : 
+<span class="lineNum">      91 </span><span class="lineCov">          6 :     if ( (formattype==ff_mma || formattype==ff_mmb) &amp;&amp; sf-&gt;mm!=NULL ) {</span>
+<span class="lineNum">      92 </span><span class="lineCov">          1 :         sf = sf-&gt;mm-&gt;normal;</span>
+<span class="lineNum">      93 </span><span class="lineCov">          1 :         subtype = ff_pfb;</span>
+<span class="lineNum">      94 </span>            :     }
+<span class="lineNum">      95 </span>            : 
+<span class="lineNum">      96 </span><span class="lineCov">          6 :     strcpy(buf,filename);</span>
+<span class="lineNum">      97 </span><span class="lineCov">          6 :     pt = strrchr(buf,'.');</span>
+<span class="lineNum">      98 </span><span class="lineCov">          6 :     if ( pt!=NULL &amp;&amp; (pt2=strrchr(buf,'/'))!=NULL &amp;&amp; pt&lt;pt2 )</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :         pt = NULL;</span>
+<span class="lineNum">     100 </span><span class="lineCov">          6 :     if ( pt==NULL )</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :         strcat(buf,&quot;.afm&quot;);</span>
+<span class="lineNum">     102 </span>            :     else
+<span class="lineNum">     103 </span><span class="lineCov">          6 :         strcpy(pt,&quot;.afm&quot;);</span>
+<span class="lineNum">     104 </span><span class="lineCov">          6 :     ff_progress_change_line1(_(&quot;Saving AFM File&quot;));</span>
+<span class="lineNum">     105 </span><span class="lineCov">          6 :     ff_progress_change_line2(buf);</span>
+<span class="lineNum">     106 </span><span class="lineCov">          6 :     if ( strstr(buf,&quot;://&quot;)==NULL )</span>
+<span class="lineNum">     107 </span><span class="lineCov">          6 :         afm = fopen(buf,&quot;w&quot;);</span>
+<span class="lineNum">     108 </span>            :     else
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :         afm = tmpfile();</span>
+<span class="lineNum">     110 </span><span class="lineCov">          6 :     if ( afm==NULL ) {</span>
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :         free(buf);</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     113 </span>            :     }
+<span class="lineNum">     114 </span><span class="lineCov">          6 :     ret = AfmSplineFont(afm,sf,subtype,map,flags&amp;ps_flag_afmwithmarks,fullsf,layer);</span>
+<span class="lineNum">     115 </span><span class="lineCov">          6 :     if ( ret &amp;&amp; strstr(buf,&quot;://&quot;)!=NULL )</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :         ret = URLFromFile(buf,afm);</span>
+<span class="lineNum">     117 </span><span class="lineCov">          6 :     free(buf);</span>
+<span class="lineNum">     118 </span><span class="lineCov">          6 :     if ( fclose(afm)==-1 )</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     120 </span><span class="lineCov">          6 :     if ( !ret )</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     122 </span>            : 
+<span class="lineNum">     123 </span><span class="lineCov">          6 :     if ( (formattype==ff_mma || formattype==ff_mmb) &amp;&amp; sf-&gt;mm!=NULL ) {</span>
+<span class="lineNum">     124 </span><span class="lineCov">          1 :         MMSet *mm = sf-&gt;mm;</span>
+<span class="lineNum">     125 </span>            :         int i;
+<span class="lineNum">     126 </span><span class="lineCov">          3 :         for ( i=0; i&lt;mm-&gt;instance_count; ++i ) {</span>
+<span class="lineNum">     127 </span><span class="lineCov">          2 :             sf = mm-&gt;instances[i];</span>
+<span class="lineNum">     128 </span><span class="lineCov">          2 :             buf = malloc(strlen(filename)+strlen(sf-&gt;fontname)+4+1);</span>
+<span class="lineNum">     129 </span><span class="lineCov">          2 :             strcpy(buf,filename);</span>
+<span class="lineNum">     130 </span><span class="lineCov">          2 :             pt = strrchr(buf,'/');</span>
+<span class="lineNum">     131 </span><span class="lineCov">          2 :             if ( pt==NULL ) pt = buf;</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :             else ++pt;</span>
+<span class="lineNum">     133 </span><span class="lineCov">          2 :             strcpy(pt,sf-&gt;fontname);</span>
+<span class="lineNum">     134 </span><span class="lineCov">          2 :             strcat(pt,&quot;.afm&quot;);</span>
+<span class="lineNum">     135 </span><span class="lineCov">          2 :             ff_progress_change_line2(buf);</span>
+<span class="lineNum">     136 </span><span class="lineCov">          2 :             afm = fopen(buf,&quot;w&quot;);</span>
+<span class="lineNum">     137 </span><span class="lineCov">          2 :             free(buf);</span>
+<span class="lineNum">     138 </span><span class="lineCov">          2 :             if ( afm==NULL )</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     140 </span><span class="lineCov">          2 :             ret = AfmSplineFont(afm,sf,subtype,map,flags&amp;ps_flag_afmwithmarks,NULL,layer);</span>
+<span class="lineNum">     141 </span><span class="lineCov">          2 :             if ( fclose(afm)==-1 )</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     143 </span><span class="lineCov">          2 :             if ( !ret )</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     145 </span>            :         }
+<span class="lineNum">     146 </span><span class="lineCov">          1 :         buf = malloc(strlen(filename)+8);</span>
+<span class="lineNum">     147 </span>            : 
+<span class="lineNum">     148 </span><span class="lineCov">          1 :         strcpy(buf,filename);</span>
+<span class="lineNum">     149 </span><span class="lineCov">          1 :         pt = strrchr(buf,'.');</span>
+<span class="lineNum">     150 </span><span class="lineCov">          1 :         if ( pt!=NULL &amp;&amp; (pt2=strrchr(buf,'/'))!=NULL &amp;&amp; pt&lt;pt2 )</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :             pt = NULL;</span>
+<span class="lineNum">     152 </span><span class="lineCov">          1 :         if ( pt==NULL )</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :             strcat(buf,&quot;.amfm&quot;);</span>
+<span class="lineNum">     154 </span>            :         else
+<span class="lineNum">     155 </span><span class="lineCov">          1 :             strcpy(pt,&quot;.amfm&quot;);</span>
+<span class="lineNum">     156 </span><span class="lineCov">          1 :         ff_progress_change_line2(buf);</span>
+<span class="lineNum">     157 </span><span class="lineCov">          1 :         afm = fopen(buf,&quot;w&quot;);</span>
+<span class="lineNum">     158 </span><span class="lineCov">          1 :         free(buf);</span>
+<span class="lineNum">     159 </span><span class="lineCov">          1 :         if ( afm==NULL )</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     161 </span><span class="lineCov">          1 :         ret = AmfmSplineFont(afm,mm,formattype,map,layer);</span>
+<span class="lineNum">     162 </span><span class="lineCov">          1 :         if ( fclose(afm)==-1 )</span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     164 </span>            :     }
+<span class="lineNum">     165 </span><span class="lineCov">          6 : return( ret );</span>
+<a name="166"><span class="lineNum">     166 </span>            : }</a>
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 : static int WriteTfmFile(char *filename,SplineFont *sf, EncMap *map,int layer) {</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :     char *buf = malloc(strlen(filename)+6), *pt, *pt2;</span>
+<span class="lineNum">     170 </span>            :     FILE *tfm, *enc;
+<span class="lineNum">     171 </span>            :     int ret;
+<span class="lineNum">     172 </span>            :     int i;
+<span class="lineNum">     173 </span>            :     const char *encname;
+<span class="lineNum">     174 </span>            : 
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :     strcpy(buf,filename);</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :     pt = strrchr(buf,'.');</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :     if ( pt!=NULL &amp;&amp; (pt2=strrchr(buf,'/'))!=NULL &amp;&amp; pt&lt;pt2 )</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :         pt = NULL;</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :     if ( pt==NULL )</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :         strcat(buf,&quot;.tfm&quot;);</span>
+<span class="lineNum">     181 </span>            :     else
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :         strcpy(pt,&quot;.tfm&quot;);</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :     ff_progress_change_line1(_(&quot;Saving TFM File&quot;));</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :     ff_progress_change_line2(buf);</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :     ff_progress_next(); /* Forces a refresh */</span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :     tfm = fopen(buf,&quot;wb&quot;);</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :     if ( tfm==NULL )</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :     ret = TfmSplineFont(tfm,sf,map,layer);</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :     if ( fclose(tfm)==-1 )</span>
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :         ret = 0;</span>
+<span class="lineNum">     192 </span>            : 
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :     pt = strrchr(buf,'.');</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :     strcpy(pt,&quot;.enc&quot;);</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :     enc = fopen(buf,&quot;wb&quot;);</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :     free(buf);</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :     if ( enc==NULL )</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     199 </span>            : 
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :     encname=NULL;</span>
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :     if ( sf-&gt;subfontcnt==0 &amp;&amp; map-&gt;enc!=&amp;custom )</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :         encname = EncodingName(map-&gt;enc );</span>
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :     if ( encname==NULL )</span>
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :         fprintf( enc, &quot;/%s-Enc [\n&quot;, sf-&gt;fontname );</span>
+<span class="lineNum">     205 </span>            :     else
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :         fprintf( enc, &quot;/%s [\n&quot;, encname );</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;map-&gt;enccount &amp;&amp; i&lt;256; ++i ) {</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :         if ( map-&gt;map[i]==-1 || !SCWorthOutputting(sf-&gt;glyphs[map-&gt;map[i]]) )</span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :             fprintf( enc, &quot; /.notdef&quot; );</span>
+<span class="lineNum">     210 </span>            :         else
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :             fprintf( enc, &quot; /%s&quot;, sf-&gt;glyphs[map-&gt;map[i]]-&gt;name );</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :         if ( (i&amp;0xf)==0 )</span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :             fprintf( enc, &quot;\t\t%% 0x%02x&quot;, i );</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :         putc('\n',enc);</span>
+<span class="lineNum">     215 </span>            :     }
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :     while ( i&lt;256 ) {</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :         fprintf( enc, &quot; /.notdef&quot; );</span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :         if ( (i&amp;0xf0)==0 )</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :             fprintf( enc, &quot;\t\t%% 0x%02x&quot;, i );</span>
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :         putc('\n',enc);</span>
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :         ++i;</span>
+<span class="lineNum">     222 </span>            :     }
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :     fprintf( enc, &quot;] def\n&quot; );</span>
+<span class="lineNum">     224 </span>            : 
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 :     if ( fclose(enc)==-1 )</span>
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :         ret = 0;</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 : return( ret );</span>
+<a name="228"><span class="lineNum">     228 </span>            : }</a>
+<span class="lineNum">     229 </span>            : 
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 : static int WriteOfmFile(char *filename,SplineFont *sf, EncMap *map,int layer) {</span>
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :     char *buf = malloc(strlen(filename)+6), *pt, *pt2;</span>
+<span class="lineNum">     232 </span>            :     FILE *tfm, *enc;
+<span class="lineNum">     233 </span>            :     int ret;
+<span class="lineNum">     234 </span>            :     int i;
+<span class="lineNum">     235 </span>            :     const char *encname;
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :     const char *texparamnames[] = { &quot;SLANT&quot;, &quot;SPACE&quot;, &quot;STRETCH&quot;, &quot;SHRINK&quot;, &quot;XHEIGHT&quot;, &quot;QUAD&quot;, &quot;EXTRASPACE&quot;, NULL };</span>
+<span class="lineNum">     237 </span>            : 
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :     strcpy(buf,filename);</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :     pt = strrchr(buf,'.');</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :     if ( pt!=NULL &amp;&amp; (pt2=strrchr(buf,'/'))!=NULL &amp;&amp; pt&lt;pt2 )</span>
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :         pt = NULL;</span>
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :     if ( pt==NULL )</span>
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :         strcat(buf,&quot;.ofm&quot;);</span>
+<span class="lineNum">     244 </span>            :     else
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :         strcpy(pt,&quot;.ofm&quot;);</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :     ff_progress_change_line1(_(&quot;Saving OFM File&quot;));</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :     ff_progress_change_line2(buf);</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :     ff_progress_next(); /* Forces a refresh */</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :     tfm = fopen(buf,&quot;wb&quot;);</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :     if ( tfm==NULL )</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :     ret = OfmSplineFont(tfm,sf,map,layer);</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :     if ( fclose(tfm)==-1 )</span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :         ret = 0;</span>
+<span class="lineNum">     255 </span>            : 
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :     pt = strrchr(buf,'.');</span>
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :     strcpy(pt,&quot;.cfg&quot;);</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :     enc = fopen(buf,&quot;wb&quot;);</span>
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :     free(buf);</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :     if ( enc==NULL )</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     262 </span>            : 
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :     fprintf( enc, &quot;VTITLE %s\n&quot;, sf-&gt;fontname );</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :     fprintf( enc, &quot;FAMILY %s\n&quot;, sf-&gt;familyname );</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :     encname=NULL;</span>
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :     if ( sf-&gt;subfontcnt==0 &amp;&amp; map-&gt;enc!=&amp;custom )</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :         encname = EncodingName(map-&gt;enc );</span>
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :     fprintf( enc, &quot;CODINGSCHEME %s\n&quot;, encname==NULL?encname:&quot;FONT-SPECIFIC&quot; );</span>
+<span class="lineNum">     269 </span>            : 
+<span class="lineNum">     270 </span>            :     /* OfmSplineFont has already called TeXDefaultParams, so we don't have to */
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :     fprintf( enc, &quot;EPSILON 0.090\n&quot; );                /* I have no idea what this means */</span>
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :     for ( i=0; texparamnames[i]!=NULL; ++i )</span>
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :         fprintf( enc, &quot;%s %g\n&quot;, texparamnames[i], sf-&gt;texdata.params[i]/(double) (1&lt;&lt;20) );</span>
+<span class="lineNum">     274 </span>            : 
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;map-&gt;enccount &amp;&amp; i&lt;65536; ++i ) {</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :         if ( map-&gt;map[i]!=-1 &amp;&amp; SCWorthOutputting(sf-&gt;glyphs[map-&gt;map[i]]) )</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :             fprintf( enc, &quot;%04X N %s\n&quot;, i, sf-&gt;glyphs[map-&gt;map[i]]-&gt;name );</span>
+<span class="lineNum">     278 </span>            :     }
+<span class="lineNum">     279 </span>            : 
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 :     if ( fclose(enc)==-1 )</span>
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :         ret = 0;</span>
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 : return( ret );</span>
+<span class="lineNum">     283 </span>            : }
+<span class="lineNum">     284 </span>            : 
+<span class="lineNum">     285 </span>            : #ifndef FONTFORGE_CONFIG_WRITE_PFM
+<a name="286"><span class="lineNum">     286 </span>            : static</a>
+<span class="lineNum">     287 </span>            : #endif
+<span class="lineNum">     288 </span><span class="lineCov">          3 : int WritePfmFile(char *filename,SplineFont *sf, EncMap *map,int layer) {</span>
+<span class="lineNum">     289 </span><span class="lineCov">          3 :     char *buf = malloc(strlen(filename)+6), *pt, *pt2;</span>
+<span class="lineNum">     290 </span>            :     FILE *pfm;
+<span class="lineNum">     291 </span>            :     int ret;
+<span class="lineNum">     292 </span>            : 
+<span class="lineNum">     293 </span><span class="lineCov">          3 :     strcpy(buf,filename);</span>
+<span class="lineNum">     294 </span><span class="lineCov">          3 :     pt = strrchr(buf,'.');</span>
+<span class="lineNum">     295 </span><span class="lineCov">          3 :     if ( pt!=NULL &amp;&amp; (pt2=strrchr(buf,'/'))!=NULL &amp;&amp; pt&lt;pt2 )</span>
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :         pt = NULL;</span>
+<span class="lineNum">     297 </span><span class="lineCov">          3 :     if ( pt==NULL )</span>
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :         strcat(buf,&quot;.pfm&quot;);</span>
+<span class="lineNum">     299 </span>            :     else
+<span class="lineNum">     300 </span><span class="lineCov">          3 :         strcpy(pt,&quot;.pfm&quot;);</span>
+<span class="lineNum">     301 </span><span class="lineCov">          3 :     ff_progress_change_line2(buf);</span>
+<span class="lineNum">     302 </span><span class="lineCov">          3 :     pfm = fopen(buf,&quot;wb&quot;);</span>
+<span class="lineNum">     303 </span><span class="lineCov">          3 :     free(buf);</span>
+<span class="lineNum">     304 </span><span class="lineCov">          3 :     if ( pfm==NULL )</span>
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     306 </span><span class="lineCov">          3 :     ret = PfmSplineFont(pfm,sf,map,layer);</span>
+<span class="lineNum">     307 </span><span class="lineCov">          3 :     if ( fclose(pfm)==-1 )</span>
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 : return( 0 );</span>
+<span class="lineNum">     309 </span><span class="lineCov">          3 : return( ret );</span>
+<a name="310"><span class="lineNum">     310 </span>            : }</a>
+<span class="lineNum">     311 </span>            : 
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 : static int WriteFontLog(char *filename,SplineFont *sf) {</span>
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :     char *buf = malloc(strlen(filename)+12), *pt;</span>
+<span class="lineNum">     314 </span>            :     FILE *flog;
+<span class="lineNum">     315 </span>            : 
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :     if ( sf-&gt;fontlog==NULL || *sf-&gt;fontlog=='\0' )</span>
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     318 </span>            : 
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :     strcpy(buf,filename);</span>
+<span class="lineNum">     320 </span><span class="lineNoCov">          0 :     pt = strrchr(buf,'/');</span>
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 :     if ( pt==NULL )</span>
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 :         strcat(buf,&quot;FONTLOG.txt&quot;);</span>
+<span class="lineNum">     323 </span>            :     else
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :         strcpy(pt+1,&quot;FONTLOG.txt&quot;);</span>
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :     flog = fopen(buf,&quot;a&quot;); // We changed this to append if the file exists.</span>
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :     free(buf);</span>
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :     if ( flog==NULL )</span>
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     329 </span>            : 
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 :     for ( pt=sf-&gt;fontlog; *pt; ++pt )</span>
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :         putc(*pt,flog);</span>
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 :     if ( fclose(flog)!=0 )</span>
+<span class="lineNum">     333 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     334 </span>            : 
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="336"><span class="lineNum">     336 </span>            : }</a>
+<span class="lineNum">     337 </span>            : 
+<span class="lineNum">     338 </span><span class="lineCov">          1 : static int WriteBitmaps(char *filename,SplineFont *sf, int32 *sizes,int res,</span>
+<span class="lineNum">     339 </span>            :         int bf, EncMap *map) {
+<span class="lineNum">     340 </span><span class="lineCov">          1 :     char *buf = malloc(strlen(filename)+30), *pt, *pt2;</span>
+<span class="lineNum">     341 </span>            :     int i;
+<span class="lineNum">     342 </span>            :     BDFFont *bdf;
+<span class="lineNum">     343 </span>            :     const char *ext;
+<span class="lineNum">     344 </span>            : 
+<span class="lineNum">     345 </span><span class="lineCov">          1 :     if ( sf-&gt;cidmaster!=NULL ) sf = sf-&gt;cidmaster;</span>
+<span class="lineNum">     346 </span>            : 
+<span class="lineNum">     347 </span><span class="lineCov">          1 :     for ( i=0; sizes[i]!=0; ++i );</span>
+<span class="lineNum">     348 </span><span class="lineCov">          1 :     ff_progress_change_stages(i);</span>
+<span class="lineNum">     349 </span><span class="lineCov">          6 :     for ( i=0; sizes[i]!=0; ++i ) {</span>
+<span class="lineNum">     350 </span><span class="lineCov">         35 :         for ( bdf=sf-&gt;bitmaps; bdf!=NULL &amp;&amp;</span>
+<span class="lineNum">     351 </span><span class="lineCov">         20 :                 (bdf-&gt;pixelsize!=(sizes[i]&amp;0xffff) || BDFDepth(bdf)!=(sizes[i]&gt;&gt;16));</span>
+<span class="lineNum">     352 </span><span class="lineCov">         10 :                 bdf=bdf-&gt;next );</span>
+<span class="lineNum">     353 </span><span class="lineCov">          5 :         if ( bdf==NULL ) {</span>
+<span class="lineNum">     354 </span><span class="lineNoCov">          0 :             ff_post_notice(_(&quot;Missing Bitmap&quot;),_(&quot;Attempt to save a pixel size that has not been created (%d@%d)&quot;),</span>
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :                     sizes[i]&amp;0xffff, sizes[i]&gt;&gt;16);</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :             free(buf);</span>
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     358 </span>            :         }
+<span class="lineNum">     359 </span>            : 
+<span class="lineNum">     360 </span><span class="lineCov">          5 :         if ( bf==bf_ptype3 &amp;&amp; bdf-&gt;clut!=NULL ) {</span>
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 :             ff_post_notice(_(&quot;Missing Bitmap&quot;),_(&quot;Currently, FontForge only supports bitmap (not bytemap) type3 output&quot;) );</span>
+<span class="lineNum">     362 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     363 </span>            :         }
+<span class="lineNum">     364 </span>            : 
+<span class="lineNum">     365 </span><span class="lineCov">          5 :         strcpy(buf,filename);</span>
+<span class="lineNum">     366 </span><span class="lineCov">          5 :         pt = strrchr(buf,'.');</span>
+<span class="lineNum">     367 </span><span class="lineCov">          5 :         if ( pt!=NULL &amp;&amp; (pt2=strrchr(buf,'/'))!=NULL &amp;&amp; pt&lt;pt2 )</span>
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :             pt = NULL;</span>
+<span class="lineNum">     369 </span><span class="lineCov">          5 :         if ( pt==NULL )</span>
+<span class="lineNum">     370 </span><span class="lineNoCov">          0 :             pt = buf+strlen(buf);</span>
+<span class="lineNum">     371 </span><span class="lineCov">          5 :         if ( strcmp(pt-4,&quot;.otf.dfont&quot;)==0 || strcmp(pt-4,&quot;.ttf.bin&quot;)==0 ) pt-=4;</span>
+<span class="lineNum">     372 </span><span class="lineCov">          5 :         if ( pt-2&gt;buf &amp;&amp; pt[-2]=='-' &amp;&amp; pt[-1]=='*' )</span>
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 :             pt -= 2;</span>
+<span class="lineNum">     374 </span><span class="lineCov">          5 :         ext = bf==bf_bdf ? &quot;.bdf&quot; : bf==bf_ptype3 ? &quot;.pt3&quot; : &quot;.fnt&quot;;</span>
+<span class="lineNum">     375 </span><span class="lineCov">          5 :         if ( bdf-&gt;clut==NULL )</span>
+<span class="lineNum">     376 </span><span class="lineCov">          5 :             sprintf( pt, &quot;-%d%s&quot;, bdf-&gt;pixelsize, ext );</span>
+<span class="lineNum">     377 </span>            :         else
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 :             sprintf( pt, &quot;-%d@%d%s&quot;, bdf-&gt;pixelsize, BDFDepth(bdf), ext );</span>
+<span class="lineNum">     379 </span>            : 
+<span class="lineNum">     380 </span><span class="lineCov">          5 :         ff_progress_change_line2(buf);</span>
+<span class="lineNum">     381 </span><span class="lineCov">          5 :         if ( bf==bf_bdf ) </span>
+<span class="lineNum">     382 </span><span class="lineCov">          5 :             BDFFontDump(buf,bdf,map,res);</span>
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :         else if ( bf==bf_ptype3 )</span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :             PSBitmapDump(buf,bdf,map);</span>
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :         else if ( bf==bf_fnt )</span>
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :             FNTFontDump(buf,bdf,map,res);</span>
+<span class="lineNum">     387 </span>            :         else
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 :             IError( &quot;Unexpected font type&quot; );</span>
+<span class="lineNum">     389 </span><span class="lineCov">          5 :         ff_progress_next_stage();</span>
+<span class="lineNum">     390 </span>            :     }
+<span class="lineNum">     391 </span><span class="lineCov">          1 :     free(buf);</span>
+<span class="lineNum">     392 </span><span class="lineCov">          1 : return( true );</span>
+<a name="393"><span class="lineNum">     393 </span>            : }</a>
+<span class="lineNum">     394 </span>            : 
+<span class="lineNum">     395 </span><span class="lineNoCov">          0 : static int32 *ParseWernerSFDFile(char *wernerfilename,SplineFont *sf,int *max,</span>
+<span class="lineNum">     396 </span>            :         char ***_names, EncMap *map) {
+<span class="lineNum">     397 </span>            :     /* one entry for each char, &gt;=1 =&gt; that subfont, 0=&gt;not mapped, -1 =&gt; end of char mark */
+<span class="lineNum">     398 </span><span class="lineNoCov">          0 :     int cnt=0, subfilecnt=0, thusfar;</span>
+<span class="lineNum">     399 </span><span class="lineNoCov">          0 :     int k, warned = false;</span>
+<span class="lineNum">     400 </span>            :     int r1,r2,i,modi;
+<span class="lineNum">     401 </span>            :     SplineFont *_sf;
+<span class="lineNum">     402 </span>            :     int32 *mapping;
+<span class="lineNum">     403 </span>            :     FILE *file;
+<span class="lineNum">     404 </span>            :     char buffer[200], *bpt;
+<span class="lineNum">     405 </span>            :     char *end, *pt;
+<span class="lineNum">     406 </span>            :     char *orig;
+<span class="lineNum">     407 </span>            :     struct remap *remap;
+<span class="lineNum">     408 </span>            :     char **names;
+<span class="lineNum">     409 </span>            :     int loop;
+<span class="lineNum">     410 </span>            :     static const char *pfaeditflag = &quot;SplineFontDB:&quot;;
+<span class="lineNum">     411 </span>            : 
+<span class="lineNum">     412 </span><span class="lineNoCov">          0 :     file = fopen(wernerfilename,&quot;r&quot;);</span>
+<span class="lineNum">     413 </span><span class="lineNoCov">          0 :     if ( file==NULL ) {</span>
+<span class="lineNum">     414 </span><span class="lineNoCov">          0 :         ff_post_error(_(&quot;No Sub Font Definition file&quot;),_(&quot;No Sub Font Definition file&quot;));</span>
+<span class="lineNum">     415 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     416 </span>            :     }
+<span class="lineNum">     417 </span>            : 
+<span class="lineNum">     418 </span><span class="lineNoCov">          0 :     k = 0;</span>
+<span class="lineNum">     419 </span>            :     do {
+<span class="lineNum">     420 </span><span class="lineNoCov">          0 :         _sf = sf-&gt;subfontcnt==0 ? sf : sf-&gt;subfonts[k++];</span>
+<span class="lineNum">     421 </span><span class="lineNoCov">          0 :         if ( _sf-&gt;glyphcnt&gt;cnt ) cnt = _sf-&gt;glyphcnt;</span>
+<span class="lineNum">     422 </span><span class="lineNoCov">          0 :     } while ( k&lt;sf-&gt;subfontcnt );</span>
+<span class="lineNum">     423 </span>            : 
+<span class="lineNum">     424 </span><span class="lineNoCov">          0 :     mapping = calloc(cnt+1,sizeof(int32));</span>
+<span class="lineNum">     425 </span><span class="lineNoCov">          0 :     memset(mapping,-1,(cnt+1)*sizeof(int32));</span>
+<span class="lineNum">     426 </span><span class="lineNoCov">          0 :     mapping[cnt] = -2;</span>
+<span class="lineNum">     427 </span><span class="lineNoCov">          0 :     *max = 0;</span>
+<span class="lineNum">     428 </span>            : 
+<span class="lineNum">     429 </span><span class="lineNoCov">          0 :     while ( fgets(buffer,sizeof(buffer),file)!=NULL )</span>
+<span class="lineNum">     430 </span><span class="lineNoCov">          0 :         ++subfilecnt;</span>
+<span class="lineNum">     431 </span><span class="lineNoCov">          0 :     names = malloc((subfilecnt+1)*sizeof(char *));</span>
+<span class="lineNum">     432 </span>            : 
+<span class="lineNum">     433 </span><span class="lineNoCov">          0 :     rewind(file);</span>
+<span class="lineNum">     434 </span><span class="lineNoCov">          0 :     subfilecnt = 0;</span>
+<span class="lineNum">     435 </span><span class="lineNoCov">          0 :     while ( fgets(buffer,sizeof(buffer),file)!=NULL ) {</span>
+<span class="lineNum">     436 </span><span class="lineNoCov">          0 :         if ( strncmp(buffer,pfaeditflag,strlen(pfaeditflag))== 0 ) {</span>
+<span class="lineNum">     437 </span><span class="lineNoCov">          0 :             ff_post_error(_(&quot;Wrong type of SFD file&quot;),_(&quot;This looks like one of FontForge's SplineFont DataBase files.\nNot one of TeX's SubFont Definition files.\nAn unfortunate confusion of extensions.&quot;));</span>
+<span class="lineNum">     438 </span><span class="lineNoCov">          0 :             free(mapping);</span>
+<span class="lineNum">     439 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">     440 </span>            :         }
+<span class="lineNum">     441 </span><span class="lineNoCov">          0 :         pt=buffer+strlen(buffer)-1;</span>
+<span class="lineNum">     442 </span><span class="lineNoCov">          0 :         bpt = buffer;</span>
+<span class="lineNum">     443 </span><span class="lineNoCov">          0 :         if (( *pt!='\n' &amp;&amp; *pt!='\r') || (pt&gt;buffer &amp;&amp; pt[-1]=='\\') ||</span>
+<span class="lineNum">     444 </span><span class="lineNoCov">          0 :                 (pt&gt;buffer+1 &amp;&amp; pt[-2]=='\\' &amp;&amp; isspace(pt[-1])) ) {</span>
+<span class="lineNum">     445 </span><span class="lineNoCov">          0 :             bpt = copy(&quot;&quot;);</span>
+<span class="lineNum">     446 </span>            :             for (;;) {
+<span class="lineNum">     447 </span><span class="lineNoCov">          0 :                 loop = false;</span>
+<span class="lineNum">     448 </span><span class="lineNoCov">          0 :                 if (( *pt!='\n' &amp;&amp; *pt!='\r') || (pt&gt;buffer &amp;&amp; pt[-1]=='\\') ||</span>
+<span class="lineNum">     449 </span><span class="lineNoCov">          0 :                         (pt&gt;buffer+1 &amp;&amp; pt[-2]=='\\' &amp;&amp; isspace(pt[-1])) )</span>
+<span class="lineNum">     450 </span><span class="lineNoCov">          0 :                     loop = true;</span>
+<span class="lineNum">     451 </span><span class="lineNoCov">          0 :                 if ( *pt=='\n' || *pt=='\r') {</span>
+<span class="lineNum">     452 </span><span class="lineNoCov">          0 :                     if ( pt[-1]=='\\' )</span>
+<span class="lineNum">     453 </span><span class="lineNoCov">          0 :                         pt[-1] = '\0';</span>
+<span class="lineNum">     454 </span><span class="lineNoCov">          0 :                     else if ( pt[-2]=='\\' )</span>
+<span class="lineNum">     455 </span><span class="lineNoCov">          0 :                         pt[-2] = '\0';</span>
+<span class="lineNum">     456 </span>            :                 }
+<span class="lineNum">     457 </span><span class="lineNoCov">          0 :                 bpt = realloc(bpt,strlen(bpt)+strlen(buffer)+10);</span>
+<span class="lineNum">     458 </span><span class="lineNoCov">          0 :                 strcat(bpt,buffer);</span>
+<span class="lineNum">     459 </span><span class="lineNoCov">          0 :                 if ( !loop )</span>
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 :             break;</span>
+<span class="lineNum">     461 </span><span class="lineNoCov">          0 :                 if ( fgets(buffer,sizeof(buffer),file)==NULL )</span>
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 :             break;</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :                 pt=buffer+strlen(buffer)-1;</span>
+<span class="lineNum">     464 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     465 </span>            :         }
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :         if ( bpt[0]=='#' || bpt[0]=='\0' || isspace(bpt[0]))</span>
+<span class="lineNum">     467 </span><span class="lineNoCov">          0 :     continue;</span>
+<span class="lineNum">     468 </span><span class="lineNoCov">          0 :         for ( pt = bpt; !isspace(*pt) &amp;&amp; *pt!='\0'; ++pt );</span>
+<span class="lineNum">     469 </span><span class="lineNoCov">          0 :         if ( *pt=='\0' || *pt=='\r' || *pt=='\n' )</span>
+<span class="lineNum">     470 </span><span class="lineNoCov">          0 :     continue;</span>
+<span class="lineNum">     471 </span><span class="lineNoCov">          0 :         names[subfilecnt] = copyn(bpt,pt-bpt);</span>
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 :         if ( subfilecnt&gt;*max ) *max = subfilecnt;</span>
+<span class="lineNum">     473 </span><span class="lineNoCov">          0 :         end = pt;</span>
+<span class="lineNum">     474 </span><span class="lineNoCov">          0 :         thusfar = 0;</span>
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 :         while ( *end!='\0' ) {</span>
+<span class="lineNum">     476 </span><span class="lineNoCov">          0 :             while ( isspace(*end)) ++end;</span>
+<span class="lineNum">     477 </span><span class="lineNoCov">          0 :             if ( *end=='\0' )</span>
+<span class="lineNum">     478 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     479 </span><span class="lineNoCov">          0 :             orig = end;</span>
+<span class="lineNum">     480 </span><span class="lineNoCov">          0 :             r1 = strtoul(end,&amp;end,0);</span>
+<span class="lineNum">     481 </span><span class="lineNoCov">          0 :             if ( orig==end )</span>
+<span class="lineNum">     482 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     483 </span><span class="lineNoCov">          0 :             while ( isspace(*end)) ++end;</span>
+<span class="lineNum">     484 </span><span class="lineNoCov">          0 :             if ( *end==':' ) {</span>
+<span class="lineNum">     485 </span><span class="lineNoCov">          0 :                 if ( r1&gt;=256 || r1&lt;0)</span>
+<span class="lineNum">     486 </span><span class="lineNoCov">          0 :                     LogError( _(&quot;Bad offset: %d for subfont %s\n&quot;), r1, names[subfilecnt]);</span>
+<span class="lineNum">     487 </span>            :                 else
+<span class="lineNum">     488 </span><span class="lineNoCov">          0 :                     thusfar = r1;</span>
+<span class="lineNum">     489 </span><span class="lineNoCov">          0 :                 r1 = strtoul(end+1,&amp;end,0);</span>
+<span class="lineNum">     490 </span>            :             }
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 :             if ( *end=='_' || *end=='-' )</span>
+<span class="lineNum">     492 </span><span class="lineNoCov">          0 :                 r2 = strtoul(end+1,&amp;end,0);</span>
+<span class="lineNum">     493 </span>            :             else
+<span class="lineNum">     494 </span><span class="lineNoCov">          0 :                 r2 = r1;</span>
+<span class="lineNum">     495 </span><span class="lineNoCov">          0 :             for ( i=r1; i&lt;=r2; ++i ) {</span>
+<span class="lineNum">     496 </span><span class="lineNoCov">          0 :                 modi = i;</span>
+<span class="lineNum">     497 </span><span class="lineNoCov">          0 :                 if ( map-&gt;remap!=NULL ) {</span>
+<span class="lineNum">     498 </span><span class="lineNoCov">          0 :                     for ( remap = map-&gt;remap; remap-&gt;infont!=-1; ++remap ) {</span>
+<span class="lineNum">     499 </span><span class="lineNoCov">          0 :                         if ( i&gt;=(int)remap-&gt;firstenc &amp;&amp; i&lt;=(int)remap-&gt;lastenc ) {</span>
+<span class="lineNum">     500 </span><span class="lineNoCov">          0 :                             modi = i-remap-&gt;firstenc + remap-&gt;infont;</span>
+<span class="lineNum">     501 </span><span class="lineNoCov">          0 :                     break;</span>
+<span class="lineNum">     502 </span>            :                         }
+<span class="lineNum">     503 </span>            :                     }
+<span class="lineNum">     504 </span>            :                 }
+<span class="lineNum">     505 </span><span class="lineNoCov">          0 :                 if ( modi&lt;map-&gt;enccount )</span>
+<span class="lineNum">     506 </span><span class="lineNoCov">          0 :                     modi = map-&gt;map[modi];</span>
+<span class="lineNum">     507 </span><span class="lineNoCov">          0 :                 else if ( sf-&gt;subfontcnt!=0 )</span>
+<span class="lineNum">     508 </span><span class="lineNoCov">          0 :                     modi = modi;</span>
+<span class="lineNum">     509 </span>            :                 else
+<span class="lineNum">     510 </span><span class="lineNoCov">          0 :                     modi = -1;</span>
+<span class="lineNum">     511 </span><span class="lineNoCov">          0 :                 if ( modi&lt;cnt &amp;&amp; modi!=-1 ) {</span>
+<span class="lineNum">     512 </span><span class="lineNoCov">          0 :                     if ( mapping[modi]!=-1 &amp;&amp; !warned ) {</span>
+<span class="lineNum">     513 </span><span class="lineNoCov">          0 :                         if (( i==0xffff || i==0xfffe ) &amp;&amp;</span>
+<span class="lineNum">     514 </span><span class="lineNoCov">          0 :                                 (map-&gt;enc-&gt;is_unicodebmp || map-&gt;enc-&gt;is_unicodefull))</span>
+<span class="lineNum">     515 </span>            :                             /* Not a character anyway. just ignore it */;
+<span class="lineNum">     516 </span>            :                         else {
+<span class="lineNum">     517 </span><span class="lineNoCov">          0 :                             LogError( _(&quot;Warning: Encoding %d (0x%x) is mapped to at least two locations (%s@0x%02x and %s@0x%02x)\n Only one will be used here.\n&quot;),</span>
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 :                                     i, i, names[subfilecnt], thusfar, names[(mapping[modi]&gt;&gt;8)], mapping[modi]&amp;0xff );</span>
+<span class="lineNum">     519 </span><span class="lineNoCov">          0 :                             warned = true;</span>
+<span class="lineNum">     520 </span>            :                         }
+<span class="lineNum">     521 </span>            :                     }
+<span class="lineNum">     522 </span><span class="lineNoCov">          0 :                     mapping[modi] = (subfilecnt&lt;&lt;8) | thusfar;</span>
+<span class="lineNum">     523 </span>            :                 }
+<span class="lineNum">     524 </span><span class="lineNoCov">          0 :                 thusfar++;</span>
+<span class="lineNum">     525 </span>            :             }
+<span class="lineNum">     526 </span>            :         }
+<span class="lineNum">     527 </span><span class="lineNoCov">          0 :         if ( thusfar&gt;256 )</span>
+<span class="lineNum">     528 </span><span class="lineNoCov">          0 :             LogError( _(&quot;More than 256 entries in subfont %s\n&quot;), names[subfilecnt] );</span>
+<span class="lineNum">     529 </span><span class="lineNoCov">          0 :         ++subfilecnt;</span>
+<span class="lineNum">     530 </span><span class="lineNoCov">          0 :         if ( bpt!=buffer )</span>
+<span class="lineNum">     531 </span><span class="lineNoCov">          0 :             free(bpt);</span>
+<span class="lineNum">     532 </span>            :     }
+<span class="lineNum">     533 </span><span class="lineNoCov">          0 :     names[subfilecnt]=NULL;</span>
+<span class="lineNum">     534 </span><span class="lineNoCov">          0 :     *_names = names;</span>
+<span class="lineNum">     535 </span><span class="lineNoCov">          0 :     fclose(file);</span>
+<span class="lineNum">     536 </span><span class="lineNoCov">          0 : return( mapping );</span>
+<a name="537"><span class="lineNum">     537 </span>            : }</a>
+<span class="lineNum">     538 </span>            : 
+<span class="lineNum">     539 </span><span class="lineNoCov">          0 : static int SaveSubFont(SplineFont *sf,char *newname,</span>
+<span class="lineNum">     540 </span>            :         int32 *mapping, int subfont, char **names,int layer) {
+<span class="lineNum">     541 </span>            :     SplineFont temp;
+<span class="lineNum">     542 </span>            :     SplineChar *chars[256], **newchars;
+<span class="lineNum">     543 </span>            :     SplineFont *_sf;
+<span class="lineNum">     544 </span>            :     int k, i, used, base, extras;
+<span class="lineNum">     545 </span>            :     char *filename;
+<span class="lineNum">     546 </span>            :     char *spt, *pt, buf[8];
+<span class="lineNum">     547 </span>            :     RefChar *ref;
+<span class="lineNum">     548 </span><span class="lineNoCov">          0 :     int err = 0;</span>
+<span class="lineNum">     549 </span><span class="lineNoCov">          0 :     enum fontformat subtype = strstr(newname,&quot;.pfa&quot;)!=NULL ? ff_pfa : ff_pfb ;</span>
+<span class="lineNum">     550 </span>            :     EncMap encmap;
+<span class="lineNum">     551 </span>            :     int32 _mapping[256], _backmap[256];
+<span class="lineNum">     552 </span>            : 
+<span class="lineNum">     553 </span><span class="lineNoCov">          0 :     memset(&amp;encmap,0,sizeof(encmap));</span>
+<span class="lineNum">     554 </span><span class="lineNoCov">          0 :     encmap.enccount = encmap.encmax = encmap.backmax = 256;</span>
+<span class="lineNum">     555 </span><span class="lineNoCov">          0 :     encmap.map = _mapping; encmap.backmap = _backmap;</span>
+<span class="lineNum">     556 </span><span class="lineNoCov">          0 :     memset(_mapping,-1,sizeof(_mapping));</span>
+<span class="lineNum">     557 </span><span class="lineNoCov">          0 :     memset(_backmap,-1,sizeof(_backmap));</span>
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :     encmap.enc = &amp;custom;</span>
+<span class="lineNum">     559 </span>            : 
+<span class="lineNum">     560 </span><span class="lineNoCov">          0 :     temp = *sf;</span>
+<span class="lineNum">     561 </span><span class="lineNoCov">          0 :     temp.glyphcnt = 0;</span>
+<span class="lineNum">     562 </span><span class="lineNoCov">          0 :     temp.glyphmax = 256;</span>
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 :     temp.glyphs = chars;</span>
+<span class="lineNum">     564 </span><span class="lineNoCov">          0 :     temp.bitmaps = NULL;</span>
+<span class="lineNum">     565 </span><span class="lineNoCov">          0 :     temp.subfonts = NULL;</span>
+<span class="lineNum">     566 </span><span class="lineNoCov">          0 :     temp.subfontcnt = 0;</span>
+<span class="lineNum">     567 </span><span class="lineNoCov">          0 :     temp.uniqueid = 0;</span>
+<span class="lineNum">     568 </span><span class="lineNoCov">          0 :     memset(chars,0,sizeof(chars));</span>
+<span class="lineNum">     569 </span><span class="lineNoCov">          0 :     temp.glyphnames = NULL;</span>
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 :     used = 0;</span>
+<span class="lineNum">     571 </span><span class="lineNoCov">          0 :     for ( i=0; mapping[i]!=-2; ++i ) if ( (mapping[i]&gt;&gt;8)==subfont ) {</span>
+<span class="lineNum">     572 </span><span class="lineNoCov">          0 :         k = 0;</span>
+<span class="lineNum">     573 </span>            :         do {
+<span class="lineNum">     574 </span><span class="lineNoCov">          0 :             _sf = sf-&gt;subfontcnt==0 ? sf : sf-&gt;subfonts[k++];</span>
+<span class="lineNum">     575 </span><span class="lineNoCov">          0 :             if ( i&lt;_sf-&gt;glyphcnt &amp;&amp; _sf-&gt;glyphs[i]!=NULL )</span>
+<span class="lineNum">     576 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">     577 </span><span class="lineNoCov">          0 :         } while ( k&lt;sf-&gt;subfontcnt );</span>
+<span class="lineNum">     578 </span><span class="lineNoCov">          0 :         if ( temp.glyphcnt&lt;256 ) {</span>
+<span class="lineNum">     579 </span><span class="lineNoCov">          0 :             if ( i&lt;_sf-&gt;glyphcnt ) {</span>
+<span class="lineNum">     580 </span><span class="lineNoCov">          0 :                 if ( _sf-&gt;glyphs[i]!=NULL ) {</span>
+<span class="lineNum">     581 </span><span class="lineNoCov">          0 :                     _sf-&gt;glyphs[i]-&gt;parent = &amp;temp;</span>
+<span class="lineNum">     582 </span><span class="lineNoCov">          0 :                     _sf-&gt;glyphs[i]-&gt;orig_pos = temp.glyphcnt;</span>
+<span class="lineNum">     583 </span><span class="lineNoCov">          0 :                     chars[temp.glyphcnt] = _sf-&gt;glyphs[i];</span>
+<span class="lineNum">     584 </span><span class="lineNoCov">          0 :                     _mapping[mapping[i]&amp;0xff] = temp.glyphcnt;</span>
+<span class="lineNum">     585 </span><span class="lineNoCov">          0 :                     _backmap[temp.glyphcnt] = mapping[i]&amp;0xff;</span>
+<span class="lineNum">     586 </span><span class="lineNoCov">          0 :                     ++temp.glyphcnt;</span>
+<span class="lineNum">     587 </span><span class="lineNoCov">          0 :                     ++used;</span>
+<span class="lineNum">     588 </span>            :                 }
+<span class="lineNum">     589 </span>            :             }
+<span class="lineNum">     590 </span>            :         }
+<span class="lineNum">     591 </span>            :     }
+<span class="lineNum">     592 </span><span class="lineNoCov">          0 :     if ( used==0 )</span>
+<span class="lineNum">     593 </span><span class="lineNoCov">          0 : return( 0 );</span>
+<span class="lineNum">     594 </span>            : 
+<span class="lineNum">     595 </span>            :     /* check for any references to things outside this subfont and add them */
+<span class="lineNum">     596 </span>            :     /*  as unencoded chars */
+<span class="lineNum">     597 </span>            :     /* We could just replace with splines, I suppose but that would make */
+<span class="lineNum">     598 </span>            :     /*  korean fonts huge */
+<span class="lineNum">     599 </span>            :     for (;;) {
+<span class="lineNum">     600 </span><span class="lineNoCov">          0 :         extras = 0;</span>
+<span class="lineNum">     601 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;temp.glyphcnt; ++i ) if ( temp.glyphs[i]!=NULL ) {</span>
+<span class="lineNum">     602 </span><span class="lineNoCov">          0 :             for ( ref=temp.glyphs[i]-&gt;layers[ly_fore].refs; ref!=NULL; ref=ref-&gt;next )</span>
+<span class="lineNum">     603 </span><span class="lineNoCov">          0 :                 if ( ref-&gt;sc-&gt;parent!=&amp;temp )</span>
+<span class="lineNum">     604 </span><span class="lineNoCov">          0 :                     ++extras;</span>
+<span class="lineNum">     605 </span>            :         }
+<span class="lineNum">     606 </span><span class="lineNoCov">          0 :         if ( extras == 0 )</span>
+<span class="lineNum">     607 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     608 </span><span class="lineNoCov">          0 :         newchars = calloc(temp.glyphcnt+extras,sizeof(SplineChar *));</span>
+<span class="lineNum">     609 </span><span class="lineNoCov">          0 :         memcpy(newchars,temp.glyphs,temp.glyphcnt*sizeof(SplineChar *));</span>
+<span class="lineNum">     610 </span><span class="lineNoCov">          0 :         if ( temp.glyphs!=chars ) free(temp.glyphs );</span>
+<span class="lineNum">     611 </span><span class="lineNoCov">          0 :         base = temp.glyphcnt;</span>
+<span class="lineNum">     612 </span><span class="lineNoCov">          0 :         temp.glyphs = newchars;</span>
+<span class="lineNum">     613 </span><span class="lineNoCov">          0 :         extras = 0;</span>
+<span class="lineNum">     614 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;base; ++i ) if ( temp.glyphs[i]!=NULL ) {</span>
+<span class="lineNum">     615 </span><span class="lineNoCov">          0 :             for ( ref=temp.glyphs[i]-&gt;layers[ly_fore].refs; ref!=NULL; ref=ref-&gt;next )</span>
+<span class="lineNum">     616 </span><span class="lineNoCov">          0 :                 if ( ref-&gt;sc-&gt;parent!=&amp;temp ) {</span>
+<span class="lineNum">     617 </span><span class="lineNoCov">          0 :                     temp.glyphs[base+extras] = ref-&gt;sc;</span>
+<span class="lineNum">     618 </span><span class="lineNoCov">          0 :                     ref-&gt;sc-&gt;parent = &amp;temp;</span>
+<span class="lineNum">     619 </span><span class="lineNoCov">          0 :                     ref-&gt;sc-&gt;orig_pos = base+extras++;</span>
+<span class="lineNum">     620 </span>            :                 }
+<span class="lineNum">     621 </span>            :         }
+<span class="lineNum">     622 </span><span class="lineNoCov">          0 :         temp.glyphcnt += extras;        /* this might be a slightly different value from that found before if some references get reused. N'importe */</span>
+<span class="lineNum">     623 </span><span class="lineNoCov">          0 :         temp.glyphmax = temp.glyphcnt;</span>
+<span class="lineNum">     624 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     625 </span>            : 
+<span class="lineNum">     626 </span><span class="lineNoCov">          0 :     filename = malloc(strlen(newname)+strlen(names[subfont])+10);</span>
+<span class="lineNum">     627 </span><span class="lineNoCov">          0 :     strcpy(filename,newname);</span>
+<span class="lineNum">     628 </span><span class="lineNoCov">          0 :     pt = strrchr(filename,'.');</span>
+<span class="lineNum">     629 </span><span class="lineNoCov">          0 :     spt = strrchr(filename,'/');</span>
+<span class="lineNum">     630 </span><span class="lineNoCov">          0 :     if ( spt==NULL ) spt = filename; else ++spt;</span>
+<span class="lineNum">     631 </span><span class="lineNoCov">          0 :     if ( pt&gt;spt )</span>
+<span class="lineNum">     632 </span><span class="lineNoCov">          0 :         *pt = '\0';</span>
+<span class="lineNum">     633 </span><span class="lineNoCov">          0 :     pt = strstr(spt,&quot;%d&quot;);</span>
+<span class="lineNum">     634 </span><span class="lineNoCov">          0 :     if ( pt==NULL )</span>
+<span class="lineNum">     635 </span><span class="lineNoCov">          0 :         pt = strstr(spt,&quot;%s&quot;);</span>
+<span class="lineNum">     636 </span><span class="lineNoCov">          0 :     if ( pt==NULL )</span>
+<span class="lineNum">     637 </span><span class="lineNoCov">          0 :         strcat(filename,names[subfont]);</span>
+<span class="lineNum">     638 </span>            :     else {
+<span class="lineNum">     639 </span><span class="lineNoCov">          0 :         int len = strlen(names[subfont]);</span>
+<span class="lineNum">     640 </span>            :         int l;
+<span class="lineNum">     641 </span><span class="lineNoCov">          0 :         if ( len&gt;2 ) {</span>
+<span class="lineNum">     642 </span><span class="lineNoCov">          0 :             for ( l=strlen(pt); l&gt;=2 ; --l )</span>
+<span class="lineNum">     643 </span><span class="lineNoCov">          0 :                 pt[l+len-2] = pt[l];</span>
+<span class="lineNum">     644 </span><span class="lineNoCov">          0 :         } else if ( len&lt;2 )</span>
+<span class="lineNum">     645 </span><span class="lineNoCov">          0 :             strcpy(pt+len,pt+2);</span>
+<span class="lineNum">     646 </span><span class="lineNoCov">          0 :         memcpy(pt,names[subfont],len);</span>
+<span class="lineNum">     647 </span>            :     }
+<span class="lineNum">     648 </span><span class="lineNoCov">          0 :     temp.fontname = copy(spt);</span>
+<span class="lineNum">     649 </span><span class="lineNoCov">          0 :     temp.fullname = malloc(strlen(temp.fullname)+strlen(names[subfont])+3);</span>
+<span class="lineNum">     650 </span><span class="lineNoCov">          0 :     strcpy(temp.fullname,sf-&gt;fullname);</span>
+<span class="lineNum">     651 </span><span class="lineNoCov">          0 :     strcat(temp.fullname,&quot; &quot;);</span>
+<span class="lineNum">     652 </span><span class="lineNoCov">          0 :     strcat(temp.fullname,names[subfont]);</span>
+<span class="lineNum">     653 </span><span class="lineNoCov">          0 :     strcat(spt,subtype==ff_pfb ? &quot;.pfb&quot; : &quot;.pfa&quot; );</span>
+<span class="lineNum">     654 </span><span class="lineNoCov">          0 :     ff_progress_change_line2(filename);</span>
+<span class="lineNum">     655 </span>            : 
+<span class="lineNum">     656 </span><span class="lineNoCov">          0 :     if ( sf-&gt;xuid!=NULL ) {</span>
+<span class="lineNum">     657 </span><span class="lineNoCov">          0 :         sprintf( buf, &quot;%d&quot;, subfont );</span>
+<span class="lineNum">     658 </span><span class="lineNoCov">          0 :         temp.xuid = malloc(strlen(sf-&gt;xuid)+strlen(buf)+5);</span>
+<span class="lineNum">     659 </span><span class="lineNoCov">          0 :         strcpy(temp.xuid,sf-&gt;xuid);</span>
+<span class="lineNum">     660 </span><span class="lineNoCov">          0 :         pt = temp.xuid + strlen( temp.xuid )-1;</span>
+<span class="lineNum">     661 </span><span class="lineNoCov">          0 :         while ( pt&gt;temp.xuid &amp;&amp; *pt==' ' ) --pt;</span>
+<span class="lineNum">     662 </span><span class="lineNoCov">          0 :         if ( *pt==']' ) --pt;</span>
+<span class="lineNum">     663 </span><span class="lineNoCov">          0 :         *pt = ' ';</span>
+<span class="lineNum">     664 </span><span class="lineNoCov">          0 :         strcpy(pt+1,buf);</span>
+<span class="lineNum">     665 </span><span class="lineNoCov">          0 :         strcat(pt,&quot;]&quot;);</span>
+<span class="lineNum">     666 </span>            :     }
+<span class="lineNum">     667 </span>            : 
+<span class="lineNum">     668 </span><span class="lineNoCov">          0 :     err = !WritePSFont(filename,&amp;temp,subtype,old_ps_flags,&amp;encmap,sf,layer);</span>
+<span class="lineNum">     669 </span><span class="lineNoCov">          0 :     if ( err )</span>
+<span class="lineNum">     670 </span><span class="lineNoCov">          0 :         ff_post_error(_(&quot;Save Failed&quot;),_(&quot;Save Failed&quot;));</span>
+<span class="lineNum">     671 </span><span class="lineNoCov">          0 :     if ( !err &amp;&amp; (old_ps_flags&amp;ps_flag_afm) &amp;&amp; ff_progress_next_stage()) {</span>
+<span class="lineNum">     672 </span><span class="lineNoCov">          0 :         if ( !WriteAfmFile(filename,&amp;temp,oldformatstate,&amp;encmap,old_ps_flags,sf,layer)) {</span>
+<span class="lineNum">     673 </span><span class="lineNoCov">          0 :             ff_post_error(_(&quot;Afm Save Failed&quot;),_(&quot;Afm Save Failed&quot;));</span>
+<span class="lineNum">     674 </span><span class="lineNoCov">          0 :             err = true;</span>
+<span class="lineNum">     675 </span>            :         }
+<span class="lineNum">     676 </span>            :     }
+<span class="lineNum">     677 </span><span class="lineNoCov">          0 :     if ( !err &amp;&amp; (old_ps_flags&amp;ps_flag_tfm) ) {</span>
+<span class="lineNum">     678 </span><span class="lineNoCov">          0 :         if ( !WriteTfmFile(filename,&amp;temp,&amp;encmap,layer)) {</span>
+<span class="lineNum">     679 </span><span class="lineNoCov">          0 :             ff_post_error(_(&quot;Tfm Save Failed&quot;),_(&quot;Tfm Save Failed&quot;));</span>
+<span class="lineNum">     680 </span><span class="lineNoCov">          0 :             err = true;</span>
+<span class="lineNum">     681 </span>            :         }
+<span class="lineNum">     682 </span>            :     }
+<span class="lineNum">     683 </span>            :     /* ??? Bitmaps */
+<span class="lineNum">     684 </span><span class="lineNoCov">          0 :     if ( !ff_progress_next_stage())</span>
+<span class="lineNum">     685 </span><span class="lineNoCov">          0 :         err = -1;</span>
+<span class="lineNum">     686 </span>            : 
+<span class="lineNum">     687 </span><span class="lineNoCov">          0 :     if ( temp.glyphs!=chars )</span>
+<span class="lineNum">     688 </span><span class="lineNoCov">          0 :         free(temp.glyphs);</span>
+<span class="lineNum">     689 </span><span class="lineNoCov">          0 :     GlyphHashFree( &amp;temp );</span>
+<span class="lineNum">     690 </span><span class="lineNoCov">          0 :     free( temp.xuid );</span>
+<span class="lineNum">     691 </span><span class="lineNoCov">          0 :     free( temp.fontname );</span>
+<span class="lineNum">     692 </span><span class="lineNoCov">          0 :     free( temp.fullname );</span>
+<span class="lineNum">     693 </span><span class="lineNoCov">          0 :     free( filename );</span>
+<span class="lineNum">     694 </span>            : 
+<span class="lineNum">     695 </span>            :     /* SaveSubFont messes up the parent and orig_pos fields. Fix 'em up */
+<span class="lineNum">     696 </span>            :     /* Do this after every save, else afm,tfm files might produce extraneous kerns */
+<span class="lineNum">     697 </span><span class="lineNoCov">          0 :     k = 0;</span>
+<span class="lineNum">     698 </span>            :     do {
+<span class="lineNum">     699 </span><span class="lineNoCov">          0 :         _sf = sf-&gt;subfontcnt==0 ? sf : sf-&gt;subfonts[k++];</span>
+<span class="lineNum">     700 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;_sf-&gt;glyphcnt; ++i ) if ( _sf-&gt;glyphs[i]!=NULL ) {</span>
+<span class="lineNum">     701 </span><span class="lineNoCov">          0 :             _sf-&gt;glyphs[i]-&gt;parent = _sf;</span>
+<span class="lineNum">     702 </span><span class="lineNoCov">          0 :             _sf-&gt;glyphs[i]-&gt;orig_pos = i;</span>
+<span class="lineNum">     703 </span>            :         }
+<span class="lineNum">     704 </span><span class="lineNoCov">          0 :     } while ( k&lt;sf-&gt;subfontcnt );</span>
+<span class="lineNum">     705 </span>            : 
+<span class="lineNum">     706 </span><span class="lineNoCov">          0 : return( err );</span>
+<span class="lineNum">     707 </span>            : }
+<a name="708"><span class="lineNum">     708 </span>            : </a>
+<span class="lineNum">     709 </span>            : /* ttf2tfm supports multiple sfd files. I do not. */
+<span class="lineNum">     710 </span><span class="lineNoCov">          0 : static int WriteMultiplePSFont(SplineFont *sf,char *newname,int32 *sizes,</span>
+<span class="lineNum">     711 </span>            :         char *wernerfilename,EncMap *map, int layer) {
+<span class="lineNum">     712 </span><span class="lineNoCov">          0 :     int err=0, tofree=false, max, filecnt;</span>
+<span class="lineNum">     713 </span>            :     int32 *mapping;
+<span class="lineNum">     714 </span>            :     char *path;
+<span class="lineNum">     715 </span>            :     int i;
+<span class="lineNum">     716 </span>            :     char **names;
+<span class="lineNum">     717 </span>            :     char *pt;
+<span class="lineNum">     718 </span>            : 
+<span class="lineNum">     719 </span><span class="lineNoCov">          0 :     pt = strrchr(newname,'.');</span>
+<span class="lineNum">     720 </span><span class="lineNoCov">          0 :     if ( pt==NULL ||</span>
+<span class="lineNum">     721 </span><span class="lineNoCov">          0 :             (strcmp(pt,&quot;.pfa&quot;)!=0 &amp;&amp; strcmp(pt,&quot;.pfb&quot;)!=0 &amp;&amp; strcmp(pt,&quot;.mult&quot;)!=0)) {</span>
+<span class="lineNum">     722 </span><span class="lineNoCov">          0 :         ff_post_error(_(&quot;Bad Extension&quot;),_(&quot;You must specify a standard type1 extension (.pfb or .pfa)&quot;));</span>
+<span class="lineNum">     723 </span><span class="lineNoCov">          0 : return( 0 );</span>
+<span class="lineNum">     724 </span>            :     }
+<span class="lineNum">     725 </span><span class="lineNoCov">          0 :     if ( wernerfilename==NULL )</span>
+<span class="lineNum">     726 </span><span class="lineNoCov">          0 : return( 0 );</span>
+<span class="lineNum">     727 </span><span class="lineNoCov">          0 :     mapping = ParseWernerSFDFile(wernerfilename,sf,&amp;max,&amp;names,map);</span>
+<span class="lineNum">     728 </span><span class="lineNoCov">          0 :     if ( tofree ) free(wernerfilename);</span>
+<span class="lineNum">     729 </span><span class="lineNoCov">          0 :     if ( mapping==NULL )</span>
+<span class="lineNum">     730 </span><span class="lineNoCov">          0 : return( 1 );</span>
+<span class="lineNum">     731 </span>            : 
+<span class="lineNum">     732 </span><span class="lineNoCov">          0 :     if ( sf-&gt;cidmaster!=NULL )</span>
+<span class="lineNum">     733 </span><span class="lineNoCov">          0 :         sf = sf-&gt;cidmaster;</span>
+<span class="lineNum">     734 </span>            : 
+<span class="lineNum">     735 </span><span class="lineNoCov">          0 :     filecnt = 1;</span>
+<span class="lineNum">     736 </span><span class="lineNoCov">          0 :     if ( (old_ps_flags&amp;ps_flag_afm) )</span>
+<span class="lineNum">     737 </span><span class="lineNoCov">          0 :         filecnt = 2;</span>
+<span class="lineNum">     738 </span><span class="lineNoCov">          0 :     path = def2utf8_copy(newname);</span>
+<span class="lineNum">     739 </span><span class="lineNoCov">          0 :     ff_progress_start_indicator(10,_(&quot;Saving font&quot;),</span>
+<span class="lineNum">     740 </span><span class="lineNoCov">          0 :             _(&quot;Saving Multiple PostScript Fonts&quot;),</span>
+<span class="lineNum">     741 </span><span class="lineNoCov">          0 :             path,256,(max+1)*filecnt );</span>
+<span class="lineNum">     742 </span><span class="lineNoCov">          0 :     free(path);</span>
+<span class="lineNum">     743 </span>            : 
+<span class="lineNum">     744 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;=max &amp;&amp; !err; ++i )</span>
+<span class="lineNum">     745 </span><span class="lineNoCov">          0 :         err = SaveSubFont(sf,newname,mapping,i,names,layer);</span>
+<span class="lineNum">     746 </span>            : 
+<span class="lineNum">     747 </span><span class="lineNoCov">          0 :     free(mapping);</span>
+<span class="lineNum">     748 </span><span class="lineNoCov">          0 :     for ( i=0; names[i]!=NULL; ++i ) free(names[i]);</span>
+<span class="lineNum">     749 </span><span class="lineNoCov">          0 :     free(names);</span>
+<span class="lineNum">     750 </span><span class="lineNoCov">          0 :     free( sizes );</span>
+<span class="lineNum">     751 </span><span class="lineNoCov">          0 :     ff_progress_end_indicator();</span>
+<span class="lineNum">     752 </span><span class="lineNoCov">          0 :     if ( !err )</span>
+<span class="lineNum">     753 </span><span class="lineNoCov">          0 :         SavePrefs(true);</span>
+<span class="lineNum">     754 </span><span class="lineNoCov">          0 : return( err );</span>
+<a name="755"><span class="lineNum">     755 </span>            : }</a>
+<span class="lineNum">     756 </span>            : 
+<span class="lineNum">     757 </span><span class="lineCov">          2 : int CheckIfTransparent(SplineFont *sf) {</span>
+<span class="lineNum">     758 </span>            :     /* Type3 doesn't support translucent fills */
+<span class="lineNum">     759 </span>            :     int i,j;
+<span class="lineNum">     760 </span>            :     char *buts[3];
+<span class="lineNum">     761 </span><span class="lineCov">          2 :     buts[0] = _(&quot;_Yes&quot;);</span>
+<span class="lineNum">     762 </span><span class="lineCov">          2 :     buts[1] = _(&quot;_Cancel&quot;);</span>
+<span class="lineNum">     763 </span><span class="lineCov">          2 :     buts[2] = NULL;</span>
+<span class="lineNum">     764 </span>            : 
+<span class="lineNum">     765 </span><span class="lineCov">        248 :     for ( i=0; i&lt;sf-&gt;glyphcnt; ++i ) if ( sf-&gt;glyphs[i]!=NULL ) {</span>
+<span class="lineNum">     766 </span><span class="lineCov">        246 :         SplineChar *sc = sf-&gt;glyphs[i];</span>
+<span class="lineNum">     767 </span><span class="lineCov">        493 :         for ( j=ly_fore; j&lt;sc-&gt;layer_cnt; ++j ) {</span>
+<span class="lineNum">     768 </span><span class="lineCov">        247 :             if ( sc-&gt;layers[j].fill_brush.opacity!=1 || sc-&gt;layers[j].stroke_pen.brush.opacity!=1 ) {</span>
+<span class="lineNum">     769 </span><span class="lineNoCov">          0 :                 if ( ff_ask(_(&quot;Bad Drawing Operation&quot;),(const char **) buts,0,1,_(&quot;This font contains at least one translucent layer, but type3 does not support that (anything translucent or transparent is treated as opaque). Do you want to proceed anyway?&quot;))==1 )</span>
+<span class="lineNum">     770 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     771 </span>            : 
+<span class="lineNum">     772 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     773 </span>            :             }
+<span class="lineNum">     774 </span>            :         }
+<span class="lineNum">     775 </span>            :     }
+<span class="lineNum">     776 </span><span class="lineCov">          2 : return( false );</span>
+<a name="777"><span class="lineNum">     777 </span>            : }</a>
+<span class="lineNum">     778 </span>            : 
+<span class="lineNum">     779 </span><span class="lineCov">         32 : int _DoSave(SplineFont *sf,char *newname,int32 *sizes,int res,</span>
+<span class="lineNum">     780 </span>            :         EncMap *map, char *subfontdefinition,int layer) {
+<span class="lineNum">     781 </span>            :     char *path;
+<span class="lineNum">     782 </span><span class="lineCov">         32 :     int err=false;</span>
+<span class="lineNum">     783 </span><span class="lineCov">        126 :     int iscid = oldformatstate==ff_cid || oldformatstate==ff_cffcid ||</span>
+<span class="lineNum">     784 </span><span class="lineCov">         93 :             oldformatstate==ff_otfcid || oldformatstate==ff_otfciddfont;</span>
+<span class="lineNum">     785 </span><span class="lineCov">         32 :     int flags = 0;</span>
+<span class="lineNum">     786 </span><span class="lineCov">         32 :     int tmpstore = 0;</span>
+<span class="lineNum">     787 </span>            : 
+<span class="lineNum">     788 </span><span class="lineCov">         32 :     if ( oldformatstate == ff_multiple )</span>
+<span class="lineNum">     789 </span><span class="lineNoCov">          0 : return( WriteMultiplePSFont(sf,newname,sizes,subfontdefinition,map,layer));</span>
+<span class="lineNum">     790 </span>            : 
+<span class="lineNum">     791 </span><span class="lineCov">         32 :     if ( oldformatstate&lt;=ff_cffcid )</span>
+<span class="lineNum">     792 </span><span class="lineCov">          6 :         flags = old_ps_flags;</span>
+<span class="lineNum">     793 </span><span class="lineCov">         26 :     else if ( oldformatstate&lt;=ff_ttfdfont )</span>
+<span class="lineNum">     794 </span><span class="lineCov">         10 :         flags = old_sfnt_flags;</span>
+<span class="lineNum">     795 </span><span class="lineCov">         16 :     else if ( oldformatstate!=ff_none )</span>
+<span class="lineNum">     796 </span><span class="lineCov">         12 :         flags = old_sfnt_flags;</span>
+<span class="lineNum">     797 </span>            :     else
+<span class="lineNum">     798 </span><span class="lineCov">          4 :         flags = old_sfnt_flags&amp;~(ttf_flag_ofm);</span>
+<span class="lineNum">     799 </span><span class="lineCov">         32 :     if ( oldformatstate&lt;=ff_cffcid &amp;&amp; oldbitmapstate==bf_otb )</span>
+<span class="lineNum">     800 </span><span class="lineNoCov">          0 :         flags = old_psotb_flags;</span>
+<span class="lineNum">     801 </span>            : 
+<span class="lineNum">     802 </span><span class="lineCov">         32 :     path = def2utf8_copy(newname);</span>
+<span class="lineNum">     803 </span><span class="lineCov">        153 :     ff_progress_start_indicator(10,_(&quot;Saving font&quot;),</span>
+<span class="lineNum">     804 </span><span class="lineCov">         76 :                 oldformatstate==ff_ttf || oldformatstate==ff_ttfsym ||</span>
+<span class="lineNum">     805 </span><span class="lineCov">         22 :                      oldformatstate==ff_ttfmacbin ?_(&quot;Saving TrueType Font&quot;) :</span>
+<span class="lineNum">     806 </span><span class="lineCov">         36 :                  oldformatstate==ff_otf || oldformatstate==ff_otfdfont ?_(&quot;Saving OpenType Font&quot;):</span>
+<span class="lineNum">     807 </span><span class="lineCov">         40 :                  oldformatstate==ff_cid || oldformatstate==ff_cffcid ||</span>
+<span class="lineNum">     808 </span><span class="lineCov">         25 :                   oldformatstate==ff_otfcid || oldformatstate==ff_otfciddfont ?_(&quot;Saving CID keyed font&quot;) :</span>
+<span class="lineNum">     809 </span><span class="lineCov">         23 :                   oldformatstate==ff_mma || oldformatstate==ff_mmb ?_(&quot;Saving multi-master font&quot;) :</span>
+<span class="lineNum">     810 </span><span class="lineCov">         11 :                   oldformatstate==ff_svg ?_(&quot;Saving SVG font&quot;) :</span>
+<span class="lineNum">     811 </span><span class="lineCov">          9 :                   oldformatstate==ff_ufo ?_(&quot;Saving Unified Font Object&quot;) :</span>
+<span class="lineNum">     812 </span>            :                  _(&quot;Saving PostScript Font&quot;),
+<span class="lineNum">     813 </span>            :             path,sf-&gt;glyphcnt,1);
+<span class="lineNum">     814 </span><span class="lineCov">         32 :     free(path);</span>
+<span class="lineNum">     815 </span><span class="lineCov">         32 :     if ( oldformatstate!=ff_none ) {</span>
+<span class="lineNum">     816 </span><span class="lineCov">         28 :         int oerr = 0;</span>
+<span class="lineNum">     817 </span><span class="lineCov">         28 :         int bmap = oldbitmapstate;</span>
+<span class="lineNum">     818 </span><span class="lineCov">         28 :         if ( bmap==bf_otb ) bmap = bf_none;</span>
+<span class="lineNum">     819 </span><span class="lineCov">         28 :         if ( strstr(newname,&quot;://&quot;)!=NULL ) {</span>
+<span class="lineNum">     820 </span><span class="lineNoCov">          0 :             if ( oldformatstate==ff_pfbmacbin || oldformatstate==ff_ttfmacbin ) {</span>
+<span class="lineNum">     821 </span><span class="lineNoCov">          0 :                 ff_post_error(_(&quot;Mac Resource Not Remote&quot;),_(&quot;You may not save a mac resource file to a remote location&quot;));</span>
+<span class="lineNum">     822 </span><span class="lineNoCov">          0 :                 oerr = true;</span>
+<span class="lineNum">     823 </span><span class="lineNoCov">          0 :             } else if ( oldformatstate==ff_ufo ) {</span>
+<span class="lineNum">     824 </span><span class="lineNoCov">          0 :                 ff_post_error(_(&quot;Directory Not Remote&quot;),_(&quot;You may not save ufo directory to a remote location&quot;));</span>
+<span class="lineNum">     825 </span><span class="lineNoCov">          0 :                 oerr = true;</span>
+<span class="lineNum">     826 </span>            :             }
+<span class="lineNum">     827 </span>            :         }
+<span class="lineNum">     828 </span><span class="lineCov">         28 :         if ( !oerr ) switch ( oldformatstate ) {</span>
+<span class="lineNum">     829 </span>            :           case ff_mma: case ff_mmb:
+<span class="lineNum">     830 </span><span class="lineCov">          1 :             sf = sf-&gt;mm-&gt;instances[0];</span>
+<span class="lineNum">     831 </span>            :           case ff_pfa: case ff_pfb: case ff_ptype3: case ff_ptype0:
+<span class="lineNum">     832 </span>            :           case ff_cid:
+<span class="lineNum">     833 </span>            :           case ff_type42: case ff_type42cid:
+<span class="lineNum">     834 </span><span class="lineCov">          6 :             if ( sf-&gt;multilayer &amp;&amp; CheckIfTransparent(sf))</span>
+<span class="lineNum">     835 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     836 </span><span class="lineCov">          6 :             oerr = !WritePSFont(newname,sf,oldformatstate,flags,map,NULL,layer);</span>
+<span class="lineNum">     837 </span><span class="lineCov">          6 :           break;</span>
+<span class="lineNum">     838 </span>            :           case ff_ttf: case ff_ttfsym: case ff_otf: case ff_otfcid:
+<span class="lineNum">     839 </span>            :           case ff_cff: case ff_cffcid:
+<span class="lineNum">     840 </span><span class="lineCov">         19 :             oerr = !WriteTTFFont(newname,sf,oldformatstate,sizes,bmap,</span>
+<span class="lineNum">     841 </span>            :                 flags,map,layer);
+<span class="lineNum">     842 </span><span class="lineCov">         19 :           break;</span>
+<span class="lineNum">     843 </span>            :           case ff_woff:
+<span class="lineNum">     844 </span><span class="lineCov">          1 :             oerr = !WriteWOFFFont(newname,sf,oldformatstate,sizes,bmap,</span>
+<span class="lineNum">     845 </span>            :                 flags,map,layer);
+<span class="lineNum">     846 </span><span class="lineCov">          1 :           break;</span>
+<span class="lineNum">     847 </span>            :           case ff_pfbmacbin:
+<span class="lineNum">     848 </span><span class="lineNoCov">          0 :             oerr = !WriteMacPSFont(newname,sf,oldformatstate,flags,map,layer);</span>
+<span class="lineNum">     849 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">     850 </span>            :           case ff_ttfmacbin: case ff_ttfdfont: case ff_otfdfont: case ff_otfciddfont:
+<span class="lineNum">     851 </span><span class="lineNoCov">          0 :             oerr = !WriteMacTTFFont(newname,sf,oldformatstate,sizes,</span>
+<span class="lineNum">     852 </span>            :                     bmap,flags,map,layer);
+<span class="lineNum">     853 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">     854 </span>            :           case ff_svg:
+<span class="lineNum">     855 </span><span class="lineCov">          2 :             oerr = !WriteSVGFont(newname,sf,oldformatstate,flags,map,layer);</span>
+<span class="lineNum">     856 </span><span class="lineCov">          2 :           break;</span>
+<span class="lineNum">     857 </span>            :           case ff_ufo:
+<span class="lineNum">     858 </span><span class="lineNoCov">          0 :             tmpstore = sf-&gt;preferred_kerning; // We toggle this flag in order to force native kerning output.</span>
+<span class="lineNum">     859 </span><span class="lineNoCov">          0 :             if (flags &amp; ttf_native_kern) sf-&gt;preferred_kerning = 1; // 1 flags native kerning.</span>
+<span class="lineNum">     860 </span><span class="lineNoCov">          0 :             sf-&gt;preferred_kerning |= 4; // 4 flags old-style naming for the starting name in UFONameKerningClasses.</span>
+<span class="lineNum">     861 </span><span class="lineNoCov">          0 :             oerr = !WriteUFOFont(newname,sf,oldformatstate,flags,map,layer);</span>
+<span class="lineNum">     862 </span><span class="lineNoCov">          0 :             if (flags &amp; ttf_native_kern) sf-&gt;preferred_kerning = tmpstore;</span>
+<span class="lineNum">     863 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">     864 </span>            :           default:
+<span class="lineNum">     865 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">     866 </span>            :         }
+<span class="lineNum">     867 </span><span class="lineCov">         28 :         if ( oerr ) {</span>
+<span class="lineNum">     868 </span><span class="lineNoCov">          0 :             ff_post_error(_(&quot;Save Failed&quot;),_(&quot;Save Failed&quot;));</span>
+<span class="lineNum">     869 </span><span class="lineNoCov">          0 :             err = true;</span>
+<span class="lineNum">     870 </span>            :         }
+<span class="lineNum">     871 </span>            :     }
+<span class="lineNum">     872 </span><span class="lineCov">         32 :     if ( !err &amp;&amp; (flags&amp;ps_flag_tfm) ) {</span>
+<span class="lineNum">     873 </span><span class="lineNoCov">          0 :         if ( !WriteTfmFile(newname,sf,map,layer)) {</span>
+<span class="lineNum">     874 </span><span class="lineNoCov">          0 :             ff_post_error(_(&quot;Tfm Save Failed&quot;),_(&quot;Tfm Save Failed&quot;));</span>
+<span class="lineNum">     875 </span><span class="lineNoCov">          0 :             err = true;</span>
+<span class="lineNum">     876 </span>            :         }
+<span class="lineNum">     877 </span>            :     }
+<span class="lineNum">     878 </span><span class="lineCov">         32 :     if ( !err &amp;&amp; (flags&amp;ttf_flag_ofm) ) {</span>
+<span class="lineNum">     879 </span><span class="lineNoCov">          0 :         if ( !WriteOfmFile(newname,sf,map,layer)) {</span>
+<span class="lineNum">     880 </span><span class="lineNoCov">          0 :             ff_post_error(_(&quot;Ofm Save Failed&quot;),_(&quot;Ofm Save Failed&quot;));</span>
+<span class="lineNum">     881 </span><span class="lineNoCov">          0 :             err = true;</span>
+<span class="lineNum">     882 </span>            :         }
+<span class="lineNum">     883 </span>            :     }
+<span class="lineNum">     884 </span><span class="lineCov">         32 :     if ( !err &amp;&amp; (flags&amp;ps_flag_afm) ) {</span>
+<span class="lineNum">     885 </span><span class="lineCov">          6 :         ff_progress_increment(-sf-&gt;glyphcnt);</span>
+<span class="lineNum">     886 </span><span class="lineCov">          6 :         if ( !WriteAfmFile(newname,sf,oldformatstate,map,flags,NULL,layer)) {</span>
+<span class="lineNum">     887 </span><span class="lineNoCov">          0 :             ff_post_error(_(&quot;Afm Save Failed&quot;),_(&quot;Afm Save Failed&quot;));</span>
+<span class="lineNum">     888 </span><span class="lineNoCov">          0 :             err = true;</span>
+<span class="lineNum">     889 </span>            :         }
+<span class="lineNum">     890 </span>            :     }
+<span class="lineNum">     891 </span><span class="lineCov">         32 :     if ( !err &amp;&amp; (flags&amp;ps_flag_outputfontlog) ) {</span>
+<span class="lineNum">     892 </span><span class="lineNoCov">          0 :         if ( !WriteFontLog(newname,sf)) {</span>
+<span class="lineNum">     893 </span><span class="lineNoCov">          0 :             ff_post_error(_(&quot;FontLog Save Failed&quot;),_(&quot;FontLog Save Failed&quot;));</span>
+<span class="lineNum">     894 </span><span class="lineNoCov">          0 :             err = true;</span>
+<span class="lineNum">     895 </span>            :         }
+<span class="lineNum">     896 </span>            :     }
+<span class="lineNum">     897 </span><span class="lineCov">         32 :     if ( !err &amp;&amp; (flags&amp;ps_flag_pfm) &amp;&amp; !iscid ) {</span>
+<span class="lineNum">     898 </span><span class="lineCov">          3 :         ff_progress_change_line1(_(&quot;Saving PFM File&quot;));</span>
+<span class="lineNum">     899 </span><span class="lineCov">          3 :         ff_progress_increment(-sf-&gt;glyphcnt);</span>
+<span class="lineNum">     900 </span><span class="lineCov">          3 :         if ( !WritePfmFile(newname,sf,map,layer)) {</span>
+<span class="lineNum">     901 </span><span class="lineNoCov">          0 :             ff_post_error(_(&quot;Pfm Save Failed&quot;),_(&quot;Pfm Save Failed&quot;));</span>
+<span class="lineNum">     902 </span><span class="lineNoCov">          0 :             err = true;</span>
+<span class="lineNum">     903 </span>            :         }
+<span class="lineNum">     904 </span>            :     }
+<span class="lineNum">     905 </span><span class="lineCov">         33 :     if ( oldbitmapstate==bf_otb || oldbitmapstate==bf_sfnt_ms ) {</span>
+<span class="lineNum">     906 </span><span class="lineCov">          1 :         char *temp = newname;</span>
+<span class="lineNum">     907 </span><span class="lineCov">          1 :         if ( newname[strlen(newname)-1]=='.' ) {</span>
+<span class="lineNum">     908 </span><span class="lineNoCov">          0 :             temp = malloc(strlen(newname)+8);</span>
+<span class="lineNum">     909 </span><span class="lineNoCov">          0 :             strcpy(temp,newname);</span>
+<span class="lineNum">     910 </span><span class="lineNoCov">          0 :             strcat(temp,oldbitmapstate==bf_otb ? &quot;otb&quot; : &quot;ttf&quot; );</span>
+<span class="lineNum">     911 </span>            :         }
+<span class="lineNum">     912 </span><span class="lineCov">          1 :         if ( !WriteTTFFont(temp,sf,ff_none,sizes,oldbitmapstate,flags,map,layer) )</span>
+<span class="lineNum">     913 </span><span class="lineNoCov">          0 :             err = true;</span>
+<span class="lineNum">     914 </span><span class="lineCov">          1 :         if ( temp!=newname )</span>
+<span class="lineNum">     915 </span><span class="lineNoCov">          0 :             free(temp);</span>
+<span class="lineNum">     916 </span><span class="lineCov">         31 :     } else if ( oldbitmapstate==bf_sfnt_dfont ) {</span>
+<span class="lineNum">     917 </span><span class="lineCov">          3 :         char *temp = newname;</span>
+<span class="lineNum">     918 </span><span class="lineCov">          3 :         if ( newname[strlen(newname)-1]=='.' ) {</span>
+<span class="lineNum">     919 </span><span class="lineNoCov">          0 :             temp = malloc(strlen(newname)+8);</span>
+<span class="lineNum">     920 </span><span class="lineNoCov">          0 :             strcpy(temp,newname);</span>
+<span class="lineNum">     921 </span><span class="lineNoCov">          0 :             strcat(temp,&quot;dfont&quot;);</span>
+<span class="lineNum">     922 </span>            :         }
+<span class="lineNum">     923 </span><span class="lineCov">          3 :         if ( !WriteMacTTFFont(temp,sf,ff_none,sizes,oldbitmapstate,flags,map,layer) )</span>
+<span class="lineNum">     924 </span><span class="lineNoCov">          0 :             err = true;</span>
+<span class="lineNum">     925 </span><span class="lineCov">          3 :         if ( temp!=newname )</span>
+<span class="lineNum">     926 </span><span class="lineNoCov">          0 :             free(temp);</span>
+<span class="lineNum">     927 </span><span class="lineCov">         55 :     } else if ( (oldbitmapstate==bf_bdf || oldbitmapstate==bf_fnt ||</span>
+<span class="lineNum">     928 </span><span class="lineCov">         28 :             oldbitmapstate==bf_ptype3 ) &amp;&amp; !err ) {</span>
+<span class="lineNum">     929 </span><span class="lineCov">          1 :         ff_progress_change_line1(_(&quot;Saving Bitmap Font(s)&quot;));</span>
+<span class="lineNum">     930 </span><span class="lineCov">          1 :         ff_progress_increment(-sf-&gt;glyphcnt);</span>
+<span class="lineNum">     931 </span><span class="lineCov">          2 :         if ( !WriteBitmaps(newname,sf,sizes,res,oldbitmapstate,map))</span>
+<span class="lineNum">     932 </span><span class="lineNoCov">          0 :             err = true;</span>
+<span class="lineNum">     933 </span><span class="lineCov">         27 :     } else if ( oldbitmapstate==bf_fon &amp;&amp; !err ) {</span>
+<span class="lineNum">     934 </span><span class="lineNoCov">          0 :         if ( !FONFontDump(newname,sf,sizes,res,map))</span>
+<span class="lineNum">     935 </span><span class="lineNoCov">          0 :             err = true;</span>
+<span class="lineNum">     936 </span><span class="lineCov">         27 :     } else if ( oldbitmapstate==bf_palm &amp;&amp; !err ) {</span>
+<span class="lineNum">     937 </span><span class="lineNoCov">          0 :         if ( !WritePalmBitmaps(newname,sf,sizes,map))</span>
+<span class="lineNum">     938 </span><span class="lineNoCov">          0 :             err = true;</span>
+<span class="lineNum">     939 </span><span class="lineCov">         27 :     } else if ( (oldbitmapstate==bf_nfntmacbin /*|| oldbitmapstate==bf_nfntdfont*/) &amp;&amp;</span>
+<span class="lineNum">     940 </span>            :             !err ) {
+<span class="lineNum">     941 </span><span class="lineNoCov">          0 :         if ( !WriteMacBitmaps(newname,sf,sizes,false/*oldbitmapstate==bf_nfntdfont*/,map))</span>
+<span class="lineNum">     942 </span><span class="lineNoCov">          0 :             err = true;</span>
+<span class="lineNum">     943 </span>            :     }
+<span class="lineNum">     944 </span><span class="lineCov">         32 :     free( sizes );</span>
+<span class="lineNum">     945 </span><span class="lineCov">         32 :     ff_progress_end_indicator();</span>
+<span class="lineNum">     946 </span><span class="lineCov">         32 :     if ( !err )</span>
+<span class="lineNum">     947 </span><span class="lineCov">         32 :         SavePrefs(true);</span>
+<span class="lineNum">     948 </span><span class="lineCov">         32 : return( err );</span>
+<a name="949"><span class="lineNum">     949 </span>            : }</a>
+<span class="lineNum">     950 </span>            : 
+<span class="lineNum">     951 </span><span class="lineCov">         35 : void PrepareUnlinkRmOvrlp(SplineFont *sf,const char *filename,int layer) {</span>
+<span class="lineNum">     952 </span>            :     int gid;
+<span class="lineNum">     953 </span>            :     SplineChar *sc;
+<span class="lineNum">     954 </span>            :     RefChar *ref, *refnext;
+<span class="lineNum">     955 </span><span class="lineCov">         35 :     int old_nwui = no_windowing_ui, old_maxundoes = maxundoes;</span>
+<span class="lineNum">     956 </span>            : 
+<span class="lineNum">     957 </span>            : #if !defined(_NO_PYTHON)
+<span class="lineNum">     958 </span><span class="lineCov">         35 :     PyFF_CallDictFunc(sf-&gt;python_temporary,&quot;generateFontPostHook&quot;,&quot;fs&quot;,sf-&gt;fv,filename);</span>
+<span class="lineNum">     959 </span>            : #endif
+<span class="lineNum">     960 </span>            : 
+<span class="lineNum">     961 </span><span class="lineCov">         35 :     if ( maxundoes==0 ) maxundoes = 1;          /* Force undoes */</span>
+<span class="lineNum">     962 </span>            : 
+<span class="lineNum">     963 </span><span class="lineCov">     151669 :     for ( gid=0; gid&lt;sf-&gt;glyphcnt; ++gid ) if ( (sc=sf-&gt;glyphs[gid])!=NULL &amp;&amp; sc-&gt;unlink_rm_ovrlp_save_undo ) {</span>
+<span class="lineNum">     964 </span><span class="lineNoCov">          0 :         if ( autohint_before_generate &amp;&amp; sc!=NULL &amp;&amp;</span>
+<span class="lineNum">     965 </span><span class="lineNoCov">          0 :                 sc-&gt;changedsincelasthinted &amp;&amp; !sc-&gt;manualhints ) {</span>
+<span class="lineNum">     966 </span><span class="lineNoCov">          0 :             no_windowing_ui = true;</span>
+<span class="lineNum">     967 </span><span class="lineNoCov">          0 :             SplineCharAutoHint(sc,layer,NULL);  /* Do this now, else we get an unwanted undo on the stack from hinting */</span>
+<span class="lineNum">     968 </span>            :         }
+<span class="lineNum">     969 </span><span class="lineNoCov">          0 :         no_windowing_ui = false;</span>
+<span class="lineNum">     970 </span><span class="lineNoCov">          0 :         SCPreserveLayer(sc,layer,false);</span>
+<span class="lineNum">     971 </span><span class="lineNoCov">          0 :         no_windowing_ui = true;                 /* Clustering wants to create an undo that I don't need */</span>
+<span class="lineNum">     972 </span><span class="lineNoCov">          0 :         for ( ref= sc-&gt;layers[layer].refs; ref!=NULL; ref=refnext ) {</span>
+<span class="lineNum">     973 </span><span class="lineNoCov">          0 :             refnext = ref-&gt;next;</span>
+<span class="lineNum">     974 </span><span class="lineNoCov">          0 :             SCRefToSplines(sc,ref,layer);</span>
+<span class="lineNum">     975 </span>            :         }
+<span class="lineNum">     976 </span>            : #if 0
+<span class="lineNum">     977 </span>            :         // We await testing on the necessity of this operation.
+<span class="lineNum">     978 </span>            :         SCRoundToCluster(sc,layer,false,.03,.12);
+<span class="lineNum">     979 </span>            : #endif // 0
+<span class="lineNum">     980 </span><span class="lineNoCov">          0 :         sc-&gt;layers[layer].splines = SplineSetRemoveOverlap(sc,sc-&gt;layers[layer].splines,over_remove);</span>
+<span class="lineNum">     981 </span><span class="lineNoCov">          0 :         no_windowing_ui = false;</span>
+<span class="lineNum">     982 </span><span class="lineNoCov">          0 :         if ( !sc-&gt;manualhints )</span>
+<span class="lineNum">     983 </span><span class="lineNoCov">          0 :             sc-&gt;changedsincelasthinted = false;</span>
+<span class="lineNum">     984 </span>            :     }
+<span class="lineNum">     985 </span><span class="lineCov">         35 :     no_windowing_ui = old_nwui;</span>
+<span class="lineNum">     986 </span><span class="lineCov">         35 :     maxundoes = old_maxundoes;</span>
+<a name="987"><span class="lineNum">     987 </span><span class="lineCov">         35 : }</span></a>
+<span class="lineNum">     988 </span>            : 
+<span class="lineNum">     989 </span><span class="lineCov">         35 : void RestoreUnlinkRmOvrlp(SplineFont *sf,const char *filename,int layer) {</span>
+<span class="lineNum">     990 </span>            :     int gid;
+<span class="lineNum">     991 </span>            :     SplineChar *sc;
+<span class="lineNum">     992 </span>            : 
+<span class="lineNum">     993 </span><span class="lineCov">     151669 :     for ( gid=0; gid&lt;sf-&gt;glyphcnt; ++gid ) if ( (sc=sf-&gt;glyphs[gid])!=NULL &amp;&amp; sc-&gt;unlink_rm_ovrlp_save_undo ) {</span>
+<span class="lineNum">     994 </span><span class="lineNoCov">          0 :         SCDoUndo(sc,layer);</span>
+<span class="lineNum">     995 </span><span class="lineNoCov">          0 :         if ( !sc-&gt;manualhints )</span>
+<span class="lineNum">     996 </span><span class="lineNoCov">          0 :             sc-&gt;changedsincelasthinted = false;</span>
+<span class="lineNum">     997 </span>            :     }
+<span class="lineNum">     998 </span>            : #if !defined(_NO_PYTHON)
+<span class="lineNum">     999 </span><span class="lineCov">         35 :     PyFF_CallDictFunc(sf-&gt;python_temporary,&quot;generateFontPostHook&quot;,&quot;fs&quot;,sf-&gt;fv,filename);</span>
+<span class="lineNum">    1000 </span>            : #endif
+<a name="1001"><span class="lineNum">    1001 </span><span class="lineCov">         35 : }</span></a>
+<span class="lineNum">    1002 </span>            : 
+<span class="lineNum">    1003 </span><span class="lineCov">         14 : static int32 *AllBitmapSizes(SplineFont *sf) {</span>
+<span class="lineNum">    1004 </span><span class="lineCov">         14 :     int32 *sizes=NULL;</span>
+<span class="lineNum">    1005 </span>            :     BDFFont *bdf;
+<span class="lineNum">    1006 </span>            :     int i,cnt;
+<span class="lineNum">    1007 </span>            : 
+<span class="lineNum">    1008 </span><span class="lineCov">         28 :     for ( i=0; i&lt;2; ++i ) {</span>
+<span class="lineNum">    1009 </span><span class="lineCov">         28 :         cnt = 0;</span>
+<span class="lineNum">    1010 </span><span class="lineCov">        134 :         for ( bdf=sf-&gt;bitmaps; bdf!=NULL; bdf=bdf-&gt;next ) {</span>
+<span class="lineNum">    1011 </span><span class="lineCov">        106 :             if ( sizes!=NULL )</span>
+<span class="lineNum">    1012 </span><span class="lineCov">         53 :                 sizes[cnt] = bdf-&gt;pixelsize | (BDFDepth(bdf)&lt;&lt;16);</span>
+<span class="lineNum">    1013 </span><span class="lineCov">        106 :             ++cnt;</span>
+<span class="lineNum">    1014 </span>            :         }
+<span class="lineNum">    1015 </span><span class="lineCov">         28 :         if ( i==1 )</span>
+<span class="lineNum">    1016 </span><span class="lineCov">         14 :     break;</span>
+<span class="lineNum">    1017 </span><span class="lineCov">         14 :         sizes = malloc((cnt+1)*sizeof(int32));</span>
+<span class="lineNum">    1018 </span>            :     }
+<span class="lineNum">    1019 </span><span class="lineCov">         14 :     sizes[cnt] = 0;</span>
+<span class="lineNum">    1020 </span><span class="lineCov">         14 : return( sizes );</span>
+<a name="1021"><span class="lineNum">    1021 </span>            : }</a>
+<span class="lineNum">    1022 </span>            : 
+<span class="lineNum">    1023 </span><span class="lineCov">         33 : int GenerateScript(SplineFont *sf,char *filename,const char *bitmaptype, int fmflags,</span>
+<span class="lineNum">    1024 </span>            :         int res, char *subfontdefinition, struct sflist *sfs,EncMap *map,
+<span class="lineNum">    1025 </span>            :         NameList *rename_to,int layer) {
+<span class="lineNum">    1026 </span>            :     int i;
+<span class="lineNum">    1027 </span>            :     static const char *bitmaps[] = {&quot;bdf&quot;, &quot;ttf&quot;, &quot;dfont&quot;, &quot;ttf&quot;, &quot;otb&quot;, &quot;bin&quot;, &quot;fon&quot;, &quot;fnt&quot;, &quot;pdb&quot;, &quot;pt3&quot;, NULL };
+<span class="lineNum">    1028 </span><span class="lineCov">         33 :     int32 *sizes=NULL;</span>
+<span class="lineNum">    1029 </span><span class="lineCov">         33 :     char *end = filename+strlen(filename);</span>
+<span class="lineNum">    1030 </span>            :     struct sflist *sfi;
+<span class="lineNum">    1031 </span><span class="lineCov">         33 :     char *freeme = NULL;</span>
+<span class="lineNum">    1032 </span>            :     int ret;
+<span class="lineNum">    1033 </span>            :     struct sflist *sfl;
+<span class="lineNum">    1034 </span>            :     char **former;
+<span class="lineNum">    1035 </span>            : 
+<span class="lineNum">    1036 </span><span class="lineCov">         33 :     if ( sf-&gt;bitmaps==NULL ) i = bf_none;</span>
+<span class="lineNum">    1037 </span><span class="lineCov">         13 :     else if ( strmatch(bitmaptype,&quot;otf&quot;)==0 ) i = bf_ttf;</span>
+<span class="lineNum">    1038 </span><span class="lineCov">         13 :     else if ( strmatch(bitmaptype,&quot;ms&quot;)==0 ) i = bf_ttf;</span>
+<span class="lineNum">    1039 </span><span class="lineCov">         11 :     else if ( strmatch(bitmaptype,&quot;apple&quot;)==0 ) i = bf_ttf;</span>
+<span class="lineNum">    1040 </span><span class="lineCov">          9 :     else if ( strmatch(bitmaptype,&quot;sbit&quot;)==0 ) i = bf_sfnt_dfont;</span>
+<span class="lineNum">    1041 </span><span class="lineCov">          7 :     else if ( strmatch(bitmaptype,&quot;nfnt&quot;)==0 ) i = bf_nfntmacbin;</span>
+<span class="lineNum">    1042 </span><span class="lineCov">          7 :     else if ( strmatch(bitmaptype,&quot;ps&quot;)==0 ) i = bf_ptype3;</span>
+<span class="lineNum">    1043 </span><span class="lineCov">         27 :     else for ( i=0; bitmaps[i]!=NULL; ++i ) {</span>
+<span class="lineNum">    1044 </span><span class="lineCov">         26 :         if ( strmatch(bitmaptype,bitmaps[i])==0 )</span>
+<span class="lineNum">    1045 </span><span class="lineCov">          6 :     break;</span>
+<span class="lineNum">    1046 </span>            :     }
+<span class="lineNum">    1047 </span><span class="lineCov">         33 :     oldbitmapstate = i;</span>
+<span class="lineNum">    1048 </span>            : 
+<span class="lineNum">    1049 </span><span class="lineCov">        514 :     for ( i=0; savefont_extensions[i]!=NULL; ++i ) {</span>
+<span class="lineNum">    1050 </span><span class="lineCov">       1026 :         if ( strlen( savefont_extensions[i])&gt;0 &amp;&amp;</span>
+<span class="lineNum">    1051 </span><span class="lineCov">       1022 :              end-filename&gt;=(ptrdiff_t)strlen(savefont_extensions[i]) &amp;&amp;</span>
+<span class="lineNum">    1052 </span><span class="lineCov">        509 :                 strmatch(end-strlen(savefont_extensions[i]),savefont_extensions[i])==0 )</span>
+<span class="lineNum">    1053 </span><span class="lineCov">         32 :     break;</span>
+<span class="lineNum">    1054 </span>            :     }
+<span class="lineNum">    1055 </span><span class="lineCov">         33 :     if ( end-filename&gt;8 &amp;&amp; strmatch(end-strlen(&quot;.ttf.bin&quot;),&quot;.ttf.bin&quot;)==0 )</span>
+<span class="lineNum">    1056 </span><span class="lineNoCov">          0 :         i = ff_ttfmacbin;</span>
+<span class="lineNum">    1057 </span><span class="lineCov">         33 :     else if ( end-filename&gt;5 &amp;&amp; strmatch(end-strlen(&quot;.suit&quot;),&quot;.suit&quot;)==0 )       /* Different extensions for Mac/non Mac, support both always */</span>
+<span class="lineNum">    1058 </span><span class="lineNoCov">          0 :         i = ff_ttfmacbin;</span>
+<span class="lineNum">    1059 </span><span class="lineCov">         33 :     else if ( end-filename&gt;4 &amp;&amp; strmatch(end-strlen(&quot;.bin&quot;),&quot;.bin&quot;)==0 )</span>
+<span class="lineNum">    1060 </span><span class="lineNoCov">          0 :         i = ff_pfbmacbin;</span>
+<span class="lineNum">    1061 </span><span class="lineCov">         33 :     else if ( end-filename&gt;4 &amp;&amp; strmatch(end-strlen(&quot;.res&quot;),&quot;.res&quot;)==0 )</span>
+<span class="lineNum">    1062 </span><span class="lineNoCov">          0 :         i = ff_pfbmacbin;</span>
+<span class="lineNum">    1063 </span><span class="lineCov">         33 :     else if ( end-filename&gt;8 &amp;&amp; strmatch(end-strlen(&quot;.sym.ttf&quot;),&quot;.sym.ttf&quot;)==0 )</span>
+<span class="lineNum">    1064 </span><span class="lineNoCov">          0 :         i = ff_ttfsym;</span>
+<span class="lineNum">    1065 </span><span class="lineCov">         33 :     else if ( end-filename&gt;8 &amp;&amp; strmatch(end-strlen(&quot;.cid.cff&quot;),&quot;.cid.cff&quot;)==0 )</span>
+<span class="lineNum">    1066 </span><span class="lineNoCov">          0 :         i = ff_cffcid;</span>
+<span class="lineNum">    1067 </span><span class="lineCov">         33 :     else if ( end-filename&gt;8 &amp;&amp; strmatch(end-strlen(&quot;.cid.t42&quot;),&quot;.cid.t42&quot;)==0 )</span>
+<span class="lineNum">    1068 </span><span class="lineNoCov">          0 :         i = ff_type42cid;</span>
+<span class="lineNum">    1069 </span><span class="lineCov">         33 :     else if ( end-filename&gt;7 &amp;&amp; strmatch(end-strlen(&quot;.mm.pfa&quot;),&quot;.mm.pfa&quot;)==0 )</span>
+<span class="lineNum">    1070 </span><span class="lineCov">          1 :         i = ff_mma;</span>
+<span class="lineNum">    1071 </span><span class="lineCov">         32 :     else if ( end-filename&gt;7 &amp;&amp; strmatch(end-strlen(&quot;.mm.pfb&quot;),&quot;.mm.pfb&quot;)==0 )</span>
+<span class="lineNum">    1072 </span><span class="lineNoCov">          0 :         i = ff_mmb;</span>
+<span class="lineNum">    1073 </span><span class="lineCov">         32 :     else if ( end-filename&gt;7 &amp;&amp; strmatch(end-strlen(&quot;.mult&quot;),&quot;.mult&quot;)==0 )</span>
+<span class="lineNum">    1074 </span><span class="lineNoCov">          0 :         i = ff_multiple;</span>
+<span class="lineNum">    1075 </span><span class="lineCov">         32 :     else if (( i==ff_pfa || i==ff_pfb ) &amp;&amp; strstr(filename,&quot;%s&quot;)!=NULL )</span>
+<span class="lineNum">    1076 </span><span class="lineNoCov">          0 :         i = ff_multiple;</span>
+<span class="lineNum">    1077 </span><span class="lineCov">         33 :     if ( savefont_extensions[i]==NULL ) {</span>
+<span class="lineNum">    1078 </span><span class="lineCov">         11 :         for ( i=0; bitmaps[i]!=NULL; ++i ) {</span>
+<span class="lineNum">    1079 </span><span class="lineCov">         20 :             if ( end-filename&gt;(ptrdiff_t)strlen(bitmaps[i]) &amp;&amp;</span>
+<span class="lineNum">    1080 </span><span class="lineCov">         10 :                     strmatch(end-strlen(bitmaps[i]),bitmaps[i])==0 )</span>
+<span class="lineNum">    1081 </span><span class="lineNoCov">          0 :         break;</span>
+<span class="lineNum">    1082 </span>            :         }
+<span class="lineNum">    1083 </span><span class="lineCov">          1 :         if ( *filename=='\0' || end[-1]=='.' )</span>
+<span class="lineNum">    1084 </span><span class="lineCov">          1 :             i = ff_none;</span>
+<span class="lineNum">    1085 </span><span class="lineNoCov">          0 :         else if ( bitmaps[i]==NULL )</span>
+<span class="lineNum">    1086 </span><span class="lineNoCov">          0 :             i = ff_pfb;</span>
+<span class="lineNum">    1087 </span>            :         else {
+<span class="lineNum">    1088 </span><span class="lineNoCov">          0 :             oldbitmapstate = i;</span>
+<span class="lineNum">    1089 </span><span class="lineNoCov">          0 :             i = ff_none;</span>
+<span class="lineNum">    1090 </span>            :         }
+<span class="lineNum">    1091 </span>            :     }
+<span class="lineNum">    1092 </span><span class="lineCov">         33 :     if ( i==ff_ttfdfont &amp;&amp; strmatch(end-strlen(&quot;.otf.dfont&quot;),&quot;.otf.dfont&quot;)==0 )</span>
+<span class="lineNum">    1093 </span><span class="lineCov">          1 :         i = ff_otfdfont;</span>
+<span class="lineNum">    1094 </span><span class="lineCov">         33 :     if ( sf-&gt;cidmaster!=NULL ) {</span>
+<span class="lineNum">    1095 </span><span class="lineCov">          2 :         if ( i==ff_otf ) i = ff_otfcid;</span>
+<span class="lineNum">    1096 </span><span class="lineCov">          1 :         else if ( i==ff_otfdfont ) i = ff_otfciddfont;</span>
+<span class="lineNum">    1097 </span>            :     }
+<span class="lineNum">    1098 </span><span class="lineCov">         33 :     if ( (i==ff_none || sf-&gt;onlybitmaps) &amp;&amp; oldbitmapstate==bf_ttf )</span>
+<span class="lineNum">    1099 </span><span class="lineNoCov">          0 :         oldbitmapstate = bf_sfnt_ms;</span>
+<span class="lineNum">    1100 </span><span class="lineCov">         33 :     oldformatstate = i;</span>
+<span class="lineNum">    1101 </span>            : 
+<span class="lineNum">    1102 </span><span class="lineCov">         34 :     if ( oldformatstate==ff_none &amp;&amp; end[-1]=='.' &amp;&amp;</span>
+<span class="lineNum">    1103 </span><span class="lineCov">          2 :             (oldbitmapstate==bf_ttf || oldbitmapstate==bf_sfnt_dfont || oldbitmapstate==bf_otb)) {</span>
+<span class="lineNum">    1104 </span><span class="lineCov">          1 :         freeme = malloc(strlen(filename)+8);</span>
+<span class="lineNum">    1105 </span><span class="lineCov">          1 :         strcpy(freeme,filename);</span>
+<span class="lineNum">    1106 </span><span class="lineCov">          1 :         if ( strmatch(bitmaptype,&quot;otf&quot;)==0 )</span>
+<span class="lineNum">    1107 </span><span class="lineNoCov">          0 :             strcat(freeme,&quot;otf&quot;);</span>
+<span class="lineNum">    1108 </span><span class="lineCov">          1 :         else if ( oldbitmapstate==bf_otb )</span>
+<span class="lineNum">    1109 </span><span class="lineCov">          1 :             strcat(freeme,&quot;otb&quot;);</span>
+<span class="lineNum">    1110 </span><span class="lineNoCov">          0 :         else if ( oldbitmapstate==bf_sfnt_dfont )</span>
+<span class="lineNum">    1111 </span><span class="lineNoCov">          0 :             strcat(freeme,&quot;dfont&quot;);</span>
+<span class="lineNum">    1112 </span>            :         else
+<span class="lineNum">    1113 </span><span class="lineNoCov">          0 :             strcat(freeme,&quot;ttf&quot;);</span>
+<span class="lineNum">    1114 </span><span class="lineCov">          1 :         filename = freeme;</span>
+<span class="lineNum">    1115 </span><span class="lineCov">         33 :     } else if ( sf-&gt;onlybitmaps &amp;&amp; sf-&gt;bitmaps!=NULL &amp;&amp;</span>
+<span class="lineNum">    1116 </span><span class="lineCov">          2 :             (oldformatstate==ff_ttf || oldformatstate==ff_otf) &amp;&amp;</span>
+<span class="lineNum">    1117 </span><span class="lineNoCov">          0 :             (oldbitmapstate == bf_none || oldbitmapstate==bf_ttf ||</span>
+<span class="lineNum">    1118 </span><span class="lineNoCov">          0 :              oldbitmapstate==bf_sfnt_dfont || oldbitmapstate==bf_otb)) {</span>
+<span class="lineNum">    1119 </span><span class="lineNoCov">          0 :         if ( oldbitmapstate==ff_ttf )</span>
+<span class="lineNum">    1120 </span><span class="lineNoCov">          0 :             oldbitmapstate = bf_ttf;</span>
+<span class="lineNum">    1121 </span><span class="lineNoCov">          0 :         oldformatstate = ff_none;</span>
+<span class="lineNum">    1122 </span>            :     }
+<span class="lineNum">    1123 </span>            : 
+<span class="lineNum">    1124 </span><span class="lineCov">         33 :     if ( oldbitmapstate==bf_sfnt_dfont )</span>
+<span class="lineNum">    1125 </span><span class="lineCov">          4 :         oldformatstate = ff_none;</span>
+<span class="lineNum">    1126 </span>            : 
+<span class="lineNum">    1127 </span><span class="lineCov">         33 :     if ( fmflags==-1 ) {</span>
+<span class="lineNum">    1128 </span>            :         /* Default to what we did last time */
+<span class="lineNum">    1129 </span>            :     } else {
+<span class="lineNum">    1130 </span><span class="lineCov">         10 :         if ( oldformatstate==ff_ttf &amp;&amp; (fmflags&amp;0x2000))</span>
+<span class="lineNum">    1131 </span><span class="lineNoCov">          0 :             oldformatstate = ff_ttfsym;</span>
+<span class="lineNum">    1132 </span><span class="lineCov">         10 :         if ( oldformatstate&lt;=ff_cffcid ) {</span>
+<span class="lineNum">    1133 </span><span class="lineNoCov">          0 :             old_ps_flags = 0;</span>
+<span class="lineNum">    1134 </span><span class="lineNoCov">          0 :             if ( fmflags&amp;1 ) old_ps_flags |= ps_flag_afm;</span>
+<span class="lineNum">    1135 </span><span class="lineNoCov">          0 :             if ( fmflags&amp;2 ) old_ps_flags |= ps_flag_pfm;</span>
+<span class="lineNum">    1136 </span><span class="lineNoCov">          0 :             if ( fmflags&amp;0x10000 ) old_ps_flags |= ps_flag_tfm;</span>
+<span class="lineNum">    1137 </span><span class="lineNoCov">          0 :             if ( fmflags&amp;0x20000 ) old_ps_flags |= ps_flag_nohintsubs;</span>
+<span class="lineNum">    1138 </span><span class="lineNoCov">          0 :             if ( fmflags&amp;0x40000 ) old_ps_flags |= ps_flag_noflex;</span>
+<span class="lineNum">    1139 </span><span class="lineNoCov">          0 :             if ( fmflags&amp;0x80000 ) old_ps_flags |= ps_flag_nohints;</span>
+<span class="lineNum">    1140 </span><span class="lineNoCov">          0 :             if ( fmflags&amp;0x100000 ) old_ps_flags |= ps_flag_restrict256;</span>
+<span class="lineNum">    1141 </span><span class="lineNoCov">          0 :             if ( fmflags&amp;0x200000 ) old_ps_flags |= ps_flag_round;</span>
+<span class="lineNum">    1142 </span><span class="lineNoCov">          0 :             if ( fmflags&amp;0x400000 ) old_ps_flags |= ps_flag_afmwithmarks;</span>
+<span class="lineNum">    1143 </span><span class="lineNoCov">          0 :             if ( i==bf_otb ) {</span>
+<span class="lineNum">    1144 </span><span class="lineNoCov">          0 :                 old_sfnt_flags = 0;</span>
+<span class="lineNum">    1145 </span><span class="lineNoCov">          0 :                 switch ( fmflags&amp;0x90 ) {</span>
+<span class="lineNum">    1146 </span>            :                   case 0x80:
+<span class="lineNum">    1147 </span><span class="lineNoCov">          0 :                     old_sfnt_flags |= ttf_flag_applemode|ttf_flag_otmode;</span>
+<span class="lineNum">    1148 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">    1149 </span>            :                   case 0x90:
+<span class="lineNum">    1150 </span>            :                     /* Neither */;
+<span class="lineNum">    1151 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">    1152 </span>            :                   case 0x10:
+<span class="lineNum">    1153 </span><span class="lineNoCov">          0 :                     old_sfnt_flags |= ttf_flag_applemode;</span>
+<span class="lineNum">    1154 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">    1155 </span>            :                   case 0x00:
+<span class="lineNum">    1156 </span><span class="lineNoCov">          0 :                     old_sfnt_flags |= ttf_flag_otmode;</span>
+<span class="lineNum">    1157 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">    1158 </span>            :                   default:
+<span class="lineNum">    1159 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">    1160 </span>            :                 }
+<span class="lineNum">    1161 </span><span class="lineNoCov">          0 :                 if ( fmflags&amp;4 ) old_sfnt_flags |= ttf_flag_shortps;</span>
+<span class="lineNum">    1162 </span><span class="lineNoCov">          0 :                 if ( fmflags&amp;0x20 ) old_sfnt_flags |= ttf_flag_pfed_comments;</span>
+<span class="lineNum">    1163 </span><span class="lineNoCov">          0 :                 if ( fmflags&amp;0x40 ) old_sfnt_flags |= ttf_flag_pfed_colors;</span>
+<span class="lineNum">    1164 </span><span class="lineNoCov">          0 :                 if ( fmflags&amp;0x200 ) old_sfnt_flags |= ttf_flag_TeXtable;</span>
+<span class="lineNum">    1165 </span><span class="lineNoCov">          0 :                 if ( fmflags&amp;0x400 ) old_sfnt_flags |= ttf_flag_ofm;</span>
+<span class="lineNum">    1166 </span><span class="lineNoCov">          0 :                 if ( (fmflags&amp;0x800) &amp;&amp; !(old_sfnt_flags&amp;ttf_flag_applemode) )</span>
+<span class="lineNum">    1167 </span><span class="lineNoCov">          0 :                     old_sfnt_flags |= ttf_flag_oldkern;</span>
+<span class="lineNum">    1168 </span><span class="lineNoCov">          0 :                 if ( fmflags&amp;0x2000 ) old_sfnt_flags |= ttf_flag_symbol;</span>
+<span class="lineNum">    1169 </span><span class="lineNoCov">          0 :                 if ( fmflags&amp;0x4000 ) old_sfnt_flags |= ttf_flag_dummyDSIG;</span>
+<span class="lineNum">    1170 </span><span class="lineNoCov">          0 :                 if ( fmflags&amp;0x800000 ) old_sfnt_flags |= ttf_flag_pfed_lookupnames;</span>
+<span class="lineNum">    1171 </span><span class="lineNoCov">          0 :                 if ( fmflags&amp;0x1000000 ) old_sfnt_flags |= ttf_flag_pfed_guides;</span>
+<span class="lineNum">    1172 </span><span class="lineNoCov">          0 :                 if ( fmflags&amp;0x2000000 ) old_sfnt_flags |= ttf_flag_pfed_layers;</span>
+<span class="lineNum">    1173 </span><span class="lineNoCov">          0 :                 if ( fmflags&amp;0x4000000 ) old_sfnt_flags |= ttf_flag_oldkernmappedonly;</span>
+<span class="lineNum">    1174 </span>            :             }
+<span class="lineNum">    1175 </span>            :         } else {
+<span class="lineNum">    1176 </span><span class="lineCov">         10 :             old_sfnt_flags = 0;</span>
+<span class="lineNum">    1177 </span>            :                 /* Applicable postscript flags */
+<span class="lineNum">    1178 </span><span class="lineCov">         10 :             if ( fmflags&amp;1 ) old_sfnt_flags |= ps_flag_afm;</span>
+<span class="lineNum">    1179 </span><span class="lineCov">         10 :             if ( fmflags&amp;2 ) old_sfnt_flags |= ps_flag_pfm;</span>
+<span class="lineNum">    1180 </span><span class="lineCov">         10 :             if ( fmflags&amp;0x20000 ) old_sfnt_flags |= ps_flag_nohintsubs;</span>
+<span class="lineNum">    1181 </span><span class="lineCov">         10 :             if ( fmflags&amp;0x40000 ) old_sfnt_flags |= ps_flag_noflex;</span>
+<span class="lineNum">    1182 </span><span class="lineCov">         10 :             if ( fmflags&amp;0x80000 ) old_sfnt_flags |= ps_flag_nohints;</span>
+<span class="lineNum">    1183 </span><span class="lineCov">         10 :             if ( fmflags&amp;0x200000 ) old_sfnt_flags |= ps_flag_round;</span>
+<span class="lineNum">    1184 </span><span class="lineCov">         10 :             if ( fmflags&amp;0x400000 ) old_sfnt_flags |= ps_flag_afmwithmarks;</span>
+<span class="lineNum">    1185 </span>            :                 /* Applicable truetype flags */
+<span class="lineNum">    1186 </span><span class="lineCov">         10 :             switch ( fmflags&amp;0x90 ) {</span>
+<span class="lineNum">    1187 </span>            :               case 0x80:
+<span class="lineNum">    1188 </span><span class="lineCov">          4 :                 old_sfnt_flags |= ttf_flag_applemode|ttf_flag_otmode;</span>
+<span class="lineNum">    1189 </span><span class="lineCov">          4 :               break;</span>
+<span class="lineNum">    1190 </span>            :               case 0x90:
+<span class="lineNum">    1191 </span>            :                 /* Neither */;
+<span class="lineNum">    1192 </span><span class="lineCov">          1 :               break;</span>
+<span class="lineNum">    1193 </span>            :               case 0x10:
+<span class="lineNum">    1194 </span><span class="lineCov">          3 :                 old_sfnt_flags |= ttf_flag_applemode;</span>
+<span class="lineNum">    1195 </span><span class="lineCov">          3 :               break;</span>
+<span class="lineNum">    1196 </span>            :               case 0x00:
+<span class="lineNum">    1197 </span><span class="lineCov">          2 :                 old_sfnt_flags |= ttf_flag_otmode;</span>
+<span class="lineNum">    1198 </span><span class="lineCov">          2 :               break;</span>
+<span class="lineNum">    1199 </span>            :               default:
+<span class="lineNum">    1200 </span><span class="lineNoCov">          0 :               break;</span>
+<span class="lineNum">    1201 </span>            :             }
+<span class="lineNum">    1202 </span><span class="lineCov">         10 :             if ( fmflags&amp;4 ) old_sfnt_flags |= ttf_flag_shortps;</span>
+<span class="lineNum">    1203 </span><span class="lineCov">         10 :             if ( fmflags&amp;8 ) old_sfnt_flags |= ttf_flag_nohints;</span>
+<span class="lineNum">    1204 </span><span class="lineCov">         10 :             if ( fmflags&amp;0x20 ) old_sfnt_flags |= ttf_flag_pfed_comments;</span>
+<span class="lineNum">    1205 </span><span class="lineCov">         10 :             if ( fmflags&amp;0x40 ) old_sfnt_flags |= ttf_flag_pfed_colors;</span>
+<span class="lineNum">    1206 </span><span class="lineCov">         10 :             if ( fmflags&amp;0x100 ) old_sfnt_flags |= ttf_flag_glyphmap;</span>
+<span class="lineNum">    1207 </span><span class="lineCov">         10 :             if ( fmflags&amp;0x200 ) old_sfnt_flags |= ttf_flag_TeXtable;</span>
+<span class="lineNum">    1208 </span><span class="lineCov">         10 :             if ( fmflags&amp;0x400 ) old_sfnt_flags |= ttf_flag_ofm;</span>
+<span class="lineNum">    1209 </span><span class="lineCov">         10 :             if ( (fmflags&amp;0x800) &amp;&amp; !(old_sfnt_flags&amp;ttf_flag_applemode) )</span>
+<span class="lineNum">    1210 </span><span class="lineNoCov">          0 :                 old_sfnt_flags |= ttf_flag_oldkern;</span>
+<span class="lineNum">    1211 </span><span class="lineCov">         10 :             if ( fmflags&amp;0x2000 ) old_sfnt_flags |= ttf_flag_symbol;</span>
+<span class="lineNum">    1212 </span><span class="lineCov">         10 :             if ( fmflags&amp;0x4000 ) old_sfnt_flags |= ttf_flag_dummyDSIG;</span>
+<span class="lineNum">    1213 </span><span class="lineCov">         10 :             if ( fmflags&amp;0x800000 ) old_sfnt_flags |= ttf_flag_pfed_lookupnames;</span>
+<span class="lineNum">    1214 </span><span class="lineCov">         10 :             if ( fmflags&amp;0x1000000 ) old_sfnt_flags |= ttf_flag_pfed_guides;</span>
+<span class="lineNum">    1215 </span><span class="lineCov">         10 :             if ( fmflags&amp;0x2000000 ) old_sfnt_flags |= ttf_flag_pfed_layers;</span>
+<span class="lineNum">    1216 </span><span class="lineCov">         10 :             if ( fmflags&amp;0x4000000 ) old_sfnt_flags |= ttf_flag_oldkernmappedonly;</span>
+<span class="lineNum">    1217 </span>            :         }
+<span class="lineNum">    1218 </span>            :     }
+<span class="lineNum">    1219 </span>            : 
+<span class="lineNum">    1220 </span><span class="lineCov">         33 :     if ( oldbitmapstate!=bf_none ) {</span>
+<span class="lineNum">    1221 </span><span class="lineCov">         12 :         if ( sfs!=NULL ) {</span>
+<span class="lineNum">    1222 </span><span class="lineCov">          4 :             for ( sfi=sfs; sfi!=NULL; sfi=sfi-&gt;next )</span>
+<span class="lineNum">    1223 </span><span class="lineCov">          3 :                 sfi-&gt;sizes = AllBitmapSizes(sfi-&gt;sf);</span>
+<span class="lineNum">    1224 </span>            :         } else
+<span class="lineNum">    1225 </span><span class="lineCov">         11 :             sizes = AllBitmapSizes(sf);</span>
+<span class="lineNum">    1226 </span>            :     }
+<span class="lineNum">    1227 </span>            : 
+<span class="lineNum">    1228 </span><span class="lineCov">         33 :     former = NULL;</span>
+<span class="lineNum">    1229 </span><span class="lineCov">         33 :     if ( sfs!=NULL ) {</span>
+<span class="lineNum">    1230 </span><span class="lineCov">          4 :         for ( sfl=sfs; sfl!=NULL; sfl=sfl-&gt;next ) {</span>
+<span class="lineNum">    1231 </span><span class="lineCov">          3 :             PrepareUnlinkRmOvrlp(sfl-&gt;sf,filename,layer);</span>
+<span class="lineNum">    1232 </span><span class="lineCov">          3 :             if ( rename_to!=NULL )</span>
+<span class="lineNum">    1233 </span><span class="lineNoCov">          0 :                 sfl-&gt;former_names = SFTemporaryRenameGlyphsToNamelist(sfl-&gt;sf,rename_to);</span>
+<span class="lineNum">    1234 </span>            :         }
+<span class="lineNum">    1235 </span>            :     } else {
+<span class="lineNum">    1236 </span><span class="lineCov">         32 :         PrepareUnlinkRmOvrlp(sf,filename,layer);</span>
+<span class="lineNum">    1237 </span><span class="lineCov">         32 :         if ( rename_to!=NULL )</span>
+<span class="lineNum">    1238 </span><span class="lineNoCov">          0 :             former = SFTemporaryRenameGlyphsToNamelist(sf,rename_to);</span>
+<span class="lineNum">    1239 </span>            :     }
+<span class="lineNum">    1240 </span>            : 
+<span class="lineNum">    1241 </span><span class="lineCov">         33 :     if ( sfs!=NULL ) {</span>
+<span class="lineNum">    1242 </span><span class="lineCov">          1 :         int flags = 0;</span>
+<span class="lineNum">    1243 </span><span class="lineCov">          1 :         if ( oldformatstate&lt;=ff_cffcid )</span>
+<span class="lineNum">    1244 </span><span class="lineNoCov">          0 :             flags = old_ps_flags;</span>
+<span class="lineNum">    1245 </span>            :         else
+<span class="lineNum">    1246 </span><span class="lineCov">          1 :             flags = old_sfnt_flags;</span>
+<span class="lineNum">    1247 </span><span class="lineCov">          1 :         ret = WriteMacFamily(filename,sfs,oldformatstate,oldbitmapstate,flags,layer);</span>
+<span class="lineNum">    1248 </span>            :     } else {
+<span class="lineNum">    1249 </span><span class="lineCov">         32 :         ret = !_DoSave(sf,filename,sizes,res,map,subfontdefinition,layer);</span>
+<span class="lineNum">    1250 </span>            :     }
+<span class="lineNum">    1251 </span><span class="lineCov">         33 :     free(freeme);</span>
+<span class="lineNum">    1252 </span>            : 
+<span class="lineNum">    1253 </span><span class="lineCov">         33 :     if ( sfs!=NULL ) {</span>
+<span class="lineNum">    1254 </span><span class="lineCov">          4 :         for ( sfl=sfs; sfl!=NULL; sfl=sfl-&gt;next ) {</span>
+<span class="lineNum">    1255 </span><span class="lineCov">          3 :             RestoreUnlinkRmOvrlp(sfl-&gt;sf,filename,layer);</span>
+<span class="lineNum">    1256 </span><span class="lineCov">          3 :             if ( rename_to!=NULL )</span>
+<span class="lineNum">    1257 </span><span class="lineNoCov">          0 :                 SFTemporaryRestoreGlyphNames(sfl-&gt;sf,sfl-&gt;former_names);</span>
+<span class="lineNum">    1258 </span>            :         }
+<span class="lineNum">    1259 </span>            :     } else {
+<span class="lineNum">    1260 </span><span class="lineCov">         32 :         RestoreUnlinkRmOvrlp(sf,filename,layer);</span>
+<span class="lineNum">    1261 </span><span class="lineCov">         32 :         if ( rename_to!=NULL )</span>
+<span class="lineNum">    1262 </span><span class="lineNoCov">          0 :             SFTemporaryRestoreGlyphNames(sf,former);</span>
+<span class="lineNum">    1263 </span>            :     }
+<span class="lineNum">    1264 </span>            : 
+<span class="lineNum">    1265 </span><span class="lineCov">         33 :     if ( oldbitmapstate!=bf_none ) {</span>
+<span class="lineNum">    1266 </span><span class="lineCov">         12 :         if ( sfs!=NULL ) {</span>
+<span class="lineNum">    1267 </span><span class="lineCov">          4 :             for ( sfi=sfs; sfi!=NULL; sfi=sfi-&gt;next )</span>
+<span class="lineNum">    1268 </span><span class="lineCov">          3 :                 free(sfi-&gt;sizes);</span>
+<span class="lineNum">    1269 </span>            :         }
+<span class="lineNum">    1270 </span>            :     }
+<span class="lineNum">    1271 </span><span class="lineCov">         33 : return( ret );</span>
+<span class="lineNum">    1272 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -1,0 +1,595 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - gdraw/gprogress.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gdraw</a> - gprogress.c<span style="font-size: 80%;"> (source / <a href="gprogress.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">48</td>
+            <td class="headerCovTableEntry">290</td>
+            <td class="headerCovTableEntryLo">16.6 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">13</td>
+            <td class="headerCovTableEntry">27</td>
+            <td class="headerCovTableEntryLo">48.1 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            : #include &lt;gprogress.h&gt;
+<span class="lineNum">      29 </span>            : #include &lt;ggadget.h&gt;
+<span class="lineNum">      30 </span>            : #include &lt;gwidget.h&gt;
+<span class="lineNum">      31 </span>            : #include &lt;gresource.h&gt;
+<span class="lineNum">      32 </span>            : #include &lt;ustring.h&gt;
+<span class="lineNum">      33 </span>            : #include &lt;memory.h&gt;
+<span class="lineNum">      34 </span>            : #include &lt;sys/time.h&gt;
+<span class="lineNum">      35 </span>            : #include &quot;ggadgetP.h&quot;         /* For the font family names */
+<span class="lineNum">      36 </span>            : 
+<span class="lineNum">      37 </span>            : typedef struct gprogress {
+<span class="lineNum">      38 </span>            :     struct timeval start_time;  /* Don't pop up unless we're after this */
+<span class="lineNum">      39 </span>            :     struct timeval pause_time;
+<span class="lineNum">      40 </span>            :     unichar_t *line1;
+<span class="lineNum">      41 </span>            :     unichar_t *line2;
+<span class="lineNum">      42 </span>            :     int sofar;
+<span class="lineNum">      43 </span>            :     int tot;
+<span class="lineNum">      44 </span>            :     int16 stage, stages;
+<span class="lineNum">      45 </span>            :     int16 width;
+<span class="lineNum">      46 </span>            :     int16 l1width, l2width;
+<span class="lineNum">      47 </span>            :     int16 l1y, l2y, boxy;
+<span class="lineNum">      48 </span>            :     int16 last_amount;
+<span class="lineNum">      49 </span>            :     unsigned int aborted: 1;
+<span class="lineNum">      50 </span>            :     unsigned int visible: 1;
+<span class="lineNum">      51 </span>            :     unsigned int dying: 1;
+<span class="lineNum">      52 </span>            :     unsigned int paused: 1;
+<span class="lineNum">      53 </span>            :     unsigned int sawmap: 1;
+<span class="lineNum">      54 </span>            :     GWindow gw;
+<span class="lineNum">      55 </span>            :     GFont *font;
+<span class="lineNum">      56 </span>            :     struct gprogress *prev;
+<span class="lineNum">      57 </span>            : } GProgress;
+<span class="lineNum">      58 </span>            : 
+<span class="lineNum">      59 </span>            : static Color progress_background, progress_foreground;
+<span class="lineNum">      60 </span>            : static Color progress_fillcol = 0xc0c0ff;
+<span class="lineNum">      61 </span>            : static GFont *progress_font = NULL;
+<span class="lineNum">      62 </span>            : static int progress_init = false;
+<span class="lineNum">      63 </span>            : 
+<a name="64"><span class="lineNum">      64 </span>            : static GProgress *current;</a>
+<span class="lineNum">      65 </span>            : 
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 : static void GProgressDisplay(void) {</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :     GDrawSetVisible(current-&gt;gw,true);</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :     current-&gt;visible = true;</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :     if ( current-&gt;prev!=NULL &amp;&amp; current-&gt;prev-&gt;visible ) {</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :         GDrawSetVisible(current-&gt;prev-&gt;gw,false);</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :         current-&gt;prev-&gt;visible = false;</span>
+<span class="lineNum">      72 </span>            :     }
+<a name="73"><span class="lineNum">      73 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      74 </span>            : 
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 : static void GProgressTimeCheck() {</span>
+<span class="lineNum">      76 </span>            :     struct timeval tv;
+<span class="lineNum">      77 </span>            : 
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :     if ( current==NULL || current-&gt;visible || current-&gt;dying || current-&gt;paused )</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :     gettimeofday(&amp;tv,NULL);</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :     if ( tv.tv_sec&gt;current-&gt;start_time.tv_sec ||</span>
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :             (tv.tv_sec==current-&gt;start_time.tv_sec &amp;&amp; tv.tv_usec&gt;current-&gt;start_time.tv_usec )) {</span>
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :         if ( current-&gt;tot&gt;0 &amp;&amp;</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :                 current-&gt;sofar+current-&gt;stage*current-&gt;tot&gt;(9*current-&gt;stages*current-&gt;tot)/10 )</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 : return;         /* If it's almost done, no point in making it visible */</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :         GProgressDisplay();</span>
+<span class="lineNum">      87 </span>            :     }
+<a name="88"><span class="lineNum">      88 </span>            : }</a>
+<span class="lineNum">      89 </span>            : 
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 : static void GProgressDraw(GProgress *p,GWindow pixmap,GRect *rect) {</span>
+<span class="lineNum">      91 </span>            :     GRect r, old;
+<span class="lineNum">      92 </span>            :     int width, amount;
+<span class="lineNum">      93 </span>            : 
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :     GDrawPushClip(pixmap,rect,&amp;old);</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :     GDrawSetFont(pixmap,p-&gt;font);</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :     if ( p-&gt;line1!=NULL )</span>
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :         GDrawDrawText(pixmap, (p-&gt;width-p-&gt;l1width)/2, p-&gt;l1y, p-&gt;line1, -1,</span>
+<span class="lineNum">      98 </span>            :                 progress_foreground );
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :     if ( p-&gt;line2!=NULL )</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :         GDrawDrawText(pixmap, (p-&gt;width-p-&gt;l2width)/2, p-&gt;l2y, p-&gt;line2, -1,</span>
+<span class="lineNum">     101 </span>            :                 progress_foreground );
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :     r.x = GDrawPointsToPixels(pixmap,10);</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :     r.y = p-&gt;boxy;</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :     r.height = r.x;</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :     width = p-&gt;width-2*r.x;</span>
+<span class="lineNum">     107 </span>            :     
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :     if ( p-&gt;tot==0 )</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :         amount = 0;</span>
+<span class="lineNum">     110 </span>            :     else
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :         amount = width * (p-&gt;stage*p-&gt;tot + p-&gt;sofar)/(p-&gt;stages*p-&gt;tot);</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :     if ( amount&gt;0 ) {</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :         r.width = amount;</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :         GDrawFillRect(pixmap,&amp;r,progress_fillcol);</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :     } else if ( p-&gt;tot==0 ) {</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :         r.width = width;</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :         GDrawSetStippled(pixmap,1,0,0);</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :         GDrawFillRect(pixmap,&amp;r,progress_fillcol);</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :         GDrawSetStippled(pixmap,0,0,0);</span>
+<span class="lineNum">     120 </span>            :     }
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :     r.width = width;</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :     GDrawDrawRect(pixmap,&amp;r,progress_foreground);</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :     GDrawPopClip(pixmap,&amp;old);</span>
+<a name="124"><span class="lineNum">     124 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     125 </span>            : 
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 : static int GProgressProcess(GProgress *p) {</span>
+<span class="lineNum">     127 </span>            :     int width, amount;
+<span class="lineNum">     128 </span>            :     int tenpt;
+<span class="lineNum">     129 </span>            : 
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :     if ( !p-&gt;visible )</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :         GProgressTimeCheck();</span>
+<span class="lineNum">     132 </span>            : 
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :     tenpt = GDrawPointsToPixels(p-&gt;gw,10);</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :     width = p-&gt;width-2*tenpt;</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :     if ( p-&gt;tot==0 )</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :         amount = 0;</span>
+<span class="lineNum">     137 </span>            :     else
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :         amount = width * (p-&gt;stage*p-&gt;tot + p-&gt;sofar)/(p-&gt;stages*p-&gt;tot);</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :     if ( amount!=p-&gt;last_amount ) {</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :         if ( amount&lt;p-&gt;last_amount || p-&gt;last_amount==0 )</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :             GDrawRequestExpose(p-&gt;gw,NULL,false);</span>
+<span class="lineNum">     142 </span>            :         else {
+<span class="lineNum">     143 </span>            :             GRect r;
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :             r.height = tenpt-1;</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :             r.width = amount - p-&gt;last_amount;</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :             r.x = tenpt + p-&gt;last_amount;</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :             r.y = p-&gt;boxy+1;</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :             GDrawFillRect(p-&gt;gw,&amp;r,progress_fillcol);</span>
+<span class="lineNum">     149 </span>            :         }
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :         p-&gt;last_amount = amount;</span>
+<span class="lineNum">     151 </span>            :     }
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :     GDrawProcessPendingEvents(NULL);</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 : return( !p-&gt;aborted );</span>
+<a name="154"><span class="lineNum">     154 </span>            : }</a>
+<span class="lineNum">     155 </span>            : 
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 : static int progress_eh(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :     GProgress *p = GDrawGetUserData(gw);</span>
+<span class="lineNum">     158 </span>            : 
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :     switch ( event-&gt;type ) {</span>
+<span class="lineNum">     160 </span>            :       case et_destroy:
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :         free(p-&gt;line1);</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :         free(p-&gt;line2);</span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :         free(p);</span>
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     165 </span>            :       case et_close:
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :         p-&gt;aborted = true;</span>
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :         GDrawSetVisible(gw,false);</span>
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     169 </span>            :       case et_expose:
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :         GProgressDraw(p,gw,&amp;event-&gt;u.expose.rect);</span>
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     172 </span>            :       case et_controlevent:
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :         if ( event-&gt;u.control.subtype == et_buttonactivate )</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :             p-&gt;aborted = true;</span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     176 </span>            :       case et_char:
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :         if ( (event-&gt;u.chr.state&amp;ksm_control) &amp;&amp; event-&gt;u.chr.chars[0]=='.' )</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :             p-&gt;aborted = true;</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     180 </span>            :       case et_map:
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 :         p-&gt;sawmap = true;</span>
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     183 </span>            :     }
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     185 </span>            : }
+<span class="lineNum">     186 </span>            : 
+<span class="lineNum">     187 </span>            : /* ************************************************************************** */
+<span class="lineNum">     188 </span>            : static struct resed progress_re[] = {
+<span class="lineNum">     189 </span>            :     {N_(&quot;Color|Foreground&quot;), &quot;Foreground&quot;, rt_color, &amp;progress_foreground, N_(&quot;Text color for progress windows&quot;), NULL, { 0 }, 0, 0 },
+<span class="lineNum">     190 </span>            :     {N_(&quot;Color|FillColor&quot;), &quot;FillColor&quot;, rt_color, &amp;progress_fillcol, N_(&quot;Color used to draw the progress bar&quot;), NULL, { 0 }, 0, 0 },
+<span class="lineNum">     191 </span>            :     {N_(&quot;Color|Background&quot;), &quot;Background&quot;, rt_color, &amp;progress_background, N_(&quot;Background color for progress windows&quot;), NULL, { 0 }, 0, 0 },
+<span class="lineNum">     192 </span>            :     RESED_EMPTY
+<span class="lineNum">     193 </span>            : };
+<span class="lineNum">     194 </span>            : static GResInfo progress_ri = {
+<span class="lineNum">     195 </span>            :     NULL, NULL, NULL,NULL,
+<span class="lineNum">     196 </span>            :     NULL,       /* No box */
+<span class="lineNum">     197 </span>            :     &amp;progress_font,
+<span class="lineNum">     198 </span>            :     NULL,
+<span class="lineNum">     199 </span>            :     progress_re,
+<span class="lineNum">     200 </span>            :     N_(&quot;Progress&quot;),
+<span class="lineNum">     201 </span>            :     N_(&quot;Progress Bars&quot;),
+<span class="lineNum">     202 </span>            :     &quot;GProgress&quot;,
+<span class="lineNum">     203 </span>            :     &quot;Gdraw&quot;,
+<span class="lineNum">     204 </span>            :     false,
+<span class="lineNum">     205 </span>            :     0,
+<span class="lineNum">     206 </span>            :     NULL,
+<span class="lineNum">     207 </span>            :     GBOX_EMPTY,
+<span class="lineNum">     208 </span>            :     NULL,
+<span class="lineNum">     209 </span>            :     NULL,
+<span class="lineNum">     210 </span>            :     NULL
+<a name="211"><span class="lineNum">     211 </span>            : };</a>
+<span class="lineNum">     212 </span>            : 
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 : static void GProgressResInit(void) {</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :     if ( !progress_init ) {</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :         progress_foreground = GResourceFindColor(&quot;GProgress.Foreground&quot;,</span>
+<span class="lineNum">     216 </span>            :                     GDrawGetDefaultForeground(NULL));
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :         progress_background = GResourceFindColor(&quot;GProgress.Background&quot;,</span>
+<span class="lineNum">     218 </span>            :                     GDrawGetDefaultBackground(NULL));
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :         progress_fillcol = GResourceFindColor(&quot;GProgress.FillColor&quot;,</span>
+<span class="lineNum">     220 </span>            :                     progress_fillcol);
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :         progress_font = GResourceFindFont(&quot;GProgress.Font&quot;,NULL);</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :         progress_init = true;</span>
+<span class="lineNum">     223 </span>            :     }
+<a name="224"><span class="lineNum">     224 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     225 </span>            : 
+<span class="lineNum">     226 </span><span class="lineCov">        119 : void GProgressStartIndicator(</span>
+<span class="lineNum">     227 </span>            :     int delay,                  /* in tenths of seconds */
+<span class="lineNum">     228 </span>            :     const unichar_t *win_title, /* for the window decoration */
+<span class="lineNum">     229 </span>            :     const unichar_t *line1,     /* First line of description */
+<span class="lineNum">     230 </span>            :     const unichar_t *line2,     /* Second line */
+<span class="lineNum">     231 </span>            :     int tot,                    /* Number of sub-entities in the operation */
+<span class="lineNum">     232 </span>            :     int stages                  /* Number of stages, each processing tot sub-entities */
+<span class="lineNum">     233 </span>            : ) {
+<span class="lineNum">     234 </span>            :     GProgress *new;
+<span class="lineNum">     235 </span>            :     FontRequest rq;
+<span class="lineNum">     236 </span>            :     GWindowAttrs wattrs;
+<span class="lineNum">     237 </span>            :     GWindow root;
+<span class="lineNum">     238 </span>            :     GGadgetData gd;
+<span class="lineNum">     239 </span>            :     int ld, as, ds;
+<span class="lineNum">     240 </span>            :     GRect pos;
+<span class="lineNum">     241 </span>            :     struct timeval tv;
+<span class="lineNum">     242 </span>            :     GTextInfo label;
+<span class="lineNum">     243 </span>            : 
+<span class="lineNum">     244 </span><span class="lineCov">        119 :     if ( screen_display==NULL )</span>
+<span class="lineNum">     245 </span><span class="lineCov">        238 : return;</span>
+<span class="lineNum">     246 </span>            : 
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :     if ( !progress_init )</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :         GProgressResInit();</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :     new = calloc(1,sizeof(GProgress));</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :     new-&gt;line1 = u_copy(line1);</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :     new-&gt;line2 = u_copy(line2);</span>
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :     new-&gt;tot = tot;</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :     new-&gt;stages = stages;</span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :     new-&gt;prev = current;</span>
+<span class="lineNum">     255 </span>            : 
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :     root = GDrawGetRoot(NULL);</span>
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :     if ( progress_font == NULL ) {</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :         memset(&amp;rq,'\0',sizeof(rq));</span>
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :         rq.utf8_family_name = MONO_UI_FAMILIES;</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :         rq.point_size = 12;</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :         rq.weight = 400;</span>
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :         progress_font = GDrawAttachFont(root,&amp;rq);</span>
+<span class="lineNum">     263 </span>            :     } else {
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :         GDrawSetFont(root, progress_font);</span>
+<span class="lineNum">     265 </span>            :     }
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :     GDrawWindowFontMetrics(root,new-&gt;font = progress_font,&amp;as,&amp;ds,&amp;ld);</span>
+<span class="lineNum">     267 </span>            : 
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :     if ( new-&gt;line1!=NULL )</span>
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :         new-&gt;l1width = GDrawGetTextWidth(root,new-&gt;line1,-1);</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :     if ( new-&gt;line2!=NULL )</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :         new-&gt;l2width = GDrawGetTextWidth(root,new-&gt;line2,-1);</span>
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :     new-&gt;l1y = GDrawPointsToPixels(root,5) + as;</span>
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :     new-&gt;l2y = new-&gt;l1y + as+ds;</span>
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :     new-&gt;boxy = new-&gt;l2y + as+ds;</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :     pos.width = (new-&gt;l1width&gt;new-&gt;l2width)?new-&gt;l1width:new-&gt;l2width;</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :     if ( pos.width&lt;GDrawPointsToPixels(root,100) )</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :         pos.width = GDrawPointsToPixels(root,100);</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :     pos.width += 2 * GDrawPointsToPixels(root,10);</span>
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 :     pos.height = new-&gt;boxy + GDrawPointsToPixels(root,44);</span>
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 :     new-&gt;width = pos.width;</span>
+<span class="lineNum">     281 </span>            : 
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :     memset(&amp;wattrs,0,sizeof(wattrs));</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :     wattrs.mask = wam_events|wam_cursor|(win_title!=NULL?wam_wtitle:0)|</span>
+<span class="lineNum">     284 </span>            :             wam_centered|wam_restrict|wam_redirect|wam_isdlg|wam_backcol;
+<span class="lineNum">     285 </span><span class="lineNoCov">          0 :     wattrs.event_masks = ~(1&lt;&lt;et_charup);</span>
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :     wattrs.cursor = ct_watch;</span>
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :     wattrs.window_title = u_copy(win_title);</span>
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :     wattrs.centered = true;</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :     wattrs.restrict_input_to_me = true;</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :     wattrs.redirect_chars_to_me = true;</span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :     wattrs.is_dlg = true;</span>
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :     wattrs.redirect_from = NULL;</span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :     wattrs.background_color = progress_background;</span>
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :     pos.x = pos.y = 0;</span>
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :     new-&gt;gw = GDrawCreateTopWindow(NULL,&amp;pos,progress_eh,new,&amp;wattrs);</span>
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :     free((void *) wattrs.window_title);</span>
+<span class="lineNum">     297 </span>            : 
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :     memset(&amp;gd,'\0',sizeof(gd)); memset(&amp;label,'\0',sizeof(label));</span>
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :     gd.pos.width = GDrawPointsToPixels(new-&gt;gw,50);</span>
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :     gd.pos.x = pos.width-gd.pos.width-10;</span>
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :     gd.pos.y = pos.height-GDrawPointsToPixels(new-&gt;gw,29);</span>
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 :     gd.flags = gg_visible | gg_enabled | gg_pos_in_pixels | gg_pos_use0;</span>
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :     gd.mnemonic = 'S';</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :     label.text = (unichar_t *) _(&quot;_Stop&quot;);</span>
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 :     label.text_is_1byte = true;</span>
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :     label.text_in_resource = true;</span>
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :     gd.label = &amp;label;</span>
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 :     GButtonCreate( new-&gt;gw, &amp;gd, NULL);</span>
+<span class="lineNum">     309 </span>            : 
+<span class="lineNum">     310 </span>            :     /* If there's another progress indicator up, it will not move and ours */
+<span class="lineNum">     311 </span>            :     /*  won't be visible if we have a delay, so force delay to 0 here */
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 :     if ( current!=NULL ) delay = 0;</span>
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :     gettimeofday(&amp;tv,NULL);</span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :     new-&gt;start_time = tv;</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :     new-&gt;start_time.tv_usec += (delay%10)*100000;</span>
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :     new-&gt;start_time.tv_sec += delay/10;</span>
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :     if ( new-&gt;start_time.tv_usec &gt;= 1000000 ) {</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :         ++new-&gt;start_time.tv_sec;</span>
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :         new-&gt;start_time.tv_usec -= 1000000;</span>
+<span class="lineNum">     320 </span>            :     }
+<span class="lineNum">     321 </span>            : 
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 :     current = new;</span>
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :     GProgressTimeCheck();</span>
+<a name="324"><span class="lineNum">     324 </span>            : }</a>
+<span class="lineNum">     325 </span>            : 
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 : void GProgressStartIndicatorR( int delay, int win_titler, int line1r, int line2r,</span>
+<span class="lineNum">     327 </span>            :     int tot, int stages ) {
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :     GProgressStartIndicator(delay,</span>
+<span class="lineNum">     329 </span>            :         GStringGetResource(win_titler,NULL),
+<span class="lineNum">     330 </span>            :         GStringGetResource(line1r,NULL),
+<span class="lineNum">     331 </span>            :         line2r==0?NULL:GStringGetResource(line2r,NULL),
+<span class="lineNum">     332 </span>            :         tot,stages);
+<a name="333"><span class="lineNum">     333 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     334 </span>            : 
+<span class="lineNum">     335 </span><span class="lineCov">        119 : void GProgressEndIndicator(void) {</span>
+<span class="lineNum">     336 </span><span class="lineCov">        119 :     GProgress *old=current;</span>
+<span class="lineNum">     337 </span>            : 
+<span class="lineNum">     338 </span><span class="lineCov">        119 :     if ( old==NULL )</span>
+<span class="lineNum">     339 </span><span class="lineCov">        238 : return;</span>
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :     current = old-&gt;prev;</span>
+<span class="lineNum">     341 </span>            :     
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :     old-&gt;dying = true;</span>
+<span class="lineNum">     343 </span>            :     /* the X server sometimes crashes if we: */
+<span class="lineNum">     344 </span>            :             /* Create a window */
+<span class="lineNum">     345 </span>            :             /* map it */
+<span class="lineNum">     346 </span>            :             /* but destroy it before the server can send us the map notify event */
+<span class="lineNum">     347 </span>            :             /* next three lines seem to deal with it */
+<span class="lineNum">     348 </span>            :     /* unmapping the window also causes a crash */
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :     if ( old-&gt;visible ) while ( !old-&gt;sawmap ) {</span>
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :         GDrawSync(NULL);</span>
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :         GDrawProcessPendingEvents(NULL);</span>
+<span class="lineNum">     352 </span>            :     }
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 :     GDrawDestroyWindow(old-&gt;gw);</span>
+<span class="lineNum">     354 </span><span class="lineNoCov">          0 :     GDrawSync(NULL);</span>
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :     GDrawProcessPendingEvents(NULL);</span>
+<a name="356"><span class="lineNum">     356 </span>            : }</a>
+<span class="lineNum">     357 </span>            : 
+<span class="lineNum">     358 </span><span class="lineCov">         69 : void GProgressChangeLine1(const unichar_t *line1) {</span>
+<span class="lineNum">     359 </span><span class="lineCov">         69 :     if ( current==NULL )</span>
+<span class="lineNum">     360 </span><span class="lineCov">        138 : return;</span>
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 :     free( current-&gt;line1 );</span>
+<span class="lineNum">     362 </span><span class="lineNoCov">          0 :     current-&gt;line1 = u_copy(line1);</span>
+<span class="lineNum">     363 </span><span class="lineNoCov">          0 :     if ( current-&gt;line1!=NULL ) {</span>
+<span class="lineNum">     364 </span><span class="lineNoCov">          0 :         GDrawSetFont(current-&gt;gw,current-&gt;font);</span>
+<span class="lineNum">     365 </span><span class="lineNoCov">          0 :         current-&gt;l1width = GDrawGetTextWidth(current-&gt;gw,current-&gt;line1,-1);</span>
+<span class="lineNum">     366 </span>            :     }
+<span class="lineNum">     367 </span><span class="lineNoCov">          0 :     if ( current-&gt;visible )</span>
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(current-&gt;gw,NULL,false);</span>
+<a name="369"><span class="lineNum">     369 </span>            : }</a>
+<span class="lineNum">     370 </span>            : 
+<span class="lineNum">     371 </span><span class="lineNoCov">          0 : void GProgressChangeLine1R(int line1r) {</span>
+<span class="lineNum">     372 </span><span class="lineNoCov">          0 :     GProgressChangeLine1(GStringGetResource(line1r,NULL));</span>
+<a name="373"><span class="lineNum">     373 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     374 </span>            : 
+<span class="lineNum">     375 </span><span class="lineCov">        120 : void GProgressChangeLine2(const unichar_t *line2) {</span>
+<span class="lineNum">     376 </span><span class="lineCov">        120 :     if ( current==NULL )</span>
+<span class="lineNum">     377 </span><span class="lineCov">        240 : return;</span>
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 :     free( current-&gt;line2 );</span>
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :     current-&gt;line2 = u_copy(line2);</span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :     if ( current-&gt;line2!=NULL ) {</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :         GDrawSetFont(current-&gt;gw,current-&gt;font);</span>
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :         current-&gt;l2width = GDrawGetTextWidth(current-&gt;gw,current-&gt;line2,-1);</span>
+<span class="lineNum">     383 </span>            :     }
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :     if ( current-&gt;visible )</span>
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(current-&gt;gw,NULL,false);</span>
+<a name="386"><span class="lineNum">     386 </span>            : }</a>
+<span class="lineNum">     387 </span>            : 
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 : void GProgressChangeLine2R(int line2r) {</span>
+<span class="lineNum">     389 </span><span class="lineNoCov">          0 :     GProgressChangeLine2(GStringGetResource(line2r,NULL));</span>
+<a name="390"><span class="lineNum">     390 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     391 </span>            : 
+<span class="lineNum">     392 </span><span class="lineCov">         72 : void GProgressChangeTotal(int tot) {</span>
+<span class="lineNum">     393 </span><span class="lineCov">         72 :     if ( current==NULL )</span>
+<span class="lineNum">     394 </span><span class="lineCov">        144 : return;</span>
+<span class="lineNum">     395 </span><span class="lineNoCov">          0 :     current-&gt;tot = tot;</span>
+<a name="396"><span class="lineNum">     396 </span>            : }</a>
+<span class="lineNum">     397 </span>            : 
+<span class="lineNum">     398 </span><span class="lineCov">        113 : void GProgressChangeStages(int stages) {</span>
+<span class="lineNum">     399 </span><span class="lineCov">        113 :     if ( current==NULL )</span>
+<span class="lineNum">     400 </span><span class="lineCov">        226 : return;</span>
+<span class="lineNum">     401 </span><span class="lineNoCov">          0 :     if ( stages&lt;=0 )</span>
+<span class="lineNum">     402 </span><span class="lineNoCov">          0 :         stages = 1;</span>
+<span class="lineNum">     403 </span><span class="lineNoCov">          0 :     current-&gt;stages = stages;</span>
+<span class="lineNum">     404 </span><span class="lineNoCov">          0 :     if ( current-&gt;stage&gt;=stages )</span>
+<span class="lineNum">     405 </span><span class="lineNoCov">          0 :         current-&gt;stage = stages-1;</span>
+<a name="406"><span class="lineNum">     406 </span>            : }</a>
+<span class="lineNum">     407 </span>            : 
+<span class="lineNum">     408 </span><span class="lineCov">         67 : void GProgressEnableStop(int enabled) {</span>
+<span class="lineNum">     409 </span><span class="lineCov">         67 :     if ( current==NULL )</span>
+<span class="lineNum">     410 </span><span class="lineCov">        134 : return;</span>
+<span class="lineNum">     411 </span><span class="lineNoCov">          0 :     GGadgetSetEnabled(GWidgetGetControl(current-&gt;gw,0),enabled);</span>
+<a name="412"><span class="lineNum">     412 </span>            : }</a>
+<span class="lineNum">     413 </span>            : 
+<span class="lineNum">     414 </span><span class="lineCov">        216 : int GProgressNextStage(void) {</span>
+<span class="lineNum">     415 </span>            : 
+<span class="lineNum">     416 </span><span class="lineCov">        216 :     if ( current==NULL )</span>
+<span class="lineNum">     417 </span><span class="lineCov">        216 : return(true);</span>
+<span class="lineNum">     418 </span><span class="lineNoCov">          0 :     ++current-&gt;stage;</span>
+<span class="lineNum">     419 </span><span class="lineNoCov">          0 :     current-&gt;sofar = 0;</span>
+<span class="lineNum">     420 </span><span class="lineNoCov">          0 :     if ( current-&gt;stage&gt;=current-&gt;stages )</span>
+<span class="lineNum">     421 </span><span class="lineNoCov">          0 :         current-&gt;stage = current-&gt;stages-1;</span>
+<span class="lineNum">     422 </span><span class="lineNoCov">          0 : return( GProgressProcess(current));</span>
+<a name="423"><span class="lineNum">     423 </span>            : }</a>
+<span class="lineNum">     424 </span>            : 
+<span class="lineNum">     425 </span><span class="lineCov">     161602 : int GProgressNext(void) {</span>
+<span class="lineNum">     426 </span>            : 
+<span class="lineNum">     427 </span><span class="lineCov">     161602 :     if ( current==NULL )</span>
+<span class="lineNum">     428 </span><span class="lineCov">     161602 : return(true);</span>
+<span class="lineNum">     429 </span><span class="lineNoCov">          0 :     ++current-&gt;sofar;</span>
+<span class="lineNum">     430 </span><span class="lineNoCov">          0 :     if ( current-&gt;sofar&gt;=current-&gt;tot )</span>
+<span class="lineNum">     431 </span><span class="lineNoCov">          0 :         current-&gt;sofar = current-&gt;tot-1;</span>
+<span class="lineNum">     432 </span><span class="lineNoCov">          0 : return( GProgressProcess(current));</span>
+<a name="433"><span class="lineNum">     433 </span>            : }</a>
+<span class="lineNum">     434 </span>            : 
+<span class="lineNum">     435 </span><span class="lineCov">         10 : int GProgressIncrementBy(int cnt) {</span>
+<span class="lineNum">     436 </span>            : 
+<span class="lineNum">     437 </span><span class="lineCov">         10 :     if ( current==NULL )</span>
+<span class="lineNum">     438 </span><span class="lineCov">         10 : return(true);</span>
+<span class="lineNum">     439 </span><span class="lineNoCov">          0 :     current-&gt;sofar += cnt;</span>
+<span class="lineNum">     440 </span><span class="lineNoCov">          0 :     if ( current-&gt;sofar&gt;=current-&gt;tot )</span>
+<span class="lineNum">     441 </span><span class="lineNoCov">          0 :         current-&gt;sofar = current-&gt;tot-1;</span>
+<span class="lineNum">     442 </span><span class="lineNoCov">          0 : return( GProgressProcess(current));</span>
+<a name="443"><span class="lineNum">     443 </span>            : }</a>
+<span class="lineNum">     444 </span>            : 
+<span class="lineNum">     445 </span><span class="lineNoCov">          0 : int GProgressReset(void) {</span>
+<span class="lineNum">     446 </span>            : 
+<span class="lineNum">     447 </span><span class="lineNoCov">          0 :     if ( current==NULL )</span>
+<span class="lineNum">     448 </span><span class="lineNoCov">          0 : return(true);</span>
+<span class="lineNum">     449 </span><span class="lineNoCov">          0 :     current-&gt;sofar = 0;</span>
+<span class="lineNum">     450 </span><span class="lineNoCov">          0 : return( GProgressProcess(current));</span>
+<a name="451"><span class="lineNum">     451 </span>            : }</a>
+<span class="lineNum">     452 </span>            : 
+<span class="lineNum">     453 </span><span class="lineNoCov">          0 : void GProgressPauseTimer(void) {</span>
+<span class="lineNum">     454 </span><span class="lineNoCov">          0 :     if ( current==NULL || current-&gt;visible || current-&gt;dying || current-&gt;paused )</span>
+<span class="lineNum">     455 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     456 </span><span class="lineNoCov">          0 :     gettimeofday(&amp;current-&gt;pause_time,NULL);</span>
+<span class="lineNum">     457 </span><span class="lineNoCov">          0 :     current-&gt;paused = true;</span>
+<a name="458"><span class="lineNum">     458 </span>            : }</a>
+<span class="lineNum">     459 </span>            : 
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 : void GProgressResumeTimer(void) {</span>
+<span class="lineNum">     461 </span>            :     struct timeval tv, res;
+<span class="lineNum">     462 </span>            : 
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :     if ( current==NULL || current-&gt;visible || current-&gt;dying || !current-&gt;paused )</span>
+<span class="lineNum">     464 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 :     current-&gt;paused = false;</span>
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :     gettimeofday(&amp;tv,NULL);</span>
+<span class="lineNum">     467 </span><span class="lineNoCov">          0 :     res.tv_sec = tv.tv_sec - current-&gt;pause_time.tv_sec;</span>
+<span class="lineNum">     468 </span><span class="lineNoCov">          0 :     if ( (res.tv_usec = tv.tv_usec - current-&gt;pause_time.tv_usec)&lt;0 ) {</span>
+<span class="lineNum">     469 </span><span class="lineNoCov">          0 :         --res.tv_sec;</span>
+<span class="lineNum">     470 </span><span class="lineNoCov">          0 :         res.tv_usec += 1000000;</span>
+<span class="lineNum">     471 </span>            :     }
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 :     current-&gt;start_time.tv_sec += res.tv_sec;</span>
+<span class="lineNum">     473 </span><span class="lineNoCov">          0 :     if ( (current-&gt;start_time.tv_usec += res.tv_usec)&gt;= 1000000 ) {</span>
+<span class="lineNum">     474 </span><span class="lineNoCov">          0 :         ++current-&gt;start_time.tv_sec;</span>
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 :         current-&gt;start_time.tv_usec -= 1000000;</span>
+<span class="lineNum">     476 </span>            :     }
+<a name="477"><span class="lineNum">     477 </span>            : }</a>
+<span class="lineNum">     478 </span>            : 
+<span class="lineNum">     479 </span><span class="lineNoCov">          0 : void GProgressShow(void) {</span>
+<span class="lineNum">     480 </span>            : 
+<span class="lineNum">     481 </span><span class="lineNoCov">          0 :     if ( current==NULL || current-&gt;visible || current-&gt;dying )</span>
+<span class="lineNum">     482 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     483 </span>            : 
+<span class="lineNum">     484 </span><span class="lineNoCov">          0 :     GProgressDisplay();</span>
+<span class="lineNum">     485 </span><span class="lineNoCov">          0 :     GDrawSync(NULL);</span>
+<span class="lineNum">     486 </span><span class="lineNoCov">          0 :     GDrawProcessPendingEvents(NULL);</span>
+<span class="lineNum">     487 </span><span class="lineNoCov">          0 :     GDrawSync(NULL);</span>
+<span class="lineNum">     488 </span><span class="lineNoCov">          0 :     GDrawProcessPendingEvents(NULL);</span>
+<a name="489"><span class="lineNum">     489 </span>            : }</a>
+<span class="lineNum">     490 </span>            : 
+<span class="lineNum">     491 </span><span class="lineCov">        119 : void GProgressStartIndicator8(int delay, const char *title, const char *line1,</span>
+<span class="lineNum">     492 </span>            :         const char *line2, int tot, int stages) {
+<span class="lineNum">     493 </span><span class="lineCov">        119 :     unichar_t *tit = utf82u_copy(title),</span>
+<span class="lineNum">     494 </span><span class="lineCov">        119 :                 *l1 = utf82u_copy(line1),</span>
+<span class="lineNum">     495 </span><span class="lineCov">        119 :                 *l2 = utf82u_copy(line2);</span>
+<span class="lineNum">     496 </span><span class="lineCov">        119 :     GProgressStartIndicator(delay,</span>
+<span class="lineNum">     497 </span>            :         tit,l1,l2,
+<span class="lineNum">     498 </span>            :         tot,stages);
+<span class="lineNum">     499 </span><span class="lineCov">        119 :     free(l1); free(l2); free(tit);</span>
+<a name="500"><span class="lineNum">     500 </span><span class="lineCov">        119 : }</span></a>
+<span class="lineNum">     501 </span>            : 
+<span class="lineNum">     502 </span><span class="lineCov">         69 : void GProgressChangeLine1_8(const char *line1) {</span>
+<span class="lineNum">     503 </span><span class="lineCov">         69 :     unichar_t *l1 = utf82u_copy(line1);</span>
+<span class="lineNum">     504 </span><span class="lineCov">         69 :     GProgressChangeLine1(l1);</span>
+<span class="lineNum">     505 </span><span class="lineCov">         69 :     free(l1);</span>
+<a name="506"><span class="lineNum">     506 </span><span class="lineCov">         69 : }</span></a>
+<span class="lineNum">     507 </span>            : 
+<span class="lineNum">     508 </span><span class="lineCov">        120 : void GProgressChangeLine2_8(const char *line2) {</span>
+<span class="lineNum">     509 </span><span class="lineCov">        120 :     unichar_t *l2 = utf82u_copy(line2);</span>
+<span class="lineNum">     510 </span><span class="lineCov">        120 :     GProgressChangeLine2(l2);</span>
+<span class="lineNum">     511 </span><span class="lineCov">        120 :     free(l2);</span>
+<a name="512"><span class="lineNum">     512 </span><span class="lineCov">        120 : }</span></a>
+<span class="lineNum">     513 </span>            : 
+<span class="lineNum">     514 </span><span class="lineNoCov">          0 : GResInfo *_GProgressRIHead(void) {</span>
+<span class="lineNum">     515 </span>            : 
+<span class="lineNum">     516 </span><span class="lineNoCov">          0 :     if ( !progress_init )</span>
+<span class="lineNum">     517 </span><span class="lineNoCov">          0 :         GProgressResInit();</span>
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 : return( &amp;progress_ri );</span>
+<span class="lineNum">     519 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

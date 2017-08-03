@@ -1,0 +1,1184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - gdraw/gchardlg.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gdraw</a> - gchardlg.c<span style="font-size: 80%;"> (source / <a href="gchardlg.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">547</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">24</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &lt;stdlib.h&gt;
+<span class="lineNum">      28 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">      29 </span>            : #include &lt;ustring.h&gt;
+<span class="lineNum">      30 </span>            : #include &lt;utype.h&gt;
+<span class="lineNum">      31 </span>            : #include &lt;gdraw.h&gt;
+<span class="lineNum">      32 </span>            : #include &lt;gwidget.h&gt;
+<span class="lineNum">      33 </span>            : #include &lt;ggadget.h&gt;
+<span class="lineNum">      34 </span>            : #include &lt;charset.h&gt;
+<span class="lineNum">      35 </span>            : #include &lt;chardata.h&gt;
+<span class="lineNum">      36 </span>            : #include &lt;gresource.h&gt;
+<span class="lineNum">      37 </span>            : #include &quot;ggadgetP.h&quot;         /* For the font family names */
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            : #include &quot;gutils/unicodelibinfo.h&quot;
+<span class="lineNum">      40 </span>            : //#include &quot;../fontforge/unicodelibinfo.c&quot;
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            : #define INSCHR_CharSet  1
+<span class="lineNum">      43 </span>            : #define INSCHR_Char     2
+<span class="lineNum">      44 </span>            : #define INSCHR_Hex      3
+<span class="lineNum">      45 </span>            : #define INSCHR_Dec      4
+<span class="lineNum">      46 </span>            : #define INSCHR_Unicode  5
+<span class="lineNum">      47 </span>            : #define INSCHR_KuTen    6
+<span class="lineNum">      48 </span>            : #define INSCHR_Prev     7
+<span class="lineNum">      49 </span>            : #define INSCHR_Next     8
+<span class="lineNum">      50 </span>            : #define INSCHR_Insert   9
+<span class="lineNum">      51 </span>            : #define INSCHR_Close    10
+<span class="lineNum">      52 </span>            : #define INSCHR_Show     11
+<span class="lineNum">      53 </span>            : 
+<span class="lineNum">      54 </span>            : enum dsp_mode { d_hex, d_dec, d_unicode, d_kuten };
+<span class="lineNum">      55 </span>            : 
+<span class="lineNum">      56 </span>            : static struct inschr {
+<span class="lineNum">      57 </span>            :     GWindow icw;
+<span class="lineNum">      58 </span>            :     int width, height;
+<span class="lineNum">      59 </span>            :     int spacing, ybase;
+<span class="lineNum">      60 </span>            :     long sel_char;
+<span class="lineNum">      61 </span>            :     enum charset map;
+<span class="lineNum">      62 </span>            :     int page;
+<span class="lineNum">      63 </span>            :     enum dsp_mode dsp_mode;
+<span class="lineNum">      64 </span>            :     unsigned int hidden: 1;
+<span class="lineNum">      65 </span>            :     unsigned int show_enabled: 1;
+<span class="lineNum">      66 </span>            :     unsigned int mouse_down: 1;
+<span class="lineNum">      67 </span>            :     unsigned int mouse_in: 1;
+<span class="lineNum">      68 </span>            :     unsigned int pageable: 1;
+<span class="lineNum">      69 </span>            :     unsigned int flash: 1;
+<span class="lineNum">      70 </span>            :     int as,sas;
+<span class="lineNum">      71 </span>            :     short x,y;
+<span class="lineNum">      72 </span>            :     GTimer *flash_time;
+<span class="lineNum">      73 </span>            :     GFont *font;
+<span class="lineNum">      74 </span>            :     GFont *smallfont;
+<span class="lineNum">      75 </span>            : } inschr = {
+<span class="lineNum">      76 </span>            :      NULL, 0, 0, 0, 0, EOF, em_iso8859_1, 0, d_hex,
+<span class="lineNum">      77 </span>            :      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL
+<span class="lineNum">      78 </span>            : };
+<span class="lineNum">      79 </span>            : 
+<span class="lineNum">      80 </span>            : static struct unicode_subranges { unichar_t first; int len; const char *name; } unicode_ranges[] = {
+<span class="lineNum">      81 </span>            :         { 0x100, 0x80, &quot;Latin Extended A&quot; },
+<span class="lineNum">      82 </span>            :         { 0x180, 0x98, &quot;Latin Extended B&quot; },
+<span class="lineNum">      83 </span>            :         { 0x250, 0x60, &quot;IPA Extensions&quot; },
+<span class="lineNum">      84 </span>            :         { 0x1e00, 0x100, &quot;Latin Additional Extensions&quot; },
+<span class="lineNum">      85 </span>            :         { 0xfb00, 0x010, &quot;Latin Ligatures&quot; },
+<span class="lineNum">      86 </span>            :         { 0xff00, 0x060, &quot;Latin Fullwidth&quot; },
+<span class="lineNum">      87 </span>            :         { 0x02b0, 0x040, &quot;Spacing Modifier Letters&quot; },
+<span class="lineNum">      88 </span>            :         { 0x0300, 0x070, &quot;Combining Diacritics&quot; },
+<span class="lineNum">      89 </span>            :         { 0x0370, 0x90, &quot;Greek &amp; Coptic&quot; },
+<span class="lineNum">      90 </span>            :         { 0x1f00, 0x100, &quot;Greek Additional Extensions&quot; },
+<span class="lineNum">      91 </span>            :         { 0x0400, 0x100, &quot;Cyrillic&quot; },
+<span class="lineNum">      92 </span>            :         { 0x0530, 0x060, &quot;Armenian&quot; },
+<span class="lineNum">      93 </span>            :         { 0xfb10, 0x010, &quot;Armenian Ligatures&quot; },
+<span class="lineNum">      94 </span>            :         { 0x0590, 0x070, &quot;Hebrew&quot; },
+<span class="lineNum">      95 </span>            :         { 0xfb20, 0x030, &quot;Hebrew Ligatures&quot; },
+<span class="lineNum">      96 </span>            :         { 0x0600, 0x100, &quot;Arabic&quot; },
+<span class="lineNum">      97 </span>            :         { 0xfb50, 0x100, &quot;Arabic Ligatures A1&quot; },
+<span class="lineNum">      98 </span>            :         { 0xfc50, 0x100, &quot;Arabic Ligatures A2&quot; },
+<span class="lineNum">      99 </span>            :         { 0xfd50, 0x0b0, &quot;Arabic Ligatures A3&quot; },
+<span class="lineNum">     100 </span>            :         { 0xfe70, 0x090, &quot;Arabic Ligatures B&quot; },
+<span class="lineNum">     101 </span>            :         { 0x0700, 0x080, &quot;Syriac&quot; },
+<span class="lineNum">     102 </span>            :         { 0x0780, 0x080, &quot;Thaana&quot; },
+<span class="lineNum">     103 </span>            :         { 0x0900, 0x080, &quot;Devanagari&quot; },
+<span class="lineNum">     104 </span>            :         { 0x0980, 0x080, &quot;Bengali&quot; },
+<span class="lineNum">     105 </span>            :         { 0x0a00, 0x080, &quot;Gurmukhi&quot; },
+<span class="lineNum">     106 </span>            :         { 0x0a80, 0x080, &quot;Gujarati&quot; },
+<span class="lineNum">     107 </span>            :         { 0x0b00, 0x080, &quot;Oriya&quot; },
+<span class="lineNum">     108 </span>            :         { 0x0b80, 0x080, &quot;Tamil&quot; },
+<span class="lineNum">     109 </span>            :         { 0x0c00, 0x080, &quot;Telugu&quot; },
+<span class="lineNum">     110 </span>            :         { 0x0c80, 0x080, &quot;Kannada&quot; },
+<span class="lineNum">     111 </span>            :         { 0x0d00, 0x080, &quot;Malayalam&quot; },
+<span class="lineNum">     112 </span>            :         { 0x0d80, 0x080, &quot;Sinhala&quot; },
+<span class="lineNum">     113 </span>            :         { 0x0e00, 0x080, &quot;Thai&quot; },
+<span class="lineNum">     114 </span>            :         { 0x0e80, 0x080, &quot;Lao&quot; },
+<span class="lineNum">     115 </span>            :         { 0x0f00, 0x100, &quot;Tibetan&quot; },
+<span class="lineNum">     116 </span>            :         { 0x1000, 0x080, &quot;Myanmar&quot; },
+<span class="lineNum">     117 </span>            :         { 0x10A0, 0x080, &quot;Georgian&quot; },
+<span class="lineNum">     118 </span>            :         { 0x1100, 0x100, &quot;Hangul Jamo&quot; },
+<span class="lineNum">     119 </span>            :         { 0xffa0, 0x040, &quot;Hangul Jamo Halfwidth&quot; },
+<span class="lineNum">     120 </span>            :         { 0x1200, 0x100, &quot;Ethiopic A&quot; },
+<span class="lineNum">     121 </span>            :         { 0x1300, 0x080, &quot;Ethiopic B&quot; },
+<span class="lineNum">     122 </span>            :         { 0x1380, 0x080, &quot;Cherokee&quot; },
+<span class="lineNum">     123 </span>            :         { 0x1400, 0x100, &quot;Canadian Syllabics A&quot; },
+<span class="lineNum">     124 </span>            :         { 0x1500, 0x100, &quot;Canadian Syllabics B&quot; },
+<span class="lineNum">     125 </span>            :         { 0x1600, 0x080, &quot;Canadian Syllabics C&quot; },
+<span class="lineNum">     126 </span>            :         { 0x1680, 0x020, &quot;Ogham&quot; },
+<span class="lineNum">     127 </span>            :         { 0x16A0, 0x060, &quot;Runic&quot; },
+<span class="lineNum">     128 </span>            :         { 0x1780, 0x080, &quot;Khmer&quot; },
+<span class="lineNum">     129 </span>            :         { 0x1800, 0x100, &quot;Mongolian&quot; },
+<span class="lineNum">     130 </span>            :         { 0x2000, 0x070, &quot;General Punctuation&quot; },
+<span class="lineNum">     131 </span>            :         { 0x2070, 0x030, &quot;Super &amp; Sub scripts&quot; },
+<span class="lineNum">     132 </span>            :         { 0x20a0, 0x030, &quot;Currency Symbols&quot; },
+<span class="lineNum">     133 </span>            :         { 0x20D0, 0x030, &quot;Combining Symbol Diacritics&quot; },
+<span class="lineNum">     134 </span>            :         { 0x2100, 0x050, &quot;Letterlike Symbols&quot; },
+<span class="lineNum">     135 </span>            :         { 0x2150, 0x040, &quot;Number Forms&quot; },
+<span class="lineNum">     136 </span>            :         { 0x2190, 0x070, &quot;Arrows&quot; },
+<span class="lineNum">     137 </span>            :         { 0x2200, 0x100, &quot;Mathematical Operators&quot; },
+<span class="lineNum">     138 </span>            :         { 0x2300, 0x080, &quot;Miscellaneous Technical&quot; },
+<span class="lineNum">     139 </span>            :         { 0x2400, 0x040, &quot;Control Pictures&quot; },
+<span class="lineNum">     140 </span>            :         { 0x2440, 0x020, &quot;OCR&quot; },
+<span class="lineNum">     141 </span>            :         { 0x2460, 0x0a0, &quot;Enclosed Alphanumerics&quot; },
+<span class="lineNum">     142 </span>            :         { 0x2500, 0x080, &quot;Box Drawing&quot; },
+<span class="lineNum">     143 </span>            :         { 0x2580, 0x020, &quot;Block Elements&quot; },
+<span class="lineNum">     144 </span>            :         { 0x25a0, 0x060, &quot;Geometric Shapes&quot; },
+<span class="lineNum">     145 </span>            :         { 0x2600, 0x080, &quot;Miscellaneous Symbols&quot; },
+<span class="lineNum">     146 </span>            :         { 0x2700, 0x0c0, &quot;Dingbats&quot; },
+<span class="lineNum">     147 </span>            :         { 0x3000, 0x040, &quot;CJK Symbols and Punctuation&quot; },
+<span class="lineNum">     148 </span>            :         { 0x3040, 0x060, &quot;Hiragana&quot; },
+<span class="lineNum">     149 </span>            :         { 0x30a0, 0x060, &quot;Katakana&quot; },
+<span class="lineNum">     150 </span>            :         { 0xff60, 0x040, &quot;Halfwidth Katakana&quot; },
+<span class="lineNum">     151 </span>            :         { 0xfe30, 0x020, &quot;CJK Compatibility Forms&quot; },
+<span class="lineNum">     152 </span>            :         { 0xfe50, 0x020, &quot;Small Form Variants&quot; },
+<span class="lineNum">     153 </span>            :         { 0xffe0, 0x010, &quot;Fullwidth Symbol Variants&quot; },
+<span class="lineNum">     154 </span>            :         { 0xfff0, 0x010, &quot;Specials&quot; },
+<span class="lineNum">     155 </span>            :         { 0, 0, NULL }
+<span class="lineNum">     156 </span>            : };
+<span class="lineNum">     157 </span>            : 
+<span class="lineNum">     158 </span>            : struct namemap encodingnames[] = {
+<span class="lineNum">     159 </span>            :     {&quot;Latin1 (iso8859-1)&quot;, em_iso8859_1 },
+<span class="lineNum">     160 </span>            :     {&quot;Latin0 (iso8859-15)&quot;, em_iso8859_15 },
+<span class="lineNum">     161 </span>            :     {&quot;Latin2 (iso8859-2)&quot;, em_iso8859_2 },
+<span class="lineNum">     162 </span>            :     {&quot;Latin3 (iso8859-3)&quot;, em_iso8859_3 },
+<span class="lineNum">     163 </span>            :     {&quot;Latin4 (iso8859-4)&quot;, em_iso8859_4 },
+<span class="lineNum">     164 </span>            :     {&quot;Latin5 (iso8859-9)&quot;, em_iso8859_9 },
+<span class="lineNum">     165 </span>            :     {&quot;Latin6 (iso8859-10)&quot;, em_iso8859_10 },
+<span class="lineNum">     166 </span>            :     {&quot;Latin7 (iso8859-13)&quot;, em_iso8859_13 },
+<span class="lineNum">     167 </span>            :     {&quot;Latin8 (iso8859-14)&quot;, em_iso8859_14 },
+<span class="lineNum">     168 </span>            :     {&quot;Latin10 (iso8859-16)&quot;, em_iso8859_16 },
+<span class="lineNum">     169 </span>            :     {&quot;Cyrillic (iso8859-5)&quot;, em_iso8859_5 },
+<span class="lineNum">     170 </span>            :     {&quot;Cyrillic (koi8-r)&quot;, em_koi8_r },
+<span class="lineNum">     171 </span>            :     {&quot;Arabic (iso8859-6)&quot;, em_iso8859_6 },
+<span class="lineNum">     172 </span>            :     {&quot;Greek (iso8859-7)&quot;, em_iso8859_7 },
+<span class="lineNum">     173 </span>            :     {&quot;Hebrew (iso8859-8)&quot;, em_iso8859_8 },
+<span class="lineNum">     174 </span>            :     {&quot;Thai (iso8859-11)&quot;, em_iso8859_11 },
+<span class="lineNum">     175 </span>            :     {&quot;KataKana (jis201)&quot;, em_jis201 },
+<span class="lineNum">     176 </span>            :     {&quot;Windows Latin1 extended&quot;, em_win },
+<span class="lineNum">     177 </span>            :     {&quot;Macintosh Latin&quot;, em_mac },
+<span class="lineNum">     178 </span>            :     {&quot;Kanji (jis208)&quot;, em_jis208 },
+<span class="lineNum">     179 </span>            :     {&quot;Kanji (jis212)&quot;, em_jis212 },
+<span class="lineNum">     180 </span>            :     {&quot;Hangul (ksc5601)&quot;, em_ksc5601 },
+<span class="lineNum">     181 </span>            :     {&quot;Han (gb2312)&quot;, em_gb2312 },
+<span class="lineNum">     182 </span>            :     {&quot;Big5 (Taiwan)&quot;, em_big5 },
+<span class="lineNum">     183 </span>            :     {&quot;Unicode&quot;, em_unicode },
+<span class="lineNum">     184 </span>            :     {&quot;Symbol&quot;, em_symbol },
+<span class="lineNum">     185 </span>            :     {&quot;Zapf Dingbats&quot;, em_zapfding },
+<span class="lineNum">     186 </span>            :     {&quot;Adobe Standard&quot;, em_user },
+<span class="lineNum">     187 </span>            :     {&quot;-&quot;, -1 },
+<span class="lineNum">     188 </span>            :     {&quot;Arabic&quot;, em_max+16 },
+<span class="lineNum">     189 </span>            :     {&quot;Arabic Ligatures A1&quot;, em_max+17 },
+<span class="lineNum">     190 </span>            :     {&quot;Arabic Ligatures A2&quot;, em_max+18 },
+<span class="lineNum">     191 </span>            :     {&quot;Arabic Ligatures A3&quot;, em_max+19 },
+<span class="lineNum">     192 </span>            :     {&quot;Arabic Ligatures B&quot;, em_max+20 },
+<span class="lineNum">     193 </span>            :     {&quot;Armenian&quot;, em_max+12 },
+<span class="lineNum">     194 </span>            :     {&quot;Armenian Ligatures&quot;, em_max+13 },
+<span class="lineNum">     195 </span>            :     {&quot;Arrows&quot;, em_max+56 },
+<span class="lineNum">     196 </span>            :     {&quot;Bengali&quot;, em_max+24 },
+<span class="lineNum">     197 </span>            :     {&quot;Block Elements&quot;, em_max+63 },
+<span class="lineNum">     198 </span>            :     {&quot;Box Drawing&quot;, em_max+62 },
+<span class="lineNum">     199 </span>            :     {&quot;Canadian Syllabics A&quot;, em_max+43 },
+<span class="lineNum">     200 </span>            :     {&quot;Canadian Syllabics B&quot;, em_max+44 },
+<span class="lineNum">     201 </span>            :     {&quot;Canadian Syllabics C&quot;, em_max+45 },
+<span class="lineNum">     202 </span>            :     {&quot;Cherokee&quot;, em_max+42 },
+<span class="lineNum">     203 </span>            :     {&quot;CJK Compatibility Forms&quot;, em_max+71 },
+<span class="lineNum">     204 </span>            :     {&quot;CJK Symbols and Punctuation&quot;, em_max+67 },
+<span class="lineNum">     205 </span>            :     {&quot;Combining Diacritics&quot;, em_max+8 },
+<span class="lineNum">     206 </span>            :     {&quot;Combining Symbol Diacritics&quot;, em_max+53 },
+<span class="lineNum">     207 </span>            :     {&quot;Control Pictures&quot;, em_max+59 },
+<span class="lineNum">     208 </span>            :     {&quot;Currency Symbols&quot;, em_max+52 },
+<span class="lineNum">     209 </span>            :     {&quot;Cyrillic&quot;, em_max+11 },
+<span class="lineNum">     210 </span>            :     {&quot;Devanagari&quot;, em_max+23 },
+<span class="lineNum">     211 </span>            :     {&quot;Dingbats&quot;, em_max+66 },
+<span class="lineNum">     212 </span>            :     {&quot;Enclosed Alphanumerics&quot;, em_max+61 },
+<span class="lineNum">     213 </span>            :     {&quot;Ethiopic A&quot;, em_max+40 },
+<span class="lineNum">     214 </span>            :     {&quot;Ethiopic B&quot;, em_max+41 },
+<span class="lineNum">     215 </span>            :     {&quot;Fullwidth Symbol Variants&quot;, em_max+73 },
+<span class="lineNum">     216 </span>            :     {&quot;General Punctuation&quot;, em_max+50 },
+<span class="lineNum">     217 </span>            :     {&quot;Geometric Shapes&quot;, em_max+64 },
+<span class="lineNum">     218 </span>            :     {&quot;Georgian&quot;, em_max+37 },
+<span class="lineNum">     219 </span>            :     {&quot;Greek &amp; Coptic&quot;, em_max+9 },
+<span class="lineNum">     220 </span>            :     {&quot;Greek Additional Extensions&quot;, em_max+10 },
+<span class="lineNum">     221 </span>            :     {&quot;Gujarati&quot;, em_max+26 },
+<span class="lineNum">     222 </span>            :     {&quot;Gurmukhi&quot;, em_max+25 },
+<span class="lineNum">     223 </span>            :     {&quot;Halfwidth Katakana&quot;, em_max+70 },
+<span class="lineNum">     224 </span>            :     {&quot;Hangul Jamo&quot;, em_max+38 },
+<span class="lineNum">     225 </span>            :     {&quot;Hangul Jamo Halfwidth&quot;, em_max+39 },
+<span class="lineNum">     226 </span>            :     {&quot;Hebrew&quot;, em_max+14 },
+<span class="lineNum">     227 </span>            :     {&quot;Hebrew Ligatures&quot;, em_max+15 },
+<span class="lineNum">     228 </span>            :     {&quot;Hiragana&quot;, em_max+68 },
+<span class="lineNum">     229 </span>            :     {&quot;IPA Extensions&quot;, em_max+3 },
+<span class="lineNum">     230 </span>            :     {&quot;Kannada&quot;, em_max+30 },
+<span class="lineNum">     231 </span>            :     {&quot;Katakana&quot;, em_max+69 },
+<span class="lineNum">     232 </span>            :     {&quot;Khmer&quot;, em_max+48 },
+<span class="lineNum">     233 </span>            :     {&quot;Latin Additional Extensions&quot;, em_max+4 },
+<span class="lineNum">     234 </span>            :     {&quot;Latin Fullwidth&quot;, em_max+6 },
+<span class="lineNum">     235 </span>            :     {&quot;Latin Extended A&quot;, em_max+1 },
+<span class="lineNum">     236 </span>            :     {&quot;Latin Extended B&quot;, em_max+2 },
+<span class="lineNum">     237 </span>            :     {&quot;Latin Ligatures&quot;, em_max+5 },
+<span class="lineNum">     238 </span>            :     {&quot;Letterlike Symbols&quot;, em_max+54 },
+<span class="lineNum">     239 </span>            :     {&quot;Lao&quot;, em_max+34 },
+<span class="lineNum">     240 </span>            :     {&quot;Malayalam&quot;, em_max+31 },
+<span class="lineNum">     241 </span>            :     {&quot;Mathematical Operators&quot;, em_max+57 },
+<span class="lineNum">     242 </span>            :     {&quot;Miscellaneous Symbols&quot;, em_max+65 },
+<span class="lineNum">     243 </span>            :     {&quot;Miscellaneous Technical&quot;, em_max+58 },
+<span class="lineNum">     244 </span>            :     {&quot;Mongolian&quot;, em_max+49 },
+<span class="lineNum">     245 </span>            :     {&quot;Myanmar&quot;, em_max+36 },
+<span class="lineNum">     246 </span>            :     {&quot;Number Forms&quot;, em_max+55 },
+<span class="lineNum">     247 </span>            :     {&quot;OCR&quot;, em_max+60 },
+<span class="lineNum">     248 </span>            :     {&quot;Ogham&quot;, em_max+46 },
+<span class="lineNum">     249 </span>            :     {&quot;Oriya&quot;, em_max+27 },
+<span class="lineNum">     250 </span>            :     {&quot;Punctuation&quot;, em_max+50 },
+<span class="lineNum">     251 </span>            :     {&quot;Runic&quot;, em_max+47 },
+<span class="lineNum">     252 </span>            :     {&quot;Sinhala&quot;, em_max+32 },
+<span class="lineNum">     253 </span>            :     {&quot;Small Form Variants&quot;, em_max+72 },
+<span class="lineNum">     254 </span>            :     {&quot;Spacing Modifier Letters&quot;, em_max+7 },
+<span class="lineNum">     255 </span>            :     {&quot;Specials&quot;, em_max+74 },
+<span class="lineNum">     256 </span>            :     {&quot;Super &amp; Sub scripts&quot;, em_max+51 },
+<span class="lineNum">     257 </span>            :     {&quot;Syriac&quot;, em_max+21 },
+<span class="lineNum">     258 </span>            :     {&quot;Tamil&quot;, em_max+28 },
+<span class="lineNum">     259 </span>            :     {&quot;Telugu&quot;, em_max+29 },
+<span class="lineNum">     260 </span>            :     {&quot;Thaana&quot;, em_max+22 },
+<span class="lineNum">     261 </span>            :     {&quot;Thai&quot;, em_max+33 },
+<span class="lineNum">     262 </span>            :     {&quot;Tibetan&quot;, em_max+35 },
+<span class="lineNum">     263 </span>            :     /* {&quot;Latin Extended A&quot;, em_max+1 }, */
+<span class="lineNum">     264 </span>            :     /* {&quot;Latin Extended B&quot;, em_max+2 }, */
+<span class="lineNum">     265 </span>            :     /* {&quot;IPA Extensions&quot;, em_max+3 }, */
+<span class="lineNum">     266 </span>            :     /* {&quot;Latin Additional Extensions&quot;, em_max+4 }, */
+<span class="lineNum">     267 </span>            :     /* {&quot;Latin Ligatures&quot;, em_max+5 }, */
+<span class="lineNum">     268 </span>            :     /* {&quot;Latin Fullwidth&quot;, em_max+6 }, */
+<span class="lineNum">     269 </span>            :     /* {&quot;Spacing Modifier Letters&quot;, em_max+7 }, */
+<span class="lineNum">     270 </span>            :     /* {&quot;Combining Diacritics&quot;, em_max+8 }, */
+<span class="lineNum">     271 </span>            :     /* {&quot;Greek &amp; Coptic&quot;, em_max+9 }, */
+<span class="lineNum">     272 </span>            :     /* {&quot;Greek Additional Extensions&quot;, em_max+10 }, */
+<span class="lineNum">     273 </span>            :     /* {&quot;Cyrillic&quot;, em_max+11 }, */
+<span class="lineNum">     274 </span>            :     /* {&quot;Armenian&quot;, em_max+12 }, */
+<span class="lineNum">     275 </span>            :     /* {&quot;Armenian Ligatures&quot;, em_max+13 }, */
+<span class="lineNum">     276 </span>            :     /* {&quot;Hebrew&quot;, em_max+14 }, */
+<span class="lineNum">     277 </span>            :     /* {&quot;Hebrew Ligatures&quot;, em_max+15 }, */
+<span class="lineNum">     278 </span>            :     /* {&quot;Arabic&quot;, em_max+16 }, */
+<span class="lineNum">     279 </span>            :     /* {&quot;Arabic Ligatures A1&quot;, em_max+17 }, */
+<span class="lineNum">     280 </span>            :     /* {&quot;Arabic Ligatures A2&quot;, em_max+18 }, */
+<span class="lineNum">     281 </span>            :     /* {&quot;Arabic Ligatures A3&quot;, em_max+19 }, */
+<span class="lineNum">     282 </span>            :     /* {&quot;Arabic Ligatures B&quot;, em_max+20 }, */
+<span class="lineNum">     283 </span>            :     /* {&quot;Syriac&quot;, em_max+21 }, */
+<span class="lineNum">     284 </span>            :     /* {&quot;Thaana&quot;, em_max+22 }, */
+<span class="lineNum">     285 </span>            :     /* {&quot;Devanagari&quot;, em_max+23 }, */
+<span class="lineNum">     286 </span>            :     /* {&quot;Bengali&quot;, em_max+24 }, */
+<span class="lineNum">     287 </span>            :     /* {&quot;Gurmukhi&quot;, em_max+25 }, */
+<span class="lineNum">     288 </span>            :     /* {&quot;Gujarati&quot;, em_max+26 }, */
+<span class="lineNum">     289 </span>            :     /* {&quot;Oriya&quot;, em_max+27 }, */
+<span class="lineNum">     290 </span>            :     /* {&quot;Tamil&quot;, em_max+28 }, */
+<span class="lineNum">     291 </span>            :     /* {&quot;Telugu&quot;, em_max+29 }, */
+<span class="lineNum">     292 </span>            :     /* {&quot;Kannada&quot;, em_max+30 }, */
+<span class="lineNum">     293 </span>            :     /* {&quot;Malayalam&quot;, em_max+31 }, */
+<span class="lineNum">     294 </span>            :     /* {&quot;Sinhala&quot;, em_max+32 }, */
+<span class="lineNum">     295 </span>            :     /* {&quot;Thai&quot;, em_max+33 }, */
+<span class="lineNum">     296 </span>            :     /* {&quot;Lao&quot;, em_max+34 }, */
+<span class="lineNum">     297 </span>            :     /* {&quot;Tibetan&quot;, em_max+35 }, */
+<span class="lineNum">     298 </span>            :     /* {&quot;Myanmar&quot;, em_max+36 }, */
+<span class="lineNum">     299 </span>            :     /* {&quot;Georgian&quot;, em_max+37 }, */
+<span class="lineNum">     300 </span>            :     /* {&quot;Hangul Jamo&quot;, em_max+38 }, */
+<span class="lineNum">     301 </span>            :     /* {&quot;Hangul Jamo Halfwidth&quot;, em_max+39 }, */
+<span class="lineNum">     302 </span>            :     /* {&quot;Ethiopic A&quot;, em_max+40 }, */
+<span class="lineNum">     303 </span>            :     /* {&quot;Ethiopic B&quot;, em_max+41 }, */
+<span class="lineNum">     304 </span>            :     /* {&quot;Cherokee&quot;, em_max+42 }, */
+<span class="lineNum">     305 </span>            :     /* {&quot;Canadian Syllabics A&quot;, em_max+43 }, */
+<span class="lineNum">     306 </span>            :     /* {&quot;Canadian Syllabics B&quot;, em_max+44 }, */
+<span class="lineNum">     307 </span>            :     /* {&quot;Canadian Syllabics C&quot;, em_max+45 }, */
+<span class="lineNum">     308 </span>            :     /* {&quot;Ogham&quot;, em_max+46 }, */
+<span class="lineNum">     309 </span>            :     /* {&quot;Runic&quot;, em_max+47 }, */
+<span class="lineNum">     310 </span>            :     /* {&quot;Khmer&quot;, em_max+48 }, */
+<span class="lineNum">     311 </span>            :     /* {&quot;Mongolian&quot;, em_max+49 }, */
+<span class="lineNum">     312 </span>            :     /* {&quot;General Punctuation&quot;, em_max+50 }, */
+<span class="lineNum">     313 </span>            :     /* {&quot;Super &amp; Sub scripts&quot;, em_max+51 }, */
+<span class="lineNum">     314 </span>            :     /* {&quot;Currency Symbols&quot;, em_max+52 }, */
+<span class="lineNum">     315 </span>            :     /* {&quot;Combining Symbol Diacritics&quot;, em_max+53 }, */
+<span class="lineNum">     316 </span>            :     /* {&quot;Letterlike Symbols&quot;, em_max+54 }, */
+<span class="lineNum">     317 </span>            :     /* {&quot;Number Forms&quot;, em_max+55 }, */
+<span class="lineNum">     318 </span>            :     /* {&quot;Arrows&quot;, em_max+56 }, */
+<span class="lineNum">     319 </span>            :     /* {&quot;Mathematical Operators&quot;, em_max+57 }, */
+<span class="lineNum">     320 </span>            :     /* {&quot;Miscellaneous Technical&quot;, em_max+58 }, */
+<span class="lineNum">     321 </span>            :     /* {&quot;Control Pictures&quot;, em_max+59 }, */
+<span class="lineNum">     322 </span>            :     /* {&quot;OCR&quot;, em_max+60 }, */
+<span class="lineNum">     323 </span>            :     /* {&quot;Enclosed Alphanumerics&quot;, em_max+61 }, */
+<span class="lineNum">     324 </span>            :     /* {&quot;Box Drawing&quot;, em_max+62 }, */
+<span class="lineNum">     325 </span>            :     /* {&quot;Block Elements&quot;, em_max+63 }, */
+<span class="lineNum">     326 </span>            :     /* {&quot;Geometric Shapes&quot;, em_max+64 }, */
+<span class="lineNum">     327 </span>            :     /* {&quot;Miscellaneous Symbols&quot;, em_max+65 }, */
+<span class="lineNum">     328 </span>            :     /* {&quot;Dingbats&quot;, em_max+66 }, */
+<span class="lineNum">     329 </span>            :     /* {&quot;CJK Symbols and Punctuation&quot;, em_max+67 }, */
+<span class="lineNum">     330 </span>            :     /* {&quot;Hiragana&quot;, em_max+68 }, */
+<span class="lineNum">     331 </span>            :     /* {&quot;Katakana&quot;, em_max+69 }, */
+<span class="lineNum">     332 </span>            :     /* {&quot;Halfwidth Katakana&quot;, em_max+70 }, */
+<span class="lineNum">     333 </span>            :     /* {&quot;CJK Compatibility Forms&quot;, em_max+71 }, */
+<span class="lineNum">     334 </span>            :     /* {&quot;Small Form Variants&quot;, em_max+72 }, */
+<span class="lineNum">     335 </span>            :     /* {&quot;Fullwidth Symbol Variants&quot;, em_max+73 }, */
+<span class="lineNum">     336 </span>            :     /* {&quot;Specials&quot;, em_max+74 }, */
+<a name="337"><span class="lineNum">     337 </span>            :     { NULL, 0 }};</a>
+<span class="lineNum">     338 </span>            : 
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 : static int mapFromIndex(int i) {</span>
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 : return( encodingnames[i].map );</span>
+<a name="341"><span class="lineNum">     341 </span>            : }</a>
+<span class="lineNum">     342 </span>            : 
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 : static void InsChrRedraw(void) {</span>
+<span class="lineNum">     344 </span>            :     GRect r;
+<span class="lineNum">     345 </span>            : 
+<span class="lineNum">     346 </span><span class="lineNoCov">          0 :     r.x = 0; r.width = inschr.width;</span>
+<span class="lineNum">     347 </span>            :     /* it would be ybase, except we added the Page: field which needs to be updated */
+<span class="lineNum">     348 </span><span class="lineNoCov">          0 :     r.y = GDrawPointsToPixels(inschr.icw,90); r.height = inschr.height-r.y;</span>
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(inschr.icw,&amp;r,false);</span>
+<a name="350"><span class="lineNum">     350 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     351 </span>            : 
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 : static void InsChrXorChar(GWindow pixmap, int x, int y) {</span>
+<span class="lineNum">     353 </span>            :     GRect rct;
+<span class="lineNum">     354 </span>            : 
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :     rct.x = x*inschr.spacing+1; rct.width = inschr.spacing-1;</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :     rct.y = inschr.ybase+y*inschr.spacing+1; rct.height = inschr.spacing-1;</span>
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :     GDrawSetXORMode(pixmap);</span>
+<span class="lineNum">     358 </span><span class="lineNoCov">          0 :     GDrawSetXORBase(pixmap,GDrawGetDefaultBackground(GDrawGetDisplayOfWindow(pixmap)));</span>
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 :     GDrawFillRect(pixmap,&amp;rct,0x000000);</span>
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :     GDrawSetCopyMode(pixmap);</span>
+<a name="361"><span class="lineNum">     361 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     362 </span>            : 
+<span class="lineNum">     363 </span><span class="lineNoCov">          0 : static void InsChrSetNextPrev() {</span>
+<span class="lineNum">     364 </span>            : 
+<span class="lineNum">     365 </span><span class="lineNoCov">          0 :     if ( inschr.icw==NULL )</span>
+<span class="lineNum">     366 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     367 </span><span class="lineNoCov">          0 :     if ( inschr.map&lt;em_first2byte || inschr.map&gt;em_max ) {</span>
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :         inschr.pageable = false;</span>
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(inschr.icw,INSCHR_Next),false);</span>
+<span class="lineNum">     370 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(inschr.icw,INSCHR_Prev),false);</span>
+<span class="lineNum">     371 </span><span class="lineNoCov">          0 :     } else if ( inschr.map==em_unicode ) {</span>
+<span class="lineNum">     372 </span><span class="lineNoCov">          0 :         inschr.pageable = true;</span>
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(inschr.icw,INSCHR_Next),inschr.page&lt;255);</span>
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(inschr.icw,INSCHR_Prev),inschr.page&gt;0);</span>
+<span class="lineNum">     375 </span><span class="lineNoCov">          0 :     } else if ( inschr.map==em_big5 ) {</span>
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 :         inschr.pageable = true;</span>
+<span class="lineNum">     377 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(inschr.icw,INSCHR_Next),inschr.page&lt;0xf9);</span>
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(inschr.icw,INSCHR_Prev),inschr.page&gt;0xa1);</span>
+<span class="lineNum">     379 </span>            :     } else {
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :         inschr.pageable = true;</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(inschr.icw,INSCHR_Next),inschr.page&lt;0x7e);</span>
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(inschr.icw,INSCHR_Prev),inschr.page&gt;0x21);</span>
+<span class="lineNum">     383 </span>            :     }
+<a name="384"><span class="lineNum">     384 </span>            : }</a>
+<span class="lineNum">     385 </span>            : 
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 : static long InsChrToUni(long val) {</span>
+<span class="lineNum">     387 </span>            : 
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 :     if ( inschr.map==em_unicode )</span>
+<span class="lineNum">     389 </span><span class="lineNoCov">          0 : return( val );</span>
+<span class="lineNum">     390 </span><span class="lineNoCov">          0 :     if ( inschr.map==em_iso8859_1 ) {   /* Our latin 1 map is really windows */</span>
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 :         if ( val&gt;=0 &amp;&amp; val&lt;=255 ) /*  so do the real latin1-&gt;unicode */</span>
+<span class="lineNum">     392 </span><span class="lineNoCov">          0 : return( val );</span>
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 :     } else if ( inschr.map&lt;em_first2byte ) {</span>
+<span class="lineNum">     394 </span><span class="lineNoCov">          0 :         if ( val&gt;=0 &amp;&amp; val&lt;=255 )</span>
+<span class="lineNum">     395 </span><span class="lineNoCov">          0 : return( unicode_from_alphabets[inschr.map+3][val] );</span>
+<span class="lineNum">     396 </span><span class="lineNoCov">          0 :     } else if ( inschr.map&gt;em_max ) {</span>
+<span class="lineNum">     397 </span><span class="lineNoCov">          0 :         if ( val&gt;=0 &amp;&amp; val&lt;unicode_ranges[inschr.map-em_max-1].len )</span>
+<span class="lineNum">     398 </span><span class="lineNoCov">          0 : return( unicode_ranges[inschr.map-em_max-1].first+val );</span>
+<span class="lineNum">     399 </span><span class="lineNoCov">          0 :     } else if ( inschr.map==em_big5 ) {</span>
+<span class="lineNum">     400 </span><span class="lineNoCov">          0 :         if ( val&lt;0xa100 || val&gt;0xFfff )</span>
+<span class="lineNum">     401 </span><span class="lineNoCov">          0 : return( -1 );</span>
+<span class="lineNum">     402 </span><span class="lineNoCov">          0 : return( unicode_from_big5[val-0xa100] );</span>
+<span class="lineNum">     403 </span>            :     } else {
+<span class="lineNum">     404 </span><span class="lineNoCov">          0 :         if ( (val&gt;&gt;8)&lt;0x21 || (val&gt;&gt;8)&gt;0x7e || (val&amp;0xff)&lt;0x21 || (val&amp;0xff)&gt;0x7e )</span>
+<span class="lineNum">     405 </span><span class="lineNoCov">          0 : return( -1 );</span>
+<span class="lineNum">     406 </span><span class="lineNoCov">          0 :         val = ((val&gt;&gt;8)-0x21)*94 + ((val&amp;0xff)-0x21);</span>
+<span class="lineNum">     407 </span><span class="lineNoCov">          0 :         if ( inschr.map==em_jis208 )</span>
+<span class="lineNum">     408 </span><span class="lineNoCov">          0 : return( unicode_from_jis208[val]);</span>
+<span class="lineNum">     409 </span><span class="lineNoCov">          0 :         else if ( inschr.map==em_jis212 )</span>
+<span class="lineNum">     410 </span><span class="lineNoCov">          0 : return( unicode_from_jis212[val]);</span>
+<span class="lineNum">     411 </span><span class="lineNoCov">          0 :         else if ( inschr.map==em_gb2312 )</span>
+<span class="lineNum">     412 </span><span class="lineNoCov">          0 : return( unicode_from_gb2312[val]);</span>
+<span class="lineNum">     413 </span>            :         else /*if ( inschr.map==em_ksc5601 )*/
+<span class="lineNum">     414 </span><span class="lineNoCov">          0 : return( unicode_from_ksc5601[val]);</span>
+<span class="lineNum">     415 </span>            :     }
+<span class="lineNum">     416 </span><span class="lineNoCov">          0 : return( -1 );</span>
+<a name="417"><span class="lineNum">     417 </span>            : }</a>
+<span class="lineNum">     418 </span>            : 
+<span class="lineNum">     419 </span><span class="lineNoCov">          0 : static unichar_t InsChrMapChar(unichar_t ch) {</span>
+<span class="lineNum">     420 </span><span class="lineNoCov">          0 :     if ( inschr.map==em_iso8859_1 ) {   /* Our latin 1 map is really windows */</span>
+<span class="lineNum">     421 </span><span class="lineNoCov">          0 : return( ch );                           /*  so do the real latin1-&gt;unicode */</span>
+<span class="lineNum">     422 </span><span class="lineNoCov">          0 :     } else if ( inschr.map&lt;em_first2byte ) {</span>
+<span class="lineNum">     423 </span><span class="lineNoCov">          0 : return( unicode_from_alphabets[inschr.map+3][ch] );</span>
+<span class="lineNum">     424 </span><span class="lineNoCov">          0 :     } else if ( inschr.map&gt;em_max ) {</span>
+<span class="lineNum">     425 </span><span class="lineNoCov">          0 : return( unicode_ranges[inschr.map-em_max-1].first+ch );</span>
+<span class="lineNum">     426 </span><span class="lineNoCov">          0 :     } else if ( inschr.map==em_unicode ) {</span>
+<span class="lineNum">     427 </span><span class="lineNoCov">          0 : return( (inschr.page&lt;&lt;8) + ch );</span>
+<span class="lineNum">     428 </span><span class="lineNoCov">          0 :     } else if ( inschr.map==em_jis208 ) {</span>
+<span class="lineNum">     429 </span><span class="lineNoCov">          0 : return(  unicode_from_jis208[(inschr.page-0x21)*94-0x21+ch]);</span>
+<span class="lineNum">     430 </span><span class="lineNoCov">          0 :     } else if ( inschr.map==em_jis212 ) {</span>
+<span class="lineNum">     431 </span><span class="lineNoCov">          0 : return(  unicode_from_jis212[(inschr.page-0x21)*94-0x21+ch]);</span>
+<span class="lineNum">     432 </span><span class="lineNoCov">          0 :     } else if ( inschr.map==em_gb2312 ) {</span>
+<span class="lineNum">     433 </span><span class="lineNoCov">          0 : return( unicode_from_gb2312[(inschr.page-0x21)*94-0x21+ch]);</span>
+<span class="lineNum">     434 </span><span class="lineNoCov">          0 :     } else if ( inschr.map==em_ksc5601 ) {</span>
+<span class="lineNum">     435 </span><span class="lineNoCov">          0 : return( unicode_from_ksc5601[(inschr.page-0x21)*94-0x21+ch]);</span>
+<span class="lineNum">     436 </span><span class="lineNoCov">          0 :     } else if ( inschr.map==em_big5 ) {</span>
+<span class="lineNum">     437 </span><span class="lineNoCov">          0 : return( unicode_from_big5[inschr.page*256-0xa100+ch] );</span>
+<span class="lineNum">     438 </span>            :     }
+<span class="lineNum">     439 </span><span class="lineNoCov">          0 : return( 0x20 );</span>
+<a name="440"><span class="lineNum">     440 </span>            : }</a>
+<span class="lineNum">     441 </span>            : 
+<span class="lineNum">     442 </span><span class="lineNoCov">          0 : static long InsChrUniVal(void) {</span>
+<span class="lineNum">     443 </span>            :     const unichar_t *str, *pt; unichar_t *pos;
+<span class="lineNum">     444 </span>            :     long val, val2;
+<span class="lineNum">     445 </span>            : 
+<span class="lineNum">     446 </span><span class="lineNoCov">          0 :     str = _GGadgetGetTitle(GWidgetGetControl(inschr.icw,INSCHR_Char));</span>
+<span class="lineNum">     447 </span><span class="lineNoCov">          0 :     for ( pt = str; isspace(*pt); ++pt );</span>
+<span class="lineNum">     448 </span><span class="lineNoCov">          0 :     if ( *pt=='\0' )</span>
+<span class="lineNum">     449 </span><span class="lineNoCov">          0 : return( -1 );</span>
+<span class="lineNum">     450 </span><span class="lineNoCov">          0 :     if ( *pt=='u' || *pt=='U' ) {</span>
+<span class="lineNum">     451 </span><span class="lineNoCov">          0 :         ++pt;</span>
+<span class="lineNum">     452 </span><span class="lineNoCov">          0 :         if ( *pt=='+' ) ++pt;</span>
+<span class="lineNum">     453 </span><span class="lineNoCov">          0 :         val = u_strtol(pt,&amp;pos,16);</span>
+<span class="lineNum">     454 </span><span class="lineNoCov">          0 :         if ( *pos!='\0' )</span>
+<span class="lineNum">     455 </span><span class="lineNoCov">          0 : return( -1 );</span>
+<span class="lineNum">     456 </span><span class="lineNoCov">          0 : return( val );</span>
+<span class="lineNum">     457 </span><span class="lineNoCov">          0 :     } else if ( u_strchr(pt,',')!=NULL &amp;&amp; inschr.map!=em_big5 &amp;&amp;</span>
+<span class="lineNum">     458 </span><span class="lineNoCov">          0 :             inschr.map&gt;=em_first2byte &amp;&amp; inschr.map&lt;em_max ) {</span>
+<span class="lineNum">     459 </span><span class="lineNoCov">          0 :         val = u_strtol(pt,&amp;pos,10);</span>
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 :         while ( isspace(*pos)) ++pos;</span>
+<span class="lineNum">     461 </span><span class="lineNoCov">          0 :         if ( *pos!=',' )</span>
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 : return( -1 );</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :         val2 = u_strtol(pos+1,&amp;pos,10);</span>
+<span class="lineNum">     464 </span><span class="lineNoCov">          0 :         if ( *pos!='\0' )</span>
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 : return( -1 );</span>
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :         if ( inschr.map==em_unicode )</span>
+<span class="lineNum">     467 </span><span class="lineNoCov">          0 : return( 256*val+val2 );</span>
+<span class="lineNum">     468 </span><span class="lineNoCov">          0 :         val = 256*(val+0x20) + (val2+0x20);</span>
+<span class="lineNum">     469 </span>            :     } else {
+<span class="lineNum">     470 </span><span class="lineNoCov">          0 :         if ( inschr.dsp_mode!=d_dec || (val=u_strtol(pt,&amp;pos,10))&lt;0 || *pos!='\0' )</span>
+<span class="lineNum">     471 </span><span class="lineNoCov">          0 :             val = u_strtol(pt,&amp;pos,16);</span>
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 :         if ( *pos!='\0' )</span>
+<span class="lineNum">     473 </span><span class="lineNoCov">          0 : return( -1 );</span>
+<span class="lineNum">     474 </span>            :     }
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 : return( InsChrToUni(val));</span>
+<a name="476"><span class="lineNum">     476 </span>            : }</a>
+<span class="lineNum">     477 </span>            : 
+<span class="lineNum">     478 </span><span class="lineNoCov">          0 : static int InsChrInCurrentEncoding(void) {</span>
+<span class="lineNum">     479 </span><span class="lineNoCov">          0 :     int enable = false;</span>
+<span class="lineNum">     480 </span>            :     long ch;
+<span class="lineNum">     481 </span>            :     long resch;
+<span class="lineNum">     482 </span>            : 
+<span class="lineNum">     483 </span><span class="lineNoCov">          0 :     if ( inschr.icw==NULL )</span>
+<span class="lineNum">     484 </span><span class="lineNoCov">          0 : return(0);</span>
+<span class="lineNum">     485 </span><span class="lineNoCov">          0 :     if ( (ch = InsChrUniVal())&lt;=0 ) {</span>
+<span class="lineNum">     486 </span><span class="lineNoCov">          0 :         enable = false;</span>
+<span class="lineNum">     487 </span><span class="lineNoCov">          0 :         if ( inschr.map==em_unicode &amp;&amp; ch==0 ) enable = true;</span>
+<span class="lineNum">     488 </span><span class="lineNoCov">          0 :     } else if ( inschr.map&gt;em_max ) {</span>
+<span class="lineNum">     489 </span><span class="lineNoCov">          0 :         resch = ch - unicode_ranges[inschr.map-em_max-1].first;</span>
+<span class="lineNum">     490 </span><span class="lineNoCov">          0 :         enable = (resch&gt;=0 &amp;&amp; resch&lt;unicode_ranges[inschr.map-em_max-1].len);</span>
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 :     } else if ( inschr.map&gt;=em_first2byte ) {</span>
+<span class="lineNum">     492 </span><span class="lineNoCov">          0 :         int highch = (ch&gt;&gt;8);</span>
+<span class="lineNum">     493 </span><span class="lineNoCov">          0 :         struct charmap2 *table2=NULL;</span>
+<span class="lineNum">     494 </span>            :         unsigned short *plane;
+<span class="lineNum">     495 </span><span class="lineNoCov">          0 :         if ( inschr.map&lt;=em_jis212 )</span>
+<span class="lineNum">     496 </span><span class="lineNoCov">          0 :             table2 = &amp;jis_from_unicode;</span>
+<span class="lineNum">     497 </span><span class="lineNoCov">          0 :         else if ( inschr.map==em_gb2312 )</span>
+<span class="lineNum">     498 </span><span class="lineNoCov">          0 :             table2 = &amp;gb2312_from_unicode;</span>
+<span class="lineNum">     499 </span><span class="lineNoCov">          0 :         else if ( inschr.map==em_ksc5601 )</span>
+<span class="lineNum">     500 </span><span class="lineNoCov">          0 :             table2 = &amp;ksc5601_from_unicode;</span>
+<span class="lineNum">     501 </span><span class="lineNoCov">          0 :         else if ( inschr.map==em_big5 )</span>
+<span class="lineNum">     502 </span><span class="lineNoCov">          0 :             table2 = &amp;big5_from_unicode;</span>
+<span class="lineNum">     503 </span>            : 
+<span class="lineNum">     504 </span><span class="lineNoCov">          0 :         if ( inschr.map==em_unicode )</span>
+<span class="lineNum">     505 </span><span class="lineNoCov">          0 :             enable = /*( (ch&gt;&gt;8)!=inschr.page )*/true;</span>
+<span class="lineNum">     506 </span><span class="lineNoCov">          0 :         else if ( highch&gt;=table2-&gt;first &amp;&amp; highch&lt;=table2-&gt;last &amp;&amp;</span>
+<span class="lineNum">     507 </span><span class="lineNoCov">          0 :                  (plane = table2-&gt;table[highch])!=NULL &amp;&amp;</span>
+<span class="lineNum">     508 </span><span class="lineNoCov">          0 :                  (resch = plane[ch&amp;0xff])!=0 &amp;&amp;</span>
+<span class="lineNum">     509 </span><span class="lineNoCov">          0 :                  ((inschr.map==em_jis212 &amp;&amp; (resch&amp;0x8000) &amp;&amp; ((resch&amp;~0x8000)&gt;&gt;8)!=inschr.page) ||</span>
+<span class="lineNum">     510 </span><span class="lineNoCov">          0 :                   (inschr.map!=em_jis212 &amp;&amp; !(resch&amp;0x8000) &amp;&amp; (resch!=inschr.page))) )</span>
+<span class="lineNum">     511 </span><span class="lineNoCov">          0 :             enable = true;</span>
+<span class="lineNum">     512 </span>            :     } else {
+<span class="lineNum">     513 </span><span class="lineNoCov">          0 :         int highch = (ch&gt;&gt;8);</span>
+<span class="lineNum">     514 </span><span class="lineNoCov">          0 :         struct charmap *table = NULL;</span>
+<span class="lineNum">     515 </span>            :         unsigned char *plane;
+<span class="lineNum">     516 </span><span class="lineNoCov">          0 :         table = alphabets_from_unicode[inschr.map+3];   /* Skip the 3 asciis */</span>
+<span class="lineNum">     517 </span><span class="lineNoCov">          0 :         if ( (highch&gt;=table-&gt;first &amp;&amp; highch&lt;=table-&gt;last &amp;&amp;</span>
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 :                  (plane = table-&gt;table[highch])!=NULL &amp;&amp;</span>
+<span class="lineNum">     519 </span><span class="lineNoCov">          0 :                  (resch=plane[ch&amp;0xff])!=0 ))</span>
+<span class="lineNum">     520 </span><span class="lineNoCov">          0 :             enable = true;;</span>
+<span class="lineNum">     521 </span>            :     }
+<span class="lineNum">     522 </span><span class="lineNoCov">          0 : return( enable );</span>
+<a name="523"><span class="lineNum">     523 </span>            : }</a>
+<span class="lineNum">     524 </span>            : 
+<span class="lineNum">     525 </span><span class="lineNoCov">          0 : static int InsChrFigureShow() {</span>
+<span class="lineNum">     526 </span>            :     long ch;
+<span class="lineNum">     527 </span>            :     const unichar_t *str;
+<span class="lineNum">     528 </span><span class="lineNoCov">          0 :     int enable = true;</span>
+<span class="lineNum">     529 </span>            : 
+<span class="lineNum">     530 </span><span class="lineNoCov">          0 :     if ( inschr.icw==NULL )</span>
+<span class="lineNum">     531 </span><span class="lineNoCov">          0 : return(false);</span>
+<span class="lineNum">     532 </span><span class="lineNoCov">          0 :     if ( InsChrInCurrentEncoding() )</span>
+<span class="lineNum">     533 </span><span class="lineNoCov">          0 :         enable = true;</span>
+<span class="lineNum">     534 </span>            :     else {
+<span class="lineNum">     535 </span><span class="lineNoCov">          0 :         str = _GGadgetGetTitle(GWidgetGetControl(inschr.icw,INSCHR_Char));</span>
+<span class="lineNum">     536 </span><span class="lineNoCov">          0 :         if ( *str!='u' &amp;&amp; *str!='U' )</span>
+<span class="lineNum">     537 </span><span class="lineNoCov">          0 :             enable = false;</span>
+<span class="lineNum">     538 </span><span class="lineNoCov">          0 :         else if ( str[1]!='+' )</span>
+<span class="lineNum">     539 </span><span class="lineNoCov">          0 :             enable = false;</span>
+<span class="lineNum">     540 </span><span class="lineNoCov">          0 :         else if ((ch = InsChrUniVal())&lt;=0 || ch&gt;=0x10000 )</span>
+<span class="lineNum">     541 </span><span class="lineNoCov">          0 :             enable = false;</span>
+<span class="lineNum">     542 </span>            :     }
+<span class="lineNum">     543 </span>            : 
+<span class="lineNum">     544 </span><span class="lineNoCov">          0 :     if ( enable!=inschr.show_enabled ) {</span>
+<span class="lineNum">     545 </span><span class="lineNoCov">          0 :         inschr.show_enabled = enable;</span>
+<span class="lineNum">     546 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(inschr.icw,INSCHR_Show),enable);</span>
+<span class="lineNum">     547 </span>            :     }
+<span class="lineNum">     548 </span><span class="lineNoCov">          0 : return( enable );</span>
+<a name="549"><span class="lineNum">     549 </span>            : }</a>
+<span class="lineNum">     550 </span>            : 
+<span class="lineNum">     551 </span><span class="lineNoCov">          0 : static int _InsChrSetSelChar(unichar_t ch, int refresh_page) {</span>
+<span class="lineNum">     552 </span><span class="lineNoCov">          0 :     int inmap=0;</span>
+<span class="lineNum">     553 </span><span class="lineNoCov">          0 :     int highch = (ch&gt;&gt;8);</span>
+<span class="lineNum">     554 </span><span class="lineNoCov">          0 :     struct charmap *table = NULL;</span>
+<span class="lineNum">     555 </span>            :     unsigned char *plane;
+<span class="lineNum">     556 </span><span class="lineNoCov">          0 :     struct charmap2 *table2 = NULL;</span>
+<span class="lineNum">     557 </span>            :     unsigned short *plane2;
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :     unichar_t resch=0;</span>
+<span class="lineNum">     559 </span>            :     char buffer[30];
+<span class="lineNum">     560 </span>            :     unichar_t ubuffer[30];
+<span class="lineNum">     561 </span>            : 
+<span class="lineNum">     562 </span><span class="lineNoCov">          0 :     if ( inschr.icw==NULL || inschr.hidden )</span>
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 :         inschr.sel_char = ch;</span>
+<span class="lineNum">     564 </span>            :     else {
+<span class="lineNum">     565 </span>            :         /* Is it in the current map? */
+<span class="lineNum">     566 </span><span class="lineNoCov">          0 :         if ( inschr.map&lt;em_first2byte )</span>
+<span class="lineNum">     567 </span><span class="lineNoCov">          0 :             table = alphabets_from_unicode[inschr.map+3];       /* Skip the 3 asciis */</span>
+<span class="lineNum">     568 </span><span class="lineNoCov">          0 :         else if ( inschr.map&lt;=em_jis212 )</span>
+<span class="lineNum">     569 </span><span class="lineNoCov">          0 :             table2 = &amp;jis_from_unicode;</span>
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 :         else if ( inschr.map==em_gb2312 )</span>
+<span class="lineNum">     571 </span><span class="lineNoCov">          0 :             table2 = &amp;gb2312_from_unicode;</span>
+<span class="lineNum">     572 </span><span class="lineNoCov">          0 :         else if ( inschr.map==em_ksc5601 )</span>
+<span class="lineNum">     573 </span><span class="lineNoCov">          0 :             table2 = &amp;ksc5601_from_unicode;</span>
+<span class="lineNum">     574 </span><span class="lineNoCov">          0 :         else if ( inschr.map==em_big5 )</span>
+<span class="lineNum">     575 </span><span class="lineNoCov">          0 :             table2 = &amp;big5_from_unicode;</span>
+<span class="lineNum">     576 </span>            : 
+<span class="lineNum">     577 </span><span class="lineNoCov">          0 :         inmap = true;</span>
+<span class="lineNum">     578 </span><span class="lineNoCov">          0 :         if ( inschr.map == em_unicode )</span>
+<span class="lineNum">     579 </span><span class="lineNoCov">          0 :             resch = ch;</span>
+<span class="lineNum">     580 </span><span class="lineNoCov">          0 :         else if ( inschr.map&gt;em_max ) {</span>
+<span class="lineNum">     581 </span><span class="lineNoCov">          0 :             resch = ch-unicode_ranges[inschr.map-em_max-1].first;</span>
+<span class="lineNum">     582 </span>            :             /* resch is unsigned so the &lt;0 check is also &gt;len */
+<span class="lineNum">     583 </span><span class="lineNoCov">          0 :             if ( resch&gt;unicode_ranges[inschr.map-em_max-1].len )</span>
+<span class="lineNum">     584 </span><span class="lineNoCov">          0 :                 inmap = false;</span>
+<span class="lineNum">     585 </span><span class="lineNoCov">          0 :         } else if ( inschr.map&lt;em_first2byte &amp;&amp;</span>
+<span class="lineNum">     586 </span><span class="lineNoCov">          0 :                 (highch&lt;table-&gt;first || highch&gt;table-&gt;last ||</span>
+<span class="lineNum">     587 </span><span class="lineNoCov">          0 :                  (plane = table-&gt;table[highch])==NULL ||</span>
+<span class="lineNum">     588 </span><span class="lineNoCov">          0 :                  (resch=plane[ch&amp;0xff])==0 ))</span>
+<span class="lineNum">     589 </span><span class="lineNoCov">          0 :             inmap = false;</span>
+<span class="lineNum">     590 </span><span class="lineNoCov">          0 :         else if ( inschr.map&gt;=em_first2byte &amp;&amp;</span>
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 :                 (highch&lt;table2-&gt;first || highch&gt;table2-&gt;last ||</span>
+<span class="lineNum">     592 </span><span class="lineNoCov">          0 :                  (plane2 = table2-&gt;table[highch])==NULL ||</span>
+<span class="lineNum">     593 </span><span class="lineNoCov">          0 :                  (resch=plane2[ch&amp;0xff])==0 ))</span>
+<span class="lineNum">     594 </span><span class="lineNoCov">          0 :             inmap = false;</span>
+<span class="lineNum">     595 </span><span class="lineNoCov">          0 :         if ( inmap &amp;&amp; inschr.map==em_jis208 &amp;&amp; (resch&amp;0x8000))</span>
+<span class="lineNum">     596 </span><span class="lineNoCov">          0 :             inmap = false;</span>
+<span class="lineNum">     597 </span><span class="lineNoCov">          0 :         else if ( inmap &amp;&amp; inschr.map==em_jis212 &amp;&amp; !(resch&amp;0x8000))</span>
+<span class="lineNum">     598 </span><span class="lineNoCov">          0 :             inmap = false;</span>
+<span class="lineNum">     599 </span><span class="lineNoCov">          0 :         if ( inschr.map==em_jis212 ) resch &amp;= ~0x8000;</span>
+<span class="lineNum">     600 </span><span class="lineNoCov">          0 :         if ( !inmap || inschr.dsp_mode==d_unicode || inschr.map&gt;em_max )</span>
+<span class="lineNum">     601 </span><span class="lineNoCov">          0 :             sprintf( buffer,&quot;U+0x%04x&quot;, ch );</span>
+<span class="lineNum">     602 </span><span class="lineNoCov">          0 :         else if ( inschr.dsp_mode==d_dec )</span>
+<span class="lineNum">     603 </span><span class="lineNoCov">          0 :             sprintf( buffer,&quot;%d&quot;, resch );</span>
+<span class="lineNum">     604 </span><span class="lineNoCov">          0 :         else if ( inschr.dsp_mode==d_hex )</span>
+<span class="lineNum">     605 </span><span class="lineNoCov">          0 :             sprintf( buffer,inschr.map&lt;em_first2byte?&quot;0x%02x&quot;:&quot;0x%04x&quot;, resch );</span>
+<span class="lineNum">     606 </span><span class="lineNoCov">          0 :         else if ( inschr.map==em_unicode )</span>
+<span class="lineNum">     607 </span><span class="lineNoCov">          0 :             sprintf( buffer,&quot;%d,%d&quot;, highch, ch&amp;0xff );</span>
+<span class="lineNum">     608 </span>            :         else
+<span class="lineNum">     609 </span><span class="lineNoCov">          0 :             sprintf( buffer,&quot;%d,%d&quot;, (resch&gt;&gt;8)-0x20, (resch&amp;0xff)-0x20 );</span>
+<span class="lineNum">     610 </span><span class="lineNoCov">          0 :         uc_strcpy(ubuffer, buffer);</span>
+<span class="lineNum">     611 </span><span class="lineNoCov">          0 :         GGadgetSetTitle(GWidgetGetControl(inschr.icw,INSCHR_Char),ubuffer);</span>
+<span class="lineNum">     612 </span><span class="lineNoCov">          0 :         if ( inschr.flash ) {</span>
+<span class="lineNum">     613 </span><span class="lineNoCov">          0 :             GDrawCancelTimer(inschr.flash_time);</span>
+<span class="lineNum">     614 </span><span class="lineNoCov">          0 :             InsChrXorChar(inschr.icw,inschr.x,inschr.y);</span>
+<span class="lineNum">     615 </span><span class="lineNoCov">          0 :             inschr.flash = false;</span>
+<span class="lineNum">     616 </span>            :         }
+<span class="lineNum">     617 </span><span class="lineNoCov">          0 :         if ( inmap &amp;&amp; refresh_page ) {</span>
+<span class="lineNum">     618 </span><span class="lineNoCov">          0 :             inschr.x = resch&amp;0xf; inschr.y = (resch&gt;&gt;4)&amp;0xf;</span>
+<span class="lineNum">     619 </span><span class="lineNoCov">          0 :             inschr.flash = true;</span>
+<span class="lineNum">     620 </span><span class="lineNoCov">          0 :             if ( inschr.map&gt;=em_first2byte &amp;&amp; inschr.map&lt;em_max &amp;&amp;</span>
+<span class="lineNum">     621 </span><span class="lineNoCov">          0 :                     inschr.page!=(resch&gt;&gt;8) ) {</span>
+<span class="lineNum">     622 </span>            :                 /* Set the page correctly */
+<span class="lineNum">     623 </span><span class="lineNoCov">          0 :                 inschr.page = resch&gt;&gt;8;</span>
+<span class="lineNum">     624 </span><span class="lineNoCov">          0 :                 InsChrSetNextPrev();</span>
+<span class="lineNum">     625 </span><span class="lineNoCov">          0 :                 InsChrRedraw();</span>
+<span class="lineNum">     626 </span><span class="lineNoCov">          0 :                 InsChrSetNextPrev();</span>
+<span class="lineNum">     627 </span><span class="lineNoCov">          0 :                 InsChrFigureShow();</span>
+<span class="lineNum">     628 </span>            :             } else {
+<span class="lineNum">     629 </span><span class="lineNoCov">          0 :                 InsChrXorChar(inschr.icw,inschr.x,inschr.y);</span>
+<span class="lineNum">     630 </span>            :             }
+<span class="lineNum">     631 </span><span class="lineNoCov">          0 :             inschr.flash_time = GDrawRequestTimer(inschr.icw,500,0,NULL);</span>
+<span class="lineNum">     632 </span>            :         }
+<span class="lineNum">     633 </span><span class="lineNoCov">          0 :         inschr.sel_char = EOF;</span>
+<span class="lineNum">     634 </span>            :     }
+<span class="lineNum">     635 </span><span class="lineNoCov">          0 : return( inmap );</span>
+<a name="636"><span class="lineNum">     636 </span>            : }</a>
+<span class="lineNum">     637 </span>            : 
+<span class="lineNum">     638 </span><span class="lineNoCov">          0 : static void InsChrSetFormat(enum dsp_mode format) {</span>
+<span class="lineNum">     639 </span><span class="lineNoCov">          0 :     if ( inschr.dsp_mode!=format ) {</span>
+<span class="lineNum">     640 </span><span class="lineNoCov">          0 :         unichar_t ch = InsChrUniVal();</span>
+<span class="lineNum">     641 </span><span class="lineNoCov">          0 :         inschr.dsp_mode = format;</span>
+<span class="lineNum">     642 </span><span class="lineNoCov">          0 :         if ( ch&gt;0 )</span>
+<span class="lineNum">     643 </span><span class="lineNoCov">          0 :             _InsChrSetSelChar(ch,false);</span>
+<span class="lineNum">     644 </span>            :     }
+<a name="645"><span class="lineNum">     645 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     646 </span>            : 
+<span class="lineNum">     647 </span><span class="lineNoCov">          0 : static void InsChrSetCharset(int map) {</span>
+<span class="lineNum">     648 </span>            :     int enabled;
+<span class="lineNum">     649 </span>            :     long ch;
+<span class="lineNum">     650 </span>            : 
+<span class="lineNum">     651 </span><span class="lineNoCov">          0 :     if ( map!=inschr.map ) {</span>
+<span class="lineNum">     652 </span><span class="lineNoCov">          0 :         ch = InsChrUniVal();</span>
+<span class="lineNum">     653 </span><span class="lineNoCov">          0 :         inschr.map = map;</span>
+<span class="lineNum">     654 </span><span class="lineNoCov">          0 :         if ( inschr.map&lt;em_first2byte ) {</span>
+<span class="lineNum">     655 </span><span class="lineNoCov">          0 :             inschr.page = 0;</span>
+<span class="lineNum">     656 </span><span class="lineNoCov">          0 :             enabled = false;</span>
+<span class="lineNum">     657 </span><span class="lineNoCov">          0 :         } else if ( inschr.map&gt;em_max ) {</span>
+<span class="lineNum">     658 </span><span class="lineNoCov">          0 :             inschr.page = 0;</span>
+<span class="lineNum">     659 </span><span class="lineNoCov">          0 :             enabled = false;</span>
+<span class="lineNum">     660 </span><span class="lineNoCov">          0 :         } else if ( inschr.map==em_unicode ) {</span>
+<span class="lineNum">     661 </span><span class="lineNoCov">          0 :             inschr.page = 0;</span>
+<span class="lineNum">     662 </span><span class="lineNoCov">          0 :             enabled = true;</span>
+<span class="lineNum">     663 </span><span class="lineNoCov">          0 :         } else if ( inschr.map==em_big5 ) {</span>
+<span class="lineNum">     664 </span><span class="lineNoCov">          0 :             inschr.page = 0xa1;</span>
+<span class="lineNum">     665 </span><span class="lineNoCov">          0 :             enabled = false;</span>
+<span class="lineNum">     666 </span>            :         } else {
+<span class="lineNum">     667 </span><span class="lineNoCov">          0 :             inschr.page = 0x21;</span>
+<span class="lineNum">     668 </span><span class="lineNoCov">          0 :             enabled = true;</span>
+<span class="lineNum">     669 </span>            :         }
+<span class="lineNum">     670 </span><span class="lineNoCov">          0 :         if ( !enabled &amp;&amp; inschr.dsp_mode==d_kuten ) {</span>
+<span class="lineNum">     671 </span><span class="lineNoCov">          0 :             GGadgetSetChecked(GWidgetGetControl(inschr.icw,INSCHR_Hex),true);</span>
+<span class="lineNum">     672 </span><span class="lineNoCov">          0 :             inschr.dsp_mode = d_hex;</span>
+<span class="lineNum">     673 </span>            :         }
+<span class="lineNum">     674 </span><span class="lineNoCov">          0 :         GGadgetSetEnabled(GWidgetGetControl(inschr.icw,INSCHR_KuTen),enabled);</span>
+<span class="lineNum">     675 </span><span class="lineNoCov">          0 :         InsChrSetNextPrev();</span>
+<span class="lineNum">     676 </span><span class="lineNoCov">          0 :         InsChrRedraw();</span>
+<span class="lineNum">     677 </span><span class="lineNoCov">          0 :         if ( ch&gt;0 )          /* Must happen after we set display mode */</span>
+<span class="lineNum">     678 </span><span class="lineNoCov">          0 :             _InsChrSetSelChar(ch,false);</span>
+<span class="lineNum">     679 </span><span class="lineNoCov">          0 :         InsChrFigureShow();</span>
+<span class="lineNum">     680 </span>            :     }
+<a name="681"><span class="lineNum">     681 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     682 </span>            : 
+<span class="lineNum">     683 </span><span class="lineNoCov">          0 : static void InsChrCharset() {</span>
+<span class="lineNum">     684 </span><span class="lineNoCov">          0 :     int map = mapFromIndex(GGadgetGetFirstListSelectedItem(GWidgetGetControl(inschr.icw,INSCHR_CharSet)));</span>
+<span class="lineNum">     685 </span><span class="lineNoCov">          0 :     if ( map!=-1 )</span>
+<span class="lineNum">     686 </span><span class="lineNoCov">          0 :         InsChrSetCharset(map);</span>
+<span class="lineNum">     687 </span>            :     else {
+<span class="lineNum">     688 </span>            :         int i;
+<span class="lineNum">     689 </span><span class="lineNoCov">          0 :         for ( i=0; encodingnames[i].name!=NULL &amp;&amp; encodingnames[i].map!=inschr.map; ++i );</span>
+<span class="lineNum">     690 </span><span class="lineNoCov">          0 :         if ( encodingnames[i].name!=NULL )</span>
+<span class="lineNum">     691 </span><span class="lineNoCov">          0 :             GGadgetSelectOneListItem(GWidgetGetControl(inschr.icw,INSCHR_CharSet),i);</span>
+<span class="lineNum">     692 </span>            :     }
+<a name="693"><span class="lineNum">     693 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     694 </span>            : 
+<span class="lineNum">     695 </span><span class="lineNoCov">          0 : static void InsChrShow(void) {</span>
+<span class="lineNum">     696 </span><span class="lineNoCov">          0 :     long ch = InsChrUniVal();</span>
+<span class="lineNum">     697 </span>            :     int i;
+<span class="lineNum">     698 </span>            : 
+<span class="lineNum">     699 </span><span class="lineNoCov">          0 :     if ( ch&gt;0 ) {</span>
+<span class="lineNum">     700 </span><span class="lineNoCov">          0 :         if ( !InsChrInCurrentEncoding() ) {</span>
+<span class="lineNum">     701 </span><span class="lineNoCov">          0 :             InsChrSetCharset(em_unicode);</span>
+<span class="lineNum">     702 </span><span class="lineNoCov">          0 :             for ( i=0; encodingnames[i].name!=NULL &amp;&amp; strcmp(encodingnames[i].name,&quot;Unicode&quot;)!=0; ++i );</span>
+<span class="lineNum">     703 </span><span class="lineNoCov">          0 :             if ( encodingnames[i].name!=NULL )</span>
+<span class="lineNum">     704 </span><span class="lineNoCov">          0 :                 GGadgetSelectOneListItem(GWidgetGetControl(inschr.icw,INSCHR_CharSet),i);</span>
+<span class="lineNum">     705 </span>            :         }
+<span class="lineNum">     706 </span><span class="lineNoCov">          0 :         _InsChrSetSelChar(ch, true);</span>
+<span class="lineNum">     707 </span>            :     }
+<a name="708"><span class="lineNum">     708 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     709 </span>            : 
+<span class="lineNum">     710 </span><span class="lineNoCov">          0 : static void InsChrInsert(void) {</span>
+<span class="lineNum">     711 </span><span class="lineNoCov">          0 :     long ch = InsChrUniVal();</span>
+<span class="lineNum">     712 </span>            :     GEvent e;
+<span class="lineNum">     713 </span>            : 
+<span class="lineNum">     714 </span><span class="lineNoCov">          0 :     e.type = et_char;</span>
+<span class="lineNum">     715 </span><span class="lineNoCov">          0 :     e.w = GWidgetGetPreviousFocusTopWindow();</span>
+<span class="lineNum">     716 </span><span class="lineNoCov">          0 :     if ( e.w==NULL || e.w==inschr.icw ) {</span>
+<span class="lineNum">     717 </span><span class="lineNoCov">          0 :         GDrawBeep(NULL);</span>
+<span class="lineNum">     718 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     719 </span>            :     }
+<span class="lineNum">     720 </span><span class="lineNoCov">          0 :     e.u.chr.state = 0;</span>
+<span class="lineNum">     721 </span><span class="lineNoCov">          0 :     e.u.chr.x = e.u.chr.y = -1;</span>
+<span class="lineNum">     722 </span><span class="lineNoCov">          0 :     e.u.chr.keysym = 0;</span>
+<span class="lineNum">     723 </span><span class="lineNoCov">          0 :     e.u.chr.chars[0] = ch;</span>
+<span class="lineNum">     724 </span><span class="lineNoCov">          0 :     e.u.chr.chars[1] = '\0';</span>
+<span class="lineNum">     725 </span><span class="lineNoCov">          0 :     GDrawPostEvent(&amp;e);</span>
+<a name="726"><span class="lineNum">     726 </span>            : }</a>
+<span class="lineNum">     727 </span>            : 
+<span class="lineNum">     728 </span><span class="lineNoCov">          0 : static void InsChrExpose( GWindow pixmap, GRect *rect) {</span>
+<span class="lineNum">     729 </span>            :     GRect old, r;
+<span class="lineNum">     730 </span>            :     int i, j;
+<span class="lineNum">     731 </span>            :     int highi, lowi, is94x94;
+<span class="lineNum">     732 </span>            : 
+<span class="lineNum">     733 </span><span class="lineNoCov">          0 :     if ( inschr.pageable ) {</span>
+<span class="lineNum">     734 </span>            :         char buffer[20]; unichar_t ubuf[20];
+<span class="lineNum">     735 </span><span class="lineNoCov">          0 :         GDrawPushClip(pixmap,rect,&amp;old);</span>
+<span class="lineNum">     736 </span><span class="lineNoCov">          0 :         GDrawSetFont(pixmap,inschr.smallfont);</span>
+<span class="lineNum">     737 </span><span class="lineNoCov">          0 :         if ( inschr.dsp_mode==d_hex || inschr.dsp_mode == d_unicode )</span>
+<span class="lineNum">     738 </span><span class="lineNoCov">          0 :             sprintf( buffer, &quot;Page: 0x%02X&quot;, inschr.page );</span>
+<span class="lineNum">     739 </span>            :         else
+<span class="lineNum">     740 </span><span class="lineNoCov">          0 :             sprintf( buffer, &quot;Page: %d&quot;, inschr.page );</span>
+<span class="lineNum">     741 </span><span class="lineNoCov">          0 :         uc_strcpy(ubuf,buffer);</span>
+<span class="lineNum">     742 </span><span class="lineNoCov">          0 :         GDrawDrawText(pixmap,GDrawPointsToPixels(pixmap,6),</span>
+<span class="lineNum">     743 </span><span class="lineNoCov">          0 :                 GDrawPointsToPixels(pixmap,90)+inschr.sas,</span>
+<span class="lineNum">     744 </span>            :                 ubuf, -1, 0x000000 );
+<span class="lineNum">     745 </span><span class="lineNoCov">          0 :         GDrawPopClip(pixmap,&amp;old);</span>
+<span class="lineNum">     746 </span>            :     }
+<span class="lineNum">     747 </span><span class="lineNoCov">          0 :     if ( rect-&gt;y+rect-&gt;height &lt; inschr.ybase )</span>
+<span class="lineNum">     748 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     749 </span><span class="lineNoCov">          0 :     if ( rect-&gt;y &lt; inschr.ybase ) {</span>
+<span class="lineNum">     750 </span><span class="lineNoCov">          0 :         r = *rect; rect = &amp;r;</span>
+<span class="lineNum">     751 </span><span class="lineNoCov">          0 :         rect-&gt;height -= (inschr.ybase-rect-&gt;y);</span>
+<span class="lineNum">     752 </span><span class="lineNoCov">          0 :         rect-&gt;y = inschr.ybase;</span>
+<span class="lineNum">     753 </span>            :     }
+<span class="lineNum">     754 </span><span class="lineNoCov">          0 :     GDrawPushClip(pixmap,rect,&amp;old);</span>
+<span class="lineNum">     755 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;17; ++i ) {</span>
+<span class="lineNum">     756 </span><span class="lineNoCov">          0 :         GDrawDrawLine(pixmap,0,inschr.ybase+i*inschr.spacing,</span>
+<span class="lineNum">     757 </span><span class="lineNoCov">          0 :                 inschr.width,inschr.ybase+i*inschr.spacing, 0x000000);</span>
+<span class="lineNum">     758 </span><span class="lineNoCov">          0 :         GDrawDrawLine(pixmap,i*inschr.spacing,inschr.ybase,</span>
+<span class="lineNum">     759 </span><span class="lineNoCov">          0 :                 i*inschr.spacing,inschr.height, 0x000000);</span>
+<span class="lineNum">     760 </span>            :     }
+<span class="lineNum">     761 </span><span class="lineNoCov">          0 :     GDrawSetFont(pixmap,inschr.font);</span>
+<span class="lineNum">     762 </span>            : 
+<span class="lineNum">     763 </span><span class="lineNoCov">          0 :     lowi = 0; highi = 16; is94x94 = false;</span>
+<span class="lineNum">     764 </span><span class="lineNoCov">          0 :     if ( inschr.map&gt;em_max ) {</span>
+<span class="lineNum">     765 </span><span class="lineNoCov">          0 :         highi = (unicode_ranges[inschr.map-em_max-1].len+15)/16;</span>
+<span class="lineNum">     766 </span><span class="lineNoCov">          0 :     } else if ( inschr.map==em_jis208 || inschr.map==em_jis212 ||</span>
+<span class="lineNum">     767 </span><span class="lineNoCov">          0 :             inschr.map==em_gb2312 || inschr.map==em_ksc5601 ) {</span>
+<span class="lineNum">     768 </span><span class="lineNoCov">          0 :         lowi=2; highi = 8;</span>
+<span class="lineNum">     769 </span><span class="lineNoCov">          0 :         is94x94 = true;</span>
+<span class="lineNum">     770 </span><span class="lineNoCov">          0 :     } else if ( inschr.map==em_big5 ) {</span>
+<span class="lineNum">     771 </span><span class="lineNoCov">          0 :         lowi=4; highi = 16;</span>
+<span class="lineNum">     772 </span>            :     }
+<span class="lineNum">     773 </span><span class="lineNoCov">          0 :     for ( i=lowi; i&lt;highi; ++i ) for ( j=0; j&lt;16; ++j ) {</span>
+<span class="lineNum">     774 </span>            :         unichar_t buf[1];
+<span class="lineNum">     775 </span>            :         int width;
+<span class="lineNum">     776 </span><span class="lineNoCov">          0 :         if ( j==15 &amp;&amp; i==7 &amp;&amp; is94x94 )</span>
+<span class="lineNum">     777 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     778 </span><span class="lineNoCov">          0 :         if ( j==0 &amp;&amp; i==2 &amp;&amp; is94x94 )</span>
+<span class="lineNum">     779 </span><span class="lineNoCov">          0 :     continue;</span>
+<span class="lineNum">     780 </span><span class="lineNoCov">          0 :         if (( i==8 || i==9 ) &amp;&amp;</span>
+<span class="lineNum">     781 </span><span class="lineNoCov">          0 :                 (inschr.map&lt;=em_iso8859_15 ||</span>
+<span class="lineNum">     782 </span><span class="lineNoCov">          0 :                  (inschr.map==em_unicode &amp;&amp; inschr.page==0 )))</span>
+<span class="lineNum">     783 </span><span class="lineNoCov">          0 :     continue;</span>
+<span class="lineNum">     784 </span><span class="lineNoCov">          0 :         buf[0] = InsChrMapChar(i*16+j);</span>
+<span class="lineNum">     785 </span><span class="lineNoCov">          0 :         if ( buf[0]==0xad ) buf[0] = '-';       /* 0xad usually doesn't print */</span>
+<span class="lineNum">     786 </span><span class="lineNoCov">          0 :         width = GDrawGetTextWidth(pixmap,buf,1);</span>
+<span class="lineNum">     787 </span><span class="lineNoCov">          0 :         GDrawDrawText(pixmap,</span>
+<span class="lineNum">     788 </span><span class="lineNoCov">          0 :                 j*inschr.spacing+(inschr.spacing-width)/2,</span>
+<span class="lineNum">     789 </span><span class="lineNoCov">          0 :                 i*inschr.spacing+inschr.ybase+inschr.as+4,</span>
+<span class="lineNum">     790 </span>            :                 buf,1,0x000000);
+<span class="lineNum">     791 </span>            :     }
+<span class="lineNum">     792 </span><span class="lineNoCov">          0 :     if ( inschr.flash )</span>
+<span class="lineNum">     793 </span><span class="lineNoCov">          0 :         InsChrXorChar(pixmap,inschr.x,inschr.y);</span>
+<span class="lineNum">     794 </span><span class="lineNoCov">          0 :     GDrawPopClip(pixmap,&amp;old);</span>
+<a name="795"><span class="lineNum">     795 </span>            : }</a>
+<span class="lineNum">     796 </span>            : 
+<span class="lineNum">     797 </span><span class="lineNoCov">          0 : static void InsChrTimer() {</span>
+<span class="lineNum">     798 </span><span class="lineNoCov">          0 :     GDrawCancelTimer(inschr.flash_time);</span>
+<span class="lineNum">     799 </span><span class="lineNoCov">          0 :     if ( inschr.flash ) {</span>
+<span class="lineNum">     800 </span><span class="lineNoCov">          0 :         InsChrXorChar(inschr.icw,inschr.x,inschr.y);</span>
+<span class="lineNum">     801 </span><span class="lineNoCov">          0 :         inschr.flash = false;</span>
+<span class="lineNum">     802 </span>            :     }
+<a name="803"><span class="lineNum">     803 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     804 </span>            : 
+<span class="lineNum">     805 </span><span class="lineNoCov">          0 : static void InsChrMouseDown(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     806 </span>            :     int x,y;
+<span class="lineNum">     807 </span>            :     int ch;
+<span class="lineNum">     808 </span>            :     char buffer[20]; unichar_t ubuffer[20];
+<span class="lineNum">     809 </span>            : 
+<span class="lineNum">     810 </span><span class="lineNoCov">          0 :     x= event-&gt;u.mouse.x/inschr.spacing;</span>
+<span class="lineNum">     811 </span><span class="lineNoCov">          0 :     y= (event-&gt;u.mouse.y-inschr.ybase)/inschr.spacing;</span>
+<span class="lineNum">     812 </span><span class="lineNoCov">          0 :     ch = 256*inschr.page + (y*16)+x;</span>
+<span class="lineNum">     813 </span>            :     /* Is it on a border line? */
+<span class="lineNum">     814 </span><span class="lineNoCov">          0 :     if ( y&lt;0 || x*inschr.spacing==event-&gt;u.mouse.x ||</span>
+<span class="lineNum">     815 </span><span class="lineNoCov">          0 :             y*inschr.spacing==event-&gt;u.mouse.y-inschr.ybase )</span>
+<span class="lineNum">     816 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     817 </span>            :     /* Is it a valid character in the current map? */
+<span class="lineNum">     818 </span><span class="lineNoCov">          0 :     if ( inschr.map&gt;em_max ) {</span>
+<span class="lineNum">     819 </span><span class="lineNoCov">          0 :         if ( ch&gt;unicode_ranges[inschr.map-em_max-1].len )</span>
+<span class="lineNum">     820 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     821 </span><span class="lineNoCov">          0 :     } else if ( (ch&lt;32 &amp;&amp; inschr.map!=em_mac) || ch==127 ||</span>
+<span class="lineNum">     822 </span><span class="lineNoCov">          0 :             (inschr.map&lt;em_first2byte &amp;&amp; inschr.map!=em_mac &amp;&amp;</span>
+<span class="lineNum">     823 </span><span class="lineNoCov">          0 :                 inschr.map!=em_win &amp;&amp; inschr.map!=em_symbol &amp;&amp;</span>
+<span class="lineNum">     824 </span><span class="lineNoCov">          0 :                 inschr.map!=em_user &amp;&amp;</span>
+<span class="lineNum">     825 </span><span class="lineNoCov">          0 :                 ch&gt;=128 &amp;&amp; ch&lt;160) ||</span>
+<span class="lineNum">     826 </span><span class="lineNoCov">          0 :             (inschr.map&gt;=em_first2byte &amp;&amp; inschr.map&lt;=em_gb2312 &amp;&amp;</span>
+<span class="lineNum">     827 </span><span class="lineNoCov">          0 :                 ((ch&amp;0xff)&lt;0x21 || (ch&amp;0xff)&gt;0x7e)) )</span>
+<span class="lineNum">     828 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     829 </span><span class="lineNoCov">          0 :     inschr.mouse_down = true;</span>
+<span class="lineNum">     830 </span><span class="lineNoCov">          0 :     inschr.mouse_in = true;</span>
+<span class="lineNum">     831 </span><span class="lineNoCov">          0 :     inschr.x = x;</span>
+<span class="lineNum">     832 </span><span class="lineNoCov">          0 :     inschr.y = y;</span>
+<span class="lineNum">     833 </span>            : 
+<span class="lineNum">     834 </span><span class="lineNoCov">          0 :     InsChrXorChar(inschr.icw,x,y);</span>
+<span class="lineNum">     835 </span>            : 
+<span class="lineNum">     836 </span><span class="lineNoCov">          0 :     if ( inschr.dsp_mode==d_unicode || inschr.map&gt;em_max )</span>
+<span class="lineNum">     837 </span><span class="lineNoCov">          0 :         sprintf( buffer, &quot;U+%04lx&quot;, InsChrToUni(ch) );</span>
+<span class="lineNum">     838 </span><span class="lineNoCov">          0 :     else if ( inschr.dsp_mode==d_hex )</span>
+<span class="lineNum">     839 </span><span class="lineNoCov">          0 :         sprintf( buffer, inschr.map&lt;em_first2byte?&quot;0x%02x&quot;:&quot;0x%04x&quot;, ch );</span>
+<span class="lineNum">     840 </span><span class="lineNoCov">          0 :     else if ( inschr.dsp_mode==d_dec )</span>
+<span class="lineNum">     841 </span><span class="lineNoCov">          0 :         sprintf( buffer, &quot;%d&quot;, ch );</span>
+<span class="lineNum">     842 </span><span class="lineNoCov">          0 :     else if ( inschr.map==em_unicode )</span>
+<span class="lineNum">     843 </span><span class="lineNoCov">          0 :         sprintf( buffer, &quot;%d,%d&quot;, (ch&gt;&gt;8), (ch&amp;0xff) );</span>
+<span class="lineNum">     844 </span>            :     else
+<span class="lineNum">     845 </span><span class="lineNoCov">          0 :         sprintf( buffer, &quot;%d,%d&quot;, (ch&gt;&gt;8)-0x21, (ch&amp;0xff)-0x21 );</span>
+<span class="lineNum">     846 </span><span class="lineNoCov">          0 :     uc_strcpy(ubuffer,buffer);</span>
+<span class="lineNum">     847 </span><span class="lineNoCov">          0 :     GGadgetSetTitle(GWidgetGetControl(inschr.icw,INSCHR_Char),ubuffer);</span>
+<span class="lineNum">     848 </span><span class="lineNoCov">          0 :     InsChrFigureShow();</span>
+<a name="849"><span class="lineNum">     849 </span>            : }</a>
+<span class="lineNum">     850 </span>            : 
+<span class="lineNum">     851 </span><span class="lineNoCov">          0 : static void uc_annot_strncat(unichar_t *to, const char *from, int len) {</span>
+<span class="lineNum">     852 </span>            :     register unichar_t ch;
+<span class="lineNum">     853 </span>            : 
+<span class="lineNum">     854 </span><span class="lineNoCov">          0 :     to += u_strlen(to);</span>
+<span class="lineNum">     855 </span><span class="lineNoCov">          0 :     while ( (ch = utf8_ildb(&amp;from)) != '\0' &amp;&amp; --len&gt;=0 )</span>
+<span class="lineNum">     856 </span><span class="lineNoCov">          0 :         *(to++) = ch;</span>
+<span class="lineNum">     857 </span><span class="lineNoCov">          0 :     *to = 0;</span>
+<a name="858"><span class="lineNum">     858 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     859 </span>            : 
+<span class="lineNum">     860 </span><span class="lineNoCov">          0 : static void InsChrMouseMove(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     861 </span>            :     int x, y;
+<span class="lineNum">     862 </span>            : 
+<span class="lineNum">     863 </span><span class="lineNoCov">          0 :     x= event-&gt;u.mouse.x/inschr.spacing;</span>
+<span class="lineNum">     864 </span><span class="lineNoCov">          0 :     y= (event-&gt;u.mouse.y-inschr.ybase)/inschr.spacing;</span>
+<span class="lineNum">     865 </span><span class="lineNoCov">          0 :     if ( !inschr.mouse_down &amp;&amp; event-&gt;u.mouse.y&gt;inschr.ybase ) {</span>
+<span class="lineNum">     866 </span><span class="lineNoCov">          0 :         int uch = InsChrMapChar(16*y + x);</span>
+<span class="lineNum">     867 </span>            :         static unichar_t space[600];
+<span class="lineNum">     868 </span>            :         char cspace[40];
+<span class="lineNum">     869 </span>            :         char *uniname;
+<span class="lineNum">     870 </span>            :         char *uniannot;
+<span class="lineNum">     871 </span>            : 
+<span class="lineNum">     872 </span><span class="lineNoCov">          0 :         if ( (uniname=unicode_name(uch))!=NULL ) {</span>
+<span class="lineNum">     873 </span><span class="lineNoCov">          0 :             uc_strncpy(space, uniname, 550);</span>
+<span class="lineNum">     874 </span><span class="lineNoCov">          0 :             sprintf( cspace, &quot; U+%04X&quot;, uch );</span>
+<span class="lineNum">     875 </span><span class="lineNoCov">          0 :             uc_strcpy(space+u_strlen(space),cspace);</span>
+<span class="lineNum">     876 </span><span class="lineNoCov">          0 :             free(uniname);</span>
+<span class="lineNum">     877 </span>            :         } else {
+<span class="lineNum">     878 </span><span class="lineNoCov">          0 :             if ( uch&lt;160 )</span>
+<span class="lineNum">     879 </span><span class="lineNoCov">          0 :                 sprintf(cspace, &quot;Control Char U+%04X &quot;, uch);</span>
+<span class="lineNum">     880 </span><span class="lineNoCov">          0 :             else if ( uch&gt;=0x3400 &amp;&amp; uch&lt;=0x4db5 )</span>
+<span class="lineNum">     881 </span><span class="lineNoCov">          0 :                 sprintf(cspace, &quot;CJK Ideograph Extension A U+%04X &quot;, uch);</span>
+<span class="lineNum">     882 </span><span class="lineNoCov">          0 :             else if ( uch&gt;=0x4E00 &amp;&amp; uch&lt;=0x9FA5 )</span>
+<span class="lineNum">     883 </span><span class="lineNoCov">          0 :                 sprintf(cspace, &quot;CJK Ideograph U+%04X &quot;, uch);</span>
+<span class="lineNum">     884 </span><span class="lineNoCov">          0 :             else if ( uch&gt;=0xAC00 &amp;&amp; uch&lt;=0xD7A3 )</span>
+<span class="lineNum">     885 </span><span class="lineNoCov">          0 :                 sprintf(cspace, &quot;Hangul Syllable U+%04X &quot;, uch);</span>
+<span class="lineNum">     886 </span><span class="lineNoCov">          0 :             else if ( uch&gt;=0xD800 &amp;&amp; uch&lt;=0xDB7F )</span>
+<span class="lineNum">     887 </span><span class="lineNoCov">          0 :                 sprintf(cspace, &quot;Non Private Use High Surrogate U+%04X &quot;, uch);</span>
+<span class="lineNum">     888 </span><span class="lineNoCov">          0 :             else if ( uch&gt;=0xDB80 &amp;&amp; uch&lt;=0xDBFF )</span>
+<span class="lineNum">     889 </span><span class="lineNoCov">          0 :                 sprintf(cspace, &quot;Private Use High Surrogate U+%04X &quot;, uch);</span>
+<span class="lineNum">     890 </span><span class="lineNoCov">          0 :             else if ( uch&gt;=0xDC00 &amp;&amp; uch&lt;=0xDFFF )</span>
+<span class="lineNum">     891 </span><span class="lineNoCov">          0 :                 sprintf(cspace, &quot;Low Surrogate U+%04X &quot;, uch);</span>
+<span class="lineNum">     892 </span><span class="lineNoCov">          0 :             else if ( uch&gt;=0xE000 &amp;&amp; uch&lt;=0xF8FF )</span>
+<span class="lineNum">     893 </span><span class="lineNoCov">          0 :                 sprintf(cspace, &quot;Private Use U+%04X &quot;, uch);</span>
+<span class="lineNum">     894 </span>            :             else
+<span class="lineNum">     895 </span><span class="lineNoCov">          0 :                 sprintf(cspace, &quot;Unencoded Unicode U+%04X &quot;, uch);</span>
+<span class="lineNum">     896 </span><span class="lineNoCov">          0 :             uc_strcpy(space,cspace);</span>
+<span class="lineNum">     897 </span>            :         }
+<span class="lineNum">     898 </span><span class="lineNoCov">          0 :         if ( (uniannot=unicode_annot(uch))!=NULL ) {</span>
+<span class="lineNum">     899 </span><span class="lineNoCov">          0 :             int left = sizeof(space)/sizeof(space[0]) - u_strlen(space)-1;</span>
+<span class="lineNum">     900 </span><span class="lineNoCov">          0 :             if ( left&gt;4 ) {</span>
+<span class="lineNum">     901 </span><span class="lineNoCov">          0 :                 uc_strcat(space,&quot;\n&quot;);</span>
+<span class="lineNum">     902 </span><span class="lineNoCov">          0 :                 uc_annot_strncat(space, uniannot, left-2);</span>
+<span class="lineNum">     903 </span>            :             }
+<span class="lineNum">     904 </span><span class="lineNoCov">          0 :             free(uniannot);</span>
+<span class="lineNum">     905 </span>            :         }
+<span class="lineNum">     906 </span><span class="lineNoCov">          0 :         GGadgetPreparePopup(gw,space);</span>
+<span class="lineNum">     907 </span><span class="lineNoCov">          0 :     } else if ( inschr.mouse_down ) {</span>
+<span class="lineNum">     908 </span><span class="lineNoCov">          0 :         int in = true;</span>
+<span class="lineNum">     909 </span><span class="lineNoCov">          0 :         if ( y&lt;0 || x*inschr.spacing==event-&gt;u.mouse.x ||</span>
+<span class="lineNum">     910 </span><span class="lineNoCov">          0 :                 y*inschr.spacing==event-&gt;u.mouse.y-inschr.ybase ||</span>
+<span class="lineNum">     911 </span><span class="lineNoCov">          0 :                 x!=inschr.x || y!=inschr.y )</span>
+<span class="lineNum">     912 </span><span class="lineNoCov">          0 :             in = false;</span>
+<span class="lineNum">     913 </span><span class="lineNoCov">          0 :         if ( in!=inschr.mouse_in ) {</span>
+<span class="lineNum">     914 </span><span class="lineNoCov">          0 :             InsChrXorChar(inschr.icw,inschr.x,inschr.y);</span>
+<span class="lineNum">     915 </span><span class="lineNoCov">          0 :             inschr.mouse_in = in;</span>
+<span class="lineNum">     916 </span>            :         }
+<span class="lineNum">     917 </span>            :     }
+<a name="918"><span class="lineNum">     918 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     919 </span>            : 
+<span class="lineNum">     920 </span><span class="lineNoCov">          0 : static void InsChrMouseUp(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     921 </span><span class="lineNoCov">          0 :     if ( !inschr.mouse_down )</span>
+<span class="lineNum">     922 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     923 </span><span class="lineNoCov">          0 :     InsChrMouseMove(gw,event);</span>
+<span class="lineNum">     924 </span><span class="lineNoCov">          0 :     inschr.mouse_down = false;</span>
+<span class="lineNum">     925 </span><span class="lineNoCov">          0 :     if ( inschr.mouse_in ) {</span>
+<span class="lineNum">     926 </span><span class="lineNoCov">          0 :         InsChrXorChar(inschr.icw,inschr.x,inschr.y);</span>
+<span class="lineNum">     927 </span>            : 
+<span class="lineNum">     928 </span><span class="lineNoCov">          0 :         if ( !(event-&gt;u.mouse.state&amp;ksm_control) )</span>
+<span class="lineNum">     929 </span><span class="lineNoCov">          0 :             InsChrInsert();</span>
+<span class="lineNum">     930 </span>            :     }
+<a name="931"><span class="lineNum">     931 </span>            : }</a>
+<span class="lineNum">     932 </span>            : 
+<span class="lineNum">     933 </span><span class="lineNoCov">          0 : static int inschr_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     934 </span><span class="lineNoCov">          0 :     GGadgetPopupExternalEvent(event);</span>
+<span class="lineNum">     935 </span><span class="lineNoCov">          0 :     switch ( event-&gt;type ) {</span>
+<span class="lineNum">     936 </span>            :       case et_close:
+<span class="lineNum">     937 </span><span class="lineNoCov">          0 :         inschr.hidden = true;</span>
+<span class="lineNum">     938 </span><span class="lineNoCov">          0 :         GDrawSetVisible(gw,false);</span>
+<span class="lineNum">     939 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     940 </span>            :       case et_expose:
+<span class="lineNum">     941 </span><span class="lineNoCov">          0 :         InsChrExpose(gw,&amp;event-&gt;u.expose.rect);</span>
+<span class="lineNum">     942 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     943 </span>            :       case et_mousedown:
+<span class="lineNum">     944 </span><span class="lineNoCov">          0 :           InsChrMouseDown(gw,event);</span>
+<span class="lineNum">     945 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     946 </span>            :       case et_mousemove:
+<span class="lineNum">     947 </span><span class="lineNoCov">          0 :           InsChrMouseMove(gw,event);</span>
+<span class="lineNum">     948 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     949 </span>            :       case et_mouseup:
+<span class="lineNum">     950 </span><span class="lineNoCov">          0 :           InsChrMouseUp(gw,event);</span>
+<span class="lineNum">     951 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     952 </span>            :       case et_char:
+<span class="lineNum">     953 </span><span class="lineNoCov">          0 :           if ( event-&gt;u.chr.chars[0]=='\r' )</span>
+<span class="lineNum">     954 </span><span class="lineNoCov">          0 :                 InsChrShow();</span>
+<span class="lineNum">     955 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     956 </span>            :       case et_timer:
+<span class="lineNum">     957 </span><span class="lineNoCov">          0 :           InsChrTimer();</span>
+<span class="lineNum">     958 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     959 </span>            :       case et_controlevent:
+<span class="lineNum">     960 </span><span class="lineNoCov">          0 :         if ( event-&gt;u.control.subtype == et_buttonactivate ) {</span>
+<span class="lineNum">     961 </span><span class="lineNoCov">          0 :             switch ( GGadgetGetCid(event-&gt;u.control.g)) {</span>
+<span class="lineNum">     962 </span>            :               case INSCHR_Close:
+<span class="lineNum">     963 </span><span class="lineNoCov">          0 :                 inschr.hidden = true;</span>
+<span class="lineNum">     964 </span><span class="lineNoCov">          0 :                 GDrawSetVisible(gw,false);</span>
+<span class="lineNum">     965 </span><span class="lineNoCov">          0 :               break;</span>
+<span class="lineNum">     966 </span>            :               case INSCHR_Next:
+<span class="lineNum">     967 </span><span class="lineNoCov">          0 :                 ++inschr.page;</span>
+<span class="lineNum">     968 </span><span class="lineNoCov">          0 :                 InsChrSetNextPrev();</span>
+<span class="lineNum">     969 </span><span class="lineNoCov">          0 :                 InsChrRedraw();</span>
+<span class="lineNum">     970 </span><span class="lineNoCov">          0 :               break;</span>
+<span class="lineNum">     971 </span>            :               case INSCHR_Prev:
+<span class="lineNum">     972 </span><span class="lineNoCov">          0 :                 --inschr.page;</span>
+<span class="lineNum">     973 </span><span class="lineNoCov">          0 :                 InsChrSetNextPrev();</span>
+<span class="lineNum">     974 </span><span class="lineNoCov">          0 :                 InsChrRedraw();</span>
+<span class="lineNum">     975 </span><span class="lineNoCov">          0 :               break;</span>
+<span class="lineNum">     976 </span>            :               case INSCHR_Show:
+<span class="lineNum">     977 </span><span class="lineNoCov">          0 :                 InsChrShow();</span>
+<span class="lineNum">     978 </span><span class="lineNoCov">          0 :               break;</span>
+<span class="lineNum">     979 </span>            :               case INSCHR_Insert:
+<span class="lineNum">     980 </span><span class="lineNoCov">          0 :                 InsChrInsert();</span>
+<span class="lineNum">     981 </span><span class="lineNoCov">          0 :               break;</span>
+<span class="lineNum">     982 </span>            :             }
+<span class="lineNum">     983 </span><span class="lineNoCov">          0 :         } else if ( event-&gt;u.control.subtype == et_radiochanged ) {</span>
+<span class="lineNum">     984 </span><span class="lineNoCov">          0 :             int cid = GGadgetGetCid(event-&gt;u.control.g);</span>
+<span class="lineNum">     985 </span><span class="lineNoCov">          0 :             InsChrSetFormat(cid==INSCHR_Hex?d_hex:</span>
+<span class="lineNum">     986 </span>            :                             cid==INSCHR_Dec?d_dec:
+<span class="lineNum">     987 </span>            :                             cid==INSCHR_Unicode?d_unicode:
+<span class="lineNum">     988 </span>            :                                     d_kuten);
+<span class="lineNum">     989 </span><span class="lineNoCov">          0 :         } else if ( event-&gt;u.control.subtype == et_textchanged ) {</span>
+<span class="lineNum">     990 </span><span class="lineNoCov">          0 :             if ( !InsChrFigureShow()) {</span>
+<span class="lineNum">     991 </span>            :                 /*GDrawBeep(NULL)*/
+<span class="lineNum">     992 </span>            :                 ;
+<span class="lineNum">     993 </span>            :             }
+<span class="lineNum">     994 </span><span class="lineNoCov">          0 :         } else if ( event-&gt;u.control.subtype == et_listselected ) {</span>
+<span class="lineNum">     995 </span><span class="lineNoCov">          0 :             InsChrCharset();</span>
+<span class="lineNum">     996 </span>            :         }
+<span class="lineNum">     997 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     998 </span>            :     }
+<span class="lineNum">     999 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">    1000 </span>            : }
+<a name="1001"><span class="lineNum">    1001 </span>            : </a>
+<span class="lineNum">    1002 </span>            : static unichar_t inschar[] = { 'I', 'n', 's', 'e', 'r', 't', ' ', 'C', 'h', 'a', 'r', 'a', 'c', 't', 'e', 'r', '\0' };
+<span class="lineNum">    1003 </span><span class="lineNoCov">          0 : void GWidgetCreateInsChar(void) {</span>
+<span class="lineNum">    1004 </span>            :     GTextInfo charsetnames[sizeof(encodingnames)/sizeof(struct namemap)];
+<span class="lineNum">    1005 </span>            :     static GTextInfo labels[11] = {
+<span class="lineNum">    1006 </span>            :         { (unichar_t *) &quot;Character Set&quot;, NULL, COLOR_UNKNOWN, COLOR_UNKNOWN, NULL, NULL, 0, 0, 0, 0, 0, 0, 1, 0, 0, '\0' },
+<span class="lineNum">    1007 </span>            :         { (unichar_t *) &quot;Character&quot;, NULL, COLOR_UNKNOWN, COLOR_UNKNOWN, NULL, NULL, 0,0,0,0,0,0, 1, 0, 0, '\0' },
+<span class="lineNum">    1008 </span>            :         { (unichar_t *) &quot;Hex&quot;, NULL, COLOR_UNKNOWN, COLOR_UNKNOWN, NULL, NULL, 0,0,0,0,0,0, 1, 0, 0, '\0' },
+<span class="lineNum">    1009 </span>            :         { (unichar_t *) &quot;Dec&quot;, NULL, COLOR_UNKNOWN, COLOR_UNKNOWN, NULL, NULL, 0,0,0,0,0,0, 1, 0, 0, '\0' },
+<span class="lineNum">    1010 </span>            :         { (unichar_t *) &quot;Unicode&quot;, NULL, COLOR_UNKNOWN, COLOR_UNKNOWN, NULL, NULL, 0,0,0,0,0,0, 1, 0, 0, '\0' },
+<span class="lineNum">    1011 </span>            :         { (unichar_t *) &quot;Ku Ten&quot;, NULL, COLOR_UNKNOWN, COLOR_UNKNOWN, NULL, NULL, 0,0,0,0,0,0, 1, 0, 0, '\0' },
+<span class="lineNum">    1012 </span>            :         { (unichar_t *) &quot;&lt; Prev&quot;, NULL, COLOR_UNKNOWN, COLOR_UNKNOWN, NULL, NULL, 0,0,0,0,0,0, 1, 0, 0, '\0' },
+<span class="lineNum">    1013 </span>            :         { (unichar_t *) &quot;Next &gt;&quot;, NULL, COLOR_UNKNOWN, COLOR_UNKNOWN, NULL, NULL, 0,0,0,0,0,0, 1, 0, 0, '\0' },
+<span class="lineNum">    1014 </span>            :         { (unichar_t *) &quot;Insert&quot;, NULL, COLOR_UNKNOWN, COLOR_UNKNOWN, NULL, NULL, 0,0,0,0,0,0, 1, 0, 0, '\0' },
+<span class="lineNum">    1015 </span>            :         { (unichar_t *) &quot;Close&quot;, NULL, COLOR_UNKNOWN, COLOR_UNKNOWN, NULL, NULL, 0,0,0,0,0,0, 1, 0, 0, '\0' },
+<span class="lineNum">    1016 </span>            :         { (unichar_t *) &quot;Show&quot;, NULL, COLOR_UNKNOWN, COLOR_UNKNOWN, NULL, NULL, 0,0,0,0,0,0, 1, 0, 0, '\0' },
+<span class="lineNum">    1017 </span>            :     };
+<span class="lineNum">    1018 </span>            :     static GGadgetCreateData gcd[] = {
+<span class="lineNum">    1019 </span>            :         { GLabelCreate, { { 6, 6, 0, 0 }, NULL, 'e', 0, 0, 0, 0, &amp;labels[0], { NULL }, gg_visible | gg_enabled | gg_pos_use0, NULL, NULL }, NULL, NULL },
+<span class="lineNum">    1020 </span>            :         { GListButtonCreate, { { 6, 21, 168, 0 }, NULL, 'e', 0, 0, 0, INSCHR_CharSet, NULL, { NULL }, gg_visible | gg_enabled | gg_pos_use0, NULL, NULL }, NULL, NULL },
+<span class="lineNum">    1021 </span>            :         { GLabelCreate, { { 6, 50, 0, 0 }, NULL, 'C', 0, 0, 0, 0, &amp;labels[1], { NULL }, gg_visible | gg_enabled | gg_pos_use0, NULL, NULL }, NULL, NULL },
+<span class="lineNum">    1022 </span>            :         /* gg_textarea_wrap means (here) that we should not invoke the InsChar Hook for selections */
+<span class="lineNum">    1023 </span>            :         { GTextFieldCreate, { { 6, 64, 65, 0 }, NULL, 'C', 0, 0, 0, INSCHR_Char, NULL, { NULL }, gg_visible | gg_enabled | gg_pos_use0 | gg_textarea_wrap, NULL, NULL }, NULL, NULL },
+<span class="lineNum">    1024 </span>            :         { GRadioCreate, { { 85, 48, 0, 0 }, NULL, 'H', 0, 0, 0, INSCHR_Hex, &amp;labels[2], { NULL }, gg_visible | gg_enabled | gg_cb_on | gg_pos_use0, NULL, NULL }, NULL, NULL },
+<span class="lineNum">    1025 </span>            :         { GRadioCreate, { { 85, 68, 0, 0 }, NULL, 'D', 0, 0, 0, INSCHR_Dec, &amp;labels[3], { NULL }, gg_visible | gg_enabled | gg_pos_use0, NULL, NULL }, NULL, NULL },
+<span class="lineNum">    1026 </span>            :         { GRadioCreate, { { 127, 48, 0, 0 }, NULL, 'U', 0, 0, 0, INSCHR_Unicode, &amp;labels[4], { NULL }, gg_visible | gg_enabled | gg_pos_use0, NULL, NULL }, NULL, NULL },
+<span class="lineNum">    1027 </span>            :         { GRadioCreate, { { 127, 68, 0, 0 }, NULL, 'K', 0, 0, 0, INSCHR_KuTen, &amp;labels[5], { NULL }, gg_visible | gg_pos_use0, NULL, NULL }, NULL, NULL },
+<span class="lineNum">    1028 </span>            :         { GButtonCreate, { { 73, 93, 50, 0 }, NULL, 'P', 0, 0, 0, INSCHR_Prev, &amp;labels[6], { NULL }, gg_visible | gg_pos_use0, NULL, NULL }, NULL, NULL },
+<span class="lineNum">    1029 </span>            :         { GButtonCreate, { { 137, 93, 50, 0 }, NULL, 'N', 0, 0, 0, INSCHR_Next, &amp;labels[7], { NULL }, gg_visible | gg_pos_use0, NULL, NULL }, NULL, NULL },
+<span class="lineNum">    1030 </span>            :         { GButtonCreate, { { 196-3, 6-3, 50+6, 0 }, NULL, 'I', 0, 0, 0, INSCHR_Insert, &amp;labels[8], { NULL }, gg_visible | gg_enabled | gg_but_default | gg_pos_use0, NULL, NULL }, NULL, NULL },
+<span class="lineNum">    1031 </span>            :         { GButtonCreate, { { 196, 36, 50, 0 }, NULL, 'l', 0, 0, 0, INSCHR_Close, &amp;labels[9], { NULL }, gg_visible | gg_enabled | gg_but_cancel | gg_pos_use0, NULL, NULL }, NULL, NULL },
+<span class="lineNum">    1032 </span>            :         { GButtonCreate, { { 196, 64, 50, 0 }, NULL, 'S', 0, 0, 0, INSCHR_Show, &amp;labels[10], { NULL }, gg_visible | gg_pos_use0, NULL, NULL }, NULL, NULL },
+<span class="lineNum">    1033 </span>            :         GGADGETCREATEDATA_EMPTY
+<span class="lineNum">    1034 </span>            :     };
+<span class="lineNum">    1035 </span>            : #define keyboard_width 15
+<span class="lineNum">    1036 </span>            : #define keyboard_height 9
+<span class="lineNum">    1037 </span>            :     static unsigned char keyboard_bits[] = {
+<span class="lineNum">    1038 </span>            :        0xff, 0x7f, 0x01, 0x40, 0x55, 0x55, 0x01, 0x40, 0xad, 0x5a, 0x01, 0x40,
+<span class="lineNum">    1039 </span>            :        0xd5, 0x55, 0x01, 0x40, 0xff, 0x7f};
+<span class="lineNum">    1040 </span>            :     GRect pos;
+<span class="lineNum">    1041 </span>            :     GWindowAttrs wattrs;
+<span class="lineNum">    1042 </span>            :     int i;
+<span class="lineNum">    1043 </span>            :     FontRequest rq;
+<span class="lineNum">    1044 </span>            :     int as, ds, ld;
+<span class="lineNum">    1045 </span>            :     static int inited= false;
+<span class="lineNum">    1046 </span>            : 
+<span class="lineNum">    1047 </span><span class="lineNoCov">          0 :     if ( !inited ) {</span>
+<span class="lineNum">    1048 </span><span class="lineNoCov">          0 :         inituninameannot();</span>
+<span class="lineNum">    1049 </span><span class="lineNoCov">          0 :         inited = true;</span>
+<span class="lineNum">    1050 </span>            :     }
+<span class="lineNum">    1051 </span><span class="lineNoCov">          0 :     if ( inschr.icw!=NULL ) {</span>
+<span class="lineNum">    1052 </span><span class="lineNoCov">          0 :         inschr.hidden = false;</span>
+<span class="lineNum">    1053 </span><span class="lineNoCov">          0 :         GDrawSetVisible(inschr.icw,true);</span>
+<span class="lineNum">    1054 </span><span class="lineNoCov">          0 :         GDrawRaise(inschr.icw);</span>
+<span class="lineNum">    1055 </span>            :     } else {
+<span class="lineNum">    1056 </span><span class="lineNoCov">          0 :         memset(charsetnames,'\0',sizeof(charsetnames));</span>
+<span class="lineNum">    1057 </span><span class="lineNoCov">          0 :         for ( i=0; encodingnames[i].name!=NULL; ++i ) {</span>
+<span class="lineNum">    1058 </span><span class="lineNoCov">          0 :             if ( *encodingnames[i].name=='-' )</span>
+<span class="lineNum">    1059 </span><span class="lineNoCov">          0 :                 charsetnames[i].line = true;</span>
+<span class="lineNum">    1060 </span>            :             else {
+<span class="lineNum">    1061 </span><span class="lineNoCov">          0 :                 charsetnames[i].text = (unichar_t *) (encodingnames[i].name);</span>
+<span class="lineNum">    1062 </span><span class="lineNoCov">          0 :                 charsetnames[i].text_is_1byte = true;</span>
+<span class="lineNum">    1063 </span>            :             }
+<span class="lineNum">    1064 </span>            :         }
+<span class="lineNum">    1065 </span><span class="lineNoCov">          0 :         gcd[1].gd.u.list = charsetnames;</span>
+<span class="lineNum">    1066 </span>            : 
+<span class="lineNum">    1067 </span><span class="lineNoCov">          0 :         inschr.spacing = GDrawPointsToPixels(NULL,16);</span>
+<span class="lineNum">    1068 </span><span class="lineNoCov">          0 :         inschr.ybase = GDrawPointsToPixels(NULL,123);</span>
+<span class="lineNum">    1069 </span><span class="lineNoCov">          0 :         pos.x = pos.y = 0;</span>
+<span class="lineNum">    1070 </span><span class="lineNoCov">          0 :         inschr.width = pos.width = 16*inschr.spacing+1;</span>
+<span class="lineNum">    1071 </span><span class="lineNoCov">          0 :         inschr.height = pos.height = inschr.ybase + pos.width;</span>
+<span class="lineNum">    1072 </span><span class="lineNoCov">          0 :         memset(&amp;wattrs,0,sizeof(wattrs));</span>
+<span class="lineNum">    1073 </span><span class="lineNoCov">          0 :         wattrs.mask = wam_events|wam_cursor|wam_wtitle|wam_isdlg|wam_notrestricted|wam_icon;</span>
+<span class="lineNum">    1074 </span><span class="lineNoCov">          0 :         wattrs.event_masks = 0xffffffff;</span>
+<span class="lineNum">    1075 </span><span class="lineNoCov">          0 :         wattrs.cursor = ct_pointer;</span>
+<span class="lineNum">    1076 </span><span class="lineNoCov">          0 :         wattrs.window_title = inschar;</span>
+<span class="lineNum">    1077 </span><span class="lineNoCov">          0 :         wattrs.is_dlg = true;</span>
+<span class="lineNum">    1078 </span><span class="lineNoCov">          0 :         wattrs.not_restricted = true;</span>
+<span class="lineNum">    1079 </span><span class="lineNoCov">          0 :         wattrs.icon = GDrawCreateBitmap(NULL,keyboard_width,keyboard_height,keyboard_bits);</span>
+<span class="lineNum">    1080 </span><span class="lineNoCov">          0 :         inschr.icw = GDrawCreateTopWindow(NULL,&amp;pos,inschr_e_h,&amp;inschr,&amp;wattrs);</span>
+<span class="lineNum">    1081 </span><span class="lineNoCov">          0 :         GGadgetsCreate(inschr.icw,gcd);</span>
+<span class="lineNum">    1082 </span>            : 
+<span class="lineNum">    1083 </span><span class="lineNoCov">          0 :         memset(&amp;rq,0,sizeof(rq));</span>
+<span class="lineNum">    1084 </span><span class="lineNoCov">          0 :         rq.utf8_family_name = copy(GResourceFindString(&quot;InsChar.Family&quot;));</span>
+<span class="lineNum">    1085 </span><span class="lineNoCov">          0 :         if ( rq.utf8_family_name==NULL )</span>
+<span class="lineNum">    1086 </span><span class="lineNoCov">          0 :             rq.utf8_family_name = SANS_UI_FAMILIES;</span>
+<span class="lineNum">    1087 </span><span class="lineNoCov">          0 :         rq.point_size = /*15*/12;</span>
+<span class="lineNum">    1088 </span><span class="lineNoCov">          0 :         rq.weight = 400;</span>
+<span class="lineNum">    1089 </span><span class="lineNoCov">          0 :         rq.style = 0;</span>
+<span class="lineNum">    1090 </span><span class="lineNoCov">          0 :         inschr.font = GDrawInstanciateFont(inschr.icw,&amp;rq);</span>
+<span class="lineNum">    1091 </span><span class="lineNoCov">          0 :         GDrawWindowFontMetrics(inschr.icw,inschr.font,&amp;as, &amp;ds, &amp;ld);</span>
+<span class="lineNum">    1092 </span><span class="lineNoCov">          0 :         inschr.as = as;</span>
+<span class="lineNum">    1093 </span><span class="lineNoCov">          0 :         rq.point_size = 8;</span>
+<span class="lineNum">    1094 </span><span class="lineNoCov">          0 :         inschr.smallfont = GDrawInstanciateFont(inschr.icw,&amp;rq);</span>
+<span class="lineNum">    1095 </span><span class="lineNoCov">          0 :         GDrawWindowFontMetrics(inschr.icw,inschr.smallfont,&amp;as, &amp;ds, &amp;ld);</span>
+<span class="lineNum">    1096 </span><span class="lineNoCov">          0 :         inschr.sas = as;</span>
+<span class="lineNum">    1097 </span>            : 
+<span class="lineNum">    1098 </span><span class="lineNoCov">          0 :         GDrawSetVisible(inschr.icw,true);</span>
+<span class="lineNum">    1099 </span>            :     }
+<span class="lineNum">    1100 </span><span class="lineNoCov">          0 :     if ( inschr.sel_char &gt; 0 )</span>
+<span class="lineNum">    1101 </span><span class="lineNoCov">          0 :         _InsChrSetSelChar(inschr.sel_char,true);</span>
+<span class="lineNum">    1102 </span>            :     else
+<span class="lineNum">    1103 </span><span class="lineNoCov">          0 :         InsChrFigureShow();</span>
+<a name="1104"><span class="lineNum">    1104 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1105 </span>            : 
+<span class="lineNum">    1106 </span><span class="lineNoCov">          0 : void GInsCharSetChar(unichar_t ch) {</span>
+<span class="lineNum">    1107 </span><span class="lineNoCov">          0 :     _InsChrSetSelChar(ch,true);</span>
+<span class="lineNum">    1108 </span><span class="lineNoCov">          0 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -1,0 +1,843 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforgeexe/freetypeui.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforgeexe</a> - freetypeui.c<span style="font-size: 80%;"> (source / <a href="freetypeui.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">29</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">13</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &quot;fontforgeui.h&quot;
+<span class="lineNum">      28 </span>            : #include &quot;fffreetype.h&quot;
+<span class="lineNum">      29 </span>            : #include &quot;edgelist2.h&quot;
+<span class="lineNum">      30 </span>            : #include &lt;gwidget.h&gt;
+<span class="lineNum">      31 </span>            : #include &lt;ustring.h&gt;
+<span class="lineNum">      32 </span>            : #include &lt;math.h&gt;
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span>            : /******************************************************************************/
+<span class="lineNum">      35 </span>            : /* ***************************** Debugger Stuff ***************************** */
+<span class="lineNum">      36 </span>            : /******************************************************************************/
+<span class="lineNum">      37 </span>            : 
+<span class="lineNum">      38 </span>            : #if FREETYPE_HAS_DEBUGGER
+<span class="lineNum">      39 </span>            : #include &lt;pthread.h&gt;
+<span class="lineNum">      40 </span>            : #include &lt;tterrors.h&gt;
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            : typedef struct bpdata {
+<span class="lineNum">      43 </span>            :     int range;  /* tt_coderange_glyph, tt_coderange_font, tt_coderange_cvt */
+<span class="lineNum">      44 </span>            :     int ip;
+<span class="lineNum">      45 </span>            : } BpData;
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span>            : struct debugger_context {
+<span class="lineNum">      48 </span>            :     FT_Library context;
+<span class="lineNum">      49 </span>            :     FTC *ftc;
+<span class="lineNum">      50 </span>            :     /* I use a thread because freetype doesn't return, it just has a callback */
+<span class="lineNum">      51 </span>            :     /*  on each instruction. In actuallity only one thread should be executable*/
+<span class="lineNum">      52 </span>            :     /*  at a time (either main, or child) */
+<span class="lineNum">      53 </span>            :     pthread_t thread;
+<span class="lineNum">      54 </span>            :     pthread_mutex_t parent_mutex, child_mutex;
+<span class="lineNum">      55 </span>            :     pthread_cond_t parent_cond, child_cond;
+<span class="lineNum">      56 </span>            :     unsigned int terminate: 1;          /* The thread has been started simply to clean itself up and die */
+<span class="lineNum">      57 </span>            :     unsigned int has_mutexes: 1;
+<span class="lineNum">      58 </span>            :     unsigned int has_thread: 1;
+<span class="lineNum">      59 </span>            :     unsigned int has_finished: 1;
+<span class="lineNum">      60 </span>            :     unsigned int debug_fpgm: 1;
+<span class="lineNum">      61 </span>            :     unsigned int multi_step: 1;
+<span class="lineNum">      62 </span>            :     unsigned int found_wp: 1;
+<span class="lineNum">      63 </span>            :     unsigned int found_wps: 1;
+<span class="lineNum">      64 </span>            :     unsigned int found_wps_uninit: 1;
+<span class="lineNum">      65 </span>            :     unsigned int found_wpc: 1;
+<span class="lineNum">      66 </span>            :     unsigned int initted_pts: 1;
+<span class="lineNum">      67 </span>            :     unsigned int is_bitmap: 1;
+<span class="lineNum">      68 </span>            :     int wp_ptindex, wp_cvtindex, wp_storeindex;
+<span class="lineNum">      69 </span>            :     real ptsizey, ptsizex;
+<span class="lineNum">      70 </span>            :     int dpi;
+<span class="lineNum">      71 </span>            :     TT_ExecContext exc;
+<span class="lineNum">      72 </span>            :     SplineChar *sc;
+<span class="lineNum">      73 </span>            :     int layer;
+<span class="lineNum">      74 </span>            :     BpData temp;
+<span class="lineNum">      75 </span>            :     BpData breaks[32];
+<span class="lineNum">      76 </span>            :     int bcnt;
+<span class="lineNum">      77 </span>            :     FT_Vector *oldpts;
+<span class="lineNum">      78 </span>            :     FT_Long *oldstore;
+<span class="lineNum">      79 </span>            :     uint8 *storetouched;
+<span class="lineNum">      80 </span>            :     int storeSize;
+<span class="lineNum">      81 </span>            :     FT_Long *oldcvt;
+<span class="lineNum">      82 </span>            :     FT_Long oldsval, oldcval;
+<span class="lineNum">      83 </span>            :     int n_points;
+<span class="lineNum">      84 </span>            :     uint8 *watch;               /* exc-&gt;pts.n_points */
+<span class="lineNum">      85 </span>            :     uint8 *watchstorage;        /* exc-&gt;storeSize, exc-&gt;storage[i] */
+<span class="lineNum">      86 </span>            :     uint8 *watchcvt;            /* exc-&gt;cvtSize, exc-&gt;cvt[i] */
+<span class="lineNum">      87 </span>            :     int uninit_index;
+<span class="lineNum">      88 </span>            : };
+<span class="lineNum">      89 </span>            : 
+<span class="lineNum">      90 </span>            : static int AtWp(struct debugger_context *dc, TT_ExecContext exc ) {
+<span class="lineNum">      91 </span>            :     int i, hit=false, h;
+<span class="lineNum">      92 </span>            : 
+<span class="lineNum">      93 </span>            :     dc-&gt;found_wp = false;
+<span class="lineNum">      94 </span>            :     if ( dc-&gt;watch!=NULL &amp;&amp; dc-&gt;oldpts!=NULL ) {
+<span class="lineNum">      95 </span>            :         for ( i=0; i&lt;exc-&gt;pts.n_points; ++i ) {
+<span class="lineNum">      96 </span>            :             if ( dc-&gt;oldpts[i].x!=exc-&gt;pts.cur[i].x || dc-&gt;oldpts[i].y!=exc-&gt;pts.cur[i].y ) {
+<span class="lineNum">      97 </span>            :                 dc-&gt;oldpts[i] = exc-&gt;pts.cur[i];
+<span class="lineNum">      98 </span>            :                 if ( dc-&gt;watch[i] ) {
+<span class="lineNum">      99 </span>            :                     hit = true;
+<span class="lineNum">     100 </span>            :                     dc-&gt;wp_ptindex = i;
+<span class="lineNum">     101 </span>            :                 }
+<span class="lineNum">     102 </span>            :             }
+<span class="lineNum">     103 </span>            :         }
+<span class="lineNum">     104 </span>            :         dc-&gt;found_wp = hit;
+<span class="lineNum">     105 </span>            :     }
+<span class="lineNum">     106 </span>            :     if ( dc-&gt;found_wps_uninit )
+<span class="lineNum">     107 </span>            :         hit = true;
+<span class="lineNum">     108 </span>            :     dc-&gt;found_wps = false;
+<span class="lineNum">     109 </span>            :     if ( dc-&gt;watchstorage!=NULL &amp;&amp; dc-&gt;storetouched!=NULL ) {
+<span class="lineNum">     110 </span>            :         h = false;
+<span class="lineNum">     111 </span>            :         for ( i=0; i&lt;exc-&gt;storeSize; ++i ) {
+<span class="lineNum">     112 </span>            :             if ( dc-&gt;storetouched[i]&amp;2 ) {
+<span class="lineNum">     113 </span>            :                 if ( dc-&gt;watchstorage[i] ) {
+<span class="lineNum">     114 </span>            :                     h = true;
+<span class="lineNum">     115 </span>            :                     dc-&gt;wp_storeindex = i;
+<span class="lineNum">     116 </span>            :                     dc-&gt;oldsval = dc-&gt;oldstore[i];
+<span class="lineNum">     117 </span>            :                 }
+<span class="lineNum">     118 </span>            :                 dc-&gt;storetouched[i]&amp;=~2;
+<span class="lineNum">     119 </span>            :                 dc-&gt;oldstore[i] = exc-&gt;storage[i];
+<span class="lineNum">     120 </span>            :             }
+<span class="lineNum">     121 </span>            :         }
+<span class="lineNum">     122 </span>            :         dc-&gt;found_wps = h;
+<span class="lineNum">     123 </span>            :         hit |= h;
+<span class="lineNum">     124 </span>            :     }
+<span class="lineNum">     125 </span>            :     dc-&gt;found_wpc = false;
+<span class="lineNum">     126 </span>            :     if ( dc-&gt;watchcvt!=NULL &amp;&amp; dc-&gt;oldcvt!=NULL ) {
+<span class="lineNum">     127 </span>            :         h = false;
+<span class="lineNum">     128 </span>            :         for ( i=0; i&lt;exc-&gt;cvtSize; ++i ) {
+<span class="lineNum">     129 </span>            :             if ( dc-&gt;oldcvt[i]!=exc-&gt;cvt[i] ) {
+<span class="lineNum">     130 </span>            :                 if ( dc-&gt;watchcvt[i] ) {
+<span class="lineNum">     131 </span>            :                     h = true;
+<span class="lineNum">     132 </span>            :                     dc-&gt;wp_cvtindex = i;
+<span class="lineNum">     133 </span>            :                     dc-&gt;oldcval = dc-&gt;oldcvt[i];
+<span class="lineNum">     134 </span>            :                 }
+<span class="lineNum">     135 </span>            :                 dc-&gt;oldcvt[i] = exc-&gt;cvt[i];
+<span class="lineNum">     136 </span>            :             }
+<span class="lineNum">     137 </span>            :         }
+<span class="lineNum">     138 </span>            :         dc-&gt;found_wpc = h;
+<span class="lineNum">     139 </span>            :         hit |= h;
+<span class="lineNum">     140 </span>            :     }
+<span class="lineNum">     141 </span>            : return( hit );
+<span class="lineNum">     142 </span>            : }
+<span class="lineNum">     143 </span>            : 
+<span class="lineNum">     144 </span>            : static int AtBp(struct debugger_context *dc, TT_ExecContext exc ) {
+<span class="lineNum">     145 </span>            :     int i;
+<span class="lineNum">     146 </span>            : 
+<span class="lineNum">     147 </span>            :     if ( dc-&gt;temp.range==exc-&gt;curRange &amp;&amp; dc-&gt;temp.ip==exc-&gt;IP ) {
+<span class="lineNum">     148 </span>            :         dc-&gt;temp.range = tt_coderange_none;
+<span class="lineNum">     149 </span>            : return( true );
+<span class="lineNum">     150 </span>            :     }
+<span class="lineNum">     151 </span>            : 
+<span class="lineNum">     152 </span>            :     for ( i=0; i&lt;dc-&gt;bcnt; ++i ) {
+<span class="lineNum">     153 </span>            :         if ( dc-&gt;breaks[i].range==exc-&gt;curRange &amp;&amp; dc-&gt;breaks[i].ip==exc-&gt;IP )
+<span class="lineNum">     154 </span>            : return( true );
+<span class="lineNum">     155 </span>            :     }
+<span class="lineNum">     156 </span>            : return( false );
+<span class="lineNum">     157 </span>            : }
+<span class="lineNum">     158 </span>            : 
+<span class="lineNum">     159 </span>            : static void TestStorage( struct debugger_context *dc, TT_ExecContext exc) {
+<span class="lineNum">     160 </span>            :     int instr;
+<span class="lineNum">     161 </span>            : 
+<span class="lineNum">     162 </span>            :     if ( exc-&gt;code==NULL || exc-&gt;IP==exc-&gt;codeSize )
+<span class="lineNum">     163 </span>            : return;
+<span class="lineNum">     164 </span>            :     instr = exc-&gt;code[exc-&gt;IP];
+<span class="lineNum">     165 </span>            :     if ( instr==0x42 /* Write store */ &amp;&amp; exc-&gt;top&gt;=2 ) {
+<span class="lineNum">     166 </span>            :         int store_index = exc-&gt;stack[exc-&gt;top-2];
+<span class="lineNum">     167 </span>            :         if ( store_index&gt;=0 &amp;&amp; store_index&lt;exc-&gt;storeSize )
+<span class="lineNum">     168 </span>            :             dc-&gt;storetouched[store_index] = 3;       /* 2=&gt;written this instr, 1=&gt;ever written */
+<span class="lineNum">     169 </span>            :     } else if ( instr==0x43 /* Read Store */ &amp;&amp; exc-&gt;top&gt;=1 ) {
+<span class="lineNum">     170 </span>            :         int store_index = exc-&gt;stack[exc-&gt;top-1];
+<span class="lineNum">     171 </span>            :         if ( store_index&gt;=0 &amp;&amp; store_index&lt;exc-&gt;storeSize &amp;&amp;
+<span class="lineNum">     172 </span>            :                 !dc-&gt;storetouched[store_index] &amp;&amp;
+<span class="lineNum">     173 </span>            :                 dc-&gt;watchstorage!=NULL &amp;&amp; dc-&gt;watchstorage[store_index] ) {
+<span class="lineNum">     174 </span>            :             dc-&gt;found_wps_uninit = true;
+<span class="lineNum">     175 </span>            :             dc-&gt;uninit_index = store_index;
+<span class="lineNum">     176 </span>            :         }
+<span class="lineNum">     177 </span>            :     }
+<span class="lineNum">     178 </span>            : }
+<span class="lineNum">     179 </span>            : 
+<span class="lineNum">     180 </span>            : static struct debugger_context *massive_kludge;
+<span class="lineNum">     181 </span>            : 
+<span class="lineNum">     182 </span>            : static FT_Error PauseIns( TT_ExecContext exc ) {
+<span class="lineNum">     183 </span>            :     int ret;
+<span class="lineNum">     184 </span>            :     struct debugger_context *dc = massive_kludge;
+<span class="lineNum">     185 </span>            : 
+<span class="lineNum">     186 </span>            :     if ( dc-&gt;terminate )
+<span class="lineNum">     187 </span>            : return( TT_Err_Execution_Too_Long );            /* Some random error code, says we're probably in a infinite loop */
+<span class="lineNum">     188 </span>            :     dc-&gt;exc = exc;
+<span class="lineNum">     189 </span>            :     exc-&gt;grayscale = !dc-&gt;is_bitmap;              /* if we are in 'prep' or 'fpgm' freetype doesn't know this yet */
+<span class="lineNum">     190 </span>            : 
+<span class="lineNum">     191 </span>            :     /* Set up for watch points */
+<span class="lineNum">     192 </span>            :     if ( dc-&gt;oldpts==NULL &amp;&amp; exc-&gt;pts.n_points!=0 ) {
+<span class="lineNum">     193 </span>            :         dc-&gt;oldpts = calloc(exc-&gt;pts.n_points,sizeof(FT_Vector));
+<span class="lineNum">     194 </span>            :         dc-&gt;n_points = exc-&gt;pts.n_points;
+<span class="lineNum">     195 </span>            :     }
+<span class="lineNum">     196 </span>            :     if ( dc-&gt;oldstore==NULL &amp;&amp; exc-&gt;storeSize!=0 ) {
+<span class="lineNum">     197 </span>            :         dc-&gt;oldstore = calloc(exc-&gt;storeSize,sizeof(FT_Long));
+<span class="lineNum">     198 </span>            :         dc-&gt;storetouched = calloc(exc-&gt;storeSize,sizeof(uint8));
+<span class="lineNum">     199 </span>            :         dc-&gt;storeSize = exc-&gt;storeSize;
+<span class="lineNum">     200 </span>            :     }
+<span class="lineNum">     201 </span>            :     if ( dc-&gt;oldcvt==NULL &amp;&amp; exc-&gt;cvtSize!=0 )
+<span class="lineNum">     202 </span>            :         dc-&gt;oldcvt = calloc(exc-&gt;cvtSize,sizeof(FT_Long));
+<span class="lineNum">     203 </span>            :     if ( !dc-&gt;initted_pts ) {
+<span class="lineNum">     204 </span>            :         AtWp(dc,exc);
+<span class="lineNum">     205 </span>            :         dc-&gt;found_wp = false;
+<span class="lineNum">     206 </span>            :         dc-&gt;found_wps = false;
+<span class="lineNum">     207 </span>            :         dc-&gt;found_wps_uninit = false;
+<span class="lineNum">     208 </span>            :         dc-&gt;found_wpc = false;
+<span class="lineNum">     209 </span>            :         dc-&gt;initted_pts = true;
+<span class="lineNum">     210 </span>            :     }
+<span class="lineNum">     211 </span>            : 
+<span class="lineNum">     212 </span>            :     if ( !dc-&gt;debug_fpgm &amp;&amp; exc-&gt;curRange!=tt_coderange_glyph ) {
+<span class="lineNum">     213 </span>            :         exc-&gt;instruction_trap = 1;
+<span class="lineNum">     214 </span>            :         ret = 0;
+<span class="lineNum">     215 </span>            :         while ( exc-&gt;curRange!=tt_coderange_glyph ) {
+<span class="lineNum">     216 </span>            :             TestStorage(dc,exc);
+<span class="lineNum">     217 </span>            :             ret = TT_RunIns(exc);
+<span class="lineNum">     218 </span>            :             if ( ret==TT_Err_Code_Overflow )
+<span class="lineNum">     219 </span>            : return( 0 );
+<span class="lineNum">     220 </span>            :             if ( ret )
+<span class="lineNum">     221 </span>            : return( ret );
+<span class="lineNum">     222 </span>            :         }
+<span class="lineNum">     223 </span>            : return( ret );
+<span class="lineNum">     224 </span>            :     }
+<span class="lineNum">     225 </span>            : 
+<span class="lineNum">     226 </span>            :     pthread_mutex_lock(&amp;dc-&gt;parent_mutex);
+<span class="lineNum">     227 </span>            :     pthread_cond_signal(&amp;dc-&gt;parent_cond);
+<span class="lineNum">     228 </span>            :     pthread_mutex_unlock(&amp;dc-&gt;parent_mutex);
+<span class="lineNum">     229 </span>            :     pthread_cond_wait(&amp;dc-&gt;child_cond,&amp;dc-&gt;child_mutex);
+<span class="lineNum">     230 </span>            :     if ( dc-&gt;terminate )
+<span class="lineNum">     231 </span>            : return( TT_Err_Execution_Too_Long );
+<span class="lineNum">     232 </span>            : 
+<span class="lineNum">     233 </span>            :     do {
+<span class="lineNum">     234 </span>            :         exc-&gt;instruction_trap = 1;
+<span class="lineNum">     235 </span>            :         if (exc-&gt;curRange==tt_coderange_glyph &amp;&amp; exc-&gt;IP==exc-&gt;codeSize) {
+<span class="lineNum">     236 </span>            :             ret = TT_Err_Code_Overflow;
+<span class="lineNum">     237 </span>            :     break;
+<span class="lineNum">     238 </span>            :         }
+<span class="lineNum">     239 </span>            :         TestStorage(dc,exc);
+<span class="lineNum">     240 </span>            :         ret = TT_RunIns(exc);
+<span class="lineNum">     241 </span>            :         if ( ret )
+<span class="lineNum">     242 </span>            :     break;
+<span class="lineNum">     243 </span>            :         /* Signal the parent if we are single stepping, or if we've reached a break-point */
+<span class="lineNum">     244 </span>            :         if ( AtWp(dc,exc) || !dc-&gt;multi_step || AtBp(dc,exc) ||
+<span class="lineNum">     245 </span>            :                 (exc-&gt;curRange==tt_coderange_glyph &amp;&amp; exc-&gt;IP==exc-&gt;codeSize)) {
+<span class="lineNum">     246 </span>            :             if ( dc-&gt;found_wp ) {
+<span class="lineNum">     247 </span>            :                 ff_post_notice(_(&quot;Hit Watch Point&quot;),_(&quot;Point %d was moved by the previous instruction&quot;),dc-&gt;wp_ptindex);
+<span class="lineNum">     248 </span>            :                 dc-&gt;found_wp = false;
+<span class="lineNum">     249 </span>            :             }
+<span class="lineNum">     250 </span>            :             if ( dc-&gt;found_wps ) {
+<span class="lineNum">     251 </span>            :                 ff_post_notice(_(&quot;Watched Store Change&quot;),_(&quot;Storage %d was changed from %d (%.2f) to %d (%.2f) by the previous instruction&quot;),
+<span class="lineNum">     252 </span>            :                         dc-&gt;wp_storeindex, dc-&gt;oldsval, dc-&gt;oldsval/64.0,exc-&gt;storage[dc-&gt;wp_storeindex],exc-&gt;storage[dc-&gt;wp_storeindex]/64.0);
+<span class="lineNum">     253 </span>            :                 dc-&gt;found_wps = false;
+<span class="lineNum">     254 </span>            :             }
+<span class="lineNum">     255 </span>            :             if ( dc-&gt;found_wps_uninit ) {
+<span class="lineNum">     256 </span>            :                 ff_post_notice(_(&quot;Read of Uninitialized Store&quot;),_(&quot;Storage %d has not been initialized, yet the previous instruction read it&quot;),
+<span class="lineNum">     257 </span>            :                         dc-&gt;uninit_index );
+<span class="lineNum">     258 </span>            :                 dc-&gt;found_wps_uninit = false;
+<span class="lineNum">     259 </span>            :             }
+<span class="lineNum">     260 </span>            :             if ( dc-&gt;found_wpc ) {
+<span class="lineNum">     261 </span>            :                 ff_post_notice(_(&quot;Watched Cvt Change&quot;),_(&quot;Cvt %d was changed from %d (%.2f) to %d (%.2f) by the previous instruction&quot;),
+<span class="lineNum">     262 </span>            :                         dc-&gt;wp_cvtindex, dc-&gt;oldcval, dc-&gt;oldcval/64.0,exc-&gt;cvt[dc-&gt;wp_cvtindex],exc-&gt;cvt[dc-&gt;wp_cvtindex]/64.0);
+<span class="lineNum">     263 </span>            :                 dc-&gt;found_wpc = false;
+<span class="lineNum">     264 </span>            :             }
+<span class="lineNum">     265 </span>            :             pthread_mutex_lock(&amp;dc-&gt;parent_mutex);
+<span class="lineNum">     266 </span>            :             pthread_cond_signal(&amp;dc-&gt;parent_cond);
+<span class="lineNum">     267 </span>            :             pthread_mutex_unlock(&amp;dc-&gt;parent_mutex);
+<span class="lineNum">     268 </span>            :             pthread_cond_wait(&amp;dc-&gt;child_cond,&amp;dc-&gt;child_mutex);
+<span class="lineNum">     269 </span>            :         }
+<span class="lineNum">     270 </span>            :     } while ( !dc-&gt;terminate );
+<span class="lineNum">     271 </span>            : 
+<span class="lineNum">     272 </span>            :     if ( ret==TT_Err_Code_Overflow )
+<span class="lineNum">     273 </span>            :         ret = 0;
+<span class="lineNum">     274 </span>            : 
+<span class="lineNum">     275 </span>            :     massive_kludge = dc;        /* We set this again in case we are in a composite character where I think we get called several times (and some other thread might have set it) */
+<span class="lineNum">     276 </span>            :     if ( dc-&gt;terminate )
+<span class="lineNum">     277 </span>            : return( TT_Err_Execution_Too_Long );
+<span class="lineNum">     278 </span>            : 
+<span class="lineNum">     279 </span>            : return( ret );
+<span class="lineNum">     280 </span>            : }
+<span class="lineNum">     281 </span>            : 
+<span class="lineNum">     282 </span>            : static void *StartChar(void *_dc) {
+<span class="lineNum">     283 </span>            :     struct debugger_context *dc = _dc;
+<span class="lineNum">     284 </span>            : 
+<span class="lineNum">     285 </span>            :     pthread_mutex_lock(&amp;dc-&gt;child_mutex);
+<span class="lineNum">     286 </span>            : 
+<span class="lineNum">     287 </span>            :     massive_kludge = dc;
+<span class="lineNum">     288 </span>            :     if ( (dc-&gt;ftc = __FreeTypeFontContext(dc-&gt;context,dc-&gt;sc-&gt;parent,dc-&gt;sc,NULL,
+<span class="lineNum">     289 </span>            :             dc-&gt;layer,ff_ttf, 0, NULL))==NULL )
+<span class="lineNum">     290 </span>            :  goto finish;
+<span class="lineNum">     291 </span>            :     if ( dc-&gt;storetouched!=NULL )
+<span class="lineNum">     292 </span>            :         memset(dc-&gt;storetouched,0,dc-&gt;storeSize);
+<span class="lineNum">     293 </span>            : 
+<span class="lineNum">     294 </span>            :     massive_kludge = dc;
+<span class="lineNum">     295 </span>            :     if ( FT_Set_Char_Size(dc-&gt;ftc-&gt;face,(int) (dc-&gt;ptsizex*64),(int) (dc-&gt;ptsizey*64), dc-&gt;dpi, dc-&gt;dpi))
+<span class="lineNum">     296 </span>            :  goto finish;
+<span class="lineNum">     297 </span>            : 
+<span class="lineNum">     298 </span>            :     massive_kludge = dc;
+<span class="lineNum">     299 </span>            :     FT_Load_Glyph(dc-&gt;ftc-&gt;face,dc-&gt;ftc-&gt;glyph_indeces[dc-&gt;sc-&gt;orig_pos],
+<span class="lineNum">     300 </span>            :             dc-&gt;is_bitmap ? (FT_LOAD_NO_AUTOHINT|FT_LOAD_NO_BITMAP|FT_LOAD_TARGET_MONO) : (FT_LOAD_NO_AUTOHINT|FT_LOAD_NO_BITMAP));
+<span class="lineNum">     301 </span>            : 
+<span class="lineNum">     302 </span>            :  finish:
+<span class="lineNum">     303 </span>            :     dc-&gt;has_finished = true;
+<span class="lineNum">     304 </span>            :     dc-&gt;exc = NULL;
+<span class="lineNum">     305 </span>            :     pthread_mutex_lock(&amp;dc-&gt;parent_mutex);
+<span class="lineNum">     306 </span>            :     pthread_cond_signal(&amp;dc-&gt;parent_cond);       /* Wake up parent and get it to clean up after itself */
+<span class="lineNum">     307 </span>            :     pthread_mutex_unlock(&amp;dc-&gt;parent_mutex);
+<span class="lineNum">     308 </span>            :     pthread_mutex_unlock(&amp;dc-&gt;child_mutex);
+<span class="lineNum">     309 </span>            : return( NULL );
+<span class="lineNum">     310 </span>            : }
+<span class="lineNum">     311 </span>            : 
+<span class="lineNum">     312 </span>            : void DebuggerTerminate(struct debugger_context *dc) {
+<span class="lineNum">     313 </span>            :     if ( dc-&gt;has_thread ) {
+<span class="lineNum">     314 </span>            :         if ( !dc-&gt;has_finished ) {
+<span class="lineNum">     315 </span>            :             dc-&gt;terminate = true;
+<span class="lineNum">     316 </span>            :             pthread_mutex_lock(&amp;dc-&gt;child_mutex);
+<span class="lineNum">     317 </span>            :             pthread_cond_signal(&amp;dc-&gt;child_cond);        /* Wake up child and get it to clean up after itself */
+<span class="lineNum">     318 </span>            :             pthread_mutex_unlock(&amp;dc-&gt;child_mutex);
+<span class="lineNum">     319 </span>            :             pthread_mutex_unlock(&amp;dc-&gt;parent_mutex);
+<span class="lineNum">     320 </span>            :         }
+<span class="lineNum">     321 </span>            :         pthread_join(dc-&gt;thread,NULL);
+<span class="lineNum">     322 </span>            :         dc-&gt;has_thread = false;
+<span class="lineNum">     323 </span>            :     }
+<span class="lineNum">     324 </span>            :     if ( dc-&gt;has_mutexes ) {
+<span class="lineNum">     325 </span>            :         pthread_cond_destroy(&amp;dc-&gt;child_cond);
+<span class="lineNum">     326 </span>            :         pthread_cond_destroy(&amp;dc-&gt;parent_cond);
+<span class="lineNum">     327 </span>            :         pthread_mutex_destroy(&amp;dc-&gt;child_mutex);
+<span class="lineNum">     328 </span>            :         pthread_mutex_unlock(&amp;dc-&gt;parent_mutex); /* Is this actually needed? */
+<span class="lineNum">     329 </span>            :         pthread_mutex_destroy(&amp;dc-&gt;parent_mutex);
+<span class="lineNum">     330 </span>            :     }
+<span class="lineNum">     331 </span>            :     if ( dc-&gt;ftc!=NULL )
+<span class="lineNum">     332 </span>            :         FreeTypeFreeContext(dc-&gt;ftc);
+<span class="lineNum">     333 </span>            :     if ( dc-&gt;context!=NULL )
+<span class="lineNum">     334 </span>            :         FT_Done_FreeType( dc-&gt;context );
+<span class="lineNum">     335 </span>            :     free(dc-&gt;watch);
+<span class="lineNum">     336 </span>            :     free(dc-&gt;oldpts);
+<span class="lineNum">     337 </span>            :     free(dc);
+<span class="lineNum">     338 </span>            : }
+<span class="lineNum">     339 </span>            : 
+<span class="lineNum">     340 </span>            : void DebuggerReset(struct debugger_context *dc,real ptsizey, real ptsizex,int dpi,int dbg_fpgm, int is_bitmap) {
+<span class="lineNum">     341 </span>            :     /* Kill off the old thread, and start up a new one working on the given */
+<span class="lineNum">     342 </span>            :     /*  pointsize and resolution */ /* I'm not prepared for errors here */
+<span class="lineNum">     343 </span>            :     /* Note that if we don't want to look at the fpgm/prep code (and we */
+<span class="lineNum">     344 </span>            :     /*  usually don't) then we must turn off the debug hook when they get run */
+<span class="lineNum">     345 </span>            : 
+<span class="lineNum">     346 </span>            :     if ( dc-&gt;has_thread ) {
+<span class="lineNum">     347 </span>            :         dc-&gt;terminate = true;
+<span class="lineNum">     348 </span>            :         pthread_mutex_lock(&amp;dc-&gt;child_mutex);
+<span class="lineNum">     349 </span>            :         pthread_cond_signal(&amp;dc-&gt;child_cond);    /* Wake up child and get it to clean up after itself */
+<span class="lineNum">     350 </span>            :         pthread_mutex_unlock(&amp;dc-&gt;child_mutex);
+<span class="lineNum">     351 </span>            :         pthread_mutex_unlock(&amp;dc-&gt;parent_mutex);
+<span class="lineNum">     352 </span>            : 
+<span class="lineNum">     353 </span>            :         pthread_join(dc-&gt;thread,NULL);
+<span class="lineNum">     354 </span>            :         dc-&gt;has_thread = false;
+<span class="lineNum">     355 </span>            :     }
+<span class="lineNum">     356 </span>            :     if ( dc-&gt;ftc!=NULL )
+<span class="lineNum">     357 </span>            :         FreeTypeFreeContext(dc-&gt;ftc);
+<span class="lineNum">     358 </span>            : 
+<span class="lineNum">     359 </span>            :     dc-&gt;debug_fpgm = dbg_fpgm;
+<span class="lineNum">     360 </span>            :     dc-&gt;ptsizey = ptsizey;
+<span class="lineNum">     361 </span>            :     dc-&gt;ptsizex = ptsizex;
+<span class="lineNum">     362 </span>            :     dc-&gt;dpi = dpi;
+<span class="lineNum">     363 </span>            :     dc-&gt;is_bitmap = is_bitmap;
+<span class="lineNum">     364 </span>            :     dc-&gt;terminate = dc-&gt;has_finished = false;
+<span class="lineNum">     365 </span>            :     dc-&gt;initted_pts = false;
+<span class="lineNum">     366 </span>            : 
+<span class="lineNum">     367 </span>            :     pthread_mutex_lock(&amp;dc-&gt;parent_mutex);
+<span class="lineNum">     368 </span>            :     if ( pthread_create(&amp;dc-&gt;thread,NULL,StartChar,(void *) dc)!=0 ) {
+<span class="lineNum">     369 </span>            :         DebuggerTerminate(dc);
+<span class="lineNum">     370 </span>            : return;
+<span class="lineNum">     371 </span>            :     }
+<span class="lineNum">     372 </span>            :     if ( dc-&gt;has_finished )
+<span class="lineNum">     373 </span>            : return;
+<span class="lineNum">     374 </span>            :     dc-&gt;has_thread = true;
+<span class="lineNum">     375 </span>            :     pthread_cond_wait(&amp;dc-&gt;parent_cond,&amp;dc-&gt;parent_mutex);
+<span class="lineNum">     376 </span>            : }
+<span class="lineNum">     377 </span>            : 
+<span class="lineNum">     378 </span>            : struct debugger_context *DebuggerCreate(SplineChar *sc,int layer, real ptsizey,real ptsizex,int dpi,int dbg_fpgm, int is_bitmap) {
+<span class="lineNum">     379 </span>            :     struct debugger_context *dc;
+<span class="lineNum">     380 </span>            : 
+<span class="lineNum">     381 </span>            :     if ( !hasFreeTypeDebugger())
+<span class="lineNum">     382 </span>            : return( NULL );
+<span class="lineNum">     383 </span>            : 
+<span class="lineNum">     384 </span>            :     dc = calloc(1,sizeof(struct debugger_context));
+<span class="lineNum">     385 </span>            :     dc-&gt;sc = sc;
+<span class="lineNum">     386 </span>            :     dc-&gt;layer = layer;
+<span class="lineNum">     387 </span>            :     dc-&gt;debug_fpgm = dbg_fpgm;
+<span class="lineNum">     388 </span>            :     dc-&gt;ptsizey = ptsizey;
+<span class="lineNum">     389 </span>            :     dc-&gt;ptsizex = ptsizex;
+<span class="lineNum">     390 </span>            :     dc-&gt;dpi = dpi;
+<span class="lineNum">     391 </span>            :     dc-&gt;is_bitmap = is_bitmap;
+<span class="lineNum">     392 </span>            :     if ( FT_Init_FreeType( &amp;dc-&gt;context )) {
+<span class="lineNum">     393 </span>            :         free(dc);
+<span class="lineNum">     394 </span>            : return( NULL );
+<span class="lineNum">     395 </span>            :     }
+<span class="lineNum">     396 </span>            : 
+<span class="lineNum">     397 </span>            : #if FREETYPE_MINOR &gt;= 5
+<span class="lineNum">     398 </span>            :     {
+<span class="lineNum">     399 </span>            :         int tt_version = TT_INTERPRETER_VERSION_35;
+<span class="lineNum">     400 </span>            : 
+<span class="lineNum">     401 </span>            :         if ( FT_Property_Set( dc-&gt;context,
+<span class="lineNum">     402 </span>            :                               &quot;truetype&quot;,
+<span class="lineNum">     403 </span>            :                               &quot;interpreter-version&quot;,
+<span class="lineNum">     404 </span>            :                               &amp;tt_version )) {
+<span class="lineNum">     405 </span>            :             free(dc);
+<span class="lineNum">     406 </span>            : return( NULL );
+<span class="lineNum">     407 </span>            :         }
+<span class="lineNum">     408 </span>            :     }
+<span class="lineNum">     409 </span>            : #endif
+<span class="lineNum">     410 </span>            : 
+<span class="lineNum">     411 </span>            :     FT_Set_Debug_Hook( dc-&gt;context,
+<span class="lineNum">     412 </span>            :                        FT_DEBUG_HOOK_TRUETYPE,
+<span class="lineNum">     413 </span>            :                        (FT_DebugHook_Func)PauseIns );
+<span class="lineNum">     414 </span>            : 
+<span class="lineNum">     415 </span>            :     pthread_mutex_init(&amp;dc-&gt;parent_mutex,NULL); pthread_mutex_init(&amp;dc-&gt;child_mutex,NULL);
+<span class="lineNum">     416 </span>            :     pthread_cond_init(&amp;dc-&gt;parent_cond,NULL); pthread_cond_init(&amp;dc-&gt;child_cond,NULL);
+<span class="lineNum">     417 </span>            :     dc-&gt;has_mutexes = true;
+<span class="lineNum">     418 </span>            : 
+<span class="lineNum">     419 </span>            :     pthread_mutex_lock(&amp;dc-&gt;parent_mutex);
+<span class="lineNum">     420 </span>            :     if ( pthread_create(&amp;dc-&gt;thread,NULL,StartChar,dc)!=0 ) {
+<span class="lineNum">     421 </span>            :         DebuggerTerminate( dc );
+<span class="lineNum">     422 </span>            : return( NULL );
+<span class="lineNum">     423 </span>            :     }
+<span class="lineNum">     424 </span>            :     dc-&gt;has_thread = true;
+<span class="lineNum">     425 </span>            :     pthread_cond_wait(&amp;dc-&gt;parent_cond,&amp;dc-&gt;parent_mutex);        /* Wait for the child to initialize itself (and stop) then we can look at its status */
+<span class="lineNum">     426 </span>            : 
+<span class="lineNum">     427 </span>            : return( dc );
+<span class="lineNum">     428 </span>            : }
+<span class="lineNum">     429 </span>            : 
+<span class="lineNum">     430 </span>            : void DebuggerGo(struct debugger_context *dc,enum debug_gotype dgt,DebugView *dv) {
+<span class="lineNum">     431 </span>            :     int opcode;
+<span class="lineNum">     432 </span>            : 
+<span class="lineNum">     433 </span>            :     if ( !dc-&gt;has_thread || dc-&gt;has_finished || dc-&gt;exc==NULL ) {
+<span class="lineNum">     434 </span>            :         FreeType_FreeRaster(dv-&gt;cv-&gt;raster); dv-&gt;cv-&gt;raster = NULL;
+<span class="lineNum">     435 </span>            :         DebuggerReset(dc,dc-&gt;ptsizey,dc-&gt;ptsizex,dc-&gt;dpi,dc-&gt;debug_fpgm,dc-&gt;is_bitmap);
+<span class="lineNum">     436 </span>            :     } else {
+<span class="lineNum">     437 </span>            :         switch ( dgt ) {
+<span class="lineNum">     438 </span>            :           case dgt_continue:
+<span class="lineNum">     439 </span>            :             dc-&gt;multi_step = true;
+<span class="lineNum">     440 </span>            :           break;
+<span class="lineNum">     441 </span>            :           case dgt_stepout:
+<span class="lineNum">     442 </span>            :             dc-&gt;multi_step = true;
+<span class="lineNum">     443 </span>            :             if ( dc-&gt;exc-&gt;callTop&gt;0 ) {
+<span class="lineNum">     444 </span>            :                 dc-&gt;temp.range = dc-&gt;exc-&gt;callStack[dc-&gt;exc-&gt;callTop-1].Caller_Range;
+<span class="lineNum">     445 </span>            :                 dc-&gt;temp.ip = dc-&gt;exc-&gt;callStack[dc-&gt;exc-&gt;callTop-1].Caller_IP;
+<span class="lineNum">     446 </span>            :             }
+<span class="lineNum">     447 </span>            :           break;
+<span class="lineNum">     448 </span>            :           case dgt_next:
+<span class="lineNum">     449 </span>            :             opcode = dc-&gt;exc-&gt;code[dc-&gt;exc-&gt;IP];
+<span class="lineNum">     450 </span>            :             /* I've decided that IDEFs will get stepped into */
+<span class="lineNum">     451 </span>            :             if ( opcode==0x2b /* call */ || opcode==0x2a /* loopcall */ ) {
+<span class="lineNum">     452 </span>            :                 dc-&gt;temp.range = dc-&gt;exc-&gt;curRange;
+<span class="lineNum">     453 </span>            :                 dc-&gt;temp.ip = dc-&gt;exc-&gt;IP+1;
+<span class="lineNum">     454 </span>            :                 dc-&gt;multi_step = true;
+<span class="lineNum">     455 </span>            :             } else
+<span class="lineNum">     456 </span>            :                 dc-&gt;multi_step = false;
+<span class="lineNum">     457 </span>            :           break;
+<span class="lineNum">     458 </span>            :           default:
+<span class="lineNum">     459 </span>            :           case dgt_step:
+<span class="lineNum">     460 </span>            :             dc-&gt;multi_step = false;
+<span class="lineNum">     461 </span>            :           break;
+<span class="lineNum">     462 </span>            :         }
+<span class="lineNum">     463 </span>            :         pthread_mutex_lock(&amp;dc-&gt;child_mutex);
+<span class="lineNum">     464 </span>            :         pthread_cond_signal(&amp;dc-&gt;child_cond);    /* Wake up child and get it to clean up after itself */
+<span class="lineNum">     465 </span>            :         pthread_mutex_unlock(&amp;dc-&gt;child_mutex);
+<span class="lineNum">     466 </span>            :         pthread_cond_wait(&amp;dc-&gt;parent_cond,&amp;dc-&gt;parent_mutex);    /* Wait for the child to initialize itself (and stop) then we can look at its status */
+<span class="lineNum">     467 </span>            :     }
+<span class="lineNum">     468 </span>            : }
+<span class="lineNum">     469 </span>            : 
+<span class="lineNum">     470 </span>            : struct TT_ExecContextRec_ *DebuggerGetEContext(struct debugger_context *dc) {
+<span class="lineNum">     471 </span>            : return( dc-&gt;exc );
+<span class="lineNum">     472 </span>            : }
+<span class="lineNum">     473 </span>            : 
+<span class="lineNum">     474 </span>            : int DebuggerBpCheck(struct debugger_context *dc,int range,int ip) {
+<span class="lineNum">     475 </span>            :     int i;
+<span class="lineNum">     476 </span>            : 
+<span class="lineNum">     477 </span>            :     for ( i=0; i&lt;dc-&gt;bcnt; ++i ) {
+<span class="lineNum">     478 </span>            :         if ( dc-&gt;breaks[i].range==range &amp;&amp; dc-&gt;breaks[i].ip==ip )
+<span class="lineNum">     479 </span>            : return( true );
+<span class="lineNum">     480 </span>            :     }
+<span class="lineNum">     481 </span>            : return( false );
+<span class="lineNum">     482 </span>            : }
+<span class="lineNum">     483 </span>            : 
+<span class="lineNum">     484 </span>            : void DebuggerToggleBp(struct debugger_context *dc,int range,int ip) {
+<span class="lineNum">     485 </span>            :     int i;
+<span class="lineNum">     486 </span>            : 
+<span class="lineNum">     487 </span>            :     /* If the address has a bp, then remove it */
+<span class="lineNum">     488 </span>            :     for ( i=0; i&lt;dc-&gt;bcnt; ++i ) {
+<span class="lineNum">     489 </span>            :         if ( dc-&gt;breaks[i].range==range &amp;&amp; dc-&gt;breaks[i].ip==ip ) {
+<span class="lineNum">     490 </span>            :             ++i;
+<span class="lineNum">     491 </span>            :             while ( i&lt;dc-&gt;bcnt ) {
+<span class="lineNum">     492 </span>            :                 dc-&gt;breaks[i-1].range = dc-&gt;breaks[i].range;
+<span class="lineNum">     493 </span>            :                 dc-&gt;breaks[i-1].ip = dc-&gt;breaks[i].ip;
+<span class="lineNum">     494 </span>            :                 ++i;
+<span class="lineNum">     495 </span>            :             }
+<span class="lineNum">     496 </span>            :             --dc-&gt;bcnt;
+<span class="lineNum">     497 </span>            : return;
+<span class="lineNum">     498 </span>            :         }
+<span class="lineNum">     499 </span>            :     }
+<span class="lineNum">     500 </span>            :     /* Else add it */
+<span class="lineNum">     501 </span>            :     if ( dc-&gt;bcnt&gt;=sizeof(dc-&gt;breaks)/sizeof(dc-&gt;breaks[0]) ) {
+<span class="lineNum">     502 </span>            :         ff_post_error(_(&quot;Too Many Breakpoints&quot;),_(&quot;Too Many Breakpoints&quot;));
+<span class="lineNum">     503 </span>            : return;
+<span class="lineNum">     504 </span>            :     }
+<span class="lineNum">     505 </span>            :     i = dc-&gt;bcnt++;
+<span class="lineNum">     506 </span>            :     dc-&gt;breaks[i].range = range;
+<span class="lineNum">     507 </span>            :     dc-&gt;breaks[i].ip = ip;
+<span class="lineNum">     508 </span>            : }
+<span class="lineNum">     509 </span>            : 
+<span class="lineNum">     510 </span>            : void DebuggerSetWatches(struct debugger_context *dc,int n, uint8 *w) {
+<span class="lineNum">     511 </span>            :     free(dc-&gt;watch); dc-&gt;watch=NULL;
+<span class="lineNum">     512 </span>            :     if ( n!=dc-&gt;n_points ) IError(&quot;Bad watchpoint count&quot;);
+<span class="lineNum">     513 </span>            :     else {
+<span class="lineNum">     514 </span>            :         dc-&gt;watch = w;
+<span class="lineNum">     515 </span>            :         if ( dc-&gt;exc ) {
+<span class="lineNum">     516 </span>            :             AtWp(dc,dc-&gt;exc);
+<span class="lineNum">     517 </span>            :             dc-&gt;found_wp = false;
+<span class="lineNum">     518 </span>            :             dc-&gt;found_wpc = false;
+<span class="lineNum">     519 </span>            :             dc-&gt;found_wps = false;
+<span class="lineNum">     520 </span>            :             dc-&gt;found_wps_uninit = false;
+<span class="lineNum">     521 </span>            :         }
+<span class="lineNum">     522 </span>            :     }
+<span class="lineNum">     523 </span>            : }
+<span class="lineNum">     524 </span>            : 
+<span class="lineNum">     525 </span>            : uint8 *DebuggerGetWatches(struct debugger_context *dc, int *n) {
+<span class="lineNum">     526 </span>            :     *n = dc-&gt;n_points;
+<span class="lineNum">     527 </span>            : return( dc-&gt;watch );
+<span class="lineNum">     528 </span>            : }
+<span class="lineNum">     529 </span>            : 
+<span class="lineNum">     530 </span>            : void DebuggerSetWatchStores(struct debugger_context *dc,int n, uint8 *w) {
+<span class="lineNum">     531 </span>            :     free(dc-&gt;watchstorage); dc-&gt;watchstorage=NULL;
+<span class="lineNum">     532 </span>            :     if ( n!=dc-&gt;exc-&gt;storeSize ) IError(&quot;Bad watchpoint count&quot;);
+<span class="lineNum">     533 </span>            :     else {
+<span class="lineNum">     534 </span>            :         dc-&gt;watchstorage = w;
+<span class="lineNum">     535 </span>            :         if ( dc-&gt;exc ) {
+<span class="lineNum">     536 </span>            :             AtWp(dc,dc-&gt;exc);
+<span class="lineNum">     537 </span>            :             dc-&gt;found_wp = false;
+<span class="lineNum">     538 </span>            :             dc-&gt;found_wpc = false;
+<span class="lineNum">     539 </span>            :             dc-&gt;found_wps = false;
+<span class="lineNum">     540 </span>            :             dc-&gt;found_wps_uninit = false;
+<span class="lineNum">     541 </span>            :         }
+<span class="lineNum">     542 </span>            :     }
+<span class="lineNum">     543 </span>            : }
+<span class="lineNum">     544 </span>            : 
+<span class="lineNum">     545 </span>            : uint8 *DebuggerGetWatchStores(struct debugger_context *dc, int *n) {
+<span class="lineNum">     546 </span>            :     *n = dc-&gt;exc-&gt;storeSize;
+<span class="lineNum">     547 </span>            : return( dc-&gt;watchstorage );
+<span class="lineNum">     548 </span>            : }
+<span class="lineNum">     549 </span>            : 
+<span class="lineNum">     550 </span>            : int DebuggerIsStorageSet(struct debugger_context *dc, int index) {
+<span class="lineNum">     551 </span>            :     if ( dc-&gt;storetouched==NULL )
+<span class="lineNum">     552 </span>            : return( false );
+<span class="lineNum">     553 </span>            : return( dc-&gt;storetouched[index]&amp;1 );
+<span class="lineNum">     554 </span>            : }
+<span class="lineNum">     555 </span>            : 
+<span class="lineNum">     556 </span>            : void DebuggerSetWatchCvts(struct debugger_context *dc,int n, uint8 *w) {
+<span class="lineNum">     557 </span>            :     free(dc-&gt;watchcvt); dc-&gt;watchcvt=NULL;
+<span class="lineNum">     558 </span>            :     if ( n!=dc-&gt;exc-&gt;cvtSize ) IError(&quot;Bad watchpoint count&quot;);
+<span class="lineNum">     559 </span>            :     else {
+<span class="lineNum">     560 </span>            :         dc-&gt;watchcvt = w;
+<span class="lineNum">     561 </span>            :         if ( dc-&gt;exc ) {
+<span class="lineNum">     562 </span>            :             AtWp(dc,dc-&gt;exc);
+<span class="lineNum">     563 </span>            :             dc-&gt;found_wp = false;
+<span class="lineNum">     564 </span>            :             dc-&gt;found_wpc = false;
+<span class="lineNum">     565 </span>            :             dc-&gt;found_wps = false;
+<span class="lineNum">     566 </span>            :             dc-&gt;found_wps_uninit = false;
+<span class="lineNum">     567 </span>            :         }
+<span class="lineNum">     568 </span>            :     }
+<span class="lineNum">     569 </span>            : }
+<span class="lineNum">     570 </span>            : 
+<span class="lineNum">     571 </span>            : uint8 *DebuggerGetWatchCvts(struct debugger_context *dc, int *n) {
+<span class="lineNum">     572 </span>            :     *n = dc-&gt;exc-&gt;cvtSize;
+<span class="lineNum">     573 </span>            : return( dc-&gt;watchcvt );
+<span class="lineNum">     574 </span>            : }
+<span class="lineNum">     575 </span>            : 
+<span class="lineNum">     576 </span>            : int DebuggingFpgm(struct debugger_context *dc) {
+<span class="lineNum">     577 </span>            : return( dc-&gt;debug_fpgm );
+<span class="lineNum">     578 </span>            : }
+<span class="lineNum">     579 </span>            : 
+<span class="lineNum">     580 </span>            : struct freetype_raster *DebuggerCurrentRaster(TT_ExecContext exc,int depth) {
+<span class="lineNum">     581 </span>            :     FT_Outline outline;
+<span class="lineNum">     582 </span>            :     FT_Bitmap bitmap;
+<span class="lineNum">     583 </span>            :     int i, err, j, k, first, xoff, yoff;
+<span class="lineNum">     584 </span>            :     IBounds b;
+<span class="lineNum">     585 </span>            :     struct freetype_raster *ret;
+<span class="lineNum">     586 </span>            : 
+<span class="lineNum">     587 </span>            :     outline.n_contours = exc-&gt;pts.n_contours;
+<span class="lineNum">     588 </span>            :     outline.tags = (char *) exc-&gt;pts.tags;
+<span class="lineNum">     589 </span>            :     outline.contours = (short *) exc-&gt;pts.contours;
+<span class="lineNum">     590 </span>            :     /* Rasterizer gets unhappy if we give it the phantom points */
+<span class="lineNum">     591 </span>            :     if ( outline.n_contours==0 )
+<span class="lineNum">     592 </span>            :         outline.n_points = 0;
+<span class="lineNum">     593 </span>            :     else
+<span class="lineNum">     594 </span>            :         outline.n_points = /*exc-&gt;pts.n_points*/  outline.contours[outline.n_contours - 1] + 1;
+<span class="lineNum">     595 </span>            :     outline.points = exc-&gt;pts.cur;
+<span class="lineNum">     596 </span>            :     outline.flags = 0;
+<span class="lineNum">     597 </span>            :     switch ( exc-&gt;GS.scan_type ) {
+<span class="lineNum">     598 </span>            :       /* Taken, at Werner's suggestion, from the freetype sources: ttgload.c:1970 */
+<span class="lineNum">     599 </span>            :       case 0: /* simple drop-outs including stubs */
+<span class="lineNum">     600 </span>            :         outline.flags |= FT_OUTLINE_INCLUDE_STUBS;
+<span class="lineNum">     601 </span>            :       break;
+<span class="lineNum">     602 </span>            :       case 1: /* simple drop-outs excluding stubs */
+<span class="lineNum">     603 </span>            :         /* nothing; it's the default rendering mode */
+<span class="lineNum">     604 </span>            :       break;
+<span class="lineNum">     605 </span>            :       case 4: /* smart drop-outs including stubs */
+<span class="lineNum">     606 </span>            :         outline.flags |= FT_OUTLINE_SMART_DROPOUTS |
+<span class="lineNum">     607 </span>            :                                 FT_OUTLINE_INCLUDE_STUBS;
+<span class="lineNum">     608 </span>            :       break;
+<span class="lineNum">     609 </span>            :       case 5: /* smart drop-outs excluding stubs  */
+<span class="lineNum">     610 </span>            :         outline.flags |= FT_OUTLINE_SMART_DROPOUTS;
+<span class="lineNum">     611 </span>            :       break;
+<span class="lineNum">     612 </span>            : 
+<span class="lineNum">     613 </span>            :       default: /* no drop-out control */
+<span class="lineNum">     614 </span>            :         outline.flags |= FT_OUTLINE_IGNORE_DROPOUTS;
+<span class="lineNum">     615 </span>            :       break;
+<span class="lineNum">     616 </span>            :     }
+<span class="lineNum">     617 </span>            : 
+<span class="lineNum">     618 </span>            :     if ( exc-&gt;metrics.y_ppem &lt; 24 )
+<span class="lineNum">     619 </span>            :        outline.flags |= FT_OUTLINE_HIGH_PRECISION;
+<span class="lineNum">     620 </span>            : 
+<span class="lineNum">     621 </span>            :     first = true;
+<span class="lineNum">     622 </span>            :     for ( k=0; k&lt;outline.n_contours; ++k ) {
+<span class="lineNum">     623 </span>            :         if ( outline.contours[k] - (k==0?-1:outline.contours[k-1])&gt;1 ) {
+<span class="lineNum">     624 </span>            :             /* Single point contours are used for things like point matching */
+<span class="lineNum">     625 </span>            :             /*  for anchor points, etc. and do not contribute to the bounding */
+<span class="lineNum">     626 </span>            :             /*  box */
+<span class="lineNum">     627 </span>            :             i = (k==0?0:(outline.contours[k-1]+1));
+<span class="lineNum">     628 </span>            :             if ( first ) {
+<span class="lineNum">     629 </span>            :                 b.minx = b.maxx = outline.points[i].x;
+<span class="lineNum">     630 </span>            :                 b.miny = b.maxy = outline.points[i++].y;
+<span class="lineNum">     631 </span>            :                 first = false;
+<span class="lineNum">     632 </span>            :             }
+<span class="lineNum">     633 </span>            :             for ( ; i&lt;=outline.contours[k]; ++i ) {
+<span class="lineNum">     634 </span>            :                 if ( outline.points[i].x&gt;b.maxx ) b.maxx = outline.points[i].x;
+<span class="lineNum">     635 </span>            :                 if ( outline.points[i].x&lt;b.minx ) b.minx = outline.points[i].x;
+<span class="lineNum">     636 </span>            :                 if ( outline.points[i].y&gt;b.maxy ) b.maxy = outline.points[i].y;
+<span class="lineNum">     637 </span>            :                 if ( outline.points[i].y&lt;b.miny ) b.miny = outline.points[i].y;
+<span class="lineNum">     638 </span>            :             }
+<span class="lineNum">     639 </span>            :         }
+<span class="lineNum">     640 </span>            :     }
+<span class="lineNum">     641 </span>            :     if ( first )
+<span class="lineNum">     642 </span>            :         memset(&amp;b,0,sizeof(b));
+<span class="lineNum">     643 </span>            : 
+<span class="lineNum">     644 </span>            :     memset(&amp;bitmap,0,sizeof(bitmap));
+<span class="lineNum">     645 </span>            :     bitmap.rows = (((int) (ceil(b.maxy/64.0)-floor(b.miny/64.0)))) +1;
+<span class="lineNum">     646 </span>            :     bitmap.width = (((int) (ceil(b.maxx/64.0)-floor(b.minx/64.0)))) +1;
+<span class="lineNum">     647 </span>            : 
+<span class="lineNum">     648 </span>            :     xoff = 64*floor(b.minx/64.0);
+<span class="lineNum">     649 </span>            :     yoff = 64*floor(b.miny/64.0);
+<span class="lineNum">     650 </span>            :     for ( i=0; i&lt;outline.n_points; ++i ) {
+<span class="lineNum">     651 </span>            :         outline.points[i].x -= xoff;
+<span class="lineNum">     652 </span>            :         outline.points[i].y -= yoff;
+<span class="lineNum">     653 </span>            :     }
+<span class="lineNum">     654 </span>            : 
+<span class="lineNum">     655 </span>            :     if ( depth==8 ) {
+<span class="lineNum">     656 </span>            :         bitmap.pitch = bitmap.width;
+<span class="lineNum">     657 </span>            :         bitmap.num_grays = 256;
+<span class="lineNum">     658 </span>            :         bitmap.pixel_mode = ft_pixel_mode_grays;
+<span class="lineNum">     659 </span>            :     } else {
+<span class="lineNum">     660 </span>            :         bitmap.pitch = (bitmap.width+7)&gt;&gt;3;
+<span class="lineNum">     661 </span>            :         bitmap.num_grays = 0;
+<span class="lineNum">     662 </span>            :         bitmap.pixel_mode = ft_pixel_mode_mono;
+<span class="lineNum">     663 </span>            :     }
+<span class="lineNum">     664 </span>            :     bitmap.buffer = calloc(bitmap.pitch*bitmap.rows,sizeof(uint8));
+<span class="lineNum">     665 </span>            : 
+<span class="lineNum">     666 </span>            :     err = (FT_Outline_Get_Bitmap)(ff_ft_context,&amp;outline,&amp;bitmap);
+<span class="lineNum">     667 </span>            : 
+<span class="lineNum">     668 </span>            :     for ( i=0; i&lt;outline.n_points; ++i ) {
+<span class="lineNum">     669 </span>            :         outline.points[i].x += xoff;
+<span class="lineNum">     670 </span>            :         outline.points[i].y += yoff;
+<span class="lineNum">     671 </span>            :     }
+<span class="lineNum">     672 </span>            : 
+<span class="lineNum">     673 </span>            :     ret = malloc(sizeof(struct freetype_raster));
+<span class="lineNum">     674 </span>            :     /* I'm not sure why I need these, but it seems I do */
+<span class="lineNum">     675 </span>            :     if ( depth==8 ) {
+<span class="lineNum">     676 </span>            :         ret-&gt;as = floor(b.miny/64.0) + bitmap.rows;
+<span class="lineNum">     677 </span>            :         ret-&gt;lb = floor(b.minx/64.0);
+<span class="lineNum">     678 </span>            :     } else {
+<span class="lineNum">     679 </span>            :         for ( k=0; k&lt;bitmap.rows; ++k ) {
+<span class="lineNum">     680 </span>            :             for ( j=bitmap.pitch-1; j&gt;=0 &amp;&amp; bitmap.buffer[k*bitmap.pitch+j]==0; --j );
+<span class="lineNum">     681 </span>            :             if ( j!=-1 )
+<span class="lineNum">     682 </span>            :         break;
+<span class="lineNum">     683 </span>            :         }
+<span class="lineNum">     684 </span>            :         b.maxy += k&lt;&lt;6;
+<span class="lineNum">     685 </span>            :         if ( depth==8 ) {
+<span class="lineNum">     686 </span>            :             for ( j=0; j&lt;bitmap.pitch; ++j ) {
+<span class="lineNum">     687 </span>            :                 for ( k=(((int) (b.maxy-b.miny))&gt;&gt;6)-1; k&gt;=0; --k ) {
+<span class="lineNum">     688 </span>            :                     if ( bitmap.buffer[k*bitmap.pitch+j]!=0 )
+<span class="lineNum">     689 </span>            :                 break;
+<span class="lineNum">     690 </span>            :                 }
+<span class="lineNum">     691 </span>            :                 if ( k!=-1 )
+<span class="lineNum">     692 </span>            :             break;
+<span class="lineNum">     693 </span>            :             }
+<span class="lineNum">     694 </span>            :         } else {
+<span class="lineNum">     695 </span>            :             for ( j=0; j&lt;bitmap.pitch; ++j ) {
+<span class="lineNum">     696 </span>            :                 for ( k=(((int) (b.maxy-b.miny))&gt;&gt;6)-1; k&gt;=0; --k ) {
+<span class="lineNum">     697 </span>            :                     if ( bitmap.buffer[k*bitmap.pitch+(j&gt;&gt;3)]&amp;(0x80&gt;&gt;(j&amp;7)) )
+<span class="lineNum">     698 </span>            :                 break;
+<span class="lineNum">     699 </span>            :                 }
+<span class="lineNum">     700 </span>            :                 if ( k!=-1 )
+<span class="lineNum">     701 </span>            :             break;
+<span class="lineNum">     702 </span>            :             }
+<span class="lineNum">     703 </span>            :         }
+<span class="lineNum">     704 </span>            :         b.minx -= j*64;
+<span class="lineNum">     705 </span>            :         ret-&gt;as = rint(b.maxy/64.0);
+<span class="lineNum">     706 </span>            :         ret-&gt;lb = rint(b.minx/64.0);
+<span class="lineNum">     707 </span>            :     }
+<span class="lineNum">     708 </span>            :     ret-&gt;rows = bitmap.rows;
+<span class="lineNum">     709 </span>            :     ret-&gt;cols = bitmap.width;
+<span class="lineNum">     710 </span>            :     ret-&gt;bytes_per_row = bitmap.pitch;
+<span class="lineNum">     711 </span>            :     ret-&gt;num_greys = bitmap.num_grays;
+<span class="lineNum">     712 </span>            :     ret-&gt;bitmap = bitmap.buffer;
+<span class="lineNum">     713 </span>            : return( ret );
+<span class="lineNum">     714 </span>            : }
+<span class="lineNum">     715 </span>            :     
+<span class="lineNum">     716 </span>            : #else /* FIXME: Don't build this stuff if it's not being used, it just makes the compiler emit lots of warnings */
+<a name="717"><span class="lineNum">     717 </span>            : struct debugger_context;</a>
+<span class="lineNum">     718 </span>            : 
+<span class="lineNum">     719 </span><span class="lineNoCov">          0 : void DebuggerTerminate(struct debugger_context *dc) {</span>
+<a name="720"><span class="lineNum">     720 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     721 </span>            : 
+<span class="lineNum">     722 </span><span class="lineNoCov">          0 : void DebuggerReset(struct debugger_context *dc,real ptsizey, real ptsizex,int dpi,int dbg_fpgm, int is_bitmap) {</span>
+<a name="723"><span class="lineNum">     723 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     724 </span>            : 
+<span class="lineNum">     725 </span><span class="lineNoCov">          0 : struct debugger_context *DebuggerCreate(SplineChar *sc,int layer,real pointsizey, real pointsizex,int dpi, int dbg_fpgm, int is_bitmap) {</span>
+<span class="lineNum">     726 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<a name="727"><span class="lineNum">     727 </span>            : }</a>
+<span class="lineNum">     728 </span>            : 
+<span class="lineNum">     729 </span><span class="lineNoCov">          0 : void DebuggerGo(struct debugger_context *dc,enum debug_gotype go,DebugView *dv) {</span>
+<a name="730"><span class="lineNum">     730 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     731 </span>            : 
+<span class="lineNum">     732 </span><span class="lineNoCov">          0 : struct TT_ExecContextRec_ *DebuggerGetEContext(struct debugger_context *dc) {</span>
+<span class="lineNum">     733 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<a name="734"><span class="lineNum">     734 </span>            : }</a>
+<span class="lineNum">     735 </span>            : 
+<span class="lineNum">     736 </span><span class="lineNoCov">          0 : void DebuggerSetWatches(struct debugger_context *dc,int n, uint8 *w) {</span>
+<a name="737"><span class="lineNum">     737 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     738 </span>            : 
+<span class="lineNum">     739 </span><span class="lineNoCov">          0 : uint8 *DebuggerGetWatches(struct debugger_context *dc, int *n) {</span>
+<span class="lineNum">     740 </span><span class="lineNoCov">          0 :     *n = 0;</span>
+<span class="lineNum">     741 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<a name="742"><span class="lineNum">     742 </span>            : }</a>
+<span class="lineNum">     743 </span>            : 
+<span class="lineNum">     744 </span><span class="lineNoCov">          0 : void DebuggerSetWatchStores(struct debugger_context *dc,int n, uint8 *w) {</span>
+<a name="745"><span class="lineNum">     745 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     746 </span>            : 
+<span class="lineNum">     747 </span><span class="lineNoCov">          0 : uint8 *DebuggerGetWatchStores(struct debugger_context *dc, int *n) {</span>
+<span class="lineNum">     748 </span><span class="lineNoCov">          0 :     *n = 0;</span>
+<span class="lineNum">     749 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<a name="750"><span class="lineNum">     750 </span>            : }</a>
+<span class="lineNum">     751 </span>            : 
+<span class="lineNum">     752 </span><span class="lineNoCov">          0 : int DebuggerIsStorageSet(struct debugger_context *dc, int index) {</span>
+<span class="lineNum">     753 </span><span class="lineNoCov">          0 : return( false );</span>
+<a name="754"><span class="lineNum">     754 </span>            : }</a>
+<span class="lineNum">     755 </span>            : 
+<span class="lineNum">     756 </span><span class="lineNoCov">          0 : void DebuggerSetWatchCvts(struct debugger_context *dc,int n, uint8 *w) {</span>
+<a name="757"><span class="lineNum">     757 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     758 </span>            : 
+<span class="lineNum">     759 </span><span class="lineNoCov">          0 : uint8 *DebuggerGetWatchCvts(struct debugger_context *dc, int *n) {</span>
+<span class="lineNum">     760 </span><span class="lineNoCov">          0 :     *n = 0;</span>
+<span class="lineNum">     761 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<a name="762"><span class="lineNum">     762 </span>            : }</a>
+<span class="lineNum">     763 </span>            : 
+<span class="lineNum">     764 </span><span class="lineNoCov">          0 : int DebuggingFpgm(struct debugger_context *dc) {</span>
+<span class="lineNum">     765 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     766 </span>            : }
+<span class="lineNum">     767 </span>            : #endif  /* FREETYPE_HAS_DEBUGGER */
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

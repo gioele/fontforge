@@ -1,0 +1,304 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforge/fvmetrics.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforge</a> - fvmetrics.c<span style="font-size: 80%;"> (source / <a href="fvmetrics.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">31</td>
+            <td class="headerCovTableEntry">142</td>
+            <td class="headerCovTableEntryLo">21.8 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntry">5</td>
+            <td class="headerCovTableEntryLo">60.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            : #include &quot;fvmetrics.h&quot;
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            : #include &quot;bitmapchar.h&quot;
+<span class="lineNum">      31 </span>            : #include &quot;bvedit.h&quot;
+<span class="lineNum">      32 </span>            : #include &quot;cvundoes.h&quot;
+<span class="lineNum">      33 </span>            : #include &quot;fontforgevw.h&quot;
+<span class="lineNum">      34 </span>            : #include &quot;splineutil.h&quot;
+<span class="lineNum">      35 </span>            : #include &lt;math.h&gt;
+<a name="36"><span class="lineNum">      36 </span>            : #include &lt;ustring.h&gt;</a>
+<span class="lineNum">      37 </span>            : 
+<span class="lineNum">      38 </span><span class="lineCov">          1 : static void DoChar(SplineChar *sc,CreateWidthData *wd, FontViewBase *fv,</span>
+<span class="lineNum">      39 </span>            :         BDFChar *bc) {
+<span class="lineNum">      40 </span>            :     real transform[6];
+<span class="lineNum">      41 </span>            :     DBounds bb;
+<span class="lineNum">      42 </span>            :     IBounds ib;
+<span class="lineNum">      43 </span><span class="lineCov">          1 :     int width=0;</span>
+<span class="lineNum">      44 </span>            :     BVTFunc bvts[2];
+<span class="lineNum">      45 </span>            :     BDFFont *bdf;
+<span class="lineNum">      46 </span><span class="lineCov">          1 :     RefChar *r = HasUseMyMetrics(sc,fv-&gt;active_layer);</span>
+<span class="lineNum">      47 </span>            : 
+<span class="lineNum">      48 </span>            :     /* Can't change the horizontal or vertical advance if there's a &quot;use my metrics&quot; bit set */
+<span class="lineNum">      49 </span><span class="lineCov">          1 :     if ( r!=NULL &amp;&amp; wd-&gt;wtype != wt_lbearing )</span>
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">      51 </span>            : 
+<span class="lineNum">      52 </span><span class="lineCov">          1 :     if ( wd-&gt;wtype == wt_width ) {</span>
+<span class="lineNum">      53 </span><span class="lineCov">          1 :         if ( wd-&gt;type==st_set )</span>
+<span class="lineNum">      54 </span><span class="lineCov">          1 :             width = wd-&gt;setto;</span>
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :         else if ( wd-&gt;type == st_incr )</span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :             width = sc-&gt;width + wd-&gt;increment;</span>
+<span class="lineNum">      57 </span>            :         else
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :             width = sc-&gt;width * wd-&gt;scale/100;</span>
+<span class="lineNum">      59 </span><span class="lineCov">          1 :         sc-&gt;widthset = true;</span>
+<span class="lineNum">      60 </span><span class="lineCov">          1 :         if ( width!=sc-&gt;width ) {</span>
+<span class="lineNum">      61 </span><span class="lineCov">          1 :             SCPreserveWidth(sc);</span>
+<span class="lineNum">      62 </span><span class="lineCov">          1 :             SCSynchronizeWidth(sc,width,sc-&gt;width,fv);</span>
+<span class="lineNum">      63 </span>            :         }
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :     } else if ( wd-&gt;wtype == wt_lbearing ) {</span>
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :         transform[0] = transform[3] = 1.0;</span>
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :         transform[1] = transform[2] = transform[5] = 0;</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :         bvts[1].func = bvt_none;</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :         bvts[0].func = bvt_transmove; bvts[0].y = 0;</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :         if ( bc==NULL ) {</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :             SplineCharFindBounds(sc,&amp;bb);</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :             if ( wd-&gt;type==st_set )</span>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :                 transform[4] = wd-&gt;setto-bb.minx;</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :             else if ( wd-&gt;type == st_incr )</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :                 transform[4] = wd-&gt;increment;</span>
+<span class="lineNum">      75 </span>            :             else
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :                 transform[4] = bb.minx*wd-&gt;scale/100 - bb.minx;</span>
+<span class="lineNum">      77 </span>            :         } else {
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :             double scale = (fv-&gt;sf-&gt;ascent+fv-&gt;sf-&gt;descent)/(double) (fv-&gt;active_bitmap-&gt;pixelsize);</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :             BDFCharFindBounds(bc,&amp;ib);</span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :             if ( wd-&gt;type==st_set )</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :                 transform[4] = wd-&gt;setto-ib.minx*scale;</span>
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :             else if ( wd-&gt;type == st_incr )</span>
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :                 transform[4] = wd-&gt;increment;</span>
+<span class="lineNum">      84 </span>            :             else
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :                 transform[4] = scale*ib.minx*wd-&gt;scale/100 - ib.minx;</span>
+<span class="lineNum">      86 </span>            :         }
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :         if ( transform[4]!=0 )</span>
+<span class="lineNum">      88 </span>            :         {
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :             FVTrans(fv,sc,transform,NULL,fvt_dontmovewidth | fvt_alllayers );</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :             bvts[0].x = transform[4];</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :             for ( bdf = fv-&gt;sf-&gt;bitmaps; bdf!=NULL; bdf=bdf-&gt;next ) if ( bdf-&gt;glyphs[sc-&gt;orig_pos]!=NULL )</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :                 BCTrans(bdf,bdf-&gt;glyphs[sc-&gt;orig_pos],bvts,fv);</span>
+<span class="lineNum">      93 </span>            :         }
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :     } else if ( wd-&gt;wtype == wt_rbearing ) {</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :         if ( bc==NULL ) {</span>
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :             SplineCharFindBounds(sc,&amp;bb);</span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :             if ( wd-&gt;type==st_set )</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :                 width = bb.maxx + wd-&gt;setto;</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :             else if ( wd-&gt;type == st_incr )</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :                 width = sc-&gt;width+wd-&gt;increment;</span>
+<span class="lineNum">     102 </span>            :             else
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :                 width = (sc-&gt;width-bb.maxx) * wd-&gt;scale/100 + bb.maxx;</span>
+<span class="lineNum">     104 </span>            :         } else {
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :             double scale = (fv-&gt;sf-&gt;ascent+fv-&gt;sf-&gt;descent)/(double) (fv-&gt;active_bitmap-&gt;pixelsize);</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :             BDFCharFindBounds(bc,&amp;ib);</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :             ++ib.maxx;</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :             if ( wd-&gt;type==st_set )</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :                 width = rint(ib.maxx*scale + wd-&gt;setto);</span>
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :             else if ( wd-&gt;type == st_incr )</span>
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :                 width = rint(sc-&gt;width+wd-&gt;increment);</span>
+<span class="lineNum">     112 </span>            :             else
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :                 width = rint(scale * (bc-&gt;width-ib.maxx) * wd-&gt;scale/100 + ib.maxx*scale);</span>
+<span class="lineNum">     114 </span>            :         }
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :         if ( width!=sc-&gt;width ) {</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :             SCPreserveWidth(sc);</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :             SCSynchronizeWidth(sc,width,sc-&gt;width,fv);</span>
+<span class="lineNum">     118 </span>            :         }
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :     } else if ( wd-&gt;wtype == wt_bearings ) {</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :         transform[0] = transform[3] = 1.0;</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :         transform[1] = transform[2] = transform[5] = 0;</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :         bvts[1].func = bvt_none;</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :         bvts[0].func = bvt_transmove; bvts[0].y = 0;</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :         if ( bc==NULL ) {</span>
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 :             SplineCharFindBounds(sc,&amp;bb);</span>
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :             if ( wd-&gt;type==st_set ) {</span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :                 transform[4] = wd-&gt;setto-bb.minx;</span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :                 width = bb.maxx-bb.minx + 2*wd-&gt;setto;</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :             } else if ( wd-&gt;type == st_incr ) {</span>
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :                 transform[4] = wd-&gt;increment;</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :                 width = sc-&gt;width + 2*wd-&gt;increment;</span>
+<span class="lineNum">     132 </span>            :             } else {
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :                 transform[4] = bb.minx*wd-&gt;scale/100 - bb.minx;</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :                 width = bb.maxx-bb.minx +</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :                         (bb.minx + (sc-&gt;width-bb.maxx))*wd-&gt;scale/100;</span>
+<span class="lineNum">     136 </span>            :             }
+<span class="lineNum">     137 </span>            :         } else {
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :             double scale = (fv-&gt;sf-&gt;ascent+fv-&gt;sf-&gt;descent)/(double) (fv-&gt;active_bitmap-&gt;pixelsize);</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :             BDFCharFindBounds(bc,&amp;ib);</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :             ++ib.maxx;</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :             if ( wd-&gt;type==st_set ) {</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :                 transform[4] = wd-&gt;setto-ib.minx;</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :                 width = (ib.maxx-ib.minx + 2*wd-&gt;setto);</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :             } else if ( wd-&gt;type == st_incr ) {</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :                 transform[4] = wd-&gt;increment;</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :                 width = sc-&gt;width + 2*wd-&gt;increment;</span>
+<span class="lineNum">     147 </span>            :             } else {
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :                 transform[4] = ib.minx*wd-&gt;scale/100 - ib.minx;</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :                 width = ib.maxx-ib.minx +</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :                         (ib.minx + (bc-&gt;width-ib.maxx))*wd-&gt;scale/100;</span>
+<span class="lineNum">     151 </span>            :             }
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :             transform[4] *= scale;</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :             width = rint(width*scale);</span>
+<span class="lineNum">     154 </span>            :         }
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :         if ( width!=sc-&gt;width ) {</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :             SCPreserveWidth(sc);</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :             SCSynchronizeWidth(sc,width,sc-&gt;width,fv);</span>
+<span class="lineNum">     158 </span>            :         }
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :         if ( transform[4]!=0 ) {</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :             FVTrans(fv,sc,transform,NULL, fvt_dontmovewidth | fvt_alllayers );</span>
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :             bvts[0].x = transform[4];</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :             for ( bdf = fv-&gt;sf-&gt;bitmaps; bdf!=NULL; bdf=bdf-&gt;next ) if ( bdf-&gt;glyphs[sc-&gt;orig_pos]!=NULL )</span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :                 BCTrans(bdf,bdf-&gt;glyphs[sc-&gt;orig_pos],bvts,fv);</span>
+<span class="lineNum">     164 </span>            :         }
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     166 </span>            :     } else {
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :         if ( wd-&gt;type==st_set )</span>
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :             width = wd-&gt;setto;</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :         else if ( wd-&gt;type == st_incr )</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :             width = sc-&gt;vwidth + wd-&gt;increment;</span>
+<span class="lineNum">     171 </span>            :         else
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :             width = sc-&gt;vwidth * wd-&gt;scale/100;</span>
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :         if ( width!=sc-&gt;vwidth ) {</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :             SCPreserveVWidth(sc);</span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :             sc-&gt;vwidth = width;</span>
+<span class="lineNum">     176 </span>            :         }
+<span class="lineNum">     177 </span>            :     }
+<span class="lineNum">     178 </span><span class="lineCov">          1 :     SCCharChangedUpdate(sc,fv-&gt;active_layer);</span>
+<a name="179"><span class="lineNum">     179 </span>            : }</a>
+<span class="lineNum">     180 </span>            : 
+<span class="lineNum">     181 </span><span class="lineCov">          1 : void FVDoit(CreateWidthData *wd) {</span>
+<span class="lineNum">     182 </span><span class="lineCov">          1 :     FontViewBase *fv = (FontViewBase *) (wd-&gt;_fv);</span>
+<span class="lineNum">     183 </span>            :     int i;
+<span class="lineNum">     184 </span>            :     BDFChar *bc;
+<span class="lineNum">     185 </span>            : 
+<span class="lineNum">     186 </span><span class="lineCov">          1 :     if ( fv-&gt;sf-&gt;onlybitmaps &amp;&amp; fv-&gt;active_bitmap!=NULL &amp;&amp; fv-&gt;sf-&gt;bitmaps!=NULL ) {</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :         double scale = (fv-&gt;sf-&gt;ascent+fv-&gt;sf-&gt;descent)/(double) fv-&gt;active_bitmap-&gt;pixelsize;</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :         wd-&gt;setto *= scale;</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :         wd-&gt;increment *= scale;</span>
+<span class="lineNum">     190 </span>            :     }
+<span class="lineNum">     191 </span><span class="lineCov">          1 :     bc = NULL;</span>
+<span class="lineNum">     192 </span><span class="lineCov">        257 :     for ( i=0; i&lt;fv-&gt;map-&gt;enccount; ++i ) if ( fv-&gt;selected[i] ) {</span>
+<span class="lineNum">     193 </span>            :         SplineChar *sc;
+<span class="lineNum">     194 </span>            : 
+<span class="lineNum">     195 </span><span class="lineCov">          1 :         sc = SFMakeChar(fv-&gt;sf,fv-&gt;map,i);</span>
+<span class="lineNum">     196 </span><span class="lineCov">          1 :         if ( fv-&gt;sf-&gt;onlybitmaps &amp;&amp; fv-&gt;sf-&gt;bitmaps!=NULL )</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :             if ( fv-&gt;active_bitmap!=NULL )</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :                 bc = BDFMakeChar(fv-&gt;active_bitmap,fv-&gt;map,i);</span>
+<span class="lineNum">     199 </span><span class="lineCov">          1 :         DoChar(sc,wd,fv,bc);</span>
+<span class="lineNum">     200 </span>            :     }
+<span class="lineNum">     201 </span><span class="lineCov">          1 :     wd-&gt;done = true;</span>
+<a name="202"><span class="lineNum">     202 </span><span class="lineCov">          1 : }</span></a>
+<span class="lineNum">     203 </span>            : 
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 : void CVDoit(CreateWidthData *wd) {</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :     CharView *cv = (CharView *) (wd-&gt;_fv);</span>
+<span class="lineNum">     206 </span>            : 
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :     DoChar(cv-&gt;b.sc,wd,(FontViewBase *) (cv-&gt;b.fv),NULL);</span>
+<a name="208"><span class="lineNum">     208 </span><span class="lineNoCov">          0 :     wd-&gt;done = true;</span></a>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 : void GenericVDoit(CreateWidthData *wd) {</span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :     FontViewBase* fv = (FontViewBase*)wd-&gt;_fv;</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :     SplineChar* sc = (SplineChar*)wd-&gt;_sc;</span>
+<span class="lineNum">     213 </span>            :     
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :     DoChar(sc,wd,fv,NULL);</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :     wd-&gt;done = true;</span>
+<a name="216"><span class="lineNum">     216 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     217 </span>            : 
+<span class="lineNum">     218 </span><span class="lineCov">          1 : void FVSetWidthScript(FontViewBase *fv,enum widthtype wtype,int val,int incr) {</span>
+<span class="lineNum">     219 </span>            :     CreateWidthData wd;
+<span class="lineNum">     220 </span>            : 
+<span class="lineNum">     221 </span><span class="lineCov">          1 :     memset(&amp;wd,0,sizeof(wd));</span>
+<span class="lineNum">     222 </span><span class="lineCov">          1 :     wd._fv = fv;</span>
+<span class="lineNum">     223 </span><span class="lineCov">          1 :     wd.doit = FVDoit;</span>
+<span class="lineNum">     224 </span><span class="lineCov">          1 :     wd.setto = wd.increment = wd.scale = val;</span>
+<span class="lineNum">     225 </span><span class="lineCov">          1 :     wd.type = incr==0 ? st_set : incr==2 ? st_scale : st_incr;</span>
+<span class="lineNum">     226 </span><span class="lineCov">          1 :     wd.wtype = wtype;</span>
+<span class="lineNum">     227 </span><span class="lineCov">          1 :     FVDoit(&amp;wd);</span>
+<span class="lineNum">     228 </span><span class="lineCov">          1 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -1,0 +1,1150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - gdraw/gimageclut.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gdraw</a> - gimageclut.c<span style="font-size: 80%;"> (source / <a href="gimageclut.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">669</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">29</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &quot;gdrawP.h&quot;
+<span class="lineNum">      28 </span>            : #include &quot;colorP.h&quot;
+<span class="lineNum">      29 </span>            : #include &quot;charset.h&quot;
+<span class="lineNum">      30 </span>            : #include &quot;ustring.h&quot;
+<span class="lineNum">      31 </span>            : #include &quot;gutils.h&quot;
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            : #if defined(__MINGW32__)
+<span class="lineNum">      34 </span>            : #  include &quot;../gutils/divisors.c&quot;
+<span class="lineNum">      35 </span>            : #endif
+<span class="lineNum">      36 </span>            : 
+<span class="lineNum">      37 </span>            : struct clutinf {
+<span class="lineNum">      38 </span>            :     Color col;
+<span class="lineNum">      39 </span>            :     int32 cnt;
+<span class="lineNum">      40 </span>            :     struct clutinf *next;
+<span class="lineNum">      41 </span>            : };
+<span class="lineNum">      42 </span>            : 
+<span class="lineNum">      43 </span>            : struct clutcube {
+<span class="lineNum">      44 </span>            :     int32 cnt;
+<span class="lineNum">      45 </span>            :     struct clutinf *ours;
+<span class="lineNum">      46 </span>            : };
+<span class="lineNum">      47 </span>            : 
+<span class="lineNum">      48 </span>            : struct clutcnt {
+<span class="lineNum">      49 </span>            :     int sofar;
+<span class="lineNum">      50 </span>            :     struct clutinf clut[256];
+<span class="lineNum">      51 </span>            :     struct clutinf transinf;
+<span class="lineNum">      52 </span>            :     struct clutcube cube[16][16][16];
+<span class="lineNum">      53 </span>            :     int32 dither[6*6*6];
+<span class="lineNum">      54 </span>            :     int size, div;
+<span class="lineNum">      55 </span>            : };
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span>            : struct clut_range {
+<span class="lineNum">      58 </span>            :     unsigned short red_min;
+<span class="lineNum">      59 </span>            :     unsigned short green_min;
+<span class="lineNum">      60 </span>            :     unsigned short blue_min;
+<span class="lineNum">      61 </span>            :     int shift;
+<span class="lineNum">      62 </span>            : };
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span>            : struct colcnt {
+<span class="lineNum">      65 </span>            :     Color col;
+<span class="lineNum">      66 </span>            :     int32 cnt;
+<a name="67"><span class="lineNum">      67 </span>            : };</a>
+<span class="lineNum">      68 </span>            : 
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 : static void RevColListFree(struct revcol *rc) {</span>
+<span class="lineNum">      70 </span>            :     struct revcol *next;
+<span class="lineNum">      71 </span>            : 
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :     while ( rc!=NULL ) {</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :         next = rc-&gt;next;</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :         free(rc);</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :         rc = next;</span>
+<span class="lineNum">      76 </span>            :     }
+<a name="77"><span class="lineNum">      77 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      78 </span>            : 
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 : static int cccomp(const void *_c1, const void *_c2) {</span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :     register const struct colcnt *c1 = _c1, *c2 = _c2;</span>
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 : return( c2-&gt;cnt-c1-&gt;cnt );</span>
+<a name="83"><span class="lineNum">      83 </span>            : }</a>
+<span class="lineNum">      84 </span>            : 
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 : static int colcomp(const void *_c1, const void *_c2) {</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :     register const Color *c1 = _c1, *c2 = _c2;</span>
+<span class="lineNum">      87 </span>            : 
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 : return( *c1-*c2 );</span>
+<a name="89"><span class="lineNum">      89 </span>            : }</a>
+<span class="lineNum">      90 </span>            : 
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 : static int cicomp(const void *_c1, const void *_c2) {</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :     register const struct clutinf *c1 = _c1, *c2 = _c2;</span>
+<span class="lineNum">      93 </span>            : 
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 : return( c1-&gt;col-c2-&gt;col );</span>
+<a name="95"><span class="lineNum">      95 </span>            : }</a>
+<span class="lineNum">      96 </span>            : 
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 : static int cicntcomp(const void *_c1, const void *_c2) {</span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :     register const struct clutinf *c1 = _c1, *c2 = _c2;</span>
+<span class="lineNum">      99 </span>            : 
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 : return( c2-&gt;cnt-c1-&gt;cnt );</span>
+<span class="lineNum">     101 </span>            : }
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span>            : /* we have cnt different colors, the colors and their histogram is given in */
+<span class="lineNum">     104 </span>            : /*  clutinf. We want to fit that into clutmax colors */
+<span class="lineNum">     105 </span>            : /* first thing is to create a dithering cube which will fit in clutmax */
+<span class="lineNum">     106 </span>            : /*  (if clutmax&lt;8 then we are probably screwed, so just return 8) */
+<span class="lineNum">     107 </span>            : /* Ok figure out what bits of the cube we need (the subcubes we have colors in*/
+<span class="lineNum">     108 </span>            : /*  and some of those adjacent (assuming the color doesn't match exactly the */
+<span class="lineNum">     109 </span>            : /*  subcube's mid-point we'll need to dither and for that we need the adjacent))*/
+<a name="110"><span class="lineNum">     110 </span>            : /* Then we'll probably have some left over. Well, let's just add as many of the*/</a>
+<span class="lineNum">     111 </span>            : /*  most used colors as we can */
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 : static GClut *gimage_reduceclut(GClut *clut,int clutmax,struct clutinf *clutinf,</span>
+<span class="lineNum">     113 </span>            :         int cnt, struct clutinf *transinf) {
+<span class="lineNum">     114 </span>            :     int i,j;
+<span class="lineNum">     115 </span>            :     int size, div, s2, s3;
+<span class="lineNum">     116 </span>            :     int r,g,b,dindex;
+<span class="lineNum">     117 </span>            :     int32 dither[6*6*6];
+<span class="lineNum">     118 </span>            : 
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :     if ( transinf-&gt;cnt )</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :         --clutmax;</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :     for ( size=6; size&gt;0; --size )</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :         if ( size*size*size&lt;=clutmax )</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :     if ( size&lt;2 ) size=2;</span>
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 :     div = (255/(size-1));</span>
+<span class="lineNum">     126 </span>            : 
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;cnt; ++i ) {</span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :         Color val = clutinf[i].col;</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :         r=COLOR_RED(val), g=COLOR_GREEN(val), b=COLOR_BLUE(val);</span>
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :         dindex = ((r/div)*size+(g/div))*size+(b/div);</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :         dither[dindex] += clutinf[i].cnt;</span>
+<span class="lineNum">     132 </span>            :     }
+<span class="lineNum">     133 </span>            : 
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :     s2 = size*size;</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :     for ( r=0; r&lt;size-1; ++r ) for ( g=0; g&lt;size-1; ++g ) for ( b=0; b&lt;size-1; ++b ) {</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :         if ( dither[r*s2+g*size+b] &gt; 0 ) {</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :             if ( dither[r*s2+g*size+b+1] == 0 ) dither[r*s2+g*size+b+1] = -1;</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :             if ( dither[r*s2+(g+1)*size+b] == 0 ) dither[r*s2+(g+1)*size+b] = -1;</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :             if ( dither[(r+1)*s2+g*size+b] == 0 ) dither[(r+1)*s2+g*size+b] = -1;</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :             if ( dither[r*s2+(g+1)*size+b+1] == 0 ) dither[r*s2+(g+1)*size+b+1] = -1;</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :             if ( dither[(r+1)*s2+(g+1)*size+b] == 0 ) dither[(r+1)*s2+(g+1)*size+b] = -1;</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :             if ( dither[(r+1)*s2+g*size+b+1] == 0 ) dither[(r+1)*s2+g*size+b+1] = -1;</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :             if ( dither[(r+1)*s2+(g+1)*size+b+1] == 0 ) dither[(r+1)*s2+(g+1)*size+b+1] = -1;</span>
+<span class="lineNum">     144 </span>            :         }
+<span class="lineNum">     145 </span>            :     }
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :     s3 = s2*size;</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :     for ( i=j=0; i&lt;s3; ++i ) if ( dither[i]!= 0 ) {</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :         r = (i/(s2))*div;       if ( r&gt;250 ) r=255;</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :         g = (i/size)%size*div;  if ( g&gt;250 ) g=255;</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :         b = (i%(size))*div;     if ( b&gt;250 ) b=255;</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :         clut-&gt;clut[j++] = COLOR_CREATE(r,g,b);</span>
+<span class="lineNum">     152 </span>            :     }
+<span class="lineNum">     153 </span>            : 
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :     if ( j&lt;clutmax ) {</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :         qsort(clutinf,sizeof(clutinf[0]),cnt,cicntcomp);</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :         i = 0;</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :         while ( j&lt;clutmax &amp;&amp; i&lt;cnt ) {</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :             r = COLOR_RED(clutinf[i].col); g = COLOR_GREEN(clutinf[i].col);</span>
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :             b = COLOR_BLUE(clutinf[i].col);</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :             if ( (r!=255 || (r&lt;250 &amp;&amp; r%div==0)) &amp;&amp;</span>
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :                     (g!=255 || (g&lt;250 &amp;&amp; g%div==0)) &amp;&amp; </span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :                     (b!=255 || (b&lt;250 &amp;&amp; b%div==0)) )</span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :                 clut-&gt;clut[j++] = clutinf[i].col;</span>
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :             ++i;</span>
+<span class="lineNum">     165 </span>            :         }
+<span class="lineNum">     166 </span>            :     }
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :     if ( transinf-&gt;cnt!=0 )</span>
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :         clut-&gt;clut[j++] = transinf-&gt;col;</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :     clut-&gt;clut_len = j;</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 : return( clut );</span>
+<a name="171"><span class="lineNum">     171 </span>            : }</a>
+<span class="lineNum">     172 </span>            : 
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 : static void gimage_count32(GImage *image, struct clutcnt *clutcnt,int clutmax) {</span>
+<span class="lineNum">     174 </span>            :     int i, j, len, size, div;
+<span class="lineNum">     175 </span>            :     uint32 *ipt, *istart, *iend;
+<span class="lineNum">     176 </span>            :     struct _GImage *base, **bases;
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :     int orig_trans = clutcnt-&gt;transinf.cnt;</span>
+<span class="lineNum">     178 </span>            : 
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :     if ( image-&gt;list_len ) {</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :         len = image-&gt;list_len;</span>
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 :         bases = image-&gt;u.images;</span>
+<span class="lineNum">     182 </span>            :     } else {
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :         bases = &amp;image-&gt;u.image;</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :         len = 1;</span>
+<span class="lineNum">     185 </span>            :     }
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :     for ( size=6; size&gt;0; --size )</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :         if ( size*size*size&lt;=clutmax )</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :     if ( size&lt;2 ) size=2;</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :     clutcnt-&gt;size = size;</span>
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :     clutcnt-&gt;div = div = (255/(size-1));</span>
+<span class="lineNum">     192 </span>            : 
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :     for ( j=0; j&lt;len; ++j ) {</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :         base = bases[j];</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :         ipt = (uint32 *) (base-&gt;data);</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;base-&gt;height; ++i ) {</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :             istart = ipt;</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :             for ( iend = ipt + base-&gt;width; ipt&lt;iend; ++ipt ) {</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :                 register int32 val = *ipt;</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :                 register int r=COLOR_RED(val), g=COLOR_GREEN(val), b=COLOR_BLUE(val);</span>
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :                 int dindex = (r/div)*size*size+(g/div)*size+(b/div);</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :                 register struct clutcube *cc = &amp;clutcnt-&gt;cube[r&gt;&gt;4][g&gt;&gt;4][b&gt;&gt;4];</span>
+<span class="lineNum">     203 </span>            :                 register struct clutinf *test;
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :                 if ( val==base-&gt;trans )</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :                     ++clutcnt-&gt;transinf.cnt;</span>
+<span class="lineNum">     206 </span>            :                 else {
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :                     ++ cc-&gt;cnt;</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :                     ++clutcnt-&gt;dither[dindex];</span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :                     if ( clutcnt-&gt;sofar&lt;=256 ) {</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :                         for ( test = cc-&gt;ours; test!=NULL; test=test-&gt;next )</span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :                             if ( test-&gt;col==val )</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :                         break;</span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :                         if ( test==NULL ) {</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :                             if ( clutcnt-&gt;sofar&lt;256 ) {</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :                                 test = &amp;clutcnt-&gt;clut[clutcnt-&gt;sofar];</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :                                 test-&gt;next = cc-&gt;ours;</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :                                 test-&gt;col = val;</span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :                                 cc-&gt;ours = test;</span>
+<span class="lineNum">     219 </span>            :                             }
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :                             ++clutcnt-&gt;sofar;</span>
+<span class="lineNum">     221 </span>            :                         } else
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :                             ++ test-&gt;cnt;</span>
+<span class="lineNum">     223 </span>            :                     }
+<span class="lineNum">     224 </span>            :                 }
+<span class="lineNum">     225 </span>            :             }
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :             ipt = (uint32 *) (((uint8 *) istart) + base-&gt;bytes_per_line);</span>
+<span class="lineNum">     227 </span>            :         }
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :         if ( clutcnt-&gt;transinf.cnt!=orig_trans )</span>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :             clutcnt-&gt;transinf.col = base-&gt;trans;</span>
+<span class="lineNum">     230 </span>            :     }
+<a name="231"><span class="lineNum">     231 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     232 </span>            : 
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 : static GClut *gimage_pickclut32(GClut *clut,int clutmax, struct clutcnt *clutcnt) {</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :     struct clutcube *cube = &amp;clutcnt-&gt;cube[0][0][0];</span>
+<span class="lineNum">     235 </span>            :     struct colcnt cc[4096];
+<span class="lineNum">     236 </span>            :     int i,j,r,g,b,incr,size,s2,s3, wantstrans;
+<span class="lineNum">     237 </span>            : 
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :     size = clutcnt-&gt;size; s2 = size*size; s3 = size*s2;</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :     incr = clutcnt-&gt;div;</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :     j = 0;</span>
+<span class="lineNum">     241 </span>            :     /* if we have a color in a cube cell then we want to make sure that the */
+<span class="lineNum">     242 </span>            :     /*  edges of that cell are available to us so we can dither */
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :     for ( r=0; r&lt;size-1; ++r ) for ( g=0; g&lt;size-1; ++g ) for ( b=0; b&lt;size-1; ++b ) {</span>
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :         if ( clutcnt-&gt;dither[r*s2+g*size+b] &gt; 0 ) {</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :             if ( clutcnt-&gt;dither[r*s2+g*size+b+1] == 0 ) clutcnt-&gt;dither[r*s2+g*size+b+1] = -1;</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :             if ( clutcnt-&gt;dither[r*s2+(g+1)*size+b] == 0 ) clutcnt-&gt;dither[r*s2+(g+1)*size+b] = -1;</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :             if ( clutcnt-&gt;dither[(r+1)*s2+g*size+b] == 0 ) clutcnt-&gt;dither[(r+1)*s2+g*size+b] = -1;</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :             if ( clutcnt-&gt;dither[r*s2+(g+1)*size+b+1] == 0 ) clutcnt-&gt;dither[r*s2+(g+1)*size+b+1] = -1;</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :             if ( clutcnt-&gt;dither[(r+1)*s2+(g+1)*size+b] == 0 ) clutcnt-&gt;dither[(r+1)*s2+(g+1)*size+b] = -1;</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :             if ( clutcnt-&gt;dither[(r+1)*s2+g*size+b+1] == 0 ) clutcnt-&gt;dither[(r+1)*s2+g*size+b+1] = -1;</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :             if ( clutcnt-&gt;dither[(r+1)*s2+(g+1)*size+b+1] == 0 ) clutcnt-&gt;dither[(r+1)*s2+(g+1)*size+b+1] = -1;</span>
+<span class="lineNum">     252 </span>            :         }
+<span class="lineNum">     253 </span>            :     }
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;s3; ++i ) if ( clutcnt-&gt;dither[i]!= 0 ) {</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :         r = (i/(s2))*incr;      if ( r&gt;250 ) r=255;</span>
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :         g = (i/size)%size*incr; if ( g&gt;250 ) g=255;</span>
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :         b = (i%(size))*incr;    if ( b&gt;250 ) b=255;</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :         clut-&gt;clut[j++] = COLOR_CREATE(r,g,b);</span>
+<span class="lineNum">     259 </span>            :     }
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :     wantstrans = (clutcnt-&gt;transinf.cnt!=0);</span>
+<span class="lineNum">     261 </span>            : 
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;16*16*16; ++i ) {</span>
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :         if ( cube[i].ours!=NULL &amp;&amp; cube[i].ours-&gt;cnt&gt;(3*cube[i].cnt)/4 )</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :             cc[i].col = cube[i].ours-&gt;col;</span>
+<span class="lineNum">     265 </span>            :         else
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :             cc[i].col = COLOR_CREATE( ((i&gt;&gt;8)&lt;&lt;4) + 8,(((i&gt;&gt;4)&amp;0xf)&lt;&lt;4) + 8, ((i&amp;0xf)&lt;&lt;4)+8 );</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :         cc[i].cnt = cube[i].cnt;</span>
+<span class="lineNum">     268 </span>            :     }
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :     qsort(cc,4096,sizeof(cc[0]),cccomp);</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :     for ( i=0; j&lt;clutmax-wantstrans; ++j,++i ) {</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :         if ( cc[i].cnt==0 )</span>
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :         clut-&gt;clut[j] = cc[i].col;</span>
+<span class="lineNum">     274 </span>            :     }
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :     qsort(clut-&gt;clut,j,sizeof(Color),colcomp);</span>
+<span class="lineNum">     276 </span>            : 
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :     if ( wantstrans ) {</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :         clut-&gt;trans_index = j;</span>
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 :         clut-&gt;clut[j++] = clutcnt-&gt;transinf.col/*COLOR_CREATE(clutcnt-&gt;transinf.red,clutcnt-&gt;transinf.green,clutcnt-&gt;transinf.blue)!!!!*/;</span>
+<span class="lineNum">     280 </span>            :     }
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :     clut-&gt;clut_len = j;</span>
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 : return( clut );</span>
+<a name="283"><span class="lineNum">     283 </span>            : }</a>
+<span class="lineNum">     284 </span>            : 
+<span class="lineNum">     285 </span><span class="lineNoCov">          0 : static GClut *gimage_findclut32(GImage *image,GClut *clut,int clutmax) {</span>
+<span class="lineNum">     286 </span>            :     struct clutcnt clutcnt;
+<span class="lineNum">     287 </span>            :     int i;
+<span class="lineNum">     288 </span>            : 
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :     memset(&amp;clutcnt,'\0',sizeof(clutcnt));</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :     gimage_count32(image, &amp;clutcnt,clutmax);</span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :     if ( clutcnt.sofar+(clutcnt.transinf.cnt!=0) &lt;=clutmax ) {</span>
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;clutcnt.sofar; ++i )</span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :             clut-&gt;clut[i] = clutcnt.clut[i].col;</span>
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :         if ( clutcnt.transinf.cnt!=0 ) {</span>
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :             clut-&gt;trans_index = i;</span>
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :             clut-&gt;clut[i++] = clutcnt.transinf.col;</span>
+<span class="lineNum">     297 </span>            :         }
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :         clut-&gt;clut_len = i;</span>
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 : return( clut );</span>
+<span class="lineNum">     300 </span>            :     }
+<span class="lineNum">     301 </span>            : 
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 :     if ( clutcnt.sofar&lt;=256 )</span>
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 : return( gimage_reduceclut(clut,clutmax,clutcnt.clut,clutcnt.sofar,&amp;clutcnt.transinf));</span>
+<span class="lineNum">     304 </span>            : 
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 : return( gimage_pickclut32(clut,clutmax,&amp;clutcnt));</span>
+<a name="306"><span class="lineNum">     306 </span>            : }</a>
+<span class="lineNum">     307 </span>            : 
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 : static int gimage_count8(GImage *image, struct clutinf *clutinf, int pos, struct clutinf *transinf) {</span>
+<span class="lineNum">     309 </span>            :     int i, j, k, len;
+<span class="lineNum">     310 </span>            :     uint8 *ipt, *istart, *iend;
+<span class="lineNum">     311 </span>            :     struct _GImage *base, **bases;
+<span class="lineNum">     312 </span>            :     GClut *clut;
+<span class="lineNum">     313 </span>            :     int clutmax;
+<span class="lineNum">     314 </span>            : 
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :     if ( image-&gt;list_len ) {</span>
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :         len = image-&gt;list_len;</span>
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :         bases = image-&gt;u.images;</span>
+<span class="lineNum">     318 </span>            :     } else {
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :         bases = &amp;image-&gt;u.image;</span>
+<span class="lineNum">     320 </span><span class="lineNoCov">          0 :         len = 1;</span>
+<span class="lineNum">     321 </span>            :     }
+<span class="lineNum">     322 </span>            : 
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :     for ( k=0; k&lt;len; ++k ) {</span>
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :         base = bases[k];</span>
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :         ipt = (uint8 *) (base-&gt;data);</span>
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :         clutmax = base-&gt;clut-&gt;clut_len;</span>
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;base-&gt;height; ++i ) {</span>
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :             istart = ipt;</span>
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :             for ( iend = ipt + base-&gt;width; ipt&lt;iend; ++ipt ) {</span>
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 :                 register int val = *ipt;</span>
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :                 if ( val&lt;clutmax )</span>
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 :                     ++clutinf[val+pos].cnt;</span>
+<span class="lineNum">     333 </span>            :             }
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :             ipt = istart + base-&gt;bytes_per_line;</span>
+<span class="lineNum">     335 </span>            :         }
+<span class="lineNum">     336 </span>            :     
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :         clut = base-&gt;clut;</span>
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 :         if ( base-&gt;trans!=COLOR_UNKNOWN ) {</span>
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 :             if ( transinf-&gt;cnt==0 )</span>
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :                 transinf-&gt;col = clut-&gt;clut[base-&gt;trans];</span>
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :             transinf-&gt;cnt += clutinf[base-&gt;trans+pos].cnt;</span>
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :             clutinf[base-&gt;trans+pos].cnt = 0;</span>
+<span class="lineNum">     343 </span>            :         }
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;clutmax; ++i ) {</span>
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 :             clutinf[i+pos].col = clut-&gt;clut[i];</span>
+<span class="lineNum">     346 </span>            :         }
+<span class="lineNum">     347 </span><span class="lineNoCov">          0 :         pos += clutmax;</span>
+<span class="lineNum">     348 </span>            :     }
+<span class="lineNum">     349 </span>            : 
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :     if ( len&gt;1 ) {</span>
+<span class="lineNum">     351 </span>            :         /* remove duplicates (if any), by sorting first so dups are adjacent */
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :         qsort(clutinf,sizeof(clutinf[0]),pos,cicomp);</span>
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 :         for ( i=j=0; i&lt;pos; ++i ) {</span>
+<span class="lineNum">     354 </span><span class="lineNoCov">          0 :             if ( clutinf[i].cnt==0 )</span>
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :         continue;</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :             if ( i!=j )</span>
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :                 clutinf[j++] = clutinf[i];</span>
+<span class="lineNum">     358 </span>            :             else
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 :                 j++;</span>
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :             for ( k=i+1; k&lt;pos; ++k ) {</span>
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 :                 if ( clutinf[i].col != clutinf[k].col )</span>
+<span class="lineNum">     362 </span><span class="lineNoCov">          0 :             break;</span>
+<span class="lineNum">     363 </span><span class="lineNoCov">          0 :                 clutinf[i].cnt += clutinf[k].cnt;</span>
+<span class="lineNum">     364 </span><span class="lineNoCov">          0 :                 clutinf[k].cnt = 0;</span>
+<span class="lineNum">     365 </span>            :             }
+<span class="lineNum">     366 </span><span class="lineNoCov">          0 :             i = k-1;</span>
+<span class="lineNum">     367 </span>            :         }
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :         pos = j;</span>
+<span class="lineNum">     369 </span>            :     }
+<span class="lineNum">     370 </span>            : 
+<span class="lineNum">     371 </span><span class="lineNoCov">          0 : return( pos );</span>
+<a name="372"><span class="lineNum">     372 </span>            : }</a>
+<span class="lineNum">     373 </span>            : 
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 : static int TickGreyClut(GClut *clut, char *grey_clut) {</span>
+<span class="lineNum">     375 </span>            :     int i, r,b,g;
+<span class="lineNum">     376 </span>            : 
+<span class="lineNum">     377 </span><span class="lineNoCov">          0 :     if ( clut==NULL ) {</span>
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 :         grey_clut[0] = true;</span>
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :         grey_clut[255] = true;</span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     381 </span>            :     }
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;clut-&gt;clut_len; ++i ) {</span>
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :         r = COLOR_RED(clut-&gt;clut[i]);</span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :         g = COLOR_GREEN(clut-&gt;clut[i]);</span>
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :         b = COLOR_BLUE(clut-&gt;clut[i]);</span>
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :         if ( r!=g || g!=b ) {</span>
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :             clut-&gt;is_grey = false;</span>
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     389 </span>            :         }
+<span class="lineNum">     390 </span><span class="lineNoCov">          0 :         grey_clut[r] = true;</span>
+<span class="lineNum">     391 </span>            :     }
+<span class="lineNum">     392 </span><span class="lineNoCov">          0 :     clut-&gt;is_grey = true;</span>
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="394"><span class="lineNum">     394 </span>            : }</a>
+<span class="lineNum">     395 </span>            : 
+<span class="lineNum">     396 </span><span class="lineNoCov">          0 : static int is_grey(GImage *image, char *grey_clut) {</span>
+<span class="lineNum">     397 </span><span class="lineNoCov">          0 :     struct _GImage *base = image-&gt;list_len==0?image-&gt;u.image:image-&gt;u.images[0];</span>
+<span class="lineNum">     398 </span>            :     int i;
+<span class="lineNum">     399 </span>            : 
+<span class="lineNum">     400 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;256; ++i ) grey_clut[i] = 0;</span>
+<span class="lineNum">     401 </span><span class="lineNoCov">          0 :     if ( base-&gt;image_type == it_true )</span>
+<span class="lineNum">     402 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     403 </span><span class="lineNoCov">          0 :     if ( image-&gt;list_len==0 ) {</span>
+<span class="lineNum">     404 </span><span class="lineNoCov">          0 :         if ( TickGreyClut(base-&gt;clut,grey_clut) &amp;&amp; base-&gt;trans==COLOR_UNKNOWN )</span>
+<span class="lineNum">     405 </span><span class="lineNoCov">          0 : return( base-&gt;clut-&gt;clut_len );</span>
+<span class="lineNum">     406 </span>            : 
+<span class="lineNum">     407 </span><span class="lineNoCov">          0 : return( 0 );</span>
+<span class="lineNum">     408 </span>            :     } else {
+<span class="lineNum">     409 </span>            :         int m;
+<span class="lineNum">     410 </span><span class="lineNoCov">          0 :         struct _GImage **im = image-&gt;u.images, **end = im+image-&gt;list_len;</span>
+<span class="lineNum">     411 </span><span class="lineNoCov">          0 :         while ( im&lt;end ) {</span>
+<span class="lineNum">     412 </span><span class="lineNoCov">          0 :             if ( !TickGreyClut(im[0]-&gt;clut,grey_clut) || im[0]-&gt;trans != COLOR_UNKNOWN )</span>
+<span class="lineNum">     413 </span><span class="lineNoCov">          0 : return( 0 );</span>
+<span class="lineNum">     414 </span>            :         }
+<span class="lineNum">     415 </span><span class="lineNoCov">          0 :         m = 0;</span>
+<span class="lineNum">     416 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;256; ++i )</span>
+<span class="lineNum">     417 </span><span class="lineNoCov">          0 :             if ( grey_clut[i])</span>
+<span class="lineNum">     418 </span><span class="lineNoCov">          0 :                 ++m;</span>
+<span class="lineNum">     419 </span><span class="lineNoCov">          0 : return( m );</span>
+<span class="lineNum">     420 </span>            :     }
+<a name="421"><span class="lineNum">     421 </span>            : }</a>
+<span class="lineNum">     422 </span>            : 
+<span class="lineNum">     423 </span><span class="lineNoCov">          0 : static GClut *PickGreyClut(GClut *clut,int clutmax,char *grey_clut,int tot) {</span>
+<span class="lineNum">     424 </span>            :     int i,j;
+<span class="lineNum">     425 </span>            : 
+<span class="lineNum">     426 </span><span class="lineNoCov">          0 :     clut-&gt;trans_index = COLOR_UNKNOWN;</span>
+<span class="lineNum">     427 </span><span class="lineNoCov">          0 :     if ( clutmax==256 ) {</span>
+<span class="lineNum">     428 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;256; ++i )</span>
+<span class="lineNum">     429 </span><span class="lineNoCov">          0 :             clut-&gt;clut[i] = COLOR_CREATE(i,i,i);</span>
+<span class="lineNum">     430 </span><span class="lineNoCov">          0 :         clut-&gt;clut_len = 256;</span>
+<span class="lineNum">     431 </span><span class="lineNoCov">          0 :     } else if ( tot&lt;=clutmax ) {</span>
+<span class="lineNum">     432 </span><span class="lineNoCov">          0 :         for ( i=j=0; i&lt;256; ++i )</span>
+<span class="lineNum">     433 </span><span class="lineNoCov">          0 :             if ( grey_clut[i] )</span>
+<span class="lineNum">     434 </span><span class="lineNoCov">          0 :                 clut-&gt;clut[j++] = COLOR_CREATE(i,i,i);</span>
+<span class="lineNum">     435 </span><span class="lineNoCov">          0 :         clut-&gt;clut_len = j;</span>
+<span class="lineNum">     436 </span>            :     } else {
+<span class="lineNum">     437 </span>            :         int min_val, max_val;
+<span class="lineNum">     438 </span>            :         int incr;
+<span class="lineNum">     439 </span>            : 
+<span class="lineNum">     440 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;256 &amp;&amp; !grey_clut[i]; ++i );</span>
+<span class="lineNum">     441 </span><span class="lineNoCov">          0 :         min_val = i;</span>
+<span class="lineNum">     442 </span><span class="lineNoCov">          0 :         for ( i=255; i&gt;=0 &amp;&amp; !grey_clut[i]; --i );</span>
+<span class="lineNum">     443 </span><span class="lineNoCov">          0 :         max_val = i+1;</span>
+<span class="lineNum">     444 </span><span class="lineNoCov">          0 :         incr = (max_val-min_val)/(clutmax-1);</span>
+<span class="lineNum">     445 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;clutmax; ++i )</span>
+<span class="lineNum">     446 </span><span class="lineNoCov">          0 :             clut-&gt;clut[i] = COLOR_CREATE(min_val+i*incr,min_val+i*incr,min_val+i*incr);</span>
+<span class="lineNum">     447 </span><span class="lineNoCov">          0 :         clut-&gt;clut[i-1] = COLOR_CREATE(max_val,max_val,max_val);</span>
+<span class="lineNum">     448 </span><span class="lineNoCov">          0 :         clut-&gt;clut_len = clutmax;</span>
+<span class="lineNum">     449 </span>            :     }
+<span class="lineNum">     450 </span><span class="lineNoCov">          0 :     clut-&gt;is_grey = true;</span>
+<span class="lineNum">     451 </span><span class="lineNoCov">          0 : return( clut );</span>
+<a name="452"><span class="lineNum">     452 </span>            : }</a>
+<span class="lineNum">     453 </span>            : 
+<span class="lineNum">     454 </span><span class="lineNoCov">          0 : GClut *GImageFindCLUT(GImage *image,GClut *clut,int clutmax) {</span>
+<span class="lineNum">     455 </span>            :     int i,cnt;
+<span class="lineNum">     456 </span>            :     struct clutinf *clutinf, transinf;
+<span class="lineNum">     457 </span>            :     struct _GImage **list;
+<span class="lineNum">     458 </span><span class="lineNoCov">          0 :     struct _GImage *base = image-&gt;list_len==0?image-&gt;u.image:image-&gt;u.images[0];</span>
+<span class="lineNum">     459 </span>            :     char grey_clut[256];
+<span class="lineNum">     460 </span>            : 
+<span class="lineNum">     461 </span><span class="lineNoCov">          0 :     if ( clut==NULL )</span>
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 :         clut = malloc(sizeof(GClut));</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :     if ( clutmax&lt;2 || clut==NULL )</span>
+<span class="lineNum">     464 </span><span class="lineNoCov">          0 : return( 0 );</span>
+<span class="lineNum">     465 </span>            : 
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :     clut-&gt;clut_len = 0; clut-&gt;is_grey = false;</span>
+<span class="lineNum">     467 </span><span class="lineNoCov">          0 :     if ( clutmax&gt;256 ) clutmax = 256;</span>
+<span class="lineNum">     468 </span>            : 
+<span class="lineNum">     469 </span><span class="lineNoCov">          0 :     if ( base-&gt;image_type==it_true )</span>
+<span class="lineNum">     470 </span><span class="lineNoCov">          0 : return( gimage_findclut32(image,clut,clutmax));</span>
+<span class="lineNum">     471 </span>            : 
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 :     if ( image-&gt;list_len==0 ) {</span>
+<span class="lineNum">     473 </span><span class="lineNoCov">          0 :         if ( base-&gt;clut==NULL ) {    /* Black &amp; White */</span>
+<span class="lineNum">     474 </span><span class="lineNoCov">          0 :             clut-&gt;clut[0] = COLOR_CREATE(0,0,0);</span>
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 :             clut-&gt;clut[1] = COLOR_CREATE(255,255,255);</span>
+<span class="lineNum">     476 </span><span class="lineNoCov">          0 :             clut-&gt;clut_len = 2;</span>
+<span class="lineNum">     477 </span><span class="lineNoCov">          0 :             clut-&gt;trans_index = 0;</span>
+<span class="lineNum">     478 </span><span class="lineNoCov">          0 : return( clut );</span>
+<span class="lineNum">     479 </span><span class="lineNoCov">          0 :         } else if ( base-&gt;clut-&gt;clut_len&lt;=clutmax ) {</span>
+<span class="lineNum">     480 </span><span class="lineNoCov">          0 :             memcpy(clut-&gt;clut,base-&gt;clut-&gt;clut,base-&gt;clut-&gt;clut_len*sizeof(Color));</span>
+<span class="lineNum">     481 </span><span class="lineNoCov">          0 :             clut-&gt;clut_len = base-&gt;clut-&gt;clut_len;</span>
+<span class="lineNum">     482 </span><span class="lineNoCov">          0 :             clut-&gt;trans_index = base-&gt;trans;</span>
+<span class="lineNum">     483 </span><span class="lineNoCov">          0 : return( clut );</span>
+<span class="lineNum">     484 </span>            :         }
+<span class="lineNum">     485 </span>            :     }
+<span class="lineNum">     486 </span>            : 
+<span class="lineNum">     487 </span><span class="lineNoCov">          0 :     if ( (cnt = is_grey(image,grey_clut)) )</span>
+<span class="lineNum">     488 </span><span class="lineNoCov">          0 : return( PickGreyClut(clut,clutmax,grey_clut,cnt));</span>
+<span class="lineNum">     489 </span>            : 
+<span class="lineNum">     490 </span><span class="lineNoCov">          0 :     if ( image-&gt;list_len ) {</span>
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 :         cnt = 0;</span>
+<span class="lineNum">     492 </span><span class="lineNoCov">          0 :         for ( i=0, list = image-&gt;u.images; i&lt;image-&gt;list_len; ++i, ++list)</span>
+<span class="lineNum">     493 </span><span class="lineNoCov">          0 :             cnt += (*list)-&gt;clut-&gt;clut_len;</span>
+<span class="lineNum">     494 </span>            :     } else
+<span class="lineNum">     495 </span><span class="lineNoCov">          0 :         cnt = image-&gt;u.image-&gt;clut-&gt;clut_len;</span>
+<span class="lineNum">     496 </span>            : 
+<span class="lineNum">     497 </span><span class="lineNoCov">          0 :     memset(&amp;transinf,'\0',sizeof(transinf));</span>
+<span class="lineNum">     498 </span><span class="lineNoCov">          0 :     clutinf = calloc(cnt,sizeof(struct clutinf));</span>
+<span class="lineNum">     499 </span>            :     
+<span class="lineNum">     500 </span><span class="lineNoCov">          0 :     cnt = gimage_count8(image, clutinf, 0, &amp;transinf);</span>
+<span class="lineNum">     501 </span><span class="lineNoCov">          0 :     if ( cnt+(transinf.cnt!=0)&lt;clutmax ) {</span>
+<span class="lineNum">     502 </span><span class="lineNoCov">          0 :         clut-&gt;clut_len = cnt+(transinf.cnt!=0);</span>
+<span class="lineNum">     503 </span><span class="lineNoCov">          0 :         clut-&gt;trans_index = cnt;</span>
+<span class="lineNum">     504 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;cnt; ++i )</span>
+<span class="lineNum">     505 </span><span class="lineNoCov">          0 :             clut-&gt;clut[i] = clutinf[i].col;</span>
+<span class="lineNum">     506 </span><span class="lineNoCov">          0 :         clut-&gt;clut[i] = transinf.col;</span>
+<span class="lineNum">     507 </span><span class="lineNoCov">          0 :         free(clutinf);</span>
+<span class="lineNum">     508 </span><span class="lineNoCov">          0 : return(clut);</span>
+<span class="lineNum">     509 </span>            :     }
+<span class="lineNum">     510 </span>            : 
+<span class="lineNum">     511 </span><span class="lineNoCov">          0 :     gimage_reduceclut(clut,clutmax,clutinf,cnt,&amp;transinf);</span>
+<span class="lineNum">     512 </span><span class="lineNoCov">          0 :     free(clutinf);</span>
+<span class="lineNum">     513 </span><span class="lineNoCov">          0 :     return clut;</span>
+<span class="lineNum">     514 </span>            : }
+<span class="lineNum">     515 </span>            : 
+<a name="516"><span class="lineNum">     516 </span>            : static const GCol white = { 0xff, 0xff, 0xff, 1 }, black = { 0, 0, 0, 0 };</a>
+<span class="lineNum">     517 </span>            : 
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 : const GCol *_GImage_GetIndexedPixel(Color col,RevCMap *rev) {</span>
+<span class="lineNum">     519 </span>            :     int val, t, best, r, g, b;
+<span class="lineNum">     520 </span>            :     struct revitem *this;
+<span class="lineNum">     521 </span>            :     struct revcol *test, *bestcol;
+<span class="lineNum">     522 </span>            : 
+<span class="lineNum">     523 </span><span class="lineNoCov">          0 :     if ( rev==NULL ) {          /* Mono */</span>
+<span class="lineNum">     524 </span><span class="lineNoCov">          0 :         if ( COLOR2WHITE(col) )</span>
+<span class="lineNum">     525 </span><span class="lineNoCov">          0 : return( &amp;white );</span>
+<span class="lineNum">     526 </span>            :         else
+<span class="lineNum">     527 </span><span class="lineNoCov">          0 : return( &amp;black );</span>
+<span class="lineNum">     528 </span>            :     }
+<span class="lineNum">     529 </span><span class="lineNoCov">          0 :     if ( rev-&gt;is_grey ) {</span>
+<span class="lineNum">     530 </span><span class="lineNoCov">          0 :         val = COLOR2GREY(col);</span>
+<span class="lineNum">     531 </span><span class="lineNoCov">          0 : return( &amp;rev-&gt;greys[val]);</span>
+<span class="lineNum">     532 </span>            :     }
+<span class="lineNum">     533 </span>            : 
+<span class="lineNum">     534 </span>            :   reverse_clut:
+<span class="lineNum">     535 </span><span class="lineNoCov">          0 :     r = COLOR_RED(col); g = COLOR_GREEN(col); b = COLOR_BLUE(col);</span>
+<span class="lineNum">     536 </span><span class="lineNoCov">          0 :     if ( rev-&gt;div_mul==1 ) {</span>
+<span class="lineNum">     537 </span><span class="lineNoCov">          0 :         val = r&gt;&gt;rev-&gt;div_shift;</span>
+<span class="lineNum">     538 </span><span class="lineNoCov">          0 :         val = (val&lt;&lt;rev-&gt;side_shift)+(g&gt;&gt;rev-&gt;div_shift);</span>
+<span class="lineNum">     539 </span><span class="lineNoCov">          0 :         val = (val&lt;&lt;rev-&gt;side_shift)+(b&gt;&gt;rev-&gt;div_shift);</span>
+<span class="lineNum">     540 </span>            :     } else {
+<span class="lineNum">     541 </span><span class="lineNoCov">          0 :         val = ((r+rev-&gt;div_add)*rev-&gt;div_mul)&gt;&gt;rev-&gt;div_shift;</span>
+<span class="lineNum">     542 </span><span class="lineNoCov">          0 :         t = ((g+rev-&gt;div_add)*rev-&gt;div_mul)&gt;&gt;rev-&gt;div_shift;</span>
+<span class="lineNum">     543 </span><span class="lineNoCov">          0 :         val = (val*rev-&gt;side_cnt)+t;</span>
+<span class="lineNum">     544 </span><span class="lineNoCov">          0 :         t = ((b+rev-&gt;div_add)*rev-&gt;div_mul)&gt;&gt;rev-&gt;div_shift;</span>
+<span class="lineNum">     545 </span><span class="lineNoCov">          0 :         val = (val*rev-&gt;side_cnt)+t;</span>
+<span class="lineNum">     546 </span>            :     }
+<span class="lineNum">     547 </span><span class="lineNoCov">          0 :     this = &amp;rev-&gt;cube[val];</span>
+<span class="lineNum">     548 </span><span class="lineNoCov">          0 :     if ( this-&gt;sub!=NULL ) {</span>
+<span class="lineNum">     549 </span><span class="lineNoCov">          0 :         col &amp;= rev-&gt;mask;</span>
+<span class="lineNum">     550 </span><span class="lineNoCov">          0 :         rev = this-&gt;sub;</span>
+<span class="lineNum">     551 </span><span class="lineNoCov">          0 :   goto reverse_clut;</span>
+<span class="lineNum">     552 </span>            :     }
+<span class="lineNum">     553 </span>            : 
+<span class="lineNum">     554 </span><span class="lineNoCov">          0 :     test = this-&gt;cols[0];</span>
+<span class="lineNum">     555 </span><span class="lineNoCov">          0 :     if ( test-&gt;next==NULL )</span>
+<span class="lineNum">     556 </span><span class="lineNoCov">          0 : return( (GCol *) test );</span>
+<span class="lineNum">     557 </span>            : 
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :     if (( best = (r-test-&gt;red))&lt;0 ) best = -best;</span>
+<span class="lineNum">     559 </span><span class="lineNoCov">          0 :     if (( t = (g-test-&gt;green))&lt;0 ) t = -t; best += t;</span>
+<span class="lineNum">     560 </span><span class="lineNoCov">          0 :     if (( t = (b-test-&gt;blue))&lt;0 ) t = -t; best += t;</span>
+<span class="lineNum">     561 </span><span class="lineNoCov">          0 :     bestcol = test;</span>
+<span class="lineNum">     562 </span><span class="lineNoCov">          0 :     for ( test=test-&gt;next; test!=NULL; test = test-&gt;next ) {</span>
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 :         if (( val = (r-test-&gt;red))&lt;0 ) val = -val;</span>
+<span class="lineNum">     564 </span><span class="lineNoCov">          0 :         if (( t = (g-test-&gt;green))&lt;0 ) t = -t; val += t;</span>
+<span class="lineNum">     565 </span><span class="lineNoCov">          0 :         if (( t = (b-test-&gt;blue))&lt;0 ) t = -t; val += t;</span>
+<span class="lineNum">     566 </span><span class="lineNoCov">          0 :         if ( val&lt;best ) {</span>
+<span class="lineNum">     567 </span><span class="lineNoCov">          0 :             val = best;</span>
+<span class="lineNum">     568 </span><span class="lineNoCov">          0 :             bestcol = test;</span>
+<span class="lineNum">     569 </span>            :         }
+<span class="lineNum">     570 </span>            :     }
+<span class="lineNum">     571 </span><span class="lineNoCov">          0 : return( (GCol *) bestcol );</span>
+<span class="lineNum">     572 </span>            : }
+<a name="573"><span class="lineNum">     573 </span>            : </a>
+<span class="lineNum">     574 </span>            : 
+<span class="lineNum">     575 </span><span class="lineNoCov">          0 : const GCol *_GImage_GetIndexedPixelPrecise(Color col,RevCMap *rev) {</span>
+<span class="lineNum">     576 </span>            :     int val, t, best, r, g, b;
+<span class="lineNum">     577 </span>            :     struct revitem *this;
+<span class="lineNum">     578 </span>            :     struct revcol *test, *bestcol;
+<span class="lineNum">     579 </span>            : 
+<span class="lineNum">     580 </span><span class="lineNoCov">          0 :     if ( rev==NULL ) {          /* Mono */</span>
+<span class="lineNum">     581 </span><span class="lineNoCov">          0 :         if ( COLOR2WHITE(col) )</span>
+<span class="lineNum">     582 </span><span class="lineNoCov">          0 : return( &amp;white );</span>
+<span class="lineNum">     583 </span>            :         else
+<span class="lineNum">     584 </span><span class="lineNoCov">          0 : return( &amp;black );</span>
+<span class="lineNum">     585 </span>            :     }
+<span class="lineNum">     586 </span><span class="lineNoCov">          0 :     if ( rev-&gt;is_grey ) {</span>
+<span class="lineNum">     587 </span><span class="lineNoCov">          0 :         val = COLOR2GREY(col);</span>
+<span class="lineNum">     588 </span><span class="lineNoCov">          0 : return( &amp;rev-&gt;greys[val]);</span>
+<span class="lineNum">     589 </span>            :     }
+<span class="lineNum">     590 </span>            : 
+<span class="lineNum">     591 </span>            :   reverse_clut:
+<span class="lineNum">     592 </span><span class="lineNoCov">          0 :     r = COLOR_RED(col); g = COLOR_GREEN(col); b = COLOR_BLUE(col);</span>
+<span class="lineNum">     593 </span><span class="lineNoCov">          0 :     if ( rev-&gt;div_mul==1 ) {</span>
+<span class="lineNum">     594 </span><span class="lineNoCov">          0 :         r&gt;&gt;=rev-&gt;div_shift;</span>
+<span class="lineNum">     595 </span><span class="lineNoCov">          0 :         g&gt;&gt;=rev-&gt;div_shift;</span>
+<span class="lineNum">     596 </span><span class="lineNoCov">          0 :         b&gt;&gt;=rev-&gt;div_shift;</span>
+<span class="lineNum">     597 </span><span class="lineNoCov">          0 :         val = (((r&lt;&lt;rev-&gt;side_shift) + g)&lt;&lt;rev-&gt;side_shift)+ b;</span>
+<span class="lineNum">     598 </span>            :     } else {
+<span class="lineNum">     599 </span><span class="lineNoCov">          0 :         r = ((r+rev-&gt;div_add)*rev-&gt;div_mul)&gt;&gt;rev-&gt;div_shift;</span>
+<span class="lineNum">     600 </span><span class="lineNoCov">          0 :         g = ((g+rev-&gt;div_add)*rev-&gt;div_mul)&gt;&gt;rev-&gt;div_shift;</span>
+<span class="lineNum">     601 </span><span class="lineNoCov">          0 :         b = ((b+rev-&gt;div_add)*rev-&gt;div_mul)&gt;&gt;rev-&gt;div_shift;</span>
+<span class="lineNum">     602 </span><span class="lineNoCov">          0 :         val = ((r*rev-&gt;side_cnt)+g)*rev-&gt;side_cnt + b;</span>
+<span class="lineNum">     603 </span>            :     }
+<span class="lineNum">     604 </span><span class="lineNoCov">          0 :     this = &amp;rev-&gt;cube[val];</span>
+<span class="lineNum">     605 </span><span class="lineNoCov">          0 :     if ( this-&gt;sub!=NULL ) {</span>
+<span class="lineNum">     606 </span><span class="lineNoCov">          0 :         col &amp;= rev-&gt;mask;</span>
+<span class="lineNum">     607 </span><span class="lineNoCov">          0 :         rev = this-&gt;sub;</span>
+<span class="lineNum">     608 </span><span class="lineNoCov">          0 :   goto reverse_clut;</span>
+<span class="lineNum">     609 </span>            :     }
+<span class="lineNum">     610 </span>            : 
+<span class="lineNum">     611 </span><span class="lineNoCov">          0 :     test = this-&gt;cols[0];</span>
+<span class="lineNum">     612 </span><span class="lineNoCov">          0 :     if ( test-&gt;next==NULL &amp;&amp; this-&gt;cols[1]==NULL )</span>
+<span class="lineNum">     613 </span><span class="lineNoCov">          0 : return( (GCol *) test );</span>
+<span class="lineNum">     614 </span>            : 
+<span class="lineNum">     615 </span><span class="lineNoCov">          0 :     if (( best = (r-test-&gt;red))&lt;0 ) best = -best;</span>
+<span class="lineNum">     616 </span><span class="lineNoCov">          0 :     if (( t = (g-test-&gt;green))&lt;0 ) t = -t; best += t;</span>
+<span class="lineNum">     617 </span><span class="lineNoCov">          0 :     if (( t = (b-test-&gt;blue))&lt;0 ) t = -t; best += t;</span>
+<span class="lineNum">     618 </span><span class="lineNoCov">          0 :     bestcol = test;</span>
+<span class="lineNum">     619 </span><span class="lineNoCov">          0 :     for ( test=test-&gt;next; test!=NULL; test = test-&gt;next ) {</span>
+<span class="lineNum">     620 </span><span class="lineNoCov">          0 :         if (( val = (r-test-&gt;red))&lt;0 ) val = -val;</span>
+<span class="lineNum">     621 </span><span class="lineNoCov">          0 :         if (( t = (g-test-&gt;green))&lt;0 ) t = -t; val += t;</span>
+<span class="lineNum">     622 </span><span class="lineNoCov">          0 :         if (( t = (b-test-&gt;blue))&lt;0 ) t = -t; val += t;</span>
+<span class="lineNum">     623 </span><span class="lineNoCov">          0 :         if ( val&lt;best ) {</span>
+<span class="lineNum">     624 </span><span class="lineNoCov">          0 :             val = best;</span>
+<span class="lineNum">     625 </span><span class="lineNoCov">          0 :             bestcol = test;</span>
+<span class="lineNum">     626 </span>            :         }
+<span class="lineNum">     627 </span>            :     }
+<span class="lineNum">     628 </span>            : 
+<span class="lineNum">     629 </span><span class="lineNoCov">          0 :     for ( test=this-&gt;cols[1]; test!=NULL; test = test-&gt;next ) {</span>
+<span class="lineNum">     630 </span><span class="lineNoCov">          0 :         if (( val = (r-test-&gt;red))&lt;0 ) val = -val;</span>
+<span class="lineNum">     631 </span><span class="lineNoCov">          0 :         if (( t = (g-test-&gt;green))&lt;0 ) t = -t; val += t;</span>
+<span class="lineNum">     632 </span><span class="lineNoCov">          0 :         if (( t = (b-test-&gt;blue))&lt;0 ) t = -t; val += t;</span>
+<span class="lineNum">     633 </span><span class="lineNoCov">          0 :         if ( val&lt;best ) {</span>
+<span class="lineNum">     634 </span><span class="lineNoCov">          0 :             val = best;</span>
+<span class="lineNum">     635 </span><span class="lineNoCov">          0 :             bestcol = test;</span>
+<span class="lineNum">     636 </span>            :         }
+<span class="lineNum">     637 </span>            :     }
+<span class="lineNum">     638 </span><span class="lineNoCov">          0 : return( (GCol *) bestcol );</span>
+<a name="639"><span class="lineNum">     639 </span>            : }</a>
+<span class="lineNum">     640 </span>            : 
+<span class="lineNum">     641 </span><span class="lineNoCov">          0 : static int rccnt( struct revcol *cols) {</span>
+<span class="lineNum">     642 </span><span class="lineNoCov">          0 :     int cnt = 0;</span>
+<span class="lineNum">     643 </span><span class="lineNoCov">          0 :     while ( cols!=NULL ) {</span>
+<span class="lineNum">     644 </span><span class="lineNoCov">          0 :         ++cnt;</span>
+<span class="lineNum">     645 </span><span class="lineNoCov">          0 :         cols = cols-&gt;next;</span>
+<span class="lineNum">     646 </span>            :     }
+<span class="lineNum">     647 </span><span class="lineNoCov">          0 : return( cnt );</span>
+<a name="648"><span class="lineNum">     648 </span>            : }</a>
+<span class="lineNum">     649 </span>            : 
+<span class="lineNum">     650 </span><span class="lineNoCov">          0 : static struct revcol *add_adjacent(struct revcol *test, struct revcol *old, Color col, int dmax) {</span>
+<span class="lineNum">     651 </span><span class="lineNoCov">          0 :     int r=COLOR_RED(col), g=COLOR_GREEN(col), b=COLOR_BLUE(col);</span>
+<span class="lineNum">     652 </span>            :     int off, t, bestoff;
+<span class="lineNum">     653 </span><span class="lineNoCov">          0 :     struct revcol *best=NULL;</span>
+<span class="lineNum">     654 </span>            : 
+<span class="lineNum">     655 </span><span class="lineNoCov">          0 :     if ( test==NULL || test-&gt;dist&gt;dmax )</span>
+<span class="lineNum">     656 </span><span class="lineNoCov">          0 : return( old );</span>
+<span class="lineNum">     657 </span><span class="lineNoCov">          0 :     bestoff = 3*255;</span>
+<span class="lineNum">     658 </span><span class="lineNoCov">          0 :     for ( test=test; test!=NULL; test = test-&gt;next ) {</span>
+<span class="lineNum">     659 </span><span class="lineNoCov">          0 :         if ( (off = (r-test-&gt;red))&lt;0 ) off = -off;</span>
+<span class="lineNum">     660 </span><span class="lineNoCov">          0 :         if ( (t = (g-test-&gt;green))&lt;0 ) t = -t; off +=t;</span>
+<span class="lineNum">     661 </span><span class="lineNoCov">          0 :         if ( (b = (g-test-&gt;blue))&lt;0 ) t = -t; off +=t;</span>
+<span class="lineNum">     662 </span><span class="lineNoCov">          0 :         if ( off&lt;bestoff ) {</span>
+<span class="lineNum">     663 </span><span class="lineNoCov">          0 :             bestoff = off;</span>
+<span class="lineNum">     664 </span><span class="lineNoCov">          0 :             best = test;</span>
+<span class="lineNum">     665 </span>            :         }
+<span class="lineNum">     666 </span>            :     }
+<span class="lineNum">     667 </span><span class="lineNoCov">          0 :     if ( old!=NULL ) {</span>
+<span class="lineNum">     668 </span><span class="lineNoCov">          0 :         if ( (off = (r-old-&gt;red))&lt;0 ) off = -off;</span>
+<span class="lineNum">     669 </span><span class="lineNoCov">          0 :         if ( (t = (g-old-&gt;green))&lt;0 ) t = -t; off +=t;</span>
+<span class="lineNum">     670 </span><span class="lineNoCov">          0 :         if ( (b = (g-old-&gt;blue))&lt;0 ) t = -t; off +=t;</span>
+<span class="lineNum">     671 </span><span class="lineNoCov">          0 :         if ( off&lt;bestoff ) {</span>
+<span class="lineNum">     672 </span><span class="lineNoCov">          0 :             bestoff = off;</span>
+<span class="lineNum">     673 </span><span class="lineNoCov">          0 :             best = old;</span>
+<span class="lineNum">     674 </span>            :         }
+<span class="lineNum">     675 </span>            :     }
+<span class="lineNum">     676 </span><span class="lineNoCov">          0 :     if ( best!=old ) {</span>
+<span class="lineNum">     677 </span><span class="lineNoCov">          0 :         if ( old==NULL ) old = calloc(1,sizeof(struct revcol));</span>
+<span class="lineNum">     678 </span><span class="lineNoCov">          0 :         *old = *best;</span>
+<span class="lineNum">     679 </span><span class="lineNoCov">          0 :         old-&gt;next = NULL;</span>
+<span class="lineNum">     680 </span><span class="lineNoCov">          0 :         ++old-&gt;dist;</span>
+<span class="lineNum">     681 </span>            :     }
+<span class="lineNum">     682 </span><span class="lineNoCov">          0 : return( old );</span>
+<a name="683"><span class="lineNum">     683 </span>            : }</a>
+<span class="lineNum">     684 </span>            : 
+<span class="lineNum">     685 </span><span class="lineNoCov">          0 : static struct revcol *addrevcol(struct revcol *copy,struct revcol *old, int dist) {</span>
+<span class="lineNum">     686 </span><span class="lineNoCov">          0 :     struct revcol *rc = malloc(sizeof(struct revcol));</span>
+<span class="lineNum">     687 </span>            : 
+<span class="lineNum">     688 </span><span class="lineNoCov">          0 :     *rc = *copy;</span>
+<span class="lineNum">     689 </span><span class="lineNoCov">          0 :     rc-&gt;next = old;</span>
+<span class="lineNum">     690 </span><span class="lineNoCov">          0 :     rc-&gt;dist = dist;</span>
+<span class="lineNum">     691 </span><span class="lineNoCov">          0 : return( rc );</span>
+<a name="692"><span class="lineNum">     692 </span>            : }</a>
+<span class="lineNum">     693 </span>            : 
+<span class="lineNum">     694 </span><span class="lineNoCov">          0 : static RevCMap *_GClutReverse(int side_cnt,int range,struct revcol *basecol,</span>
+<span class="lineNum">     695 </span>            :         struct revcol *cols,struct revcol *outercols) {
+<span class="lineNum">     696 </span>            :     RevCMap *rev;
+<span class="lineNum">     697 </span>            :     int i, s2, s3, side_size;
+<span class="lineNum">     698 </span>            :     struct revcol *test;
+<span class="lineNum">     699 </span>            :     int changed, dmax, anynulls;
+<span class="lineNum">     700 </span>            : 
+<span class="lineNum">     701 </span><span class="lineNoCov">          0 :     rev = calloc(1,sizeof(RevCMap));</span>
+<span class="lineNum">     702 </span>            : 
+<span class="lineNum">     703 </span><span class="lineNoCov">          0 :     rev-&gt;side_cnt = side_cnt;</span>
+<span class="lineNum">     704 </span><span class="lineNoCov">          0 :     rev-&gt;range = range;</span>
+<span class="lineNum">     705 </span><span class="lineNoCov">          0 :     if ( side_cnt&lt;0 ) {</span>
+<span class="lineNum">     706 </span>            :         /* special cases ... */
+<span class="lineNum">     707 </span><span class="lineNoCov">          0 :         side_cnt = -side_cnt;</span>
+<span class="lineNum">     708 </span><span class="lineNoCov">          0 :         rev-&gt;side_cnt = side_cnt;</span>
+<span class="lineNum">     709 </span><span class="lineNoCov">          0 :         if ( side_cnt==6 ) {            /* Used for the inefficient standard 6 by cube */</span>
+<span class="lineNum">     710 </span><span class="lineNoCov">          0 :             rev-&gt;div_mul = div_tables[0x33][0];</span>
+<span class="lineNum">     711 </span><span class="lineNoCov">          0 :             rev-&gt;div_shift = div_tables[0x33][1];</span>
+<span class="lineNum">     712 </span><span class="lineNoCov">          0 :             rev-&gt;div_add = 0x19;</span>
+<span class="lineNum">     713 </span>            :         }
+<span class="lineNum">     714 </span><span class="lineNoCov">          0 :         side_size = 0x33;</span>
+<span class="lineNum">     715 </span><span class="lineNoCov">          0 :     } else if ( div_tables[side_cnt][0]==1 ) {</span>
+<span class="lineNum">     716 </span><span class="lineNoCov">          0 :         rev-&gt;side_shift = div_tables[side_cnt][1];</span>
+<span class="lineNum">     717 </span><span class="lineNoCov">          0 :         rev-&gt;div_shift = div_tables[range][1]-rev-&gt;side_shift;</span>
+<span class="lineNum">     718 </span><span class="lineNoCov">          0 :         rev-&gt;div_mul = 1;</span>
+<span class="lineNum">     719 </span><span class="lineNoCov">          0 :         rev-&gt;mask = ( 0x010101 * ((-1&lt;rev-&gt;div_shift)&amp;0xff) );</span>
+<span class="lineNum">     720 </span><span class="lineNoCov">          0 :         side_size = 1&lt;&lt;(rev-&gt;div_shift);</span>
+<span class="lineNum">     721 </span>            :     } else {
+<span class="lineNum">     722 </span><span class="lineNoCov">          0 :         side_size = (range+side_cnt-1)/side_cnt;</span>
+<span class="lineNum">     723 </span><span class="lineNoCov">          0 :         rev-&gt;div_mul = div_tables[side_cnt][0];</span>
+<span class="lineNum">     724 </span><span class="lineNoCov">          0 :         rev-&gt;div_shift = div_tables[side_cnt][1];</span>
+<span class="lineNum">     725 </span>            :     }
+<span class="lineNum">     726 </span>            : 
+<span class="lineNum">     727 </span><span class="lineNoCov">          0 :     rev-&gt;cube = calloc(side_cnt*side_cnt*side_cnt,sizeof(struct revitem));</span>
+<span class="lineNum">     728 </span><span class="lineNoCov">          0 :     for ( test = cols; test!=NULL; test = test-&gt;next ) {</span>
+<span class="lineNum">     729 </span>            :         int pos, dist;
+<span class="lineNum">     730 </span>            :         int r,g,b;
+<span class="lineNum">     731 </span><span class="lineNoCov">          0 :         int rbase = (test-&gt;red-basecol-&gt;red)/side_size, gbase = (test-&gt;green-basecol-&gt;green)/side_size, bbase = (test-&gt;blue-basecol-&gt;blue)/side_size;</span>
+<span class="lineNum">     732 </span><span class="lineNoCov">          0 :         for ( r = (test-&gt;red-basecol-&gt;red-side_size/2)/side_size;</span>
+<span class="lineNum">     733 </span><span class="lineNoCov">          0 :                 r&lt;=(test-&gt;red-basecol-&gt;red+side_size/2)/side_size; ++r ) {</span>
+<span class="lineNum">     734 </span><span class="lineNoCov">          0 :             if ( r&lt;0 || r==side_cnt )</span>
+<span class="lineNum">     735 </span><span class="lineNoCov">          0 :         continue;</span>
+<span class="lineNum">     736 </span><span class="lineNoCov">          0 :             for ( g = (test-&gt;green-basecol-&gt;green-side_size/2)/side_size;</span>
+<span class="lineNum">     737 </span><span class="lineNoCov">          0 :                     g&lt;=(test-&gt;green-basecol-&gt;green+side_size/2)/side_size; ++g ) {</span>
+<span class="lineNum">     738 </span><span class="lineNoCov">          0 :                 if ( g&lt;0 || g==side_cnt )</span>
+<span class="lineNum">     739 </span><span class="lineNoCov">          0 :             continue;</span>
+<span class="lineNum">     740 </span><span class="lineNoCov">          0 :                 for ( b = (test-&gt;blue-basecol-&gt;blue-side_size/2)/side_size;</span>
+<span class="lineNum">     741 </span><span class="lineNoCov">          0 :                         b&lt;=(test-&gt;blue-basecol-&gt;blue+side_size/2)/side_size; ++b ) {</span>
+<span class="lineNum">     742 </span><span class="lineNoCov">          0 :                     if ( b&lt;0 || b==side_cnt )</span>
+<span class="lineNum">     743 </span><span class="lineNoCov">          0 :                 continue;</span>
+<span class="lineNum">     744 </span><span class="lineNoCov">          0 :                     pos = (r*side_cnt + g)*side_cnt + b;</span>
+<span class="lineNum">     745 </span><span class="lineNoCov">          0 :                     dist = r!=rbase || g!=gbase || b!=bbase;</span>
+<span class="lineNum">     746 </span><span class="lineNoCov">          0 :                     rev-&gt;cube[pos].cols[dist] = addrevcol(test,rev-&gt;cube[pos].cols[dist],</span>
+<span class="lineNum">     747 </span>            :                             dist );
+<span class="lineNum">     748 </span>            :                 }
+<span class="lineNum">     749 </span>            :             }
+<span class="lineNum">     750 </span>            :         }
+<span class="lineNum">     751 </span>            :     }
+<span class="lineNum">     752 </span>            : 
+<span class="lineNum">     753 </span>            :     /* Ok. We just put every color into the sub-cube that it belongs in */
+<span class="lineNum">     754 </span>            :     /*  but that's not good enough. Say we are looking for a color that */
+<span class="lineNum">     755 </span>            :     /*  is on the edge of a sub-cube, then the best match for it may be */
+<span class="lineNum">     756 </span>            :     /*  in one of the adjacent sub-cubes, rather than within it's own */
+<span class="lineNum">     757 </span>            :     /* So we also ran through the list of colors, casting our net a */
+<span class="lineNum">     758 </span>            :     /*  little wider. Essentially for every sub-cube we found all the colors */
+<span class="lineNum">     759 </span>            :     /*  within a subcube centered on the color */
+<span class="lineNum">     760 </span>            : 
+<span class="lineNum">     761 </span>            :     /* Some sub-cubes will probably have no information in them. Fill them */
+<span class="lineNum">     762 </span>            :     /*  in by looking at near-by cubes */
+<span class="lineNum">     763 </span><span class="lineNoCov">          0 :     s2 = side_cnt*side_cnt; s3 = s2*side_cnt;</span>
+<span class="lineNum">     764 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;s3; ++i ) {</span>
+<span class="lineNum">     765 </span><span class="lineNoCov">          0 :         if ( rev-&gt;cube[i].cols[0]==NULL &amp;&amp; rev-&gt;cube[i].cols[1]!=NULL ) {</span>
+<span class="lineNum">     766 </span><span class="lineNoCov">          0 :             rev-&gt;cube[i].cols[0] = rev-&gt;cube[i].cols[1];</span>
+<span class="lineNum">     767 </span><span class="lineNoCov">          0 :             rev-&gt;cube[i].cols[1] = NULL;</span>
+<span class="lineNum">     768 </span>            :         }
+<span class="lineNum">     769 </span>            :     }
+<span class="lineNum">     770 </span><span class="lineNoCov">          0 :     changed = true; anynulls = false; dmax = 0;</span>
+<span class="lineNum">     771 </span><span class="lineNoCov">          0 :     while ( changed || (anynulls &amp;&amp; dmax&lt;256) ) {</span>
+<span class="lineNum">     772 </span><span class="lineNoCov">          0 :         changed = false; anynulls = false;</span>
+<span class="lineNum">     773 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;s3; ++i ) {</span>
+<span class="lineNum">     774 </span><span class="lineNoCov">          0 :             if ( rev-&gt;cube[i].cols[0]==NULL ) {</span>
+<span class="lineNum">     775 </span><span class="lineNoCov">          0 :                 int r = i/s2, g = (i/side_cnt)%side_cnt, b = i%side_cnt;</span>
+<span class="lineNum">     776 </span><span class="lineNoCov">          0 :                 int col = ((r*side_cnt+(side_cnt&gt;&gt;1))&lt;&lt;16) |</span>
+<span class="lineNum">     777 </span><span class="lineNoCov">          0 :                           ((g*side_cnt+(side_cnt&gt;&gt;1))&lt;&lt;8) |</span>
+<span class="lineNum">     778 </span><span class="lineNoCov">          0 :                           ((b*side_cnt+(side_cnt&gt;&gt;1))) ;</span>
+<span class="lineNum">     779 </span><span class="lineNoCov">          0 :                 if ( r&gt;0 ) rev-&gt;cube[i].cols[0] = add_adjacent(rev-&gt;cube[i-s2].cols[0],NULL,col,dmax);</span>
+<span class="lineNum">     780 </span><span class="lineNoCov">          0 :                 if ( r+1&lt;side_cnt ) rev-&gt;cube[i].cols[0] = add_adjacent(rev-&gt;cube[i+s2].cols[0],rev-&gt;cube[i].cols[0],col,dmax);</span>
+<span class="lineNum">     781 </span><span class="lineNoCov">          0 :                 if ( g&gt;0 ) rev-&gt;cube[i].cols[0] = add_adjacent(rev-&gt;cube[i-side_cnt].cols[0],rev-&gt;cube[i].cols[0],col,dmax);</span>
+<span class="lineNum">     782 </span><span class="lineNoCov">          0 :                 if ( g+1&lt;side_cnt ) rev-&gt;cube[i].cols[0] = add_adjacent(rev-&gt;cube[i+side_cnt].cols[0],rev-&gt;cube[i].cols[0],col,dmax);</span>
+<span class="lineNum">     783 </span><span class="lineNoCov">          0 :                 if ( b&gt;0 ) rev-&gt;cube[i].cols[0] = add_adjacent(rev-&gt;cube[i-1].cols[0],rev-&gt;cube[i].cols[0],col,dmax);</span>
+<span class="lineNum">     784 </span><span class="lineNoCov">          0 :                 if ( b+1&lt;side_cnt ) rev-&gt;cube[i].cols[0] = add_adjacent(rev-&gt;cube[i+1].cols[0],rev-&gt;cube[i].cols[0],col,dmax);</span>
+<span class="lineNum">     785 </span><span class="lineNoCov">          0 :                 if ( rev-&gt;cube[i].cols[0]!=NULL ) changed = true;</span>
+<span class="lineNum">     786 </span><span class="lineNoCov">          0 :                 else anynulls = true;</span>
+<span class="lineNum">     787 </span>            :             }
+<span class="lineNum">     788 </span>            :         }
+<span class="lineNum">     789 </span><span class="lineNoCov">          0 :         ++dmax;</span>
+<span class="lineNum">     790 </span>            :     }
+<span class="lineNum">     791 </span>            : 
+<span class="lineNum">     792 </span><span class="lineNoCov">          0 :     if ( anynulls ) {</span>
+<span class="lineNum">     793 </span><span class="lineNoCov">          0 :         fprintf(stderr, &quot;I'm sorry I cannot use this visual, please reconfigure your display\n&quot; );</span>
+<span class="lineNum">     794 </span><span class="lineNoCov">          0 :         exit(1);</span>
+<span class="lineNum">     795 </span>            :     }
+<span class="lineNum">     796 </span>            : 
+<span class="lineNum">     797 </span><span class="lineNoCov">          0 :     if ( rev-&gt;side_shift!=0 ) {</span>
+<span class="lineNum">     798 </span><span class="lineNoCov">          0 :         range &gt;&gt;= rev-&gt;side_shift;</span>
+<span class="lineNum">     799 </span><span class="lineNoCov">          0 :         if ( range&gt;8 ) for ( i=0; i&lt;s3; ++i ) if ( rev-&gt;cube[i].cols[0]-&gt;dist==0 ) {</span>
+<span class="lineNum">     800 </span><span class="lineNoCov">          0 :             int ql = rccnt(rev-&gt;cube[i].cols[0]);</span>
+<span class="lineNum">     801 </span><span class="lineNoCov">          0 :             int nr= -1;</span>
+<span class="lineNum">     802 </span>            :             struct revcol nbase;
+<span class="lineNum">     803 </span><span class="lineNoCov">          0 :             if ( ql&gt;128 )</span>
+<span class="lineNum">     804 </span><span class="lineNoCov">          0 :                 nr = 16;</span>
+<span class="lineNum">     805 </span><span class="lineNoCov">          0 :             else if ( ql&gt;32 )</span>
+<span class="lineNum">     806 </span><span class="lineNoCov">          0 :                 nr = 8;</span>
+<span class="lineNum">     807 </span><span class="lineNoCov">          0 :             else if ( ql&gt;=8 )</span>
+<span class="lineNum">     808 </span><span class="lineNoCov">          0 :                 nr = 4;</span>
+<span class="lineNum">     809 </span><span class="lineNoCov">          0 :             if ( nr!=-1 ) {</span>
+<span class="lineNum">     810 </span><span class="lineNoCov">          0 :                 nbase.red = basecol-&gt;red+(i/s2)*range;</span>
+<span class="lineNum">     811 </span><span class="lineNoCov">          0 :                 nbase.green = basecol-&gt;green+(i/side_cnt)%side_cnt*range;</span>
+<span class="lineNum">     812 </span><span class="lineNoCov">          0 :                 nbase.blue = basecol-&gt;blue+(i%side_cnt)*range;</span>
+<span class="lineNum">     813 </span><span class="lineNoCov">          0 :                 while ( nr&gt;range ) nr &gt;&gt;= 1;</span>
+<span class="lineNum">     814 </span><span class="lineNoCov">          0 :                 if ( nr!=1 )</span>
+<span class="lineNum">     815 </span><span class="lineNoCov">          0 :                     rev-&gt;cube[i].sub = _GClutReverse(nr,range,&amp;nbase,</span>
+<span class="lineNum">     816 </span><span class="lineNoCov">          0 :                             rev-&gt;cube[i].cols[0],rev-&gt;cube[i].cols[1]);</span>
+<span class="lineNum">     817 </span>            :             }
+<span class="lineNum">     818 </span>            :         }
+<span class="lineNum">     819 </span>            :     }
+<span class="lineNum">     820 </span><span class="lineNoCov">          0 : return( rev );</span>
+<a name="821"><span class="lineNum">     821 </span>            : }</a>
+<span class="lineNum">     822 </span>            : 
+<span class="lineNum">     823 </span><span class="lineNoCov">          0 : RevCMap *GClutReverse(GClut *clut,int side_cnt) {</span>
+<span class="lineNum">     824 </span><span class="lineNoCov">          0 :     struct revcol *base = NULL;</span>
+<span class="lineNum">     825 </span>            :     int i;
+<span class="lineNum">     826 </span>            :     RevCMap *ret;
+<span class="lineNum">     827 </span>            :     struct revcol basecol;
+<span class="lineNum">     828 </span>            : 
+<span class="lineNum">     829 </span><span class="lineNoCov">          0 :     if ( GImageGreyClut(clut) ) {</span>
+<span class="lineNum">     830 </span>            :         GCol *greys; int changed;
+<span class="lineNum">     831 </span><span class="lineNoCov">          0 :         ret = calloc(1,sizeof(RevCMap));</span>
+<span class="lineNum">     832 </span><span class="lineNoCov">          0 :         ret-&gt;is_grey = 1;</span>
+<span class="lineNum">     833 </span><span class="lineNoCov">          0 :         greys = ret-&gt;greys = malloc(256*sizeof(GCol));</span>
+<span class="lineNum">     834 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;256; ++i ) greys[i].pixel = 0x1000;</span>
+<span class="lineNum">     835 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;clut-&gt;clut_len; ++i ) {</span>
+<span class="lineNum">     836 </span><span class="lineNoCov">          0 :             int g = clut-&gt;clut[i]&amp;0xff;</span>
+<span class="lineNum">     837 </span><span class="lineNoCov">          0 :             greys[g].red = greys[g].green = greys[g].blue = g;</span>
+<span class="lineNum">     838 </span><span class="lineNoCov">          0 :             greys[g].pixel = i;</span>
+<span class="lineNum">     839 </span>            :         }
+<span class="lineNum">     840 </span><span class="lineNoCov">          0 :         changed = true;</span>
+<span class="lineNum">     841 </span><span class="lineNoCov">          0 :         while ( changed ) {</span>
+<span class="lineNum">     842 </span><span class="lineNoCov">          0 :             changed = false;</span>
+<span class="lineNum">     843 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;256; ++i ) {</span>
+<span class="lineNum">     844 </span><span class="lineNoCov">          0 :                 if ( greys[i].pixel!=0x1000 ) {</span>
+<span class="lineNum">     845 </span><span class="lineNoCov">          0 :                     if ( i!=0 &amp;&amp; greys[i-1].pixel == 0x1000 ) {</span>
+<span class="lineNum">     846 </span><span class="lineNoCov">          0 :                         greys[i-1] = greys[i]; changed = true; }</span>
+<span class="lineNum">     847 </span><span class="lineNoCov">          0 :                     if ( i!=255 &amp;&amp; greys[i+1].pixel == 0x1000 ) {</span>
+<span class="lineNum">     848 </span><span class="lineNoCov">          0 :                         greys[i+1] = greys[i]; changed = true; }</span>
+<span class="lineNum">     849 </span>            :                 }
+<span class="lineNum">     850 </span>            :             }
+<span class="lineNum">     851 </span>            :         }
+<span class="lineNum">     852 </span><span class="lineNoCov">          0 : return( ret );</span>
+<span class="lineNum">     853 </span>            :     }
+<span class="lineNum">     854 </span>            : 
+<span class="lineNum">     855 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;clut-&gt;clut_len; ++i ) {</span>
+<span class="lineNum">     856 </span><span class="lineNoCov">          0 :         struct revcol *rc = malloc(sizeof(struct revcol));</span>
+<span class="lineNum">     857 </span><span class="lineNoCov">          0 :         rc-&gt;red = COLOR_RED(clut-&gt;clut[i]);</span>
+<span class="lineNum">     858 </span><span class="lineNoCov">          0 :         rc-&gt;green = COLOR_GREEN(clut-&gt;clut[i]);</span>
+<span class="lineNum">     859 </span><span class="lineNoCov">          0 :         rc-&gt;blue = COLOR_BLUE(clut-&gt;clut[i]);</span>
+<span class="lineNum">     860 </span><span class="lineNoCov">          0 :         rc-&gt;index = i;</span>
+<span class="lineNum">     861 </span><span class="lineNoCov">          0 :         rc-&gt;dist = 0;</span>
+<span class="lineNum">     862 </span><span class="lineNoCov">          0 :         rc-&gt;next = base;</span>
+<span class="lineNum">     863 </span><span class="lineNoCov">          0 :         base = rc;</span>
+<span class="lineNum">     864 </span>            :     }
+<span class="lineNum">     865 </span><span class="lineNoCov">          0 :     memset(&amp;basecol,'\0',sizeof(basecol));</span>
+<span class="lineNum">     866 </span><span class="lineNoCov">          0 :     ret = _GClutReverse(side_cnt,256,&amp;basecol,base,base);</span>
+<span class="lineNum">     867 </span><span class="lineNoCov">          0 :     while ( base!=NULL ) {</span>
+<span class="lineNum">     868 </span><span class="lineNoCov">          0 :         struct revcol *rc = base-&gt;next;</span>
+<span class="lineNum">     869 </span><span class="lineNoCov">          0 :         free(base);</span>
+<span class="lineNum">     870 </span><span class="lineNoCov">          0 :         base = rc;</span>
+<span class="lineNum">     871 </span>            :     }
+<span class="lineNum">     872 </span><span class="lineNoCov">          0 : return( ret );</span>
+<a name="873"><span class="lineNum">     873 </span>            : }</a>
+<span class="lineNum">     874 </span>            : 
+<span class="lineNum">     875 </span><span class="lineNoCov">          0 : void GClut_RevCMapFree(RevCMap *rev) {</span>
+<span class="lineNum">     876 </span>            :     int i;
+<span class="lineNum">     877 </span>            : 
+<span class="lineNum">     878 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;rev-&gt;side_cnt*rev-&gt;side_cnt*rev-&gt;side_cnt; ++i ) {</span>
+<span class="lineNum">     879 </span><span class="lineNoCov">          0 :         if ( rev-&gt;cube[i].sub!=NULL )</span>
+<span class="lineNum">     880 </span><span class="lineNoCov">          0 :             GClut_RevCMapFree(rev-&gt;cube[i].sub);</span>
+<span class="lineNum">     881 </span><span class="lineNoCov">          0 :         RevColListFree(rev-&gt;cube[i].cols[0]);</span>
+<span class="lineNum">     882 </span><span class="lineNoCov">          0 :         RevColListFree(rev-&gt;cube[i].cols[1]);</span>
+<span class="lineNum">     883 </span>            :     }
+<span class="lineNum">     884 </span><span class="lineNoCov">          0 :     free(rev-&gt;cube);</span>
+<span class="lineNum">     885 </span><span class="lineNoCov">          0 :     free(rev);</span>
+<a name="886"><span class="lineNum">     886 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     887 </span>            : 
+<span class="lineNum">     888 </span><span class="lineNoCov">          0 : int GImageSameClut(GClut *clut,GClut *nclut) {</span>
+<span class="lineNum">     889 </span>            :     static GClut dummy = { 2, true, COLOR_UNKNOWN, GCLUT_CLUT_EMPTY };
+<span class="lineNum">     890 </span>            :     int i;
+<span class="lineNum">     891 </span>            :     
+<span class="lineNum">     892 </span><span class="lineNoCov">          0 :     dummy.clut[0] = COLOR_CREATE(0, 0, 0);</span>
+<span class="lineNum">     893 </span><span class="lineNoCov">          0 :     dummy.clut[1] = COLOR_CREATE(0xff, 0xff, 0xff);</span>
+<span class="lineNum">     894 </span>            : 
+<span class="lineNum">     895 </span><span class="lineNoCov">          0 :     if ( clut==nclut )</span>
+<span class="lineNum">     896 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     897 </span><span class="lineNoCov">          0 :     if ( clut==NULL )</span>
+<span class="lineNum">     898 </span><span class="lineNoCov">          0 :         clut = &amp;dummy;</span>
+<span class="lineNum">     899 </span><span class="lineNoCov">          0 :     if ( nclut==NULL )</span>
+<span class="lineNum">     900 </span><span class="lineNoCov">          0 :         nclut = &amp;dummy;</span>
+<span class="lineNum">     901 </span><span class="lineNoCov">          0 :     if ( clut-&gt;clut_len!=nclut-&gt;clut_len )</span>
+<span class="lineNum">     902 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     903 </span><span class="lineNoCov">          0 :     for ( i = 0; i&lt;clut-&gt;clut_len; ++i )</span>
+<span class="lineNum">     904 </span><span class="lineNoCov">          0 :         if ( clut-&gt;clut[i]!=nclut-&gt;clut[i] )</span>
+<span class="lineNum">     905 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     906 </span>            : 
+<span class="lineNum">     907 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="908"><span class="lineNum">     908 </span>            : }</a>
+<span class="lineNum">     909 </span>            : 
+<span class="lineNum">     910 </span><span class="lineNoCov">          0 : int GImageGreyClut(GClut *clut) {</span>
+<span class="lineNum">     911 </span>            :     int i, r,b,g;
+<span class="lineNum">     912 </span>            : 
+<span class="lineNum">     913 </span><span class="lineNoCov">          0 :     if ( clut==NULL )</span>
+<span class="lineNum">     914 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     915 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;clut-&gt;clut_len; ++i ) {</span>
+<span class="lineNum">     916 </span><span class="lineNoCov">          0 :         r = COLOR_RED(clut-&gt;clut[i]);</span>
+<span class="lineNum">     917 </span><span class="lineNoCov">          0 :         g = COLOR_GREEN(clut-&gt;clut[i]);</span>
+<span class="lineNum">     918 </span><span class="lineNoCov">          0 :         b = COLOR_BLUE(clut-&gt;clut[i]);</span>
+<span class="lineNum">     919 </span><span class="lineNoCov">          0 :         if ( r!=g || g!=b ) {</span>
+<span class="lineNum">     920 </span><span class="lineNoCov">          0 :             clut-&gt;is_grey = false;</span>
+<span class="lineNum">     921 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     922 </span>            :         }
+<span class="lineNum">     923 </span>            :     }
+<span class="lineNum">     924 </span><span class="lineNoCov">          0 :     clut-&gt;is_grey = true;</span>
+<span class="lineNum">     925 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     926 </span>            : }
+<span class="lineNum">     927 </span>            : 
+<span class="lineNum">     928 </span>            : static struct { char *name; long value; } predefn[] = {
+<span class="lineNum">     929 </span>            :     { &quot;red&quot;, 0xff0000 },
+<span class="lineNum">     930 </span>            :     { &quot;green&quot;, 0x008000 },
+<span class="lineNum">     931 </span>            :     { &quot;blue&quot;, 0x0000ff },
+<span class="lineNum">     932 </span>            :     { &quot;cyan&quot;, 0x00ffff },
+<span class="lineNum">     933 </span>            :     { &quot;magenta&quot;, 0xff00ff },
+<span class="lineNum">     934 </span>            :     { &quot;yellow&quot;, 0xffff00 },
+<span class="lineNum">     935 </span>            :     { &quot;black&quot;, 0x000000 },
+<span class="lineNum">     936 </span>            :     { &quot;gray&quot;, 0x808080 },
+<span class="lineNum">     937 </span>            :     { &quot;grey&quot;, 0x808080 },
+<span class="lineNum">     938 </span>            :     { &quot;white&quot;, 0xffffff },
+<span class="lineNum">     939 </span>            :     { &quot;maroon&quot;, 0x800000 },
+<span class="lineNum">     940 </span>            :     { &quot;olive&quot;, 0x808000 },
+<span class="lineNum">     941 </span>            :     { &quot;navy&quot;, 0x000080 },
+<span class="lineNum">     942 </span>            :     { &quot;purple&quot;, 0x800080 },
+<span class="lineNum">     943 </span>            :     { &quot;lime&quot;, 0x00ff00 },
+<span class="lineNum">     944 </span>            :     { &quot;aqua&quot;, 0x00ffff },
+<span class="lineNum">     945 </span>            :     { &quot;teal&quot;, 0x008080 },
+<span class="lineNum">     946 </span>            :     { &quot;fuchsia&quot;, 0xff0080 },
+<span class="lineNum">     947 </span>            :     { &quot;silver&quot;, 0xcccccc },
+<span class="lineNum">     948 </span>            :     { NULL, 0 }
+<a name="949"><span class="lineNum">     949 </span>            : };</a>
+<span class="lineNum">     950 </span>            : 
+<span class="lineNum">     951 </span><span class="lineNoCov">          0 : Color _GImage_ColourFName(char *name) {</span>
+<span class="lineNum">     952 </span>            :     int i;
+<span class="lineNum">     953 </span>            :     int r,g,b,a;
+<span class="lineNum">     954 </span>            :     double dr,dg,db,da;
+<span class="lineNum">     955 </span>            :     struct hslrgb hs;
+<span class="lineNum">     956 </span>            :     Color col;
+<span class="lineNum">     957 </span>            : 
+<span class="lineNum">     958 </span><span class="lineNoCov">          0 :     for ( i=0; predefn[i].name!=NULL; ++i )</span>
+<span class="lineNum">     959 </span><span class="lineNoCov">          0 :         if ( strmatch(name,predefn[i].name)==0 )</span>
+<span class="lineNum">     960 </span><span class="lineNoCov">          0 : return( predefn[i].value );</span>
+<span class="lineNum">     961 </span>            : 
+<span class="lineNum">     962 </span><span class="lineNoCov">          0 :     if ( sscanf(name,&quot;%d %d %d&quot;, &amp;r, &amp;g, &amp;b )==3 ||</span>
+<span class="lineNum">     963 </span><span class="lineNoCov">          0 :             sscanf(name,&quot;%x %x %x&quot;, (unsigned *) &amp;r, (unsigned *) &amp;g, (unsigned *) &amp;b )==3 ||</span>
+<span class="lineNum">     964 </span><span class="lineNoCov">          0 :             (strlen(name)==7 &amp;&amp; sscanf(name,&quot;#%2x%2x%2x&quot;, (unsigned *) &amp;r, (unsigned *) &amp;g, (unsigned *) &amp;b )==3) ) {</span>
+<span class="lineNum">     965 </span><span class="lineNoCov">          0 :         if ( r&gt;255 ) r=255; else if ( r&lt;0 ) r=0;</span>
+<span class="lineNum">     966 </span><span class="lineNoCov">          0 :         if ( g&gt;255 ) g=255; else if ( g&lt;0 ) g=0;</span>
+<span class="lineNum">     967 </span><span class="lineNoCov">          0 :         if ( b&gt;255 ) b=255; else if ( b&lt;0 ) b=0;</span>
+<span class="lineNum">     968 </span><span class="lineNoCov">          0 : return( ((long) r&lt;&lt;16) | (g&lt;&lt;8) | b );</span>
+<span class="lineNum">     969 </span><span class="lineNoCov">          0 :     } else if ( (strlen(name)==9 &amp;&amp; sscanf(name,&quot;#%2x%2x%2x%2x&quot;,</span>
+<span class="lineNum">     970 </span>            :             (unsigned *) &amp;a, (unsigned *) &amp;r, (unsigned *) &amp;g, (unsigned *) &amp;b )==4) ) {
+<span class="lineNum">     971 </span><span class="lineNoCov">          0 :         if ( a&gt;255 ) a=255; else if ( a&lt;0 ) a=0;</span>
+<span class="lineNum">     972 </span><span class="lineNoCov">          0 :         if ( r&gt;255 ) r=255; else if ( r&lt;0 ) r=0;</span>
+<span class="lineNum">     973 </span><span class="lineNoCov">          0 :         if ( g&gt;255 ) g=255; else if ( g&lt;0 ) g=0;</span>
+<span class="lineNum">     974 </span><span class="lineNoCov">          0 :         if ( b&gt;255 ) b=255; else if ( b&lt;0 ) b=0;</span>
+<span class="lineNum">     975 </span><span class="lineNoCov">          0 :         col = ((long) a&lt;&lt;24) | ((long) r&lt;&lt;16) | (g&lt;&lt;8) | b;</span>
+<span class="lineNum">     976 </span><span class="lineNoCov">          0 :         if ( (col&amp;0xfffffff0)==0xfffffff0 )</span>
+<span class="lineNum">     977 </span><span class="lineNoCov">          0 :             col &amp;= 0xffffff;        /* I use these colors internally for things like &quot;Undefined&quot; */</span>
+<span class="lineNum">     978 </span>            :                             /* but since I also treat colors with 0 alpha channel as fully */
+<span class="lineNum">     979 </span>            :                             /* opaque, I can just represent this that way */
+<span class="lineNum">     980 </span><span class="lineNoCov">          0 : return( col );</span>
+<span class="lineNum">     981 </span><span class="lineNoCov">          0 :     } else if ( sscanf(name,&quot;rgb(%lg,%lg,%lg)&quot;, &amp;dr, &amp;dg, &amp;db)==3 ) {</span>
+<span class="lineNum">     982 </span><span class="lineNoCov">          0 :         if ( dr&gt;1.0 ) dr=1.0; else if ( dr&lt;0 ) dr= 0;</span>
+<span class="lineNum">     983 </span><span class="lineNoCov">          0 :         if ( dg&gt;1.0 ) dg=1.0; else if ( dg&lt;0 ) dg= 0;</span>
+<span class="lineNum">     984 </span><span class="lineNoCov">          0 :         if ( db&gt;1.0 ) db=1.0; else if ( db&lt;0 ) db= 0;</span>
+<span class="lineNum">     985 </span><span class="lineNoCov">          0 :         r = dr*255 +.5;</span>
+<span class="lineNum">     986 </span><span class="lineNoCov">          0 :         g = dg*255 +.5;</span>
+<span class="lineNum">     987 </span><span class="lineNoCov">          0 :         b = db*255 +.5;</span>
+<span class="lineNum">     988 </span><span class="lineNoCov">          0 : return( ((long) r&lt;&lt;16) | (g&lt;&lt;8) | b );</span>
+<span class="lineNum">     989 </span><span class="lineNoCov">          0 :     } else if ( sscanf(name,&quot;argb(%lg,%lg,%lg,%lg)&quot;, &amp;da, &amp;dr, &amp;dg, &amp;db)==4 ) {</span>
+<span class="lineNum">     990 </span><span class="lineNoCov">          0 :         if ( da&gt;1.0 ) da=1.0; else if ( da&lt;0 ) da= 0;</span>
+<span class="lineNum">     991 </span><span class="lineNoCov">          0 :         if ( dr&gt;1.0 ) dr=1.0; else if ( dr&lt;0 ) dr= 0;</span>
+<span class="lineNum">     992 </span><span class="lineNoCov">          0 :         if ( dg&gt;1.0 ) dg=1.0; else if ( dg&lt;0 ) dg= 0;</span>
+<span class="lineNum">     993 </span><span class="lineNoCov">          0 :         if ( db&gt;1.0 ) db=1.0; else if ( db&lt;0 ) db= 0;</span>
+<span class="lineNum">     994 </span><span class="lineNoCov">          0 :         a = da*255 +.5;</span>
+<span class="lineNum">     995 </span><span class="lineNoCov">          0 :         r = dr*255 +.5;</span>
+<span class="lineNum">     996 </span><span class="lineNoCov">          0 :         g = dg*255 +.5;</span>
+<span class="lineNum">     997 </span><span class="lineNoCov">          0 :         b = db*255 +.5;</span>
+<span class="lineNum">     998 </span><span class="lineNoCov">          0 :         col = ((long) a&lt;&lt;24) | ((long) r&lt;&lt;16) | (g&lt;&lt;8) | b;</span>
+<span class="lineNum">     999 </span><span class="lineNoCov">          0 :         if ( (col&amp;0xfffffff0)==0xfffffff0 )</span>
+<span class="lineNum">    1000 </span><span class="lineNoCov">          0 :             col &amp;= 0xffffff;        /* I use these colors internally for things like &quot;Undefined&quot; */</span>
+<span class="lineNum">    1001 </span>            :                             /* but since I also treat colors with 0 alpha channel as fully */
+<span class="lineNum">    1002 </span>            :                             /* opaque, I can just represent this that way */
+<span class="lineNum">    1003 </span><span class="lineNoCov">          0 : return( col );</span>
+<span class="lineNum">    1004 </span><span class="lineNoCov">          0 :     } else if ( sscanf(name,&quot;hsv(%lg,%lg,%lg)&quot;, &amp;hs.h, &amp;hs.s, &amp;hs.v)==3 ) {</span>
+<span class="lineNum">    1005 </span>            :         /* Hue is an angle in degrees. HS?2RGB does appropriate clipping */
+<span class="lineNum">    1006 </span><span class="lineNoCov">          0 :         if ( hs.s&gt;1.0 ) hs.s=1.0; else if ( hs.s&lt;0 ) hs.s= 0;</span>
+<span class="lineNum">    1007 </span><span class="lineNoCov">          0 :         if ( hs.v&gt;1.0 ) hs.v=1.0; else if ( hs.v&lt;0 ) hs.v= 0;</span>
+<span class="lineNum">    1008 </span><span class="lineNoCov">          0 :         gHSV2RGB(&amp;hs);</span>
+<span class="lineNum">    1009 </span><span class="lineNoCov">          0 :         r = hs.r*255 +.5;</span>
+<span class="lineNum">    1010 </span><span class="lineNoCov">          0 :         g = hs.g*255 +.5;</span>
+<span class="lineNum">    1011 </span><span class="lineNoCov">          0 :         b = hs.b*255 +.5;</span>
+<span class="lineNum">    1012 </span><span class="lineNoCov">          0 : return( ((long) r&lt;&lt;16) | (g&lt;&lt;8) | b );</span>
+<span class="lineNum">    1013 </span><span class="lineNoCov">          0 :     } else if ( sscanf(name,&quot;hsl(%lg,%lg,%lg)&quot;, &amp;hs.h, &amp;hs.s, &amp;hs.l)==3 ) {</span>
+<span class="lineNum">    1014 </span>            :         /* Hue is an angle in degrees. HS?2RGB does appropriate clipping */
+<span class="lineNum">    1015 </span><span class="lineNoCov">          0 :         if ( hs.s&gt;1.0 ) hs.s=1.0; else if ( hs.s&lt;0 ) hs.s= 0;</span>
+<span class="lineNum">    1016 </span><span class="lineNoCov">          0 :         if ( hs.l&gt;1.0 ) hs.l=1.0; else if ( hs.l&lt;0 ) hs.l= 0;</span>
+<span class="lineNum">    1017 </span><span class="lineNoCov">          0 :         gHSL2RGB(&amp;hs);</span>
+<span class="lineNum">    1018 </span><span class="lineNoCov">          0 :         r = hs.r*255 +.5;</span>
+<span class="lineNum">    1019 </span><span class="lineNoCov">          0 :         g = hs.g*255 +.5;</span>
+<span class="lineNum">    1020 </span><span class="lineNoCov">          0 :         b = hs.b*255 +.5;</span>
+<span class="lineNum">    1021 </span><span class="lineNoCov">          0 : return( ((long) r&lt;&lt;16) | (g&lt;&lt;8) | b );</span>
+<span class="lineNum">    1022 </span><span class="lineNoCov">          0 :     } else if ( (strlen(name)==4 &amp;&amp; sscanf(name,&quot;#%1x%1x%1x&quot;, (unsigned *) &amp;r, (unsigned *) &amp;g, (unsigned *) &amp;b )==3) ) {</span>
+<span class="lineNum">    1023 </span><span class="lineNoCov">          0 :         if ( r&gt;15 ) r=15; else if ( r&lt;0 ) r=0;</span>
+<span class="lineNum">    1024 </span><span class="lineNoCov">          0 :         if ( g&gt;15 ) g=15; else if ( g&lt;0 ) g=0;</span>
+<span class="lineNum">    1025 </span><span class="lineNoCov">          0 :         if ( b&gt;15 ) b=15; else if ( b&lt;0 ) b=0;</span>
+<span class="lineNum">    1026 </span><span class="lineNoCov">          0 : return( ((long) (r*0x110000)) | (g*0x1100) | (b*0x11) );</span>
+<span class="lineNum">    1027 </span><span class="lineNoCov">          0 :     } else if ( (strlen(name)==17 &amp;&amp; sscanf(name,&quot;#%4x%4x%4x&quot;, (unsigned *) &amp;r, (unsigned *) &amp;g, (unsigned *) &amp;b )==3) ) {</span>
+<span class="lineNum">    1028 </span><span class="lineNoCov">          0 :         r&gt;&gt;=8; g&gt;&gt;=8; b&gt;&gt;=8;</span>
+<span class="lineNum">    1029 </span><span class="lineNoCov">          0 :         if ( r&gt;255 ) r=255; else if ( r&lt;0 ) r=0;</span>
+<span class="lineNum">    1030 </span><span class="lineNoCov">          0 :         if ( g&gt;255 ) g=255; else if ( g&lt;0 ) g=0;</span>
+<span class="lineNum">    1031 </span><span class="lineNoCov">          0 :         if ( b&gt;255 ) b=255; else if ( b&lt;0 ) b=0;</span>
+<span class="lineNum">    1032 </span><span class="lineNoCov">          0 : return( ((long) r&lt;&lt;16) | (g&lt;&lt;8) | b );</span>
+<span class="lineNum">    1033 </span><span class="lineNoCov">          0 :     } else if ( sscanf(name,&quot;rgb(%lg%%,%lg%%,%lg%%)&quot;, &amp;dr, &amp;dg, &amp;db)==3 ) {</span>
+<span class="lineNum">    1034 </span><span class="lineNoCov">          0 :         if ( dr&gt;100 ) dr=100; else if ( dr&lt;0 ) dr= 0;</span>
+<span class="lineNum">    1035 </span><span class="lineNoCov">          0 :         if ( dg&gt;100 ) dg=100; else if ( dg&lt;0 ) dg= 0;</span>
+<span class="lineNum">    1036 </span><span class="lineNoCov">          0 :         if ( db&gt;100 ) db=100; else if ( db&lt;0 ) db= 0;</span>
+<span class="lineNum">    1037 </span><span class="lineNoCov">          0 :         r = (dr*255+50)/100 +.5;</span>
+<span class="lineNum">    1038 </span><span class="lineNoCov">          0 :         g = (dg*255+50)/100 +.5;</span>
+<span class="lineNum">    1039 </span><span class="lineNoCov">          0 :         b = (db*255+50)/100 +.5;</span>
+<span class="lineNum">    1040 </span><span class="lineNoCov">          0 : return( ((long) r&lt;&lt;16) | (g&lt;&lt;8) | b );</span>
+<span class="lineNum">    1041 </span>            :     }
+<span class="lineNum">    1042 </span><span class="lineNoCov">          0 : return( -1 );</span>
+<a name="1043"><span class="lineNum">    1043 </span>            : }</a>
+<span class="lineNum">    1044 </span>            : 
+<span class="lineNum">    1045 </span><span class="lineNoCov">          0 : Color GImageColourFName(unichar_t *name) {</span>
+<span class="lineNum">    1046 </span><span class="lineNoCov">          0 : return( _GImage_ColourFName(u_to_c(name)) );</span>
+<a name="1047"><span class="lineNum">    1047 </span>            : }</a>
+<span class="lineNum">    1048 </span>            : 
+<span class="lineNum">    1049 </span><span class="lineNoCov">          0 : char *GImageNameFColour(Color col) {</span>
+<span class="lineNum">    1050 </span>            :     int i;
+<span class="lineNum">    1051 </span>            : 
+<span class="lineNum">    1052 </span><span class="lineNoCov">          0 :     col &amp;=0xffffff;</span>
+<span class="lineNum">    1053 </span><span class="lineNoCov">          0 :     for ( i=0; predefn[i].name!=NULL; ++i )</span>
+<span class="lineNum">    1054 </span><span class="lineNoCov">          0 :         if ( col == predefn[i].value )</span>
+<span class="lineNum">    1055 </span><span class="lineNoCov">          0 : return( predefn[i].name );</span>
+<span class="lineNum">    1056 </span>            : 
+<span class="lineNum">    1057 </span><span class="lineNoCov">          0 : return(NULL);</span>
+<a name="1058"><span class="lineNum">    1058 </span>            : }</a>
+<span class="lineNum">    1059 </span>            : 
+<span class="lineNum">    1060 </span><span class="lineNoCov">          0 : Color GDrawColorBrighten(Color col, int by) {</span>
+<span class="lineNum">    1061 </span>            :     int r, g, b;
+<span class="lineNum">    1062 </span><span class="lineNoCov">          0 :     if (( r = COLOR_RED(col)+by )&gt;255 ) r=255;</span>
+<span class="lineNum">    1063 </span><span class="lineNoCov">          0 :     if (( g=COLOR_GREEN(col)+by )&gt;255 ) g=255;</span>
+<span class="lineNum">    1064 </span><span class="lineNoCov">          0 :     if (( b=COLOR_BLUE(col)+by )&gt;255 ) b=255;</span>
+<span class="lineNum">    1065 </span><span class="lineNoCov">          0 : return( COLOR_CREATE(r,g,b));</span>
+<a name="1066"><span class="lineNum">    1066 </span>            : }</a>
+<span class="lineNum">    1067 </span>            : 
+<span class="lineNum">    1068 </span><span class="lineNoCov">          0 : Color GDrawColorDarken(Color col, int by) {</span>
+<span class="lineNum">    1069 </span>            :     int r, g, b;
+<span class="lineNum">    1070 </span><span class="lineNoCov">          0 :     if (( r = COLOR_RED(col)-by )&lt;0 ) r=0;</span>
+<span class="lineNum">    1071 </span><span class="lineNoCov">          0 :     if (( g=COLOR_GREEN(col)-by )&lt;0 ) g=0;</span>
+<span class="lineNum">    1072 </span><span class="lineNoCov">          0 :     if (( b=COLOR_BLUE(col)-by )&lt;0 ) b=0;</span>
+<span class="lineNum">    1073 </span><span class="lineNoCov">          0 : return( COLOR_CREATE(r,g,b));</span>
+<span class="lineNum">    1074 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

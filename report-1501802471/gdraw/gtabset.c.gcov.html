@@ -1,0 +1,1101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - gdraw/gtabset.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gdraw</a> - gtabset.c<span style="font-size: 80%;"> (source / <a href="gtabset.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">634</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">39</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &quot;gdraw.h&quot;
+<span class="lineNum">      28 </span>            : #include &quot;gresource.h&quot;
+<span class="lineNum">      29 </span>            : #include &quot;ggadgetP.h&quot;
+<span class="lineNum">      30 </span>            : #include &quot;gwidget.h&quot;
+<span class="lineNum">      31 </span>            : #include &quot;ustring.h&quot;
+<span class="lineNum">      32 </span>            : #include &quot;gkeysym.h&quot;
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span>            : static GBox gtabset_box = GBOX_EMPTY; /* Don't initialize here */
+<span class="lineNum">      35 </span>            : static GBox gvtabset_box = GBOX_EMPTY; /* Don't initialize here */
+<span class="lineNum">      36 </span>            : static FontInstance *gtabset_font = NULL;
+<span class="lineNum">      37 </span>            : static int gtabset_inited = false;
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            : static GResInfo gtabset_ri, gvtabset_ri;
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span>            : static GResInfo gtabset_ri = {
+<span class="lineNum">      42 </span>            :     &amp;gvtabset_ri, &amp;ggadget_ri, &amp;gvtabset_ri, NULL,
+<span class="lineNum">      43 </span>            :     &amp;gtabset_box,
+<span class="lineNum">      44 </span>            :     NULL,
+<span class="lineNum">      45 </span>            :     NULL,
+<span class="lineNum">      46 </span>            :     NULL,
+<span class="lineNum">      47 </span>            :     N_(&quot;TabSet&quot;),
+<span class="lineNum">      48 </span>            :     N_(&quot;Tab Set&quot;),
+<span class="lineNum">      49 </span>            :     &quot;GTabSet&quot;,
+<span class="lineNum">      50 </span>            :     &quot;Gdraw&quot;,
+<span class="lineNum">      51 </span>            :     false,
+<span class="lineNum">      52 </span>            :     omf_border_width|omf_border_shape,
+<span class="lineNum">      53 </span>            :     NULL,
+<span class="lineNum">      54 </span>            :     GBOX_EMPTY,
+<span class="lineNum">      55 </span>            :     NULL,
+<span class="lineNum">      56 </span>            :     NULL,
+<span class="lineNum">      57 </span>            :     NULL
+<span class="lineNum">      58 </span>            : };
+<span class="lineNum">      59 </span>            : 
+<span class="lineNum">      60 </span>            : /* Dummy gadget for styling vertical layout */
+<span class="lineNum">      61 </span>            : static GResInfo gvtabset_ri = {
+<span class="lineNum">      62 </span>            :     NULL, &amp;gtabset_ri, &amp;gtabset_ri, NULL,
+<span class="lineNum">      63 </span>            :     &amp;gvtabset_box,
+<span class="lineNum">      64 </span>            :     NULL,
+<span class="lineNum">      65 </span>            :     NULL,
+<span class="lineNum">      66 </span>            :     NULL,
+<span class="lineNum">      67 </span>            :     N_(&quot;VerticalTabSet&quot;),
+<span class="lineNum">      68 </span>            :     N_(&quot;Vertical Tab Set&quot;),
+<span class="lineNum">      69 </span>            :     &quot;GVTabSet&quot;,
+<span class="lineNum">      70 </span>            :     &quot;Gdraw&quot;,
+<span class="lineNum">      71 </span>            :     false,
+<span class="lineNum">      72 </span>            :     0,
+<span class="lineNum">      73 </span>            :     NULL,
+<span class="lineNum">      74 </span>            :     GBOX_EMPTY,
+<span class="lineNum">      75 </span>            :     NULL,
+<span class="lineNum">      76 </span>            :     NULL,
+<span class="lineNum">      77 </span>            :     NULL
+<span class="lineNum">      78 </span>            : };
+<a name="79"><span class="lineNum">      79 </span>            : #define NEST_INDENT     4</a>
+<span class="lineNum">      80 </span>            : 
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 : static void GTabSetInit() {</span>
+<span class="lineNum">      82 </span>            : 
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :     if ( gtabset_inited )</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">      85 </span>            : 
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :     GGadgetInit();</span>
+<span class="lineNum">      87 </span>            : 
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :     _GGadgetCopyDefaultBox(&amp;gtabset_box);</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :     gtabset_box.border_width = 1; gtabset_box.border_shape = bs_rect;</span>
+<span class="lineNum">      90 </span>            :     /*gtabset_box.flags = 0;*/
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :     gtabset_font = _GGadgetInitDefaultBox(&quot;GTabSet.&quot;,&amp;gtabset_box,NULL);</span>
+<span class="lineNum">      92 </span>            : 
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :     gvtabset_box = gtabset_box; /* needs this to figure inheritance */</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :     _GGadgetInitDefaultBox(&quot;GVTabSet.&quot;,&amp;gvtabset_box,NULL);</span>
+<span class="lineNum">      95 </span>            : 
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :     gtabset_inited = true;</span>
+<a name="97"><span class="lineNum">      97 </span>            : }</a>
+<span class="lineNum">      98 </span>            : 
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 : static void GTabSetChanged(GTabSet *gts,int oldsel) {</span>
+<span class="lineNum">     100 </span>            :     GEvent e;
+<span class="lineNum">     101 </span>            : 
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :     e.type = et_controlevent;</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :     e.w = gts-&gt;g.base;</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :     e.u.control.subtype = et_radiochanged;</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :     e.u.control.g = &amp;gts-&gt;g;</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :     if ( gts-&gt;g.handle_controlevent != NULL )</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :         (gts-&gt;g.handle_controlevent)(&amp;gts-&gt;g,&amp;e);</span>
+<span class="lineNum">     108 </span>            :     else
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :         GDrawPostEvent(&amp;e);</span>
+<a name="110"><span class="lineNum">     110 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     111 </span>            : 
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 : static int DrawLeftArrowTab(GWindow pixmap, GTabSet *gts, int x, int y ) {</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :     Color fg = gts-&gt;g.box-&gt;main_foreground;</span>
+<span class="lineNum">     114 </span>            :     GPoint pts[5];
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :     int retx = x + gts-&gt;arrow_width, cnt;</span>
+<span class="lineNum">     116 </span>            : 
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :     if ( fg==COLOR_DEFAULT ) fg = GDrawGetDefaultForeground(GDrawGetDisplayOfWindow(pixmap));</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :     GBoxDrawTabOutline(pixmap,&amp;gts-&gt;g,x,y,gts-&gt;arrow_width,gts-&gt;rowh,false);</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :     gts-&gt;haslarrow = true;</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :         y += (gts-&gt;rowh-gts-&gt;arrow_size)/2;</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :         x += (gts-&gt;arrow_width-gts-&gt;arrow_size/2)/2;</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :         cnt = 4;</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :         pts[0].y = (y+(gts-&gt;arrow_size-1)/2);        pts[0].x = x;</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :         pts[1].y = y;                           pts[1].x = x + (gts-&gt;arrow_size-1)/2;</span>
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 :         pts[2].y = y+gts-&gt;arrow_size-1;      pts[2].x = pts[1].x;</span>
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :         pts[3] = pts[0];</span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :         if ( !(gts-&gt;arrow_size&amp;1 )) {</span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :             ++pts[3].y;</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :             pts[4] = pts[0];</span>
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :             cnt = 5;</span>
+<span class="lineNum">     131 </span>            :         }
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :         GDrawFillPoly(pixmap,pts,cnt,fg);</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 : return( retx );</span>
+<a name="134"><span class="lineNum">     134 </span>            : }</a>
+<span class="lineNum">     135 </span>            : 
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 : static int DrawRightArrowTab(GWindow pixmap, GTabSet *gts, int x, int y ) {</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :     Color fg = gts-&gt;g.box-&gt;main_foreground;</span>
+<span class="lineNum">     138 </span>            :     GPoint pts[5];
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :     int retx = x + gts-&gt;arrow_width, cnt;</span>
+<span class="lineNum">     140 </span>            : 
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :     if ( fg==COLOR_DEFAULT ) fg = GDrawGetDefaultForeground(GDrawGetDisplayOfWindow(pixmap));</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :     GBoxDrawTabOutline(pixmap,&amp;gts-&gt;g,x,y,gts-&gt;arrow_width,gts-&gt;rowh,false);</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :     gts-&gt;hasrarrow = true;</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :         y += (gts-&gt;rowh-gts-&gt;arrow_size)/2;</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :         x += (gts-&gt;arrow_width-gts-&gt;arrow_size/2)/2;</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :         cnt = 4;</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :         pts[0].y = (y+(gts-&gt;arrow_size-1)/2);        pts[0].x = x + (gts-&gt;arrow_size-1)/2;</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :         pts[1].y = y;                           pts[1].x = x;</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :         pts[2].y = y+gts-&gt;arrow_size-1;      pts[2].x = pts[1].x;</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :         pts[3] = pts[0];</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :         if ( !(gts-&gt;arrow_size&amp;1 )) {</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :             ++pts[3].y;</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :             pts[4] = pts[0];</span>
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :             cnt = 5;</span>
+<span class="lineNum">     155 </span>            :         }
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :         GDrawFillPoly(pixmap,pts,cnt,fg);</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 : return( retx );</span>
+<a name="158"><span class="lineNum">     158 </span>            : }</a>
+<span class="lineNum">     159 </span>            : 
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 : static int DrawTab(GWindow pixmap, GTabSet *gts, int i, int x, int y ) {</span>
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :     Color fg = gts-&gt;tabs[i].disabled?gts-&gt;g.box-&gt;disabled_foreground:gts-&gt;g.box-&gt;main_foreground;</span>
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :     if ( fg==COLOR_DEFAULT ) fg = GDrawGetDefaultForeground(GDrawGetDisplayOfWindow(pixmap));</span>
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :     GBoxDrawTabOutline(pixmap,&amp;gts-&gt;g,x,y,gts-&gt;tabs[i].width,gts-&gt;rowh,i==gts-&gt;sel);</span>
+<span class="lineNum">     165 </span>            : 
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :     if ( (i==gts-&gt;sel) &amp;&amp; (gts-&gt;g.box-&gt;flags&amp;box_active_border_inner) ) {</span>
+<span class="lineNum">     167 </span>            :         GRect r;
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :         r.x = x+2;</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :         r.y = y+1;</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :         r.width = gts-&gt;tabs[i].width-4;</span>
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :         r.height = gts-&gt;rowh-2;</span>
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :         GDrawFillRect(pixmap,&amp;r,gts-&gt;g.box-&gt;active_border);</span>
+<span class="lineNum">     173 </span>            :     }
+<span class="lineNum">     174 </span>            : 
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :     GDrawDrawText(pixmap,x+(gts-&gt;tabs[i].width-gts-&gt;tabs[i].tw)/2,y+gts-&gt;rowh-gts-&gt;ds,</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :             gts-&gt;tabs[i].name,-1,fg);</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :     gts-&gt;tabs[i].x = x;</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :     x += gts-&gt;tabs[i].width;</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 : return( x );</span>
+<a name="180"><span class="lineNum">     180 </span>            : }</a>
+<span class="lineNum">     181 </span>            : 
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 : static int gtabset_expose(GWindow pixmap, GGadget *g, GEvent *event) {</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) g;</span>
+<span class="lineNum">     184 </span>            :     int x,y,i,rd, dsel;
+<span class="lineNum">     185 </span>            :     GRect old1, bounds;
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :     int bw = GBoxBorderWidth(pixmap,g-&gt;box);</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :     int yoff = ( gts-&gt;rcnt==1 ? bw : 0 );</span>
+<span class="lineNum">     188 </span>            :     Color fg;
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :     int ni = GDrawPointsToPixels(pixmap,NEST_INDENT);</span>
+<span class="lineNum">     190 </span>            : 
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :     if ( g-&gt;state == gs_invisible )</span>
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     193 </span>            : 
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :     GDrawPushClip(pixmap,&amp;g-&gt;r,&amp;old1);</span>
+<span class="lineNum">     195 </span>            : 
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :     GBoxDrawBackground(pixmap,&amp;g-&gt;r,g-&gt;box,g-&gt;state,false);</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :     bounds = g-&gt;r;</span>
+<span class="lineNum">     198 </span>            : 
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :     if ( !gts-&gt;vertical ) {</span>
+<span class="lineNum">     200 </span>            :         /* make room for tabs */
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :         bounds.y += gts-&gt;rcnt*gts-&gt;rowh+yoff-1;</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :         bounds.height -= gts-&gt;rcnt*gts-&gt;rowh+yoff-1;</span>
+<span class="lineNum">     203 </span>            :         /* draw border around horizontal tabs only */
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :         GBoxDrawBorder(pixmap,&amp;bounds,g-&gt;box,g-&gt;state,false);</span>
+<span class="lineNum">     205 </span>            :     }
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :     else if ( g-&gt;state==gs_enabled ) {</span>
+<span class="lineNum">     207 </span>            :         /* background for labels */
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :         GRect old2, vertListRect = g-&gt;r;</span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :         vertListRect.width = gts-&gt;vert_list_width+bw-1;</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :         GDrawPushClip(pixmap,&amp;vertListRect,&amp;old2);</span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :         GBoxDrawBackground(pixmap,&amp;g-&gt;r,g-&gt;box,gs_pressedactive,false);</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :         GDrawPopClip(pixmap,&amp;old2);</span>
+<span class="lineNum">     213 </span>            :     }
+<span class="lineNum">     214 </span>            : 
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :     GDrawSetFont(pixmap,gts-&gt;font);</span>
+<span class="lineNum">     216 </span>            : 
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :     if ( gts-&gt;vertical ) {</span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :         x = g-&gt;r.x + bw + 3;</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :         y = g-&gt;r.y + bw + 3;</span>
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :         for ( i=gts-&gt;offtop; i&lt;gts-&gt;tabcnt; ++i ) {</span>
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :             fg = gts-&gt;tabs[i].disabled?gts-&gt;g.box-&gt;disabled_foreground:gts-&gt;g.box-&gt;main_foreground;</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :             if ( fg==COLOR_DEFAULT ) fg = GDrawGetDefaultForeground(GDrawGetDisplayOfWindow(pixmap));</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :             if ( i==gts-&gt;sel ) {</span>
+<span class="lineNum">     224 </span>            :                 GRect r;
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 :                 r.x = x; r.y = y;</span>
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :                 r.width = gts-&gt;vert_list_width-10; r.height = gts-&gt;fh;</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :                 GDrawFillRect(pixmap,&amp;r,gts-&gt;g.box-&gt;active_border);</span>
+<span class="lineNum">     228 </span>            :             }
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :             GDrawDrawText(pixmap,x+gts-&gt;tabs[i].nesting*ni,y + gts-&gt;as,gts-&gt;tabs[i].name,-1,fg);</span>
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :             y += gts-&gt;fh;</span>
+<span class="lineNum">     231 </span>            :         }
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :         fg = gts-&gt;g.box-&gt;main_foreground;</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :         if ( fg==COLOR_DEFAULT ) fg = GDrawGetDefaultForeground(GDrawGetDisplayOfWindow(pixmap));</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :         GDrawDrawLine(pixmap,x + gts-&gt;vert_list_width-4, g-&gt;r.y + bw,</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :                              x + gts-&gt;vert_list_width-4, g-&gt;r.y + g-&gt;r.height - (bw+1),</span>
+<span class="lineNum">     236 </span>            :                              fg);
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :         if ( gts-&gt;vsb != NULL )</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :             gts-&gt;vsb-&gt;funcs-&gt;handle_expose(pixmap,gts-&gt;vsb,event);</span>
+<span class="lineNum">     239 </span>            :     } else {
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :         gts-&gt;haslarrow = gts-&gt;hasrarrow = false;</span>
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :         if ( gts-&gt;scrolled ) {</span>
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :             x = g-&gt;r.x + GBoxBorderWidth(pixmap,gts-&gt;g.box);</span>
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :             y = g-&gt;r.y+yoff;</span>
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :             dsel = 0;</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :             if ( gts-&gt;toff!=0 )</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :                 x = DrawLeftArrowTab(pixmap,gts,x,y);</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :             for ( i=gts-&gt;toff;</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :                     (i==gts-&gt;tabcnt-1 &amp;&amp; x+gts-&gt;tabs[i].width &lt; g-&gt;r.width) ||</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :                     (i&lt;gts-&gt;tabcnt-1 &amp;&amp; x+gts-&gt;tabs[i].width &lt; g-&gt;r.width-gts-&gt;arrow_width ) ;</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :                     ++i ) {</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :                 if ( i!=gts-&gt;sel )</span>
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :                     x = DrawTab(pixmap,gts,i,x,y);</span>
+<span class="lineNum">     253 </span>            :                 else {
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :                     gts-&gt;tabs[i].x = x;</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :                     x += gts-&gt;tabs[i].width;</span>
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :                     dsel = 1;</span>
+<span class="lineNum">     257 </span>            :                 }
+<span class="lineNum">     258 </span>            :             }
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :             if ( i!=gts-&gt;tabcnt ) {</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :                 int p = gts-&gt;g.inner.x+gts-&gt;g.inner.width - gts-&gt;arrow_width;</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :                 if ( p&gt;x ) x=p;</span>
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :                 x = DrawRightArrowTab(pixmap,gts,x,y);</span>
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :                 gts-&gt;tabs[i].x = 0x7fff;</span>
+<span class="lineNum">     264 </span>            :             }
+<span class="lineNum">     265 </span>            :             /* This one draws on top of the others, must come last */
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :             if ( dsel )</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :                 DrawTab(pixmap,gts,gts-&gt;sel,gts-&gt;tabs[gts-&gt;sel].x, g-&gt;r.y + (gts-&gt;rcnt-1) * gts-&gt;rowh + yoff );</span>
+<span class="lineNum">     268 </span>            :         } else {
+<span class="lineNum">     269 </span>            :             /* r is real row, rd is drawn pos */
+<span class="lineNum">     270 </span>            :             /* rd is 0 at the top of the ggadget */
+<span class="lineNum">     271 </span>            :             /* r is 0 when it contains tabs[0], (the index in the rowstarts array) */
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :             for ( rd = 0; rd&lt;gts-&gt;rcnt; ++rd ) {</span>
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :                 int r = (gts-&gt;rcnt-1-rd+gts-&gt;active_row)%gts-&gt;rcnt;</span>
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :                 y = g-&gt;r.y + rd * gts-&gt;rowh + yoff;</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :                 x = g-&gt;r.x + (gts-&gt;rcnt-1-rd) * gts-&gt;offset_per_row + GBoxBorderWidth(pixmap,gts-&gt;g.box);</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :                 for ( i = gts-&gt;rowstarts[r]; i&lt;gts-&gt;rowstarts[r+1]; ++i )</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :                     if ( i==gts-&gt;sel ) {</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :                         gts-&gt;tabs[i].x = x;</span>
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 :                         x += gts-&gt;tabs[i].width;</span>
+<span class="lineNum">     280 </span>            :                     } else
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :                         x = DrawTab(pixmap,gts,i,x,y);</span>
+<span class="lineNum">     282 </span>            :             }
+<span class="lineNum">     283 </span>            :             /* This one draws on top of the others, must come last */
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :             DrawTab(pixmap,gts,gts-&gt;sel,gts-&gt;tabs[gts-&gt;sel].x, g-&gt;r.y + (gts-&gt;rcnt-1) * gts-&gt;rowh + yoff );</span>
+<span class="lineNum">     285 </span>            :         }
+<span class="lineNum">     286 </span>            :     }
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :     if ( gts-&gt;nested_expose )</span>
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :         (gts-&gt;nested_expose)(pixmap,g,event);</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :     GDrawPopClip(pixmap,&amp;old1);</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="291"><span class="lineNum">     291 </span>            : }</a>
+<span class="lineNum">     292 </span>            : 
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 : static int GTabSetRCnt(GTabSet *gts, int totwidth) {</span>
+<span class="lineNum">     294 </span>            :     int i, off, r, width;
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :     int bp = GBoxBorderWidth(gts-&gt;g.base,gts-&gt;g.box) + GDrawPointsToPixels(gts-&gt;g.base,5);</span>
+<span class="lineNum">     296 </span>            : 
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 :     width = totwidth;</span>
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :     for ( i = off = r = 0; i&lt;gts-&gt;tabcnt; ++i ) {</span>
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :         if ( off!=0 &amp;&amp; width-(gts-&gt;tabs[i].tw+2*bp)&lt; 0 ) {</span>
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :             off = 0; ++r;</span>
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :             width = totwidth;</span>
+<span class="lineNum">     302 </span>            :         }
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :         width -= gts-&gt;tabs[i].width;</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :         gts-&gt;tabs[i].x = off;</span>
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 :         off ++;</span>
+<span class="lineNum">     306 </span>            :     }
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 : return( r+1 );</span>
+<a name="308"><span class="lineNum">     308 </span>            : }</a>
+<span class="lineNum">     309 </span>            : 
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 : static int GTabSetGetLineWidth(GTabSet *gts,int r) {</span>
+<span class="lineNum">     311 </span><span class="lineNoCov">          0 :     int i, width = 0;</span>
+<span class="lineNum">     312 </span>            : 
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :     for ( i=gts-&gt;rowstarts[r]; i&lt;gts-&gt;rowstarts[r+1]; ++i )</span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :         width += gts-&gt;tabs[i].width;</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 : return( width );</span>
+<a name="316"><span class="lineNum">     316 </span>            : }</a>
+<span class="lineNum">     317 </span>            : 
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 : static void GTabSetDistributePixels(GTabSet *gts,int r, int widthdiff) {</span>
+<span class="lineNum">     319 </span>            :     int diff, off, i;
+<span class="lineNum">     320 </span>            : 
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 :     diff = widthdiff/(gts-&gt;rowstarts[r+1]-gts-&gt;rowstarts[r]);</span>
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 :     off = widthdiff-diff*(gts-&gt;rowstarts[r+1]-gts-&gt;rowstarts[r]);</span>
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :     for ( i=gts-&gt;rowstarts[r]; i&lt;gts-&gt;rowstarts[r+1]; ++i ) {</span>
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :         gts-&gt;tabs[i].width += diff;</span>
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :         if ( off ) {</span>
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :             ++gts-&gt;tabs[i].width;</span>
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :             --off;</span>
+<span class="lineNum">     328 </span>            :         }
+<span class="lineNum">     329 </span>            :     }
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     331 </span>            : 
+<a name="332"><span class="lineNum">     332 </span>            : /* We have rearranged the rows of tabs. We want to make sure that each row */</a>
+<span class="lineNum">     333 </span>            : /*  row is at least as wide as the row above it */
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 : static void GTabSetFigureWidths(GTabSet *gts) {</span>
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 :     int bp = GBoxBorderWidth(gts-&gt;g.base,gts-&gt;g.box) + GDrawPointsToPixels(gts-&gt;g.base,5);</span>
+<span class="lineNum">     336 </span>            :     int i, rd;
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :     int oldwidth=0, width;</span>
+<span class="lineNum">     338 </span>            : 
+<span class="lineNum">     339 </span>            :     /* set all row widths to default values */
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;gts-&gt;tabcnt; ++i ) {</span>
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :         gts-&gt;tabs[i].width = gts-&gt;tabs[i].tw + 2*bp;</span>
+<span class="lineNum">     342 </span>            :     }
+<span class="lineNum">     343 </span>            :     /* r is real row, rd is drawn pos */
+<span class="lineNum">     344 </span>            :     /* rd is 0 at the top of the ggadget */
+<span class="lineNum">     345 </span>            :     /* r is 0 when it contains tabs[0], (the index in the rowstarts array) */
+<span class="lineNum">     346 </span><span class="lineNoCov">          0 :     if ( ( gts-&gt;filllines &amp;&amp; gts-&gt;rcnt&gt;1 ) || (gts-&gt;fill1line &amp;&amp; gts-&gt;rcnt==1) ) {</span>
+<span class="lineNum">     347 </span><span class="lineNoCov">          0 :         for ( rd = 0; rd&lt;gts-&gt;rcnt; ++rd ) {</span>
+<span class="lineNum">     348 </span><span class="lineNoCov">          0 :             int r = (rd+gts-&gt;rcnt-1-gts-&gt;active_row)%gts-&gt;rcnt;</span>
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :             int totwidth = gts-&gt;g.r.width-2*GBoxBorderWidth(gts-&gt;g.base,gts-&gt;g.box) -</span>
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :                     (gts-&gt;rcnt-1-rd)*gts-&gt;offset_per_row;</span>
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :             width = GTabSetGetLineWidth(gts,r);</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :             GTabSetDistributePixels(gts,r,totwidth-width);</span>
+<span class="lineNum">     353 </span>            :         }
+<span class="lineNum">     354 </span>            :     } else {
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :         for ( rd = 0; rd&lt;gts-&gt;rcnt; ++rd ) {              /* r is real row, rd is drawn pos */</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :             int r = (rd+gts-&gt;rcnt-1-gts-&gt;active_row)%gts-&gt;rcnt;</span>
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :             width = GTabSetGetLineWidth(gts,r) + (gts-&gt;rcnt-1-rd)*gts-&gt;offset_per_row;</span>
+<span class="lineNum">     358 </span><span class="lineNoCov">          0 :             if ( rd==0 )</span>
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 :                 oldwidth = width;</span>
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :             else if ( oldwidth&gt;width )</span>
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 :                 GTabSetDistributePixels(gts,r,oldwidth-width);</span>
+<span class="lineNum">     362 </span>            :             else
+<span class="lineNum">     363 </span><span class="lineNoCov">          0 :                 oldwidth = width;</span>
+<span class="lineNum">     364 </span>            :         }
+<span class="lineNum">     365 </span>            :     }
+<span class="lineNum">     366 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     367 </span>            : 
+<span class="lineNum">     368 </span>            : /* Something happened which would change how many things fit on a line */
+<span class="lineNum">     369 </span>            : /*  (initialization, change of font, addition or removal of tab, etc.) */
+<a name="370"><span class="lineNum">     370 </span>            : /* Figure out how many rows we need and then how best to divide the tabs */</a>
+<span class="lineNum">     371 </span>            : /*  between those rows, and then the widths of each tab */
+<span class="lineNum">     372 </span><span class="lineNoCov">          0 : static void GTabSet_Remetric(GTabSet *gts) {</span>
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 :     int bbp = GBoxBorderWidth(gts-&gt;g.base,gts-&gt;g.box);</span>
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 :     int bp = bbp + GDrawPointsToPixels(gts-&gt;g.base,5);</span>
+<span class="lineNum">     375 </span>            :     int r, r2, width, i;
+<span class="lineNum">     376 </span>            :     int as, ds, ld;
+<span class="lineNum">     377 </span><span class="lineNoCov">          0 :     int ni = GDrawPointsToPixels(gts-&gt;g.base,NEST_INDENT), in;</span>
+<span class="lineNum">     378 </span>            : 
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :     GDrawSetFont(gts-&gt;g.base,gts-&gt;font);</span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :     GDrawWindowFontMetrics(gts-&gt;g.base,gts-&gt;font,&amp;as,&amp;ds,&amp;ld);</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :     gts-&gt;as = as; gts-&gt;fh = as+ds;</span>
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :     gts-&gt;rowh = as+ds + bbp+GDrawPointsToPixels(gts-&gt;g.base,3);</span>
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :     gts-&gt;ds = ds + bbp+GDrawPointsToPixels(gts-&gt;g.base,1);</span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :     gts-&gt;arrow_size = as+ds;</span>
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :     gts-&gt;arrow_width = gts-&gt;arrow_size + 2*GBoxBorderWidth(gts-&gt;g.base,gts-&gt;g.box);</span>
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :     gts-&gt;vert_list_width = 0;</span>
+<span class="lineNum">     387 </span>            : 
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;gts-&gt;tabcnt; ++i ) {</span>
+<span class="lineNum">     389 </span><span class="lineNoCov">          0 :         gts-&gt;tabs[i].tw = GDrawGetTextWidth(gts-&gt;g.base,gts-&gt;tabs[i].name,-1);</span>
+<span class="lineNum">     390 </span><span class="lineNoCov">          0 :         gts-&gt;tabs[i].width = gts-&gt;tabs[i].tw + 2*bp;</span>
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 :         in = gts-&gt;tabs[i].nesting*ni;</span>
+<span class="lineNum">     392 </span><span class="lineNoCov">          0 :         if ( gts-&gt;tabs[i].tw+in &gt; gts-&gt;vert_list_width )</span>
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 :             gts-&gt;vert_list_width = gts-&gt;tabs[i].tw+in;</span>
+<span class="lineNum">     394 </span>            :     }
+<span class="lineNum">     395 </span><span class="lineNoCov">          0 :     if ( gts-&gt;vsb ) {</span>
+<span class="lineNum">     396 </span><span class="lineNoCov">          0 :         gts-&gt;vert_list_width += gts-&gt;vsb-&gt;r.width;</span>
+<span class="lineNum">     397 </span><span class="lineNoCov">          0 :         if ( gts-&gt;g.inner.height&gt;26 ) {</span>
+<span class="lineNum">     398 </span><span class="lineNoCov">          0 :             int bp = GBoxBorderWidth(gts-&gt;g.base,gts-&gt;g.box);</span>
+<span class="lineNum">     399 </span><span class="lineNoCov">          0 :             GScrollBarSetBounds(gts-&gt;vsb,0,gts-&gt;tabcnt,(gts-&gt;g.r.height-2*bp-6)/gts-&gt;fh);</span>
+<span class="lineNum">     400 </span>            :         }
+<span class="lineNum">     401 </span>            :     }
+<span class="lineNum">     402 </span><span class="lineNoCov">          0 :     gts-&gt;vert_list_width += 8;</span>
+<span class="lineNum">     403 </span>            : 
+<span class="lineNum">     404 </span><span class="lineNoCov">          0 :     if ( gts-&gt;vertical ) {</span>
+<span class="lineNum">     405 </span>            :         /* Nothing much to do */
+<span class="lineNum">     406 </span><span class="lineNoCov">          0 :     } else if ( gts-&gt;scrolled ) {</span>
+<span class="lineNum">     407 </span><span class="lineNoCov">          0 :         free(gts-&gt;rowstarts);</span>
+<span class="lineNum">     408 </span><span class="lineNoCov">          0 :         gts-&gt;rowstarts = malloc(2*sizeof(int16));</span>
+<span class="lineNum">     409 </span><span class="lineNoCov">          0 :         gts-&gt;rowstarts[0] = 0; gts-&gt;rowstarts[1] = gts-&gt;tabcnt;</span>
+<span class="lineNum">     410 </span><span class="lineNoCov">          0 :         gts-&gt;rcnt = 1;</span>
+<span class="lineNum">     411 </span>            :     } else {
+<span class="lineNum">     412 </span><span class="lineNoCov">          0 :         width = gts-&gt;g.r.width-2*GBoxBorderWidth(gts-&gt;g.base,gts-&gt;g.box);</span>
+<span class="lineNum">     413 </span><span class="lineNoCov">          0 :         r = GTabSetRCnt(gts,width);</span>
+<span class="lineNum">     414 </span><span class="lineNoCov">          0 :         if ( gts-&gt;offset_per_row!=0 &amp;&amp; r&gt;1 )</span>
+<span class="lineNum">     415 </span><span class="lineNoCov">          0 :             while ( (r2 = GTabSetRCnt(gts,width-(r-1)*gts-&gt;offset_per_row))!=r )</span>
+<span class="lineNum">     416 </span><span class="lineNoCov">          0 :                 r = r2;</span>
+<span class="lineNum">     417 </span><span class="lineNoCov">          0 :         free(gts-&gt;rowstarts);</span>
+<span class="lineNum">     418 </span><span class="lineNoCov">          0 :         gts-&gt;rowstarts = malloc((r+1)*sizeof(int16));</span>
+<span class="lineNum">     419 </span><span class="lineNoCov">          0 :         gts-&gt;rcnt = r;</span>
+<span class="lineNum">     420 </span><span class="lineNoCov">          0 :         gts-&gt;rowstarts[r] = gts-&gt;tabcnt;</span>
+<span class="lineNum">     421 </span><span class="lineNoCov">          0 :         for ( i=r=0; i&lt;gts-&gt;tabcnt; ++i ) {</span>
+<span class="lineNum">     422 </span><span class="lineNoCov">          0 :             if ( gts-&gt;tabs[i].x==0 ) </span>
+<span class="lineNum">     423 </span><span class="lineNoCov">          0 :                 gts-&gt;rowstarts[r++] = i;</span>
+<span class="lineNum">     424 </span>            :         }
+<span class="lineNum">     425 </span>            :         /* if there is a single tab on the last line and there are more on */
+<span class="lineNum">     426 </span>            :         /*  the previous line, then things look nicer if we move one of the */
+<span class="lineNum">     427 </span>            :         /*  tabs from the previous line onto the last line */
+<span class="lineNum">     428 </span>            :         /*  Providing it fits, of course */
+<span class="lineNum">     429 </span><span class="lineNoCov">          0 :         if ( gts-&gt;rowstarts[r]-gts-&gt;rowstarts[r-1]==1 &amp;&amp; r&gt;1 &amp;&amp;</span>
+<span class="lineNum">     430 </span><span class="lineNoCov">          0 :                 gts-&gt;rowstarts[r-1]-gts-&gt;rowstarts[r-2]&gt;1 &amp;&amp;</span>
+<span class="lineNum">     431 </span><span class="lineNoCov">          0 :                 gts-&gt;tabs[i-1].width+gts-&gt;tabs[i-2].width &lt; width-(r-1)*gts-&gt;offset_per_row )</span>
+<span class="lineNum">     432 </span><span class="lineNoCov">          0 :             --gts-&gt;rowstarts[r-1];</span>
+<span class="lineNum">     433 </span>            : 
+<span class="lineNum">     434 </span><span class="lineNoCov">          0 :         GTabSetFigureWidths(gts);</span>
+<span class="lineNum">     435 </span>            :     }
+<a name="436"><span class="lineNum">     436 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     437 </span>            : 
+<span class="lineNum">     438 </span><span class="lineNoCov">          0 : static void GTabSetChangeSel(GTabSet *gts, int sel,int sendevent) {</span>
+<span class="lineNum">     439 </span>            :     int i, width;
+<span class="lineNum">     440 </span><span class="lineNoCov">          0 :     int oldsel = gts-&gt;sel;</span>
+<span class="lineNum">     441 </span>            : 
+<span class="lineNum">     442 </span><span class="lineNoCov">          0 :     if ( sel==-2 )              /* left arrow */</span>
+<span class="lineNum">     443 </span><span class="lineNoCov">          0 :         --gts-&gt;toff;</span>
+<span class="lineNum">     444 </span><span class="lineNoCov">          0 :     else if ( sel==-3 )</span>
+<span class="lineNum">     445 </span><span class="lineNoCov">          0 :         ++gts-&gt;toff;</span>
+<span class="lineNum">     446 </span><span class="lineNoCov">          0 :     else if ( sel&lt;0 || sel&gt;=gts-&gt;tabcnt || gts-&gt;tabs[sel].disabled )</span>
+<span class="lineNum">     447 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     448 </span>            :     else {
+<span class="lineNum">     449 </span><span class="lineNoCov">          0 :         if ( gts-&gt;vertical )</span>
+<span class="lineNum">     450 </span><span class="lineNoCov">          0 :             gts-&gt;sel = sel;</span>
+<span class="lineNum">     451 </span>            :         else {
+<span class="lineNum">     452 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;gts-&gt;rcnt &amp;&amp; sel&gt;=gts-&gt;rowstarts[i+1]; ++i );</span>
+<span class="lineNum">     453 </span><span class="lineNoCov">          0 :             if ( gts-&gt;active_row != i ) {</span>
+<span class="lineNum">     454 </span><span class="lineNoCov">          0 :                 gts-&gt;active_row = i;</span>
+<span class="lineNum">     455 </span><span class="lineNoCov">          0 :                 if ( gts-&gt;rcnt&gt;1 &amp;&amp; (!gts-&gt;filllines || gts-&gt;offset_per_row!=0))</span>
+<span class="lineNum">     456 </span><span class="lineNoCov">          0 :                     GTabSetFigureWidths(gts);</span>
+<span class="lineNum">     457 </span>            :             }
+<span class="lineNum">     458 </span><span class="lineNoCov">          0 :             gts-&gt;sel = sel;</span>
+<span class="lineNum">     459 </span><span class="lineNoCov">          0 :             if ( sel&lt;gts-&gt;toff )</span>
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 :                 gts-&gt;toff = sel;</span>
+<span class="lineNum">     461 </span><span class="lineNoCov">          0 :             else if ( gts-&gt;scrolled ) {</span>
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 :                 for ( i=gts-&gt;toff; i&lt;sel &amp;&amp; gts-&gt;tabs[i].x!=0x7fff; ++i );</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :                 if ( gts-&gt;tabs[i].x==0x7fff ) {</span>
+<span class="lineNum">     464 </span><span class="lineNoCov">          0 :                     width = gts-&gt;g.r.width-2*gts-&gt;arrow_width;    /* it will have a left arrow */</span>
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 :                     if ( sel!=gts-&gt;tabcnt )</span>
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :                         width -= gts-&gt;arrow_width;           /* it might have a right arrow */</span>
+<span class="lineNum">     467 </span><span class="lineNoCov">          0 :                     for ( i=sel; i&gt;=0 &amp;&amp; width-gts-&gt;tabs[i].width&gt;=0; --i )</span>
+<span class="lineNum">     468 </span><span class="lineNoCov">          0 :                         width -= gts-&gt;tabs[i].width;</span>
+<span class="lineNum">     469 </span><span class="lineNoCov">          0 :                     if ( ++i&gt;sel ) i = sel;</span>
+<span class="lineNum">     470 </span><span class="lineNoCov">          0 :                     gts-&gt;toff = i;</span>
+<span class="lineNum">     471 </span>            :                 }
+<span class="lineNum">     472 </span>            :             }
+<span class="lineNum">     473 </span>            :         }
+<span class="lineNum">     474 </span><span class="lineNoCov">          0 :         if ( oldsel!=sel ) {</span>
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 :             if ( sendevent )</span>
+<span class="lineNum">     476 </span><span class="lineNoCov">          0 :                 GTabSetChanged(gts,oldsel);</span>
+<span class="lineNum">     477 </span><span class="lineNoCov">          0 :             if ( gts-&gt;tabs[oldsel].w!=NULL )</span>
+<span class="lineNum">     478 </span><span class="lineNoCov">          0 :                 GDrawSetVisible(gts-&gt;tabs[oldsel].w,false);</span>
+<span class="lineNum">     479 </span><span class="lineNoCov">          0 :             if ( gts-&gt;tabs[gts-&gt;sel].w!=NULL )</span>
+<span class="lineNum">     480 </span><span class="lineNoCov">          0 :                 GDrawSetVisible(gts-&gt;tabs[gts-&gt;sel].w,true);</span>
+<span class="lineNum">     481 </span>            :         }
+<span class="lineNum">     482 </span>            :     }
+<span class="lineNum">     483 </span><span class="lineNoCov">          0 :     _ggadget_redraw(&amp;gts-&gt;g);</span>
+<a name="484"><span class="lineNum">     484 </span>            : }</a>
+<span class="lineNum">     485 </span>            : 
+<span class="lineNum">     486 </span><span class="lineNoCov">          0 : static int gtabset_mouse(GGadget *g, GEvent *event) {</span>
+<span class="lineNum">     487 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) g;</span>
+<span class="lineNum">     488 </span>            : 
+<span class="lineNum">     489 </span><span class="lineNoCov">          0 :     if ( !g-&gt;takes_input || (g-&gt;state!=gs_enabled &amp;&amp; g-&gt;state!=gs_active &amp;&amp; g-&gt;state!=gs_focused ))</span>
+<span class="lineNum">     490 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 :     if ( gts-&gt;nested_mouse!=NULL )</span>
+<span class="lineNum">     492 </span><span class="lineNoCov">          0 :         if ( (gts-&gt;nested_mouse)(g,event))</span>
+<span class="lineNum">     493 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     494 </span>            : 
+<span class="lineNum">     495 </span><span class="lineNoCov">          0 :     if ( event-&gt;type == et_crossing ) {</span>
+<span class="lineNum">     496 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     497 </span><span class="lineNoCov">          0 :     } else if ( event-&gt;type == et_mousemove ) {</span>
+<span class="lineNum">     498 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     499 </span>            :     } else {
+<span class="lineNum">     500 </span><span class="lineNoCov">          0 :         int i, sel= -1, l;</span>
+<span class="lineNum">     501 </span><span class="lineNoCov">          0 :         if ( event-&gt;u.mouse.y &lt; gts-&gt;g.r.y ||</span>
+<span class="lineNum">     502 </span><span class="lineNoCov">          0 :                 ( !gts-&gt;vertical &amp;&amp; event-&gt;u.mouse.y &gt;= gts-&gt;g.inner.y ) ||</span>
+<span class="lineNum">     503 </span><span class="lineNoCov">          0 :                 ( gts-&gt;vertical &amp;&amp; event-&gt;u.mouse.x &gt;= gts-&gt;g.inner.x ))</span>
+<span class="lineNum">     504 </span><span class="lineNoCov">          0 : return( false );</span>
+<span class="lineNum">     505 </span><span class="lineNoCov">          0 :         else if ( gts-&gt;vertical ) {</span>
+<span class="lineNum">     506 </span><span class="lineNoCov">          0 :             int y = g-&gt;r.y + GBoxBorderWidth(g-&gt;base,g-&gt;box) + 5;</span>
+<span class="lineNum">     507 </span><span class="lineNoCov">          0 :             sel = (event-&gt;u.mouse.y-y)/gts-&gt;fh + gts-&gt;offtop;</span>
+<span class="lineNum">     508 </span><span class="lineNoCov">          0 :             if ( sel&lt;0 || sel&gt;=gts-&gt;tabcnt )</span>
+<span class="lineNum">     509 </span><span class="lineNoCov">          0 : return(false);</span>
+<span class="lineNum">     510 </span><span class="lineNoCov">          0 :         } else if ( gts-&gt;scrolled ) {</span>
+<span class="lineNum">     511 </span><span class="lineNoCov">          0 :             if ( gts-&gt;haslarrow &amp;&amp; event-&gt;u.mouse.x&lt;gts-&gt;tabs[gts-&gt;toff].x )</span>
+<span class="lineNum">     512 </span><span class="lineNoCov">          0 :                 sel = -2;       /* left arrow */</span>
+<span class="lineNum">     513 </span>            :             else {
+<span class="lineNum">     514 </span><span class="lineNoCov">          0 :                 for ( i=gts-&gt;toff;</span>
+<span class="lineNum">     515 </span><span class="lineNoCov">          0 :                         i&lt;gts-&gt;tabcnt &amp;&amp; event-&gt;u.mouse.x&gt;=gts-&gt;tabs[i].x+gts-&gt;tabs[i].width;</span>
+<span class="lineNum">     516 </span><span class="lineNoCov">          0 :                         ++i );</span>
+<span class="lineNum">     517 </span><span class="lineNoCov">          0 :                 if ( gts-&gt;hasrarrow &amp;&amp; gts-&gt;tabs[i].x==0x7fff &amp;&amp;</span>
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 :                         event-&gt;u.mouse.x&gt;=gts-&gt;tabs[i-1].x+gts-&gt;tabs[i-1].width )</span>
+<span class="lineNum">     519 </span><span class="lineNoCov">          0 :                     sel = -3;</span>
+<span class="lineNum">     520 </span>            :                 else
+<span class="lineNum">     521 </span><span class="lineNoCov">          0 :                     sel = i;</span>
+<span class="lineNum">     522 </span>            :             }
+<span class="lineNum">     523 </span>            :         } else {
+<span class="lineNum">     524 </span><span class="lineNoCov">          0 :             l = (event-&gt;u.mouse.y-gts-&gt;g.r.y)/gts-&gt;rowh;       /* screen row */</span>
+<span class="lineNum">     525 </span><span class="lineNoCov">          0 :             if ( l&gt;=gts-&gt;rcnt ) l = gts-&gt;rcnt-1;               /* can happen on single line tabsets (there's extra space then) */</span>
+<span class="lineNum">     526 </span><span class="lineNoCov">          0 :             l = (gts-&gt;rcnt-1-l+gts-&gt;active_row)%gts-&gt;rcnt;     /* internal row number */</span>
+<span class="lineNum">     527 </span><span class="lineNoCov">          0 :             if ( event-&gt;u.mouse.x&lt;gts-&gt;tabs[gts-&gt;rowstarts[l]].x )</span>
+<span class="lineNum">     528 </span><span class="lineNoCov">          0 :                 sel = -1;</span>
+<span class="lineNum">     529 </span><span class="lineNoCov">          0 :             else if ( event-&gt;u.mouse.x&gt;=gts-&gt;tabs[gts-&gt;rowstarts[l+1]-1].x+gts-&gt;tabs[gts-&gt;rowstarts[l+1]-1].width )</span>
+<span class="lineNum">     530 </span><span class="lineNoCov">          0 :                 sel = -1;</span>
+<span class="lineNum">     531 </span>            :             else {
+<span class="lineNum">     532 </span><span class="lineNoCov">          0 :                 for ( i=gts-&gt;rowstarts[l]; i&lt;gts-&gt;rowstarts[l+1] &amp;&amp;</span>
+<span class="lineNum">     533 </span><span class="lineNoCov">          0 :                         event-&gt;u.mouse.x&gt;=gts-&gt;tabs[i].x+gts-&gt;tabs[i].width; ++i );</span>
+<span class="lineNum">     534 </span><span class="lineNoCov">          0 :                 sel = i;</span>
+<span class="lineNum">     535 </span>            :             }
+<span class="lineNum">     536 </span>            :         }
+<span class="lineNum">     537 </span><span class="lineNoCov">          0 :         if ( event-&gt;type==et_mousedown ) {</span>
+<span class="lineNum">     538 </span><span class="lineNoCov">          0 :             gts-&gt;pressed = true;</span>
+<span class="lineNum">     539 </span><span class="lineNoCov">          0 :             gts-&gt;pressed_sel = sel;</span>
+<span class="lineNum">     540 </span>            :         } else {
+<span class="lineNum">     541 </span><span class="lineNoCov">          0 :             if ( gts-&gt;pressed &amp;&amp; gts-&gt;pressed_sel == sel )</span>
+<span class="lineNum">     542 </span><span class="lineNoCov">          0 :                 GTabSetChangeSel(gts,sel,true);</span>
+<span class="lineNum">     543 </span><span class="lineNoCov">          0 :             gts-&gt;pressed = false;</span>
+<span class="lineNum">     544 </span><span class="lineNoCov">          0 :             gts-&gt;pressed_sel = -1;</span>
+<span class="lineNum">     545 </span>            :         }
+<span class="lineNum">     546 </span>            :     }
+<span class="lineNum">     547 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="548"><span class="lineNum">     548 </span>            : }</a>
+<span class="lineNum">     549 </span>            : 
+<span class="lineNum">     550 </span><span class="lineNoCov">          0 : static int gtabset_key(GGadget *g, GEvent *event) {</span>
+<span class="lineNum">     551 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) g;</span>
+<span class="lineNum">     552 </span>            :     int i;
+<span class="lineNum">     553 </span>            : 
+<span class="lineNum">     554 </span><span class="lineNoCov">          0 :     if ( !g-&gt;takes_input || !g-&gt;takes_keyboard || (g-&gt;state!=gs_enabled &amp;&amp; g-&gt;state!=gs_active &amp;&amp; g-&gt;state!=gs_focused ))</span>
+<span class="lineNum">     555 </span><span class="lineNoCov">          0 : return(false);</span>
+<span class="lineNum">     556 </span><span class="lineNoCov">          0 :     if ( event-&gt;type == et_charup )</span>
+<span class="lineNum">     557 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     558 </span>            : 
+<span class="lineNum">     559 </span><span class="lineNoCov">          0 :     if (event-&gt;u.chr.keysym == GK_Left || event-&gt;u.chr.keysym == GK_KP_Left ||</span>
+<span class="lineNum">     560 </span><span class="lineNoCov">          0 :             (event-&gt;u.chr.keysym == GK_Tab &amp;&amp; (event-&gt;u.chr.state&amp;ksm_shift)) ||</span>
+<span class="lineNum">     561 </span><span class="lineNoCov">          0 :             event-&gt;u.chr.keysym == GK_BackTab ||</span>
+<span class="lineNum">     562 </span><span class="lineNoCov">          0 :             event-&gt;u.chr.keysym == GK_Up || event-&gt;u.chr.keysym == GK_KP_Up ) {</span>
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 :         for ( i = gts-&gt;sel-1; i&gt;0 &amp;&amp; gts-&gt;tabs[i].disabled; --i );</span>
+<span class="lineNum">     564 </span><span class="lineNoCov">          0 :         GTabSetChangeSel(gts,i,true);</span>
+<span class="lineNum">     565 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     566 </span><span class="lineNoCov">          0 :     } else if (event-&gt;u.chr.keysym == GK_Right || event-&gt;u.chr.keysym == GK_KP_Right ||</span>
+<span class="lineNum">     567 </span><span class="lineNoCov">          0 :             event-&gt;u.chr.keysym == GK_Tab ||</span>
+<span class="lineNum">     568 </span><span class="lineNoCov">          0 :             event-&gt;u.chr.keysym == GK_Down || event-&gt;u.chr.keysym == GK_KP_Down ) {</span>
+<span class="lineNum">     569 </span><span class="lineNoCov">          0 :         for ( i = gts-&gt;sel+1; i&lt;gts-&gt;tabcnt-1 &amp;&amp; gts-&gt;tabs[i].disabled; ++i );</span>
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 :         GTabSetChangeSel(gts,i,true);</span>
+<span class="lineNum">     571 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     572 </span>            :     }
+<span class="lineNum">     573 </span><span class="lineNoCov">          0 : return( false );</span>
+<a name="574"><span class="lineNum">     574 </span>            : }</a>
+<span class="lineNum">     575 </span>            : 
+<span class="lineNum">     576 </span><span class="lineNoCov">          0 : static int gtabset_focus(GGadget *g, GEvent *UNUSED(event)) {</span>
+<span class="lineNum">     577 </span>            : 
+<span class="lineNum">     578 </span><span class="lineNoCov">          0 :     if ( !g-&gt;takes_input || (g-&gt;state!=gs_enabled &amp;&amp; g-&gt;state!=gs_active ))</span>
+<span class="lineNum">     579 </span><span class="lineNoCov">          0 : return(false);</span>
+<span class="lineNum">     580 </span>            : 
+<span class="lineNum">     581 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="582"><span class="lineNum">     582 </span>            : }</a>
+<span class="lineNum">     583 </span>            : 
+<span class="lineNum">     584 </span><span class="lineNoCov">          0 : static void gtabset_destroy(GGadget *g) {</span>
+<span class="lineNum">     585 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) g;</span>
+<span class="lineNum">     586 </span>            :     int i;
+<span class="lineNum">     587 </span>            : 
+<span class="lineNum">     588 </span><span class="lineNoCov">          0 :     if ( gts==NULL )</span>
+<span class="lineNum">     589 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     590 </span><span class="lineNoCov">          0 :     free(gts-&gt;rowstarts);</span>
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;gts-&gt;tabcnt; ++i ) {</span>
+<span class="lineNum">     592 </span><span class="lineNoCov">          0 :         free(gts-&gt;tabs[i].name);</span>
+<span class="lineNum">     593 </span>            : /* This has already been done */
+<span class="lineNum">     594 </span>            : /*      if ( gts-&gt;tabs[i].w!=NULL ) */
+<span class="lineNum">     595 </span>            : /*          GDrawDestroyWindow(gts-&gt;tabs[i].w); */
+<span class="lineNum">     596 </span>            :     }
+<span class="lineNum">     597 </span><span class="lineNoCov">          0 :     free(gts-&gt;tabs);</span>
+<span class="lineNum">     598 </span><span class="lineNoCov">          0 :     _ggadget_destroy(g);</span>
+<a name="599"><span class="lineNum">     599 </span>            : }</a>
+<span class="lineNum">     600 </span>            : 
+<span class="lineNum">     601 </span><span class="lineNoCov">          0 : static void GTabSetSetFont(GGadget *g,FontInstance *new) {</span>
+<span class="lineNum">     602 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) g;</span>
+<span class="lineNum">     603 </span><span class="lineNoCov">          0 :     gts-&gt;font = new;</span>
+<span class="lineNum">     604 </span><span class="lineNoCov">          0 :     GTabSet_Remetric(gts);</span>
+<a name="605"><span class="lineNum">     605 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     606 </span>            : 
+<span class="lineNum">     607 </span><span class="lineNoCov">          0 : static FontInstance *GTabSetGetFont(GGadget *g) {</span>
+<span class="lineNum">     608 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) g;</span>
+<span class="lineNum">     609 </span><span class="lineNoCov">          0 : return( gts-&gt;font );</span>
+<a name="610"><span class="lineNum">     610 </span>            : }</a>
+<span class="lineNum">     611 </span>            : 
+<span class="lineNum">     612 </span><span class="lineNoCov">          0 : static void _gtabset_redraw(GGadget *g) {</span>
+<span class="lineNum">     613 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) g;</span>
+<span class="lineNum">     614 </span>            :     int i;
+<span class="lineNum">     615 </span>            : 
+<span class="lineNum">     616 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(g-&gt;base, &amp;g-&gt;r, false);</span>
+<span class="lineNum">     617 </span><span class="lineNoCov">          0 :     i = gts-&gt;sel;</span>
+<span class="lineNum">     618 </span><span class="lineNoCov">          0 :     if ( gts-&gt;tabs[i].w!=NULL )</span>
+<span class="lineNum">     619 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(gts-&gt;tabs[i].w, NULL, false);</span>
+<a name="620"><span class="lineNum">     620 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     621 </span>            : 
+<span class="lineNum">     622 </span><span class="lineNoCov">          0 : static void _gtabset_move(GGadget *g, int32 x, int32 y ) {</span>
+<span class="lineNum">     623 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) g;</span>
+<span class="lineNum">     624 </span>            :     int i;
+<span class="lineNum">     625 </span><span class="lineNoCov">          0 :     int32 nx = x+g-&gt;inner.x-g-&gt;r.x, ny = y+g-&gt;inner.y-g-&gt;r.y;</span>
+<span class="lineNum">     626 </span>            : 
+<span class="lineNum">     627 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;gts-&gt;tabcnt; ++i ) if ( gts-&gt;tabs[i].w!=NULL )</span>
+<span class="lineNum">     628 </span><span class="lineNoCov">          0 :         GDrawMove(gts-&gt;tabs[i].w,nx,ny);</span>
+<span class="lineNum">     629 </span><span class="lineNoCov">          0 :     _ggadget_move(g,x,y);</span>
+<span class="lineNum">     630 </span><span class="lineNoCov">          0 :     if ( gts-&gt;vsb!=NULL ) {</span>
+<span class="lineNum">     631 </span><span class="lineNoCov">          0 :         int bp = GBoxBorderWidth(gts-&gt;g.base,gts-&gt;g.box);</span>
+<span class="lineNum">     632 </span><span class="lineNoCov">          0 :         GGadgetMove(gts-&gt;vsb,g-&gt;r.x +bp+ gts-&gt;vert_list_width - gts-&gt;vsb-&gt;r.width,</span>
+<span class="lineNum">     633 </span><span class="lineNoCov">          0 :                     gts-&gt;g.r.y+bp);</span>
+<span class="lineNum">     634 </span>            :     }
+<a name="635"><span class="lineNum">     635 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     636 </span>            : 
+<span class="lineNum">     637 </span><span class="lineNoCov">          0 : static void _gtabset_resize(GGadget *g, int32 width, int32 height ) {</span>
+<span class="lineNum">     638 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) g;</span>
+<span class="lineNum">     639 </span>            :     int i;
+<span class="lineNum">     640 </span>            : 
+<span class="lineNum">     641 </span><span class="lineNoCov">          0 :     _ggadget_resize(g,width,height);</span>
+<span class="lineNum">     642 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;gts-&gt;tabcnt; ++i ) if ( gts-&gt;tabs[i].w!=NULL )</span>
+<span class="lineNum">     643 </span><span class="lineNoCov">          0 :         GDrawResize(gts-&gt;tabs[i].w,g-&gt;inner.width,g-&gt;inner.height);</span>
+<span class="lineNum">     644 </span><span class="lineNoCov">          0 :     if ( gts-&gt;vsb!=NULL ) {</span>
+<span class="lineNum">     645 </span><span class="lineNoCov">          0 :         int off = gts-&gt;offtop;</span>
+<span class="lineNum">     646 </span><span class="lineNoCov">          0 :         int bp = GBoxBorderWidth(gts-&gt;g.base,gts-&gt;g.box);</span>
+<span class="lineNum">     647 </span><span class="lineNoCov">          0 :         GGadgetResize(gts-&gt;vsb,gts-&gt;vsb-&gt;r.width, gts-&gt;g.r.height-2*bp);</span>
+<span class="lineNum">     648 </span><span class="lineNoCov">          0 :         GScrollBarSetBounds(gts-&gt;vsb,0,gts-&gt;tabcnt,(gts-&gt;g.r.height-2*bp-6)/gts-&gt;fh);</span>
+<span class="lineNum">     649 </span><span class="lineNoCov">          0 :         if ( gts-&gt;offtop + (gts-&gt;g.r.height-2*bp-6)/gts-&gt;fh &gt; gts-&gt;tabcnt )</span>
+<span class="lineNum">     650 </span><span class="lineNoCov">          0 :             off = gts-&gt;tabcnt - (gts-&gt;g.r.height-2*bp-6)/gts-&gt;fh;</span>
+<span class="lineNum">     651 </span><span class="lineNoCov">          0 :         if ( off&lt;0 )</span>
+<span class="lineNum">     652 </span><span class="lineNoCov">          0 :             off = 0;</span>
+<span class="lineNum">     653 </span><span class="lineNoCov">          0 :         if ( off!=gts-&gt;offtop ) {</span>
+<span class="lineNum">     654 </span><span class="lineNoCov">          0 :             gts-&gt;offtop = off;</span>
+<span class="lineNum">     655 </span><span class="lineNoCov">          0 :             GScrollBarSetPos(gts-&gt;vsb, off );</span>
+<span class="lineNum">     656 </span><span class="lineNoCov">          0 :             GGadgetRedraw(&amp;gts-&gt;g);</span>
+<span class="lineNum">     657 </span>            :         }
+<span class="lineNum">     658 </span>            :     }
+<a name="659"><span class="lineNum">     659 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     660 </span>            : 
+<span class="lineNum">     661 </span><span class="lineNoCov">          0 : static void _gtabset_setvisible(GGadget *g,int visible) {</span>
+<span class="lineNum">     662 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) g;</span>
+<span class="lineNum">     663 </span>            : 
+<span class="lineNum">     664 </span><span class="lineNoCov">          0 :     _ggadget_setvisible(g,visible);</span>
+<span class="lineNum">     665 </span><span class="lineNoCov">          0 :     if ( gts-&gt;tabs[gts-&gt;sel].w!=NULL )</span>
+<span class="lineNum">     666 </span><span class="lineNoCov">          0 :         GDrawSetVisible(gts-&gt;tabs[gts-&gt;sel].w, visible);</span>
+<span class="lineNum">     667 </span><span class="lineNoCov">          0 :     if ( gts-&gt;vsb!=NULL )</span>
+<span class="lineNum">     668 </span><span class="lineNoCov">          0 :         GGadgetSetVisible(gts-&gt;vsb,visible);</span>
+<a name="669"><span class="lineNum">     669 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     670 </span>            : 
+<span class="lineNum">     671 </span><span class="lineNoCov">          0 : static int gtabset_FillsWindow(GGadget *g) {</span>
+<span class="lineNum">     672 </span><span class="lineNoCov">          0 : return( g-&gt;prev==NULL &amp;&amp; _GWidgetGetGadgets(g-&gt;base)==g );</span>
+<a name="673"><span class="lineNum">     673 </span>            : }</a>
+<span class="lineNum">     674 </span>            : 
+<span class="lineNum">     675 </span><span class="lineNoCov">          0 : static void gtabset_GetDesiredSize(GGadget *g, GRect *outer, GRect *inner) {</span>
+<span class="lineNum">     676 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) g;</span>
+<span class="lineNum">     677 </span><span class="lineNoCov">          0 :     int bp = GBoxBorderWidth(g-&gt;base,g-&gt;box);</span>
+<span class="lineNum">     678 </span>            :     GRect nested, test;
+<span class="lineNum">     679 </span>            :     int i;
+<span class="lineNum">     680 </span>            : 
+<span class="lineNum">     681 </span><span class="lineNoCov">          0 :     memset(&amp;nested,0,sizeof(nested));</span>
+<span class="lineNum">     682 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;gts-&gt;tabcnt; ++i ) {</span>
+<span class="lineNum">     683 </span><span class="lineNoCov">          0 :         GGadget *last = _GWidgetGetGadgets(gts-&gt;tabs[i].w);</span>
+<span class="lineNum">     684 </span><span class="lineNoCov">          0 :         if ( last!=NULL ) {</span>
+<span class="lineNum">     685 </span><span class="lineNoCov">          0 :             while ( last-&gt;prev!=NULL )</span>
+<span class="lineNum">     686 </span><span class="lineNoCov">          0 :                 last=last-&gt;prev;</span>
+<span class="lineNum">     687 </span><span class="lineNoCov">          0 :             GGadgetGetDesiredSize(last,&amp;test,NULL);</span>
+<span class="lineNum">     688 </span><span class="lineNoCov">          0 :             if ( GGadgetFillsWindow(last)) {</span>
+<span class="lineNum">     689 </span><span class="lineNoCov">          0 :                 test.width += 2*last-&gt;r.x;</span>
+<span class="lineNum">     690 </span><span class="lineNoCov">          0 :                 test.height += 2*last-&gt;r.y;</span>
+<span class="lineNum">     691 </span>            :             }
+<span class="lineNum">     692 </span><span class="lineNoCov">          0 :             if ( test.width&gt;nested.width ) nested.width = test.width;</span>
+<span class="lineNum">     693 </span><span class="lineNoCov">          0 :             if ( test.height&gt;nested.height ) nested.height = test.height;</span>
+<span class="lineNum">     694 </span>            :         }
+<span class="lineNum">     695 </span>            :     }
+<span class="lineNum">     696 </span><span class="lineNoCov">          0 :     if ( gts-&gt;vertical ) {</span>
+<span class="lineNum">     697 </span><span class="lineNoCov">          0 :         if ( gts-&gt;vsb==NULL &amp;&amp; gts-&gt;rcnt*gts-&gt;fh+10 &gt; nested.height )</span>
+<span class="lineNum">     698 </span><span class="lineNoCov">          0 :             nested.height = gts-&gt;tabcnt*gts-&gt;fh+10;</span>
+<span class="lineNum">     699 </span><span class="lineNoCov">          0 :         else if ( gts-&gt;vsb!=NULL &amp;&amp; 2*gts-&gt;vsb-&gt;r.width + 20 &gt; nested.height )</span>
+<span class="lineNum">     700 </span><span class="lineNoCov">          0 :             nested.height = 2*gts-&gt;vsb-&gt;r.width + 20;     /* Minimum size for scrollbar arrows, vaguely */</span>
+<span class="lineNum">     701 </span>            :     }
+<span class="lineNum">     702 </span>            : 
+<span class="lineNum">     703 </span><span class="lineNoCov">          0 :     if ( g-&gt;desired_width&gt;=0 ) nested.width = g-&gt;desired_width - 2*bp;</span>
+<span class="lineNum">     704 </span><span class="lineNoCov">          0 :     if ( g-&gt;desired_height&gt;=0 ) nested.height = g-&gt;desired_height - 2*bp;</span>
+<span class="lineNum">     705 </span><span class="lineNoCov">          0 :     if ( nested.width==0 ) nested.width = 100;</span>
+<span class="lineNum">     706 </span><span class="lineNoCov">          0 :     if ( nested.height==0 ) nested.height = 100;</span>
+<span class="lineNum">     707 </span>            : 
+<span class="lineNum">     708 </span><span class="lineNoCov">          0 :     if ( inner != NULL )</span>
+<span class="lineNum">     709 </span><span class="lineNoCov">          0 :         *inner = nested;</span>
+<span class="lineNum">     710 </span><span class="lineNoCov">          0 :     if ( gts-&gt;vertical ) {</span>
+<span class="lineNum">     711 </span><span class="lineNoCov">          0 :         if ( outer != NULL ) {</span>
+<span class="lineNum">     712 </span><span class="lineNoCov">          0 :             *outer = nested;</span>
+<span class="lineNum">     713 </span><span class="lineNoCov">          0 :             outer-&gt;width += gts-&gt;vert_list_width + 2*bp;</span>
+<span class="lineNum">     714 </span><span class="lineNoCov">          0 :             outer-&gt;height += 2*bp;</span>
+<span class="lineNum">     715 </span>            :         }
+<span class="lineNum">     716 </span>            :     } else {
+<span class="lineNum">     717 </span><span class="lineNoCov">          0 :         if ( outer != NULL ) {</span>
+<span class="lineNum">     718 </span><span class="lineNoCov">          0 :             *outer = nested;</span>
+<span class="lineNum">     719 </span><span class="lineNoCov">          0 :             outer-&gt;width += 2*bp;</span>
+<span class="lineNum">     720 </span><span class="lineNoCov">          0 :             outer-&gt;height += gts-&gt;rcnt*gts-&gt;rowh + bp;</span>
+<span class="lineNum">     721 </span>            :         }
+<span class="lineNum">     722 </span>            :     }
+<span class="lineNum">     723 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     724 </span>            : 
+<span class="lineNum">     725 </span>            : struct gfuncs gtabset_funcs = {
+<span class="lineNum">     726 </span>            :     0,
+<span class="lineNum">     727 </span>            :     sizeof(struct gfuncs),
+<span class="lineNum">     728 </span>            : 
+<span class="lineNum">     729 </span>            :     gtabset_expose,
+<span class="lineNum">     730 </span>            :     gtabset_mouse,
+<span class="lineNum">     731 </span>            :     gtabset_key,
+<span class="lineNum">     732 </span>            :     NULL,
+<span class="lineNum">     733 </span>            :     gtabset_focus,
+<span class="lineNum">     734 </span>            :     NULL,
+<span class="lineNum">     735 </span>            :     NULL,
+<span class="lineNum">     736 </span>            : 
+<span class="lineNum">     737 </span>            :     _gtabset_redraw,
+<span class="lineNum">     738 </span>            :     _gtabset_move,
+<span class="lineNum">     739 </span>            :     _gtabset_resize,
+<span class="lineNum">     740 </span>            :     _gtabset_setvisible,
+<span class="lineNum">     741 </span>            :     _ggadget_setenabled,                /* Doesn't work right */
+<span class="lineNum">     742 </span>            :     _ggadget_getsize,
+<span class="lineNum">     743 </span>            :     _ggadget_getinnersize,
+<span class="lineNum">     744 </span>            : 
+<span class="lineNum">     745 </span>            :     gtabset_destroy,
+<span class="lineNum">     746 </span>            : 
+<span class="lineNum">     747 </span>            :     NULL,
+<span class="lineNum">     748 </span>            :     NULL,
+<span class="lineNum">     749 </span>            :     NULL,
+<span class="lineNum">     750 </span>            :     NULL,
+<span class="lineNum">     751 </span>            :     NULL,
+<span class="lineNum">     752 </span>            :     GTabSetSetFont,
+<span class="lineNum">     753 </span>            :     GTabSetGetFont,
+<span class="lineNum">     754 </span>            : 
+<span class="lineNum">     755 </span>            :     NULL,
+<span class="lineNum">     756 </span>            :     NULL,
+<span class="lineNum">     757 </span>            :     NULL,
+<span class="lineNum">     758 </span>            :     NULL,
+<span class="lineNum">     759 </span>            :     NULL,
+<span class="lineNum">     760 </span>            :     NULL,
+<span class="lineNum">     761 </span>            :     NULL,
+<span class="lineNum">     762 </span>            :     NULL,
+<span class="lineNum">     763 </span>            :     NULL,
+<span class="lineNum">     764 </span>            :     NULL,
+<span class="lineNum">     765 </span>            :     NULL,
+<span class="lineNum">     766 </span>            : 
+<span class="lineNum">     767 </span>            :     gtabset_GetDesiredSize,
+<span class="lineNum">     768 </span>            :     _ggadget_setDesiredSize,
+<span class="lineNum">     769 </span>            :     gtabset_FillsWindow,
+<span class="lineNum">     770 </span>            :     NULL
+<a name="771"><span class="lineNum">     771 </span>            : };</a>
+<span class="lineNum">     772 </span>            : 
+<span class="lineNum">     773 </span><span class="lineNoCov">          0 : static int sendtoparent_eh(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     774 </span><span class="lineNoCov">          0 :     switch ( event-&gt;type ) {</span>
+<span class="lineNum">     775 </span>            :       case et_controlevent: case et_char: case et_drop:
+<span class="lineNum">     776 </span><span class="lineNoCov">          0 :         event-&gt;w = GDrawGetParentWindow(gw);</span>
+<span class="lineNum">     777 </span><span class="lineNoCov">          0 :         GDrawPostEvent(event);</span>
+<span class="lineNum">     778 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     779 </span>            :       case et_resize:
+<span class="lineNum">     780 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(gw,NULL,false);</span>
+<span class="lineNum">     781 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     782 </span>            :     }
+<span class="lineNum">     783 </span>            : 
+<span class="lineNum">     784 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="785"><span class="lineNum">     785 </span>            : }</a>
+<span class="lineNum">     786 </span>            : 
+<span class="lineNum">     787 </span><span class="lineNoCov">          0 : static int gtabset_vscroll(GGadget *g, GEvent *event) {</span>
+<span class="lineNum">     788 </span><span class="lineNoCov">          0 :     enum sb sbt = event-&gt;u.control.u.sb.type;</span>
+<span class="lineNum">     789 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) (g-&gt;data);</span>
+<span class="lineNum">     790 </span><span class="lineNoCov">          0 :     int loff = gts-&gt;offtop;</span>
+<span class="lineNum">     791 </span><span class="lineNoCov">          0 :     int page = (g-&gt;inner.height-6)/gts-&gt;fh- ((g-&gt;inner.height-6)/gts-&gt;fh&gt;2?1:0);</span>
+<span class="lineNum">     792 </span>            : 
+<span class="lineNum">     793 </span><span class="lineNoCov">          0 :     if ( sbt==et_sb_top )</span>
+<span class="lineNum">     794 </span><span class="lineNoCov">          0 :         loff = 0;</span>
+<span class="lineNum">     795 </span><span class="lineNoCov">          0 :     else if ( sbt==et_sb_bottom ) {</span>
+<span class="lineNum">     796 </span><span class="lineNoCov">          0 :         loff = gts-&gt;tabcnt - (gts-&gt;g.inner.height-6)/gts-&gt;fh;</span>
+<span class="lineNum">     797 </span><span class="lineNoCov">          0 :     } else if ( sbt==et_sb_up ) {</span>
+<span class="lineNum">     798 </span><span class="lineNoCov">          0 :         --loff;</span>
+<span class="lineNum">     799 </span><span class="lineNoCov">          0 :     } else if ( sbt==et_sb_down ) {</span>
+<span class="lineNum">     800 </span><span class="lineNoCov">          0 :         ++loff;</span>
+<span class="lineNum">     801 </span><span class="lineNoCov">          0 :     } else if ( sbt==et_sb_uppage ) {</span>
+<span class="lineNum">     802 </span><span class="lineNoCov">          0 :         loff -= page;</span>
+<span class="lineNum">     803 </span><span class="lineNoCov">          0 :     } else if ( sbt==et_sb_downpage ) {</span>
+<span class="lineNum">     804 </span><span class="lineNoCov">          0 :         loff += page;</span>
+<span class="lineNum">     805 </span>            :     } else /* if ( sbt==et_sb_thumb || sbt==et_sb_thumbrelease ) */ {
+<span class="lineNum">     806 </span><span class="lineNoCov">          0 :         loff = event-&gt;u.control.u.sb.pos;</span>
+<span class="lineNum">     807 </span>            :     }
+<span class="lineNum">     808 </span><span class="lineNoCov">          0 :     if ( loff + (gts-&gt;g.inner.height-6)/gts-&gt;fh &gt; gts-&gt;tabcnt )</span>
+<span class="lineNum">     809 </span><span class="lineNoCov">          0 :         loff = gts-&gt;tabcnt - (gts-&gt;g.inner.height-6)/gts-&gt;fh;</span>
+<span class="lineNum">     810 </span><span class="lineNoCov">          0 :     if ( loff&lt;0 )</span>
+<span class="lineNum">     811 </span><span class="lineNoCov">          0 :         loff = 0;</span>
+<span class="lineNum">     812 </span><span class="lineNoCov">          0 :     if ( loff!=gts-&gt;offtop ) {</span>
+<span class="lineNum">     813 </span><span class="lineNoCov">          0 :         gts-&gt;offtop = loff;</span>
+<span class="lineNum">     814 </span><span class="lineNoCov">          0 :         GScrollBarSetPos(gts-&gt;vsb, loff );</span>
+<span class="lineNum">     815 </span><span class="lineNoCov">          0 :         GGadgetRedraw(&amp;gts-&gt;g);</span>
+<span class="lineNum">     816 </span>            :     }
+<span class="lineNum">     817 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="818"><span class="lineNum">     818 </span>            : }</a>
+<span class="lineNum">     819 </span>            : 
+<span class="lineNum">     820 </span><span class="lineNoCov">          0 : GGadget *GTabSetCreate(struct gwindow *base, GGadgetData *gd,void *data) {</span>
+<span class="lineNum">     821 </span><span class="lineNoCov">          0 :     GTabSet *gts = calloc(1,sizeof(GTabSet));</span>
+<span class="lineNum">     822 </span>            :     int i, bp;
+<span class="lineNum">     823 </span>            :     GRect r;
+<span class="lineNum">     824 </span>            :     GWindowAttrs childattrs;
+<span class="lineNum">     825 </span>            : 
+<span class="lineNum">     826 </span><span class="lineNoCov">          0 :     memset(&amp;childattrs,0,sizeof(childattrs));</span>
+<span class="lineNum">     827 </span><span class="lineNoCov">          0 :     childattrs.mask = wam_events;</span>
+<span class="lineNum">     828 </span><span class="lineNoCov">          0 :     childattrs.event_masks = -1;</span>
+<span class="lineNum">     829 </span>            : 
+<span class="lineNum">     830 </span><span class="lineNoCov">          0 :     if ( !gtabset_inited )</span>
+<span class="lineNum">     831 </span><span class="lineNoCov">          0 :         GTabSetInit();</span>
+<span class="lineNum">     832 </span><span class="lineNoCov">          0 :     gts-&gt;g.funcs = &amp;gtabset_funcs;</span>
+<span class="lineNum">     833 </span><span class="lineNoCov">          0 :     _GGadget_Create(&amp;gts-&gt;g,base,gd,data, gd-&gt;flags&amp;gg_tabset_vert ? &amp;gvtabset_box  : &amp;gtabset_box);</span>
+<span class="lineNum">     834 </span><span class="lineNoCov">          0 :     gts-&gt;font = gtabset_font;</span>
+<span class="lineNum">     835 </span>            : 
+<span class="lineNum">     836 </span><span class="lineNoCov">          0 :     gts-&gt;g.takes_input = true; gts-&gt;g.takes_keyboard = true; gts-&gt;g.focusable = true;</span>
+<span class="lineNum">     837 </span>            : 
+<span class="lineNum">     838 </span><span class="lineNoCov">          0 :     GDrawGetSize(base,&amp;r);</span>
+<span class="lineNum">     839 </span><span class="lineNoCov">          0 :     if ( gd-&gt;pos.x &lt;= 0 )</span>
+<span class="lineNum">     840 </span><span class="lineNoCov">          0 :         gts-&gt;g.r.x = GDrawPointsToPixels(base,2);</span>
+<span class="lineNum">     841 </span><span class="lineNoCov">          0 :     if ( gd-&gt;pos.y &lt;= 0 )</span>
+<span class="lineNum">     842 </span><span class="lineNoCov">          0 :         gts-&gt;g.r.y = GDrawPointsToPixels(base,2);</span>
+<span class="lineNum">     843 </span><span class="lineNoCov">          0 :     if ( gd-&gt;pos.width&lt;=0 )</span>
+<span class="lineNum">     844 </span><span class="lineNoCov">          0 :         gts-&gt;g.r.width = r.width - gts-&gt;g.r.x - GDrawPointsToPixels(base,2);</span>
+<span class="lineNum">     845 </span><span class="lineNoCov">          0 :     if ( gd-&gt;pos.height&lt;=0 ) {</span>
+<span class="lineNum">     846 </span><span class="lineNoCov">          0 :         if ( gd-&gt;flags&amp;gg_tabset_nowindow )</span>
+<span class="lineNum">     847 </span><span class="lineNoCov">          0 :             gts-&gt;g.r.height = GDrawPointsToPixels(base,20);</span>
+<span class="lineNum">     848 </span>            :         else
+<span class="lineNum">     849 </span><span class="lineNoCov">          0 :             gts-&gt;g.r.height = r.height - gts-&gt;g.r.y - GDrawPointsToPixels(base,26);</span>
+<span class="lineNum">     850 </span>            :     }
+<span class="lineNum">     851 </span>            : 
+<span class="lineNum">     852 </span><span class="lineNoCov">          0 :     for ( i=0; gd-&gt;u.tabs[i].text!=NULL; ++i );</span>
+<span class="lineNum">     853 </span><span class="lineNoCov">          0 :     gts-&gt;tabcnt = i;</span>
+<span class="lineNum">     854 </span><span class="lineNoCov">          0 :     gts-&gt;tabs = malloc(i*sizeof(struct tabs));</span>
+<span class="lineNum">     855 </span><span class="lineNoCov">          0 :     for ( i=0; gd-&gt;u.tabs[i].text!=NULL; ++i ) {</span>
+<span class="lineNum">     856 </span><span class="lineNoCov">          0 :         if ( gd-&gt;u.tabs[i].text_in_resource )</span>
+<span class="lineNum">     857 </span><span class="lineNoCov">          0 :             gts-&gt;tabs[i].name = u_copy(GStringGetResource((intpt) (gd-&gt;u.tabs[i].text),NULL));</span>
+<span class="lineNum">     858 </span><span class="lineNoCov">          0 :         else if ( gd-&gt;u.tabs[i].text_is_1byte )</span>
+<span class="lineNum">     859 </span><span class="lineNoCov">          0 :             gts-&gt;tabs[i].name = utf82u_copy((char *) (gd-&gt;u.tabs[i].text));</span>
+<span class="lineNum">     860 </span>            :         else
+<span class="lineNum">     861 </span><span class="lineNoCov">          0 :             gts-&gt;tabs[i].name = u_copy(gd-&gt;u.tabs[i].text);</span>
+<span class="lineNum">     862 </span><span class="lineNoCov">          0 :         gts-&gt;tabs[i].disabled = gd-&gt;u.tabs[i].disabled;</span>
+<span class="lineNum">     863 </span><span class="lineNoCov">          0 :         gts-&gt;tabs[i].nesting = gd-&gt;u.tabs[i].nesting;</span>
+<span class="lineNum">     864 </span><span class="lineNoCov">          0 :         if ( gd-&gt;u.tabs[i].selected &amp;&amp; !gts-&gt;tabs[i].disabled )</span>
+<span class="lineNum">     865 </span><span class="lineNoCov">          0 :             gts-&gt;sel = i;</span>
+<span class="lineNum">     866 </span>            :     }
+<span class="lineNum">     867 </span><span class="lineNoCov">          0 :     if ( gd-&gt;flags&amp;gg_tabset_scroll ) gts-&gt;scrolled = true;</span>
+<span class="lineNum">     868 </span><span class="lineNoCov">          0 :     if ( gd-&gt;flags&amp;gg_tabset_filllines ) gts-&gt;filllines = true;</span>
+<span class="lineNum">     869 </span><span class="lineNoCov">          0 :     if ( gd-&gt;flags&amp;gg_tabset_fill1line ) gts-&gt;fill1line = true;</span>
+<span class="lineNum">     870 </span><span class="lineNoCov">          0 :     if ( gd-&gt;flags&amp;gg_tabset_vert ) gts-&gt;vertical = true;</span>
+<span class="lineNum">     871 </span><span class="lineNoCov">          0 :     gts-&gt;offset_per_row = GDrawPointsToPixels(base,2);</span>
+<span class="lineNum">     872 </span><span class="lineNoCov">          0 :     if ( gts-&gt;vertical &amp;&amp; gts-&gt;scrolled ) {</span>
+<span class="lineNum">     873 </span>            :         GGadgetData gd;
+<span class="lineNum">     874 </span><span class="lineNoCov">          0 :         memset(&amp;gd,'\0',sizeof(gd));</span>
+<span class="lineNum">     875 </span><span class="lineNoCov">          0 :         gd.pos.y = gts-&gt;g.r.y; gd.pos.height = gts-&gt;g.inner.height;</span>
+<span class="lineNum">     876 </span><span class="lineNoCov">          0 :         gd.pos.width = GDrawPointsToPixels(gts-&gt;g.base,_GScrollBar_Width);</span>
+<span class="lineNum">     877 </span><span class="lineNoCov">          0 :         gd.pos.x = gts-&gt;g.inner.x;</span>
+<span class="lineNum">     878 </span><span class="lineNoCov">          0 :         gd.flags = (gts-&gt;g.state==gs_invisible?0:gg_visible)|gg_enabled|gg_pos_in_pixels|gg_sb_vert;</span>
+<span class="lineNum">     879 </span><span class="lineNoCov">          0 :         gd.handle_controlevent = gtabset_vscroll;</span>
+<span class="lineNum">     880 </span><span class="lineNoCov">          0 :         gts-&gt;vsb = GScrollBarCreate(gts-&gt;g.base,&amp;gd,gts);</span>
+<span class="lineNum">     881 </span><span class="lineNoCov">          0 :         gts-&gt;vsb-&gt;contained = true;</span>
+<span class="lineNum">     882 </span>            :     }
+<span class="lineNum">     883 </span><span class="lineNoCov">          0 :     GTabSet_Remetric(gts);</span>
+<span class="lineNum">     884 </span><span class="lineNoCov">          0 :     _GGadget_FinalPosition(&amp;gts-&gt;g,base,gd);</span>
+<span class="lineNum">     885 </span>            : 
+<span class="lineNum">     886 </span><span class="lineNoCov">          0 :     bp = GBoxBorderWidth(base,gts-&gt;g.box);</span>
+<span class="lineNum">     887 </span><span class="lineNoCov">          0 :     gts-&gt;g.inner = gts-&gt;g.r;</span>
+<span class="lineNum">     888 </span><span class="lineNoCov">          0 :     if ( gts-&gt;vertical ) {</span>
+<span class="lineNum">     889 </span><span class="lineNoCov">          0 :         gts-&gt;g.inner.x += bp+gts-&gt;vert_list_width; gts-&gt;g.inner.width -= 2*bp+gts-&gt;vert_list_width;</span>
+<span class="lineNum">     890 </span><span class="lineNoCov">          0 :         gts-&gt;g.inner.y += bp; gts-&gt;g.inner.height -= 2*bp;</span>
+<span class="lineNum">     891 </span>            :     } else {
+<span class="lineNum">     892 </span><span class="lineNoCov">          0 :         gts-&gt;g.inner.x += bp; gts-&gt;g.inner.width -= 2*bp;</span>
+<span class="lineNum">     893 </span><span class="lineNoCov">          0 :         gts-&gt;g.inner.y += gts-&gt;rcnt*gts-&gt;rowh+bp; gts-&gt;g.inner.height -= 2*bp+gts-&gt;rcnt*gts-&gt;rowh;</span>
+<span class="lineNum">     894 </span>            :     }
+<span class="lineNum">     895 </span><span class="lineNoCov">          0 :     if ( gts-&gt;rcnt==1 ) {</span>
+<span class="lineNum">     896 </span><span class="lineNoCov">          0 :         gts-&gt;g.inner.y += bp; gts-&gt;g.inner.height -= bp;</span>
+<span class="lineNum">     897 </span>            :     }
+<span class="lineNum">     898 </span><span class="lineNoCov">          0 :     if ( gts-&gt;vsb!=NULL ) {</span>
+<span class="lineNum">     899 </span><span class="lineNoCov">          0 :         GGadgetMove(gts-&gt;vsb, gts-&gt;g.r.x + bp + gts-&gt;vert_list_width - gts-&gt;vsb-&gt;r.width, gts-&gt;g.r.y + bp);</span>
+<span class="lineNum">     900 </span><span class="lineNoCov">          0 :         GGadgetResize(gts-&gt;vsb, gts-&gt;vsb-&gt;r.width, gts-&gt;g.r.height-2*bp);</span>
+<span class="lineNum">     901 </span><span class="lineNoCov">          0 :         if ( gts-&gt;g.inner.height&gt;26 )</span>
+<span class="lineNum">     902 </span><span class="lineNoCov">          0 :             GScrollBarSetBounds(gts-&gt;vsb,0,gts-&gt;tabcnt,(gts-&gt;g.r.height-2*bp-6)/gts-&gt;fh);</span>
+<span class="lineNum">     903 </span>            :     }
+<span class="lineNum">     904 </span>            : 
+<span class="lineNum">     905 </span><span class="lineNoCov">          0 :     if ( gd-&gt;flags&amp;gg_tabset_nowindow ) gts-&gt;nowindow = true;</span>
+<span class="lineNum">     906 </span>            : 
+<span class="lineNum">     907 </span><span class="lineNoCov">          0 :     for ( i=0; gd-&gt;u.tabs[i].text!=NULL; ++i )</span>
+<span class="lineNum">     908 </span><span class="lineNoCov">          0 :         if ( !(gd-&gt;flags&amp;gg_tabset_nowindow)) {</span>
+<span class="lineNum">     909 </span><span class="lineNoCov">          0 :             gts-&gt;tabs[i].w = GDrawCreateSubWindow(base,&amp;gts-&gt;g.inner,sendtoparent_eh,GDrawGetUserData(base),&amp;childattrs);</span>
+<span class="lineNum">     910 </span><span class="lineNoCov">          0 :             if ( gd-&gt;u.tabs[i].gcd!=NULL )</span>
+<span class="lineNum">     911 </span><span class="lineNoCov">          0 :                 GGadgetsCreate(gts-&gt;tabs[i].w,gd-&gt;u.tabs[i].gcd);</span>
+<span class="lineNum">     912 </span><span class="lineNoCov">          0 :             if ( gts-&gt;sel==i &amp;&amp; (gd-&gt;flags &amp; gg_visible ))</span>
+<span class="lineNum">     913 </span><span class="lineNoCov">          0 :                 GDrawSetVisible(gts-&gt;tabs[i].w,true);</span>
+<span class="lineNum">     914 </span>            :         } else
+<span class="lineNum">     915 </span><span class="lineNoCov">          0 :             gts-&gt;tabs[i].w = NULL;</span>
+<span class="lineNum">     916 </span>            : 
+<span class="lineNum">     917 </span><span class="lineNoCov">          0 :     if ( gd-&gt;flags &amp; gg_group_end )</span>
+<span class="lineNum">     918 </span><span class="lineNoCov">          0 :         _GGadgetCloseGroup(&amp;gts-&gt;g);</span>
+<span class="lineNum">     919 </span>            : 
+<span class="lineNum">     920 </span><span class="lineNoCov">          0 :     for ( i=0; gd-&gt;u.tabs[i].text!=NULL &amp;&amp; !gd-&gt;u.tabs[i].selected; ++i );</span>
+<span class="lineNum">     921 </span><span class="lineNoCov">          0 :     if ( i!=0 &amp;&amp; gd-&gt;u.tabs[i].text!=NULL )</span>
+<span class="lineNum">     922 </span><span class="lineNoCov">          0 :         GTabSetChangeSel(gts,i,false);</span>
+<span class="lineNum">     923 </span>            : 
+<span class="lineNum">     924 </span><span class="lineNoCov">          0 : return( &amp;gts-&gt;g );</span>
+<a name="925"><span class="lineNum">     925 </span>            : }</a>
+<span class="lineNum">     926 </span>            : 
+<span class="lineNum">     927 </span><span class="lineNoCov">          0 : int GTabSetGetSel(GGadget *g) {</span>
+<span class="lineNum">     928 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) g;</span>
+<span class="lineNum">     929 </span><span class="lineNoCov">          0 : return( gts-&gt;sel );</span>
+<a name="930"><span class="lineNum">     930 </span>            : }</a>
+<span class="lineNum">     931 </span>            : 
+<span class="lineNum">     932 </span><span class="lineNoCov">          0 : void GTabSetSetSel(GGadget *g,int sel) {</span>
+<span class="lineNum">     933 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) g;</span>
+<span class="lineNum">     934 </span><span class="lineNoCov">          0 :     GTabSetChangeSel(gts,sel,false);</span>
+<a name="935"><span class="lineNum">     935 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     936 </span>            : 
+<span class="lineNum">     937 </span><span class="lineNoCov">          0 : void GTabSetSetEnabled(GGadget *g,int pos,int enabled) {</span>
+<span class="lineNum">     938 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) g;</span>
+<span class="lineNum">     939 </span>            : 
+<span class="lineNum">     940 </span><span class="lineNoCov">          0 :     if ( pos&gt;=0 &amp;&amp; pos&lt;gts-&gt;tabcnt ) {</span>
+<span class="lineNum">     941 </span><span class="lineNoCov">          0 :         gts-&gt;tabs[pos].disabled = !enabled;</span>
+<span class="lineNum">     942 </span>            :     }
+<span class="lineNum">     943 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(g-&gt;base, &amp;g-&gt;r, false);</span>
+<a name="944"><span class="lineNum">     944 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     945 </span>            : 
+<span class="lineNum">     946 </span><span class="lineNoCov">          0 : GWindow GTabSetGetSubwindow(GGadget *g,int pos) {</span>
+<span class="lineNum">     947 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) g;</span>
+<span class="lineNum">     948 </span>            : 
+<span class="lineNum">     949 </span><span class="lineNoCov">          0 :     if ( pos&gt;=0 &amp;&amp; pos&lt;gts-&gt;tabcnt )</span>
+<span class="lineNum">     950 </span><span class="lineNoCov">          0 : return( gts-&gt;tabs[pos].w );</span>
+<span class="lineNum">     951 </span>            : 
+<span class="lineNum">     952 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<a name="953"><span class="lineNum">     953 </span>            : }</a>
+<span class="lineNum">     954 </span>            : 
+<span class="lineNum">     955 </span><span class="lineNoCov">          0 : int GTabSetGetTabLines(GGadget *g) {</span>
+<span class="lineNum">     956 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) g;</span>
+<span class="lineNum">     957 </span><span class="lineNoCov">          0 : return( gts-&gt;rcnt );</span>
+<a name="958"><span class="lineNum">     958 </span>            : }</a>
+<span class="lineNum">     959 </span>            : 
+<span class="lineNum">     960 </span><span class="lineNoCov">          0 : void GTabSetSetNestedExpose(GGadget *g, void (*ne)(GWindow,GGadget *,GEvent *)) {</span>
+<span class="lineNum">     961 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) g;</span>
+<span class="lineNum">     962 </span><span class="lineNoCov">          0 :     gts-&gt;nested_expose = ne;</span>
+<a name="963"><span class="lineNum">     963 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     964 </span>            : 
+<span class="lineNum">     965 </span><span class="lineNoCov">          0 : void GTabSetSetNestedMouse(GGadget *g, int (*nm)(GGadget *,GEvent *)) {</span>
+<span class="lineNum">     966 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) g;</span>
+<span class="lineNum">     967 </span><span class="lineNoCov">          0 :     gts-&gt;nested_mouse = nm;</span>
+<a name="968"><span class="lineNum">     968 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     969 </span>            : 
+<span class="lineNum">     970 </span><span class="lineNoCov">          0 : void GTabSetChangeTabName(GGadget *g, const char *name, int pos) {</span>
+<span class="lineNum">     971 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) g;</span>
+<span class="lineNum">     972 </span>            : 
+<span class="lineNum">     973 </span><span class="lineNoCov">          0 :     if ( pos==gts-&gt;tabcnt &amp;&amp; gts-&gt;nowindow ) {</span>
+<span class="lineNum">     974 </span><span class="lineNoCov">          0 :         gts-&gt;tabs = realloc(gts-&gt;tabs,(pos+1)*sizeof(struct tabs));</span>
+<span class="lineNum">     975 </span><span class="lineNoCov">          0 :         memset(&amp;gts-&gt;tabs[pos],0,sizeof(struct tabs));</span>
+<span class="lineNum">     976 </span><span class="lineNoCov">          0 :         ++gts-&gt;tabcnt;</span>
+<span class="lineNum">     977 </span>            :     }
+<span class="lineNum">     978 </span><span class="lineNoCov">          0 :     if ( pos&lt;gts-&gt;tabcnt ) {</span>
+<span class="lineNum">     979 </span><span class="lineNoCov">          0 :         free(gts-&gt;tabs[pos].name);</span>
+<span class="lineNum">     980 </span><span class="lineNoCov">          0 :         gts-&gt;tabs[pos].name = utf82u_copy(name);</span>
+<span class="lineNum">     981 </span>            :     }
+<a name="982"><span class="lineNum">     982 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     983 </span>            : 
+<span class="lineNum">     984 </span><span class="lineNoCov">          0 : void GTabSetRemetric(GGadget *g) {</span>
+<span class="lineNum">     985 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) g;</span>
+<span class="lineNum">     986 </span><span class="lineNoCov">          0 :     GTabSet_Remetric(gts);</span>
+<a name="987"><span class="lineNum">     987 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     988 </span>            : 
+<span class="lineNum">     989 </span><span class="lineNoCov">          0 : void GTabSetRemoveTabByPos(GGadget *g, int pos) {</span>
+<span class="lineNum">     990 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) g;</span>
+<span class="lineNum">     991 </span>            :     int i;
+<span class="lineNum">     992 </span>            : 
+<span class="lineNum">     993 </span><span class="lineNoCov">          0 :     if ( gts-&gt;nowindow &amp;&amp; pos&gt;=0 &amp;&amp; pos&lt;gts-&gt;tabcnt &amp;&amp; gts-&gt;tabcnt&gt;1 ) {</span>
+<span class="lineNum">     994 </span><span class="lineNoCov">          0 :         free(gts-&gt;tabs[pos].name);</span>
+<span class="lineNum">     995 </span><span class="lineNoCov">          0 :         for ( i=pos+1; i&lt;gts-&gt;tabcnt; ++i )</span>
+<span class="lineNum">     996 </span><span class="lineNoCov">          0 :             gts-&gt;tabs[i-1] = gts-&gt;tabs[i];</span>
+<span class="lineNum">     997 </span><span class="lineNoCov">          0 :         --gts-&gt;tabcnt;</span>
+<span class="lineNum">     998 </span><span class="lineNoCov">          0 :         if ( gts-&gt;sel==pos ) {</span>
+<span class="lineNum">     999 </span><span class="lineNoCov">          0 :             if ( gts-&gt;sel==gts-&gt;tabcnt )</span>
+<span class="lineNum">    1000 </span><span class="lineNoCov">          0 :                 --gts-&gt;sel;</span>
+<span class="lineNum">    1001 </span><span class="lineNoCov">          0 :             GTabSetChanged(gts,pos);</span>
+<span class="lineNum">    1002 </span>            :         }
+<span class="lineNum">    1003 </span>            :     }
+<a name="1004"><span class="lineNum">    1004 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1005 </span>            :         
+<span class="lineNum">    1006 </span><span class="lineNoCov">          0 : void GTabSetRemoveTabByName(GGadget *g, char *name) {</span>
+<span class="lineNum">    1007 </span><span class="lineNoCov">          0 :     GTabSet *gts = (GTabSet *) g;</span>
+<span class="lineNum">    1008 </span>            :     int pos;
+<span class="lineNum">    1009 </span><span class="lineNoCov">          0 :     unichar_t *uname = utf82u_copy(name);</span>
+<span class="lineNum">    1010 </span>            : 
+<span class="lineNum">    1011 </span><span class="lineNoCov">          0 :     for ( pos=0; pos&lt;gts-&gt;tabcnt; ++pos ) {</span>
+<span class="lineNum">    1012 </span><span class="lineNoCov">          0 :         if ( u_strcmp(uname,gts-&gt;tabs[pos].name)==0 ) {</span>
+<span class="lineNum">    1013 </span><span class="lineNoCov">          0 :             GTabSetRemoveTabByPos(g,pos);</span>
+<span class="lineNum">    1014 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">    1015 </span>            :         }
+<span class="lineNum">    1016 </span>            :     }
+<span class="lineNum">    1017 </span>            : 
+<span class="lineNum">    1018 </span><span class="lineNoCov">          0 :     free(uname);</span>
+<a name="1019"><span class="lineNum">    1019 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1020 </span>            : 
+<span class="lineNum">    1021 </span><span class="lineNoCov">          0 : GResInfo *_GTabSetRIHead(void) {</span>
+<span class="lineNum">    1022 </span><span class="lineNoCov">          0 :     if ( !gtabset_inited )</span>
+<span class="lineNum">    1023 </span><span class="lineNoCov">          0 :         GTabSetInit();</span>
+<span class="lineNum">    1024 </span><span class="lineNoCov">          0 : return( &amp;gtabset_ri );</span>
+<span class="lineNum">    1025 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

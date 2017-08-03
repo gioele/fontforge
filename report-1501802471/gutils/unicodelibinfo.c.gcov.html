@@ -1,0 +1,492 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - gutils/unicodelibinfo.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gutils</a> - unicodelibinfo.c<span style="font-size: 80%;"> (source / <a href="unicodelibinfo.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntry">18</td>
+            <td class="headerCovTableEntryLo">22.2 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">8</td>
+            <td class="headerCovTableEntryLo">12.5 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* -*- coding: utf-8 -*- */</a>
+<span class="lineNum">       2 </span>            : /* Copyright (C) 2013 by Jose Da Silva */
+<span class="lineNum">       3 </span>            : /*
+<span class="lineNum">       4 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       5 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       8 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      11 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      12 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      15 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      18 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      19 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      20 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      21 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      22 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      23 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      24 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      25 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      26 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      27 </span>            :  */
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            : #ifndef _GUTILS_UNICODELIBINFO_C_
+<span class="lineNum">      30 </span>            : #define _GUTILS_UNICODELIBINFO_C_
+<span class="lineNum">      31 </span>            : 
+<span class="lineNum">      32 </span>            : #include &lt;fontforge-config.h&gt;
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span>            : #include &quot;unicodelibinfo.h&quot;
+<span class="lineNum">      35 </span>            : #include &lt;ustring.h&gt;
+<span class="lineNum">      36 </span>            : #include &quot;../fontforge/ffglib.h&quot;
+<span class="lineNum">      37 </span>            : #include &lt;glib/gprintf.h&gt;
+<span class="lineNum">      38 </span>            : #include &quot;xvasprintf.h&quot;
+<span class="lineNum">      39 </span>            : 
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span>            : #ifndef _NO_LIBUNINAMESLIST
+<span class="lineNum">      42 </span>            : #include &lt;uninameslist.h&gt;
+<span class="lineNum">      43 </span>            : #else
+<span class="lineNum">      44 </span>            : struct unicode_block {
+<span class="lineNum">      45 </span>            :         int start, end;
+<span class="lineNum">      46 </span>            :         const char *name;
+<span class="lineNum">      47 </span>            : };
+<span class="lineNum">      48 </span>            : #endif
+<span class="lineNum">      49 </span>            : const struct unicode_nameannot * const *const *_UnicodeNameAnnot = NULL; /* deprecated */
+<span class="lineNum">      50 </span>            : const struct unicode_block *_UnicodeBlock = NULL;
+<span class="lineNum">      51 </span>            : #ifndef _NO_LIBUNICODENAMES
+<span class="lineNum">      52 </span>            : #include &lt;libunicodenames.h&gt;
+<span class="lineNum">      53 </span>            : uninm_names_db names_db; /* Unicode character names and annotations database */
+<span class="lineNum">      54 </span>            : uninm_blocks_db blocks_db;
+<span class="lineNum">      55 </span>            : #endif
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span>            : static char *chosung[] = { &quot;G&quot;, &quot;GG&quot;, &quot;N&quot;, &quot;D&quot;, &quot;DD&quot;, &quot;L&quot;, &quot;M&quot;, &quot;B&quot;, &quot;BB&quot;, &quot;S&quot;, &quot;SS&quot;, &quot;&quot;, &quot;J&quot;, &quot;JJ&quot;, &quot;C&quot;, &quot;K&quot;, &quot;T&quot;, &quot;P&quot;, &quot;H&quot;, NULL };
+<span class="lineNum">      58 </span>            : static char *jungsung[] = { &quot;A&quot;, &quot;AE&quot;, &quot;YA&quot;, &quot;YAE&quot;, &quot;EO&quot;, &quot;E&quot;, &quot;YEO&quot;, &quot;YE&quot;, &quot;O&quot;, &quot;WA&quot;, &quot;WAE&quot;, &quot;OE&quot;, &quot;YO&quot;, &quot;U&quot;, &quot;WEO&quot;, &quot;WE&quot;, &quot;WI&quot;, &quot;YU&quot;, &quot;EU&quot;, &quot;YI&quot;, &quot;I&quot;, NULL };
+<a name="59"><span class="lineNum">      59 </span>            : static char *jongsung[] = { &quot;&quot;, &quot;G&quot;, &quot;GG&quot;, &quot;GS&quot;, &quot;N&quot;, &quot;NJ&quot;, &quot;NH&quot;, &quot;D&quot;, &quot;L&quot;, &quot;LG&quot;, &quot;LM&quot;, &quot;LB&quot;, &quot;LS&quot;, &quot;LT&quot;, &quot;LP&quot;, &quot;LH&quot;, &quot;M&quot;, &quot;B&quot;, &quot;BS&quot;, &quot;S&quot;, &quot;SS&quot;, &quot;NG&quot;, &quot;J&quot;, &quot;C&quot;, &quot;K&quot;, &quot;T&quot;, &quot;P&quot;, &quot;H&quot;, NULL };</a>
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span><span class="lineCov">         40 : void inituninameannot(void) {</span>
+<span class="lineNum">      62 </span>            : /* Initialize unicode name-annotation library access for FontForge */
+<span class="lineNum">      63 </span>            : /* TODO: Library pluginloading currently disabled - see 20120731-b */
+<span class="lineNum">      64 </span>            : /* for existing code if you want to re-enable this feature again.  */
+<span class="lineNum">      65 </span>            : 
+<span class="lineNum">      66 </span>            : #if _NO_LIBUNINAMESLIST
+<span class="lineNum">      67 </span><span class="lineCov">         40 :     _UnicodeNameAnnot = NULL; /* libuninameslist not available */</span>
+<span class="lineNum">      68 </span><span class="lineCov">         40 :     _UnicodeBlock = NULL;</span>
+<span class="lineNum">      69 </span>            : #else
+<span class="lineNum">      70 </span>            :     /* backward compatibility for other programs using libuninames */
+<span class="lineNum">      71 </span>            :     _UnicodeNameAnnot = UnicodeNameAnnot;
+<span class="lineNum">      72 </span>            :     _UnicodeBlock = UnicodeBlock;
+<span class="lineNum">      73 </span>            : #endif
+<span class="lineNum">      74 </span>            : 
+<span class="lineNum">      75 </span>            : #ifndef _NO_LIBUNICODENAMES
+<span class="lineNum">      76 </span>            :     /* Open database file, read data for this 'local', then close. */
+<span class="lineNum">      77 </span>            :     char *names_db_file;
+<span class="lineNum">      78 </span>            :     char *blocks_db_file;
+<span class="lineNum">      79 </span>            : 
+<span class="lineNum">      80 </span>            :     /* Load character names and annotations that come from the Unicode NamesList.txt */
+<span class="lineNum">      81 </span>            :     /* This should not be done until after the locale has been set */
+<span class="lineNum">      82 </span>            :     names_db_file = uninm_find_names_db(NULL);
+<span class="lineNum">      83 </span>            :     names_db = (names_db_file == NULL) ? ((uninm_names_db) 0) : uninm_names_db_open(names_db_file);
+<span class="lineNum">      84 </span>            :     free(names_db_file);
+<span class="lineNum">      85 </span>            :     /* NOTE: you need to do uninm_names_db_close(names_db); when you exit program */
+<span class="lineNum">      86 </span>            : 
+<span class="lineNum">      87 </span>            :     blocks_db_file = uninm_find_blocks_db(NULL);
+<span class="lineNum">      88 </span>            :     blocks_db = (blocks_db_file == NULL) ? ((uninm_blocks_db) 0) : uninm_blocks_db_open(blocks_db_file);
+<span class="lineNum">      89 </span>            :     free(blocks_db_file);
+<span class="lineNum">      90 </span>            :     /* NOTE: you need to do uninm_blocks_db_close(blocks_db); when you exit program */
+<span class="lineNum">      91 </span>            : #endif
+<a name="92"><span class="lineNum">      92 </span><span class="lineCov">         40 : }</span></a>
+<span class="lineNum">      93 </span>            : 
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 : char *unicode_name(int32 unienc) {</span>
+<span class="lineNum">      95 </span>            : /* Return the unicode name for the value given from a data library.       */
+<span class="lineNum">      96 </span>            : /* If there's no data available for this code, or no library, return NULL */
+<span class="lineNum">      97 </span>            : /* User should free the return string when finished with this information */
+<span class="lineNum">      98 </span>            : 
+<span class="lineNum">      99 </span>            : #if _NO_LIBUNINAMESLIST &amp;&amp; _NO_LIBUNICODENAMES
+<span class="lineNum">     100 </span>            :     /* no nameslist library code available to use */
+<span class="lineNum">     101 </span>            :     //fprintf(stderr,&quot;no library\n&quot;);
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :     return( NULL );</span>
+<span class="lineNum">     103 </span>            : #else
+<span class="lineNum">     104 </span>            :     /* have nameslist library code available to use */
+<span class="lineNum">     105 </span>            :     if ( unienc&lt;0 || unienc&gt;=0x110000 )
+<span class="lineNum">     106 </span>            :         return( NULL );
+<span class="lineNum">     107 </span>            : 
+<span class="lineNum">     108 </span>            :     char *name_data=NULL;
+<span class="lineNum">     109 </span>            : #ifndef _NO_LIBUNINAMESLIST
+<span class="lineNum">     110 </span>            : #if (_LIBUNINAMESLIST_FUN &lt;= 3)
+<span class="lineNum">     111 </span>            :     /* old libuninameslist library code */
+<span class="lineNum">     112 </span>            :     if ( _UnicodeNameAnnot!=NULL &amp;&amp;
+<span class="lineNum">     113 </span>            :             _UnicodeNameAnnot[unienc&gt;&gt;16][(unienc&gt;&gt;8)&amp;0xff][unienc&amp;0xff].name!=NULL ) {
+<span class="lineNum">     114 </span>            :         name_data=copy(_UnicodeNameAnnot[unienc&gt;&gt;16][(unienc&gt;&gt;8)&amp;0xff][unienc&amp;0xff].name);
+<span class="lineNum">     115 </span>            :     }
+<span class="lineNum">     116 </span>            :     //fprintf(stderr,&quot;use old code library -&gt;%s&lt;-\n&quot;,name_data);
+<span class="lineNum">     117 </span>            : #else
+<span class="lineNum">     118 </span>            :     /* new libuninameslist library code */
+<span class="lineNum">     119 </span>            :     name_data=copy(uniNamesList_name(unienc));
+<span class="lineNum">     120 </span>            :     //fprintf(stderr,&quot;new library -&gt;%s&lt;-\n&quot;,name_data\n&quot;);
+<span class="lineNum">     121 </span>            : #endif
+<span class="lineNum">     122 </span>            : #else
+<span class="lineNum">     123 </span>            :     /* libunicodesnames library code */
+<span class="lineNum">     124 </span>            :     name_data=copy(uninm_name(names_db,(unsigned int)(unienc)));
+<span class="lineNum">     125 </span>            :     //fprintf(stderr,&quot;libunicodes library -&gt;%s&lt;-\n&quot;,name_data);
+<span class="lineNum">     126 </span>            : #endif
+<span class="lineNum">     127 </span>            : 
+<span class="lineNum">     128 </span>            :     /* George Williams' improvisation on Hangul Syllable range
+<span class="lineNum">     129 </span>            :      * As of Unicode 6.3.0 0xAC00 - 0xD7A3 is defined as a block
+<span class="lineNum">     130 </span>            :      * without individual code point names.
+<span class="lineNum">     131 </span>            :      * Code moved here from fontforgeexe/fontview.c
+<span class="lineNum">     132 </span>            :      * FIXME: maybe this belongs to lower library stack instead,
+<span class="lineNum">     133 </span>            :      * revisit later.
+<span class="lineNum">     134 </span>            :      */
+<span class="lineNum">     135 </span>            :     if( ( unienc &gt;= 0xAC00 &amp;&amp; unienc &lt;= 0xD7A3 ) &amp;&amp; ( name_data == NULL ) ) {
+<span class="lineNum">     136 </span>            :         if( ( ( unienc - 0xAC00 ) % 28 ) == 0 ) {
+<span class="lineNum">     137 </span>            :             name_data = xasprintf( &quot;Hangul Syllable %s-%s&quot;,
+<span class="lineNum">     138 </span>            :                     chosung [ (unienc - 0xAC00) / (21*28) ],
+<span class="lineNum">     139 </span>            :                     jungsung[ ((unienc - 0xAC00) / 28 ) % 21 ] );
+<span class="lineNum">     140 </span>            :         } else {
+<span class="lineNum">     141 </span>            :             name_data = xasprintf( &quot;Hangul Syllable %s-%s-%s&quot;,
+<span class="lineNum">     142 </span>            :                     chosung [ (unienc - 0xAC00) / (21*28) ],
+<span class="lineNum">     143 </span>            :                     jungsung[ ((unienc - 0xAC00) / 28 ) % 21 ],
+<span class="lineNum">     144 </span>            :                     jongsung[ (unienc - 0xAC00) % 28 ] );
+<span class="lineNum">     145 </span>            :         }
+<span class="lineNum">     146 </span>            :     }
+<span class="lineNum">     147 </span>            : 
+<span class="lineNum">     148 </span>            :     return( name_data );
+<span class="lineNum">     149 </span>            : #endif
+<span class="lineNum">     150 </span>            : }
+<span class="lineNum">     151 </span>            : 
+<span class="lineNum">     152 </span>            : #ifndef _NO_LIBUNINAMESLIST
+<span class="lineNum">     153 </span>            : static char *unicode_nicer(const char *from) {
+<span class="lineNum">     154 </span>            : /* Return nicer looking unicode annotations by changing the '*' to bullet */
+<span class="lineNum">     155 </span>            : /* and other markers to fancier utf8 style symbols. if empty, return NULL */
+<span class="lineNum">     156 </span>            : /* User should free the return string when finished with this information */
+<span class="lineNum">     157 </span>            :     const char *pf;
+<span class="lineNum">     158 </span>            :     char ch,*to,*pt;
+<span class="lineNum">     159 </span>            :     long c;
+<span class="lineNum">     160 </span>            :     int l;
+<span class="lineNum">     161 </span>            : 
+<span class="lineNum">     162 </span>            :     if ( from==NULL )
+<span class="lineNum">     163 </span>            :         return( NULL );
+<span class="lineNum">     164 </span>            : 
+<span class="lineNum">     165 </span>            :     /* check if we need to convert some chars to bullets and symbols */
+<span class="lineNum">     166 </span>            :     c=l=0;
+<span class="lineNum">     167 </span>            :     for ( pf=from; (ch=*pf++)!='\0'; ++l ) if ( ch=='\t' ) {
+<span class="lineNum">     168 </span>            :         /* require extra space for these larger utf8 type chars */
+<span class="lineNum">     169 </span>            :         if ( *pf=='*' || *pf=='x' || *pf==':' || *pf=='#' ) ++c;
+<span class="lineNum">     170 </span>            :     }
+<span class="lineNum">     171 </span>            : 
+<span class="lineNum">     172 </span>            :     if ( (pt=to=malloc(l+c+c+1))!=NULL ) {
+<span class="lineNum">     173 </span>            :         if ( c ) {
+<span class="lineNum">     174 </span>            :             while ( (ch=*pt++=*from++)!='\0' ) if (ch=='\t' ) {
+<span class="lineNum">     175 </span>            :                 if ( *from=='*' ) {
+<span class="lineNum">     176 </span>            :                     c=0x2022; goto unicode_expand_c; /* 0x2022, bullet */
+<span class="lineNum">     177 </span>            :                 } else if ( *from=='x' ) {
+<span class="lineNum">     178 </span>            :                     c=0x2192; goto unicode_expand_c; /* 0x2192, right-arrow */
+<span class="lineNum">     179 </span>            :                 } else if ( *from==':' ) {
+<span class="lineNum">     180 </span>            :                     c=0x224d; goto unicode_expand_c; /* 0x224d, nearly equal */
+<span class="lineNum">     181 </span>            :                 } else if ( *from=='#' ) {
+<span class="lineNum">     182 </span>            :                     c=0x2245; goto unicode_expand_c; /* 0x2245, approx equal */
+<span class="lineNum">     183 </span>            : unicode_expand_c:
+<span class="lineNum">     184 </span>            :                     ++from;
+<span class="lineNum">     185 </span>            :                     *pt++ =0xe0+((c&gt;&gt;12)&amp;0x0f);
+<span class="lineNum">     186 </span>            :                     *pt++ =0x80+((c&gt;&gt;6)&amp;0x3f);
+<span class="lineNum">     187 </span>            :                     *pt++ =0x80+(c&amp;0x3f);
+<span class="lineNum">     188 </span>            :                 }
+<span class="lineNum">     189 </span>            :             }
+<span class="lineNum">     190 </span>            :         } else
+<span class="lineNum">     191 </span>            :             /* simply copy information verbatim, without the need to edit */
+<span class="lineNum">     192 </span>            :             while ( (*pt++=*from++)!='\0' );
+<span class="lineNum">     193 </span>            :     }
+<span class="lineNum">     194 </span>            : 
+<span class="lineNum">     195 </span>            :     return( to );
+<span class="lineNum">     196 </span>            : }
+<span class="lineNum">     197 </span>            : 
+<span class="lineNum">     198 </span>            : static int unicode_block_check(int block_i) {
+<span class="lineNum">     199 </span>            : #if (_LIBUNINAMESLIST_FUN &lt;= 3)
+<span class="lineNum">     200 </span>            : /* Older uninameslist database needs to be checked from start since we do */
+<span class="lineNum">     201 </span>            : /* not know which is the last block. Currently this should be around 234. */
+<span class="lineNum">     202 </span>            :     if ( _UnicodeBlock!=NULL ) {
+<span class="lineNum">     203 </span>            :         int i;
+<span class="lineNum">     204 </span>            : 
+<span class="lineNum">     205 </span>            :         for ( i=0; i&lt;block_i; ++i )
+<span class="lineNum">     206 </span>            :             if ( _UnicodeBlock[i].end&gt;=0x10ffff )
+<span class="lineNum">     207 </span>            :                 break;
+<span class="lineNum">     208 </span>            :         if ( i==block_i )
+<span class="lineNum">     209 </span>            :             return( i );
+<span class="lineNum">     210 </span>            :     }
+<span class="lineNum">     211 </span>            :     return( -1 );
+<span class="lineNum">     212 </span>            : #else
+<span class="lineNum">     213 </span>            :     /* libuninameslist-0.4.2014____ has a function to return block count. */
+<span class="lineNum">     214 </span>            :     if ( _UnicodeBlock!=NULL &amp;&amp; block_i &lt; uniNamesList_blockCount() )
+<span class="lineNum">     215 </span>            :         return( block_i );
+<span class="lineNum">     216 </span>            :     return( -1 );
+<span class="lineNum">     217 </span>            : #endif
+<span class="lineNum">     218 </span>            : }
+<a name="219"><span class="lineNum">     219 </span>            : #endif</a>
+<span class="lineNum">     220 </span>            : 
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 : char *unicode_annot(int32 unienc) {</span>
+<span class="lineNum">     222 </span>            : /* Return the unicode annotation for the value given from a data library. */
+<span class="lineNum">     223 </span>            : /* If there's no data available for this code, or no library, return NULL */
+<span class="lineNum">     224 </span>            : /* User should free the return string when finished with this information */
+<span class="lineNum">     225 </span>            : 
+<span class="lineNum">     226 </span>            : #if _NO_LIBUNINAMESLIST &amp;&amp; _NO_LIBUNICODENAMES
+<span class="lineNum">     227 </span>            :     /* no nameslist library code available to use */
+<span class="lineNum">     228 </span>            :     //fprintf(stderr,&quot;no library - annotation\n&quot;);
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :     return( NULL );</span>
+<span class="lineNum">     230 </span>            : #else
+<span class="lineNum">     231 </span>            :     /* have nameslist library code available to use */
+<span class="lineNum">     232 </span>            :     if ( unienc&lt;0 || unienc&gt;=0x110000 )
+<span class="lineNum">     233 </span>            :         return( NULL );
+<span class="lineNum">     234 </span>            : 
+<span class="lineNum">     235 </span>            :     char *annot_data=NULL;
+<span class="lineNum">     236 </span>            : 
+<span class="lineNum">     237 </span>            : #ifndef _NO_LIBUNINAMESLIST
+<span class="lineNum">     238 </span>            : #if (_LIBUNINAMESLIST_FUN &lt;= 3)
+<span class="lineNum">     239 </span>            :     /* old libuninameslist library code */
+<span class="lineNum">     240 </span>            :     if ( _UnicodeNameAnnot!=NULL &amp;&amp;
+<span class="lineNum">     241 </span>            :             _UnicodeNameAnnot[unienc&gt;&gt;16][(unienc&gt;&gt;8)&amp;0xff][unienc&amp;0xff].annot!=NULL ) {
+<span class="lineNum">     242 </span>            :         annot_data=unicode_nicer(_UnicodeNameAnnot[unienc&gt;&gt;16][(unienc&gt;&gt;8)&amp;0xff][unienc&amp;0xff].annot);
+<span class="lineNum">     243 </span>            :     }
+<span class="lineNum">     244 </span>            :     //fprintf(stderr,&quot;use old code unicode_annot() - annotation -&gt;%s&lt;-\n&quot;,annot_data);
+<span class="lineNum">     245 </span>            : #else
+<span class="lineNum">     246 </span>            :     /* new libuninameslist library code */
+<span class="lineNum">     247 </span>            :     annot_data=unicode_nicer(uniNamesList_annot(unienc));
+<span class="lineNum">     248 </span>            :     //fprintf(stderr,&quot;new unicode_annot() - annotation -&gt;%s&lt;-\n&quot;,annot_data);
+<span class="lineNum">     249 </span>            : #endif
+<span class="lineNum">     250 </span>            : #else
+<span class="lineNum">     251 </span>            :     /* libunicodesnames library code */
+<span class="lineNum">     252 </span>            :     annot_data=copy(uninm_annotation(names_db,(unsigned int)(unienc)));
+<span class="lineNum">     253 </span>            :     //fprintf(stderr,&quot;libunicodes unicode_annot() - annotation -&gt;%s&lt;-\n&quot;,annot_data);
+<span class="lineNum">     254 </span>            : #endif
+<span class="lineNum">     255 </span>            : 
+<span class="lineNum">     256 </span>            :     return( annot_data );
+<span class="lineNum">     257 </span>            : #endif
+<a name="258"><span class="lineNum">     258 </span>            : }</a>
+<span class="lineNum">     259 </span>            : 
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 : int32 unicode_block_count(void) {</span>
+<span class="lineNum">     261 </span>            : /* Return the number of unicode blocks contained in this NameList library */
+<span class="lineNum">     262 </span>            : #if _NO_LIBUNINAMESLIST &amp;&amp; _NO_LIBUNICODENAMES
+<span class="lineNum">     263 </span>            :     /* no nameslist library available to use */
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :     return( -1 );</span>
+<span class="lineNum">     265 </span>            : #else
+<span class="lineNum">     266 </span>            :     int32 unicount;
+<span class="lineNum">     267 </span>            : 
+<span class="lineNum">     268 </span>            :     unicount=-1;
+<span class="lineNum">     269 </span>            : #ifndef _NO_LIBUNINAMESLIST
+<span class="lineNum">     270 </span>            : #if (_LIBUNINAMESLIST_FUN &gt;= 4)
+<span class="lineNum">     271 </span>            :     /* version 0.4+ have function to do this */
+<span class="lineNum">     272 </span>            :     unicount=uniNamesList_blockCount();
+<span class="lineNum">     273 </span>            :     //fprintf(stderr,&quot;ver 0.4+ unicode_block_count(), have %d\n&quot;,unicount);
+<span class="lineNum">     274 </span>            : #else
+<span class="lineNum">     275 </span>            :     /* old libuninameslist&lt;=0.3 library code */
+<span class="lineNum">     276 </span>            :     if ( _UnicodeBlock!=NULL ) {
+<span class="lineNum">     277 </span>            :         int i;
+<span class="lineNum">     278 </span>            : 
+<span class="lineNum">     279 </span>            :         for ( i=0; i&lt;100000; ++i )
+<span class="lineNum">     280 </span>            :             if ( _UnicodeBlock[i].end&gt;=0x10ffff )
+<span class="lineNum">     281 </span>            :                 break;
+<span class="lineNum">     282 </span>            :         if ( i&gt;0 )
+<span class="lineNum">     283 </span>            :             unicount = i;
+<span class="lineNum">     284 </span>            :         //fprintf(stderr,&quot;old code unicode_block_count(), have %d, %d\n&quot;,i,unicount);
+<span class="lineNum">     285 </span>            :     }
+<span class="lineNum">     286 </span>            : #endif
+<span class="lineNum">     287 </span>            : #else
+<span class="lineNum">     288 </span>            :     /* libunicodesnames library code */
+<span class="lineNum">     289 </span>            :     unicount=uninm_num_blocks(blocks_db);
+<span class="lineNum">     290 </span>            :     //fprintf(stderr,&quot;libunicodes unicode_block_count() have %d\n&quot;,unicount);
+<span class="lineNum">     291 </span>            : #endif
+<span class="lineNum">     292 </span>            : 
+<span class="lineNum">     293 </span>            :     return( unicount );
+<span class="lineNum">     294 </span>            : #endif
+<a name="295"><span class="lineNum">     295 </span>            : }</a>
+<span class="lineNum">     296 </span>            : 
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 : int32 unicode_block_start(int32 block_i) {</span>
+<span class="lineNum">     298 </span>            : /* Return the unicode value for the start of next unicode block. If no    */
+<span class="lineNum">     299 </span>            : /* library or data available, then return -1.                             */
+<span class="lineNum">     300 </span>            : 
+<span class="lineNum">     301 </span>            : #if _NO_LIBUNINAMESLIST &amp;&amp; _NO_LIBUNICODENAMES
+<span class="lineNum">     302 </span>            :     /* no nameslist library available to use */
+<span class="lineNum">     303 </span>            :     //fprintf(stderr,&quot;no block library\n&quot;);
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :     return( -1 );</span>
+<span class="lineNum">     305 </span>            : #else
+<span class="lineNum">     306 </span>            :     int32 unistart;
+<span class="lineNum">     307 </span>            : 
+<span class="lineNum">     308 </span>            :     unistart=-1;
+<span class="lineNum">     309 </span>            : #ifndef _NO_LIBUNINAMESLIST
+<span class="lineNum">     310 </span>            : #if (_LIBUNINAMESLIST_FUN &gt;= 4)
+<span class="lineNum">     311 </span>            :     /* version 0.4+ have function to do this */
+<span class="lineNum">     312 </span>            :     unistart=uniNamesList_blockStart(block_i);
+<span class="lineNum">     313 </span>            :     //fprintf(stderr,&quot;ver 0.4+ code unicode_block_start(), have %d %d\n&quot;,block_i,unistart);
+<span class="lineNum">     314 </span>            : #else
+<span class="lineNum">     315 </span>            :     /* old libuninameslist&lt;=0.3 library code */
+<span class="lineNum">     316 </span>            :     if ( (unistart=unicode_block_check(block_i))&gt;=0 )
+<span class="lineNum">     317 </span>            :         unistart=_UnicodeBlock[unistart].start;
+<span class="lineNum">     318 </span>            :     //fprintf(stderr,&quot;use old code unicode_block_start(), have %d %d\n&quot;,block_i,unistart);
+<span class="lineNum">     319 </span>            : #endif
+<span class="lineNum">     320 </span>            : #else
+<span class="lineNum">     321 </span>            :     /* libunicodesnames library code */
+<span class="lineNum">     322 </span>            :     unistart=uninm_block_start(blocks_db,(unsigned int)(block_i));
+<span class="lineNum">     323 </span>            :     //fprintf(stderr,&quot;libunicodes unicode_block_start()have %d %d\n&quot;,block_i,unistart);
+<span class="lineNum">     324 </span>            : #endif
+<span class="lineNum">     325 </span>            : 
+<span class="lineNum">     326 </span>            :     return( unistart );
+<span class="lineNum">     327 </span>            : #endif
+<a name="328"><span class="lineNum">     328 </span>            : }</a>
+<span class="lineNum">     329 </span>            : 
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 : int32 unicode_block_end(int32 block_i) {</span>
+<span class="lineNum">     331 </span>            : /* Return the unicode value for the end of this unicode block. If there   */
+<span class="lineNum">     332 </span>            : /* is no library or data available, then return -1                        */
+<span class="lineNum">     333 </span>            : 
+<span class="lineNum">     334 </span>            : #if _NO_LIBUNINAMESLIST &amp;&amp; _NO_LIBUNICODENAMES
+<span class="lineNum">     335 </span>            :     /* no nameslist library available to use */
+<span class="lineNum">     336 </span>            :     //fprintf(stderr,&quot;no block library\n&quot;);
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :     return( -1 );</span>
+<span class="lineNum">     338 </span>            : #else
+<span class="lineNum">     339 </span>            :     int32 uniend;
+<span class="lineNum">     340 </span>            : 
+<span class="lineNum">     341 </span>            :     uniend=-1;
+<span class="lineNum">     342 </span>            : #ifndef _NO_LIBUNINAMESLIST
+<span class="lineNum">     343 </span>            : #if (_LIBUNINAMESLIST_FUN &gt;= 4)
+<span class="lineNum">     344 </span>            :     /* version 0.4+ have function to do this */
+<span class="lineNum">     345 </span>            :     uniend=uniNamesList_blockEnd(block_i);
+<span class="lineNum">     346 </span>            :     //fprintf(stderr,&quot;ver 0.4+ code unicode_block_end(), have %d %d\n&quot;,block_i,uniend);
+<span class="lineNum">     347 </span>            : #else
+<span class="lineNum">     348 </span>            :     /* old libuninameslist&lt;=0.3 library code */
+<span class="lineNum">     349 </span>            :     if ( (uniend=unicode_block_check(block_i))&gt;=0 )
+<span class="lineNum">     350 </span>            :         uniend=_UnicodeBlock[uniend].end;
+<span class="lineNum">     351 </span>            :     //fprintf(stderr,&quot;use old code unicode_block_end(), have %d %d\n&quot;,block_i,uniend);
+<span class="lineNum">     352 </span>            : #endif
+<span class="lineNum">     353 </span>            : #else
+<span class="lineNum">     354 </span>            :     /* libunicodesnames library code */
+<span class="lineNum">     355 </span>            :     uniend=uninm_block_end(blocks_db,(unsigned int)(block_i));
+<span class="lineNum">     356 </span>            :     //fprintf(stderr,&quot;libunicodes unicode_block_end(), have %d %d\n&quot;,block_i,uniend);
+<span class="lineNum">     357 </span>            : #endif
+<span class="lineNum">     358 </span>            : 
+<span class="lineNum">     359 </span>            :     return( uniend );
+<span class="lineNum">     360 </span>            : #endif
+<a name="361"><span class="lineNum">     361 </span>            : }</a>
+<span class="lineNum">     362 </span>            : 
+<span class="lineNum">     363 </span><span class="lineNoCov">          0 : char *unicode_block_name(int32 block_i) {</span>
+<span class="lineNum">     364 </span>            : /* Return the unicode name for this unicode block. If there is no library */
+<span class="lineNum">     365 </span>            : /* then return NULL                                                       */
+<span class="lineNum">     366 </span>            : 
+<span class="lineNum">     367 </span>            : #if _NO_LIBUNINAMESLIST &amp;&amp; _NO_LIBUNICODENAMES
+<span class="lineNum">     368 </span>            :     /* no nameslist library code available to use */
+<span class="lineNum">     369 </span>            :     //fprintf(stderr,&quot;no library\n&quot;);
+<span class="lineNum">     370 </span><span class="lineNoCov">          0 :     return( NULL );</span>
+<span class="lineNum">     371 </span>            : #else
+<span class="lineNum">     372 </span>            :     char *name_data=NULL;
+<span class="lineNum">     373 </span>            : #ifndef _NO_LIBUNINAMESLIST
+<span class="lineNum">     374 </span>            : #if (_LIBUNINAMESLIST_FUN &gt;= 4)
+<span class="lineNum">     375 </span>            :     /* version 0.4+ have function to do this */
+<span class="lineNum">     376 </span>            :     name_data=copy(uniNamesList_blockName(block_i));
+<span class="lineNum">     377 </span>            :     //fprintf(stderr,&quot;ver 0.4+ code unicode_block_name(), have %d -&gt;%s&lt;-\n&quot;,block_i,name_data);
+<span class="lineNum">     378 </span>            : #else
+<span class="lineNum">     379 </span>            :     int i;
+<span class="lineNum">     380 </span>            :     /* old libuninameslist&lt;=0.3 library code */
+<span class="lineNum">     381 </span>            :     if ( (i=unicode_block_check(block_i))&gt;=0 )
+<span class="lineNum">     382 </span>            :         name_data=copy(_UnicodeBlock[i].name);
+<span class="lineNum">     383 </span>            :     //fprintf(stderr,&quot;use old code unicode_block_name(), have %d %d -&gt;%s&lt;-\n&quot;,i,block_i,name_data);
+<span class="lineNum">     384 </span>            : #endif
+<span class="lineNum">     385 </span>            : #else
+<span class="lineNum">     386 </span>            :     /* libunicodesnames library code */
+<span class="lineNum">     387 </span>            :     name_data=copy(uninm_block_name(blocks_db,(unsigned int)(block_i)));
+<span class="lineNum">     388 </span>            :     //fprintf(stderr,&quot;libunicodes unicode_block_name() %d -&gt;%s&lt;-\n&quot;,block_i,name_data);
+<span class="lineNum">     389 </span>            : #endif
+<span class="lineNum">     390 </span>            : 
+<span class="lineNum">     391 </span>            :     return( name_data );
+<span class="lineNum">     392 </span>            : #endif
+<a name="393"><span class="lineNum">     393 </span>            : }</a>
+<span class="lineNum">     394 </span>            : 
+<span class="lineNum">     395 </span><span class="lineNoCov">          0 : char *unicode_library_version(void) {</span>
+<span class="lineNum">     396 </span>            : /* Return the unicode version for this library. Sometimes users still use */
+<span class="lineNum">     397 </span>            : /* older libuninameslist or libunincodenames libraries because they don't */
+<span class="lineNum">     398 </span>            : /* realize that these need to be updated to keep current too but not made */
+<span class="lineNum">     399 </span>            : /* at same time that FontForge is released (release dates not in sync).   */
+<span class="lineNum">     400 </span>            : 
+<span class="lineNum">     401 </span>            : #if !(_NO_LIBUNINAMESLIST) &amp;&amp; (_LIBUNINAMESLIST_FUN &gt;= 3)
+<span class="lineNum">     402 </span>            :     /* libuninameslist-0.3.20130501-1 and later have a &quot;version&quot; function */
+<span class="lineNum">     403 </span>            :     char *version_str;
+<span class="lineNum">     404 </span>            : 
+<span class="lineNum">     405 </span>            :     version_str=copy(uniNamesList_NamesListVersion());
+<span class="lineNum">     406 </span>            : 
+<span class="lineNum">     407 </span>            :     return( version_str );
+<span class="lineNum">     408 </span>            : #else
+<span class="lineNum">     409 </span>            :     /* Libunicodenames and older versions of libuninames don't have a ver */
+<span class="lineNum">     410 </span>            :     /* function so we need to either test various annotations to find out */
+<span class="lineNum">     411 </span>            :     /* what version we have, or we keep it simple and just return nothing */
+<span class="lineNum">     412 </span><span class="lineNoCov">          0 :     return( NULL );</span>
+<span class="lineNum">     413 </span>            : #endif
+<span class="lineNum">     414 </span>            : }
+<span class="lineNum">     415 </span>            : 
+<span class="lineNum">     416 </span>            : #endif
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

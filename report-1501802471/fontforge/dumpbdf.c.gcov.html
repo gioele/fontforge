@@ -1,0 +1,537 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforge/dumpbdf.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforge</a> - dumpbdf.c<span style="font-size: 80%;"> (source / <a href="dumpbdf.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">150</td>
+            <td class="headerCovTableEntry">263</td>
+            <td class="headerCovTableEntryLo">57.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">7</td>
+            <td class="headerCovTableEntry">8</td>
+            <td class="headerCovTableEntryMed">87.5 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            : #include &quot;dumpbdf.h&quot;
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            : #include &quot;bitmapchar.h&quot;
+<span class="lineNum">      31 </span>            : #include &quot;bvedit.h&quot;
+<span class="lineNum">      32 </span>            : #include &quot;encoding.h&quot;
+<span class="lineNum">      33 </span>            : #include &quot;fontforge.h&quot;
+<span class="lineNum">      34 </span>            : #include &quot;splinefont.h&quot;
+<span class="lineNum">      35 </span>            : #include &quot;splinefill.h&quot;
+<span class="lineNum">      36 </span>            : #include &quot;splinesaveafm.h&quot;
+<span class="lineNum">      37 </span>            : #include &lt;gdraw.h&gt;                        /* for the defn of GClut for greymaps */
+<span class="lineNum">      38 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">      39 </span>            : #include &lt;ustring.h&gt;
+<span class="lineNum">      40 </span>            : #include &lt;utype.h&gt;
+<span class="lineNum">      41 </span>            : #include &lt;math.h&gt;
+<span class="lineNum">      42 </span>            : 
+<a name="43"><span class="lineNum">      43 </span>            : #define MAX_WIDTH       200</a>
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span><span class="lineCov">      34318 : int IsntBDFChar(BDFChar *bdfc) {</span>
+<span class="lineNum">      46 </span><span class="lineCov">      34318 :     if ( bdfc==NULL )</span>
+<span class="lineNum">      47 </span><span class="lineCov">        901 : return( true );</span>
+<span class="lineNum">      48 </span>            : 
+<span class="lineNum">      49 </span><span class="lineCov">      33417 : return( !SCWorthOutputting(bdfc-&gt;sc));</span>
+<a name="50"><span class="lineNum">      50 </span>            : }</a>
+<span class="lineNum">      51 </span>            : 
+<span class="lineNum">      52 </span><span class="lineCov">          5 : static void calculate_bounding_box(BDFFont *font,</span>
+<span class="lineNum">      53 </span>            :         int *fbb_width,int *fbb_height,int *fbb_lbearing, int *fbb_descent) {
+<span class="lineNum">      54 </span><span class="lineCov">          5 :     int minx=0,maxx=0,miny=0,maxy=0;</span>
+<span class="lineNum">      55 </span>            :     BDFChar *bdfc;
+<span class="lineNum">      56 </span>            :     int i;
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span><span class="lineCov">       4645 :     for ( i=0; i&lt;font-&gt;glyphcnt; ++i ) {</span>
+<span class="lineNum">      59 </span><span class="lineCov">       4640 :         if ( (bdfc = font-&gt;glyphs[i])!=NULL ) {</span>
+<span class="lineNum">      60 </span><span class="lineCov">       4461 :             if ( minx==0 &amp;&amp; maxx==0 ) {</span>
+<span class="lineNum">      61 </span><span class="lineCov">          5 :                 minx = bdfc-&gt;xmin;</span>
+<span class="lineNum">      62 </span><span class="lineCov">          5 :                 maxx = bdfc-&gt;xmax;</span>
+<span class="lineNum">      63 </span>            :             } else {
+<span class="lineNum">      64 </span><span class="lineCov">       4456 :                 if ( minx&gt;bdfc-&gt;xmin ) minx=bdfc-&gt;xmin;</span>
+<span class="lineNum">      65 </span><span class="lineCov">       4456 :                 if ( maxx&lt;bdfc-&gt;xmax ) maxx = bdfc-&gt;xmax;</span>
+<span class="lineNum">      66 </span>            :             }
+<span class="lineNum">      67 </span><span class="lineCov">       4461 :             if ( miny==0 &amp;&amp; maxy==0 ) {</span>
+<span class="lineNum">      68 </span><span class="lineCov">          5 :                 miny = bdfc-&gt;ymin;</span>
+<span class="lineNum">      69 </span><span class="lineCov">          5 :                 maxy = bdfc-&gt;ymax;</span>
+<span class="lineNum">      70 </span>            :             } else {
+<span class="lineNum">      71 </span><span class="lineCov">       4456 :                 if ( miny&gt;bdfc-&gt;ymin ) miny=bdfc-&gt;ymin;</span>
+<span class="lineNum">      72 </span><span class="lineCov">       4456 :                 if ( maxy&lt;bdfc-&gt;ymax ) maxy = bdfc-&gt;ymax;</span>
+<span class="lineNum">      73 </span>            :             }
+<span class="lineNum">      74 </span>            :         }
+<span class="lineNum">      75 </span>            :     }
+<span class="lineNum">      76 </span><span class="lineCov">          5 :     *fbb_height = maxy-miny+1;</span>
+<span class="lineNum">      77 </span><span class="lineCov">          5 :     *fbb_width = maxx-minx+1;</span>
+<span class="lineNum">      78 </span><span class="lineCov">          5 :     *fbb_descent = miny;</span>
+<span class="lineNum">      79 </span><span class="lineCov">          5 :     *fbb_lbearing = minx;</span>
+<span class="lineNum">      80 </span><span class="lineCov">          5 : }</span>
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span>            : #define MS_Hor  1
+<span class="lineNum">      83 </span>            : #define MS_Vert 2
+<span class="lineNum">      84 </span>            : struct metric_defaults {
+<span class="lineNum">      85 </span>            :     int metricssets;    /* 0=&gt;none, 1=&gt;hor, 2=&gt;vert, 3=&gt;hv */
+<span class="lineNum">      86 </span>            :     int swidth;
+<span class="lineNum">      87 </span>            :     int dwidth;
+<span class="lineNum">      88 </span>            :     int swidth1;
+<span class="lineNum">      89 </span>            :     int dwidth1;
+<a name="90"><span class="lineNum">      90 </span>            : };</a>
+<span class="lineNum">      91 </span>            : 
+<span class="lineNum">      92 </span><span class="lineCov">       4409 : static void BDFDumpChar(FILE *file,BDFFont *font,BDFChar *bdfc,int enc,</span>
+<span class="lineNum">      93 </span>            :         EncMap *map, int *dups, struct metric_defaults *defs) {
+<span class="lineNum">      94 </span>            :     int r,c;
+<span class="lineNum">      95 </span>            :     int bpl;
+<span class="lineNum">      96 </span><span class="lineCov">       4409 :     int em = ( font-&gt;sf-&gt;ascent+font-&gt;sf-&gt;descent );        /* Just in case em isn't 1000, be prepared to normalize */</span>
+<span class="lineNum">      97 </span><span class="lineCov">       4409 :     int isdup = false;</span>
+<span class="lineNum">      98 </span>            : 
+<span class="lineNum">      99 </span><span class="lineCov">       4409 :     BCCompressBitmap(bdfc);</span>
+<span class="lineNum">     100 </span><span class="lineCov">       4409 :     if ( bdfc-&gt;sc-&gt;altuni!=NULL ) {</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :         int uni = UniFromEnc(enc,map-&gt;enc);</span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :         isdup = uni!=bdfc-&gt;sc-&gt;unicodeenc;</span>
+<span class="lineNum">     103 </span>            :     }
+<span class="lineNum">     104 </span><span class="lineCov">       4409 :     if ( !isdup )</span>
+<span class="lineNum">     105 </span><span class="lineCov">       4409 :         fprintf( file, &quot;STARTCHAR %s\n&quot;, bdfc-&gt;sc-&gt;name );</span>
+<span class="lineNum">     106 </span>            :     else
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :         fprintf( file, &quot;STARTCHAR %s.dup%d\n&quot;, bdfc-&gt;sc-&gt;name, ++*dups );</span>
+<span class="lineNum">     108 </span>            : 
+<span class="lineNum">     109 </span><span class="lineCov">       4409 :     fprintf( file, &quot;ENCODING %d\n&quot;, enc );</span>
+<span class="lineNum">     110 </span><span class="lineCov">       4409 :     if ( !(defs-&gt;metricssets&amp;MS_Hor) || bdfc-&gt;sc-&gt;width!=defs-&gt;swidth )</span>
+<span class="lineNum">     111 </span><span class="lineCov">       4409 :         fprintf( file, &quot;SWIDTH %d 0\n&quot;, bdfc-&gt;sc-&gt;width*1000/em );</span>
+<span class="lineNum">     112 </span><span class="lineCov">       4409 :     if ( !(defs-&gt;metricssets&amp;MS_Hor) || bdfc-&gt;width!=defs-&gt;dwidth )</span>
+<span class="lineNum">     113 </span><span class="lineCov">       4409 :         fprintf( file, &quot;DWIDTH %d 0\n&quot;, bdfc-&gt;width );</span>
+<span class="lineNum">     114 </span><span class="lineCov">       4409 :     if ( font-&gt;sf-&gt;hasvmetrics ) {</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :         if ( !(defs-&gt;metricssets&amp;MS_Vert) || bdfc-&gt;sc-&gt;vwidth!=defs-&gt;swidth1 )</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :             fprintf( file, &quot;SWIDTH1 %d 0\n&quot;, bdfc-&gt;sc-&gt;vwidth*1000/em );</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :         if ( !(defs-&gt;metricssets&amp;MS_Vert) || bdfc-&gt;vwidth!=defs-&gt;dwidth1 )</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :             fprintf( file, &quot;DWIDTH1 %d 0\n&quot;, bdfc-&gt;vwidth );</span>
+<span class="lineNum">     119 </span>            :     }
+<span class="lineNum">     120 </span><span class="lineCov">       8818 :     fprintf( file, &quot;BBX %d %d %d %d\n&quot;, bdfc-&gt;xmax-bdfc-&gt;xmin+1, bdfc-&gt;ymax-bdfc-&gt;ymin+1,</span>
+<span class="lineNum">     121 </span><span class="lineCov">       8818 :             bdfc-&gt;xmin, bdfc-&gt;ymin );</span>
+<span class="lineNum">     122 </span><span class="lineCov">       4409 :     fprintf( file, &quot;BITMAP\n&quot; );</span>
+<span class="lineNum">     123 </span><span class="lineCov">       4409 :     bpl = bdfc-&gt;bytes_per_line;</span>
+<span class="lineNum">     124 </span><span class="lineCov">      46500 :     for ( r = 0; r&lt;bdfc-&gt;ymax-bdfc-&gt;ymin+1; ++r ) {</span>
+<span class="lineNum">     125 </span><span class="lineCov">     105101 :         for ( c=0; c&lt;bpl; ++c ) {</span>
+<span class="lineNum">     126 </span><span class="lineCov">     126020 :             if ( font-&gt;clut==NULL || font-&gt;clut-&gt;clut_len==256 ) {</span>
+<span class="lineNum">     127 </span><span class="lineCov">      63010 :                 int n1 = bdfc-&gt;bitmap[r*bdfc-&gt;bytes_per_line+c]&gt;&gt;4;</span>
+<span class="lineNum">     128 </span><span class="lineCov">      63010 :                 int n2 = bdfc-&gt;bitmap[r*bdfc-&gt;bytes_per_line+c]&amp;0xf;</span>
+<span class="lineNum">     129 </span><span class="lineCov">      63010 :                 if ( n1&gt;=10 )</span>
+<span class="lineNum">     130 </span><span class="lineCov">      12656 :                     putc(n1-10+'A',file);</span>
+<span class="lineNum">     131 </span>            :                 else
+<span class="lineNum">     132 </span><span class="lineCov">      50354 :                     putc(n1+'0',file);</span>
+<span class="lineNum">     133 </span><span class="lineCov">      63010 :                 if ( n2&gt;=10 )</span>
+<span class="lineNum">     134 </span><span class="lineCov">       8117 :                     putc(n2-10+'A',file);</span>
+<span class="lineNum">     135 </span>            :                 else
+<span class="lineNum">     136 </span><span class="lineCov">      54893 :                     putc(n2+'0',file);</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :             } else if ( font-&gt;clut-&gt;clut_len==16 ) {</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :                 int n1 = bdfc-&gt;bitmap[r*bdfc-&gt;bytes_per_line+c];</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :                 if ( n1&gt;=10 )</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :                     putc(n1-10+'A',file);</span>
+<span class="lineNum">     141 </span>            :                 else
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :                     putc(n1+'0',file);</span>
+<span class="lineNum">     143 </span>            :             } else {
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :                 int n1 = bdfc-&gt;bitmap[r*bdfc-&gt;bytes_per_line+c]&lt;&lt;2;</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :                 if ( c&lt;bpl-1 )</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :                     n1 += bdfc-&gt;bitmap[r*bdfc-&gt;bytes_per_line+ ++c];</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :                 if ( n1&gt;=10 )</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :                     putc(n1-10+'A',file);</span>
+<span class="lineNum">     149 </span>            :                 else
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :                     putc(n1+'0',file);</span>
+<span class="lineNum">     151 </span>            :             }
+<span class="lineNum">     152 </span>            :         }
+<span class="lineNum">     153 </span><span class="lineCov">      42091 :         if ( font-&gt;clut!=NULL )</span>
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :             if ( ( font-&gt;clut-&gt;clut_len==16 &amp;&amp; (bpl&amp;1)) ||</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :                     (font-&gt;clut-&gt;clut_len==4 &amp;&amp; ((bpl&amp;3)==1 || (bpl&amp;3)==2)) )</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :                 putc('0',file);</span>
+<span class="lineNum">     157 </span><span class="lineCov">      42091 :         putc('\n',file);</span>
+<span class="lineNum">     158 </span>            :     }
+<span class="lineNum">     159 </span><span class="lineCov">       4409 :     fprintf( file, &quot;ENDCHAR\n&quot; );</span>
+<span class="lineNum">     160 </span><span class="lineCov">       4409 :     ff_progress_next();</span>
+<a name="161"><span class="lineNum">     161 </span><span class="lineCov">       4409 : }</span></a>
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 : static void figureDefMetrics(BDFFont *font,struct metric_defaults *defs) {</span>
+<span class="lineNum">     164 </span>            :     int i, maxi;
+<span class="lineNum">     165 </span>            :     int width[256], vwidth[256];
+<span class="lineNum">     166 </span>            :     BDFChar *wsc[256], *vsc[256], *bdfc;
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :     defs-&gt;metricssets = MS_Hor|MS_Vert;</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :     memset(width,0,sizeof(width));</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :     memset(vwidth,0,sizeof(vwidth));</span>
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;font-&gt;glyphcnt; ++i ) if ( (bdfc=font-&gt;glyphs[i])!=NULL ) {</span>
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :         if ( bdfc-&gt;width&lt;256 ) {</span>
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :             ++width[bdfc-&gt;width];</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :             wsc[bdfc-&gt;width] = bdfc;</span>
+<span class="lineNum">     175 </span>            :         }
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :         if ( bdfc-&gt;vwidth&lt;256 ) {</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :             ++vwidth[bdfc-&gt;vwidth];</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :             vsc[bdfc-&gt;vwidth] = bdfc;</span>
+<span class="lineNum">     179 </span>            :         }
+<span class="lineNum">     180 </span>            :     }
+<span class="lineNum">     181 </span>            : 
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :     maxi=-1;</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;256; ++i ) {</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :         if ( maxi==-1 || width[i]&gt;width[maxi] )</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :             maxi = i;</span>
+<span class="lineNum">     186 </span>            :     }
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :     if ( maxi!=-1 ) {</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :         defs-&gt;metricssets = MS_Hor;</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :         defs-&gt;dwidth = maxi;</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :         defs-&gt;swidth = rint( wsc[maxi]-&gt;sc-&gt;width * 1000.0 / (font-&gt;sf-&gt;ascent+font-&gt;sf-&gt;descent));</span>
+<span class="lineNum">     191 </span>            :     }
+<span class="lineNum">     192 </span>            : 
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :     maxi=-1;</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;256; ++i ) {</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :         if ( maxi==-1 || vwidth[i]&gt;vwidth[maxi] )</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :             maxi = i;</span>
+<span class="lineNum">     197 </span>            :     }
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :     if ( maxi!=-1 ) {</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :         defs-&gt;metricssets |= MS_Vert;</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :         defs-&gt;dwidth1 = maxi;</span>
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :         defs-&gt;swidth1 = rint(vsc[maxi]-&gt;sc-&gt;vwidth * 1000.0 / (font-&gt;sf-&gt;ascent+font-&gt;sf-&gt;descent));</span>
+<span class="lineNum">     202 </span>            :     }
+<a name="203"><span class="lineNum">     203 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     204 </span>            : 
+<span class="lineNum">     205 </span><span class="lineCov">         15 : static int BdfPropHasKey(BDFFont *font,const char *key,char *buffer, int len ) {</span>
+<span class="lineNum">     206 </span>            :     int i;
+<span class="lineNum">     207 </span>            : 
+<span class="lineNum">     208 </span><span class="lineCov">        241 :     for ( i=0; i&lt;font-&gt;prop_cnt; ++i ) if ( strcmp(font-&gt;props[i].name,key)==0 ) {</span>
+<span class="lineNum">     209 </span><span class="lineCov">         10 :         switch ( font-&gt;props[i].type&amp;~prt_property ) {</span>
+<span class="lineNum">     210 </span>            :           case prt_string:
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :             snprintf( buffer, len, &quot;\&quot;%s\&quot;&quot;, font-&gt;props[i].u.str );</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">     213 </span>            :           case prt_atom:
+<span class="lineNum">     214 </span><span class="lineCov">          5 :             snprintf( buffer, len, &quot;%s&quot;, font-&gt;props[i].u.atom );</span>
+<span class="lineNum">     215 </span><span class="lineCov">          5 :           break;</span>
+<span class="lineNum">     216 </span>            :           case prt_int: case prt_uint:
+<span class="lineNum">     217 </span><span class="lineCov">          5 :             snprintf( buffer, len, &quot;%d&quot;, font-&gt;props[i].u.val );</span>
+<span class="lineNum">     218 </span><span class="lineCov">          5 :           break;</span>
+<span class="lineNum">     219 </span>            :           default:
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">     221 </span>            :         }
+<span class="lineNum">     222 </span><span class="lineCov">         10 : return( true );</span>
+<span class="lineNum">     223 </span>            :     }
+<span class="lineNum">     224 </span><span class="lineCov">          5 : return( false );</span>
+<a name="225"><span class="lineNum">     225 </span>            : }</a>
+<span class="lineNum">     226 </span>            : 
+<span class="lineNum">     227 </span><span class="lineCov">         20 : static void BPSet(BDFFont *font,const char *key,int *val,double scale,</span>
+<span class="lineNum">     228 </span>            :         int *metricssets,int flag) {
+<span class="lineNum">     229 </span>            :     int i,value;
+<span class="lineNum">     230 </span>            : 
+<span class="lineNum">     231 </span><span class="lineCov">        704 :     for ( i=0; i&lt;font-&gt;prop_cnt; ++i ) if ( strcmp(font-&gt;props[i].name,key)==0 ) {</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :         switch ( font-&gt;props[i].type&amp;~prt_property ) {</span>
+<span class="lineNum">     233 </span>            :           case prt_atom:
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :             value = strtol(font-&gt;props[i].u.atom,NULL,10);</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">     236 </span>            :           case prt_int: case prt_uint:
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :             value = font-&gt;props[i].u.val;</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">     239 </span>            :           default:
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     241 </span>            :         }
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :         *val = rint( value*scale );</span>
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :         *metricssets |= flag;</span>
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     245 </span>            :     }
+<a name="246"><span class="lineNum">     246 </span>            : }</a>
+<span class="lineNum">     247 </span>            : 
+<span class="lineNum">     248 </span><span class="lineCov">          5 : static void BDFDumpHeader(FILE *file,BDFFont *font,EncMap *map,</span>
+<span class="lineNum">     249 </span>            :         int res, struct metric_defaults *defs) {
+<span class="lineNum">     250 </span>            :     char temp[200];
+<span class="lineNum">     251 </span>            :     int fbb_height, fbb_width, fbb_descent, fbb_lbearing;
+<span class="lineNum">     252 </span>            :     int pcnt;
+<span class="lineNum">     253 </span><span class="lineCov">          5 :     int em = font-&gt;sf-&gt;ascent + font-&gt;sf-&gt;descent;</span>
+<span class="lineNum">     254 </span>            :     int i;
+<span class="lineNum">     255 </span>            :     struct xlfd_components components;
+<span class="lineNum">     256 </span><span class="lineCov">          5 :     int old_prop_cnt = font-&gt;prop_cnt;</span>
+<span class="lineNum">     257 </span><span class="lineCov">          5 :     int resolution_mismatch = false;</span>
+<span class="lineNum">     258 </span>            : 
+<span class="lineNum">     259 </span><span class="lineCov">          5 :     if ( old_prop_cnt==0 )</span>
+<span class="lineNum">     260 </span><span class="lineCov">          5 :         BDFDefaultProps(font,map,res);</span>
+<span class="lineNum">     261 </span>            : 
+<span class="lineNum">     262 </span><span class="lineCov">          5 :     XLFD_CreateComponents(font,map, res, &amp;components);</span>
+<span class="lineNum">     263 </span><span class="lineCov">          5 :     if ( BdfPropHasKey(font,&quot;RESOLUTION_Y&quot;,temp,sizeof(temp)) ) {</span>
+<span class="lineNum">     264 </span><span class="lineCov">          5 :         if ( components.res_y!=strtol(temp,NULL,0) )</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :             resolution_mismatch = true;</span>
+<span class="lineNum">     266 </span>            :     }
+<span class="lineNum">     267 </span>            : 
+<span class="lineNum">     268 </span><span class="lineCov">          5 :     memset(defs,-1,sizeof(*defs));</span>
+<span class="lineNum">     269 </span><span class="lineCov">          5 :     defs-&gt;metricssets = 0;</span>
+<span class="lineNum">     270 </span><span class="lineCov">          5 :     BPSet(font,&quot;SWIDTH&quot;,&amp;defs-&gt;swidth,1000.0/em,&amp;defs-&gt;metricssets,MS_Hor);</span>
+<span class="lineNum">     271 </span><span class="lineCov">          5 :     BPSet(font,&quot;DWIDTH&quot;,&amp;defs-&gt;dwidth,1.0,&amp;defs-&gt;metricssets,MS_Hor);</span>
+<span class="lineNum">     272 </span><span class="lineCov">          5 :     BPSet(font,&quot;SWIDTH1&quot;,&amp;defs-&gt;swidth1,1000.0/em,&amp;defs-&gt;metricssets,MS_Vert);</span>
+<span class="lineNum">     273 </span><span class="lineCov">          5 :     BPSet(font,&quot;DWIDTH1&quot;,&amp;defs-&gt;dwidth1,1.0,&amp;defs-&gt;metricssets,MS_Vert);</span>
+<span class="lineNum">     274 </span><span class="lineCov">          5 :     if ( font-&gt;sf-&gt;hasvmetrics &amp;&amp; defs-&gt;metricssets==0 )</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :         figureDefMetrics(font,defs);</span>
+<span class="lineNum">     276 </span>            : 
+<span class="lineNum">     277 </span>            :   /* Vertical metrics &amp; metrics specified at top level are 2.2 features */
+<span class="lineNum">     278 </span><span class="lineCov">         10 :     fprintf( file, font-&gt;clut!=NULL ? &quot;STARTFONT 2.3\n&quot; :</span>
+<span class="lineNum">     279 </span><span class="lineCov">         10 :                    font-&gt;sf-&gt;hasvmetrics || defs-&gt;metricssets!=0? &quot;STARTFONT 2.2\n&quot; :</span>
+<span class="lineNum">     280 </span>            :                    &quot;STARTFONT 2.1\n&quot; );
+<span class="lineNum">     281 </span><span class="lineCov">          5 :     if ( !resolution_mismatch &amp;&amp; BdfPropHasKey(font,&quot;FONT&quot;,temp,sizeof(temp)) )</span>
+<span class="lineNum">     282 </span><span class="lineCov">          5 :         fprintf( file, &quot;FONT %s\n&quot;, temp );</span>
+<span class="lineNum">     283 </span>            :     else {
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :         fprintf( file, &quot;FONT -%s-%s-%s-%s-%s-%s-%d-%d-%d-%d-%s-%d-%s-%s\n&quot;,</span>
+<span class="lineNum">     285 </span>            :                 components.foundry,
+<span class="lineNum">     286 </span>            :                 components.family,
+<span class="lineNum">     287 </span>            :                 components.weight,
+<span class="lineNum">     288 </span>            :                 components.slant,
+<span class="lineNum">     289 </span>            :                 components.setwidth,
+<span class="lineNum">     290 </span>            :                 components.add_style,
+<span class="lineNum">     291 </span>            :                 components.pixel_size,
+<span class="lineNum">     292 </span>            :                 components.point_size,
+<span class="lineNum">     293 </span>            :                 components.res_x,
+<span class="lineNum">     294 </span>            :                 components.res_y,
+<span class="lineNum">     295 </span>            :                 components.spacing,
+<span class="lineNum">     296 </span>            :                 components.avg_width,
+<span class="lineNum">     297 </span>            :                 components.cs_reg,
+<span class="lineNum">     298 </span>            :                 components.cs_enc);
+<span class="lineNum">     299 </span>            :     }
+<span class="lineNum">     300 </span>            : #if !OLD_GREYMAP_FORMAT
+<span class="lineNum">     301 </span><span class="lineCov">          5 :     if ( BdfPropHasKey(font,&quot;SIZE&quot;,temp,sizeof(temp)) )</span>
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 :         fprintf( file, &quot;SIZE %s\n&quot;, temp );</span>
+<span class="lineNum">     303 </span><span class="lineCov">          5 :     else if ( font-&gt;clut==NULL )</span>
+<span class="lineNum">     304 </span><span class="lineCov">          5 :         fprintf( file, &quot;SIZE %d %d %d\n&quot;, components.point_size/10, components.res_x, components.res_y );</span>
+<span class="lineNum">     305 </span>            :     else
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :         fprintf( file, &quot;SIZE %d %d %d  %d\n&quot;, components.point_size/10, components.res_x, components.res_y,</span>
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :                 font-&gt;clut-&gt;clut_len==256 ? 8 :</span>
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 :                 font-&gt;clut-&gt;clut_len==16 ? 4 : 2);</span>
+<span class="lineNum">     309 </span>            : #else
+<span class="lineNum">     310 </span>            :     fprintf( file, &quot;SIZE %d %d %d\n&quot;, components.point_size/10, components.res_x, components.res_y );
+<span class="lineNum">     311 </span>            : #endif
+<span class="lineNum">     312 </span><span class="lineCov">          5 :     calculate_bounding_box(font,&amp;fbb_width,&amp;fbb_height,&amp;fbb_lbearing,&amp;fbb_descent);</span>
+<span class="lineNum">     313 </span><span class="lineCov">          5 :     fprintf( file, &quot;FONTBOUNDINGBOX %d %d %d %d\n&quot;, fbb_width, fbb_height, fbb_lbearing, fbb_descent);</span>
+<span class="lineNum">     314 </span>            : 
+<span class="lineNum">     315 </span><span class="lineCov">          5 :     if ( defs-&gt;metricssets!=0 ) {</span>
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :         if ( (defs-&gt;metricssets&amp;MS_Vert) || font-&gt;sf-&gt;hasvmetrics )</span>
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :             fprintf( file, &quot;METRICSSET 2\n&quot; );        /* Both horizontal and vertical metrics */</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :         if ( defs-&gt;swidth!=-1 )</span>
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :             fprintf( file, &quot;SWIDTH %d 0\n&quot;, defs-&gt;swidth );        /* Default advance width value (afm) */</span>
+<span class="lineNum">     320 </span><span class="lineNoCov">          0 :         if ( defs-&gt;dwidth!=-1 )</span>
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 :             fprintf( file, &quot;DWIDTH %d 0\n&quot;, defs-&gt;dwidth );        /* Default advance width value (pixels) */</span>
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 :         if ( defs-&gt;swidth1!=-1 )</span>
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :             fprintf( file, &quot;SWIDTH1 %d 0\n&quot;, defs-&gt;swidth1 );      /* Default advance vwidth value (afm) */</span>
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :         if ( defs-&gt;dwidth1!=-1 )</span>
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :             fprintf( file, &quot;DWIDTH1 %d 0\n&quot;, defs-&gt;dwidth1 );      /* Default advance vwidth value (pixels) */</span>
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :         if ( font-&gt;sf-&gt;hasvmetrics || (defs-&gt;metricssets&amp;MS_Vert) )</span>
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :             fprintf( file, &quot;VVECTOR %d,%d\n&quot;, font-&gt;pixelsize/2, font-&gt;ascent  );</span>
+<span class="lineNum">     328 </span>            :                 /* Spec doesn't say if vvector is in afm(S) or pixel(D) units */
+<span class="lineNum">     329 </span>            :                 /*  but there is an implication that it is in pixel units */
+<span class="lineNum">     330 </span>            :                 /*  offset from horizontal origin to vertical orig */
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :         if ( defs-&gt;swidth!=-1 )</span>
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 :             defs-&gt;swidth = rint( defs-&gt;swidth*em/1000.0 );</span>
+<span class="lineNum">     333 </span><span class="lineNoCov">          0 :         if ( defs-&gt;swidth1!=-1 )</span>
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :             defs-&gt;swidth1 = rint( defs-&gt;swidth1*em/1000.0 );</span>
+<span class="lineNum">     335 </span>            :     }
+<span class="lineNum">     336 </span>            :     /* the 2.2 spec says we can omit SWIDTH/DWIDTH from character metrics if we */
+<span class="lineNum">     337 </span>            :     /* specify it here. That would make monospaced fonts a lot smaller, but */
+<span class="lineNum">     338 </span>            :     /* that's not in the 2.1 and I worry that some parsers won't be able to */
+<span class="lineNum">     339 </span>            :     /* handle it (mine didn't until just now), so I shan't do that */
+<span class="lineNum">     340 </span>            : 
+<span class="lineNum">     341 </span><span class="lineCov">          5 :     fprintf(file, &quot;COMMENT \&quot;Generated by fontforge, http://fontforge.sourceforge.net\&quot;\n&quot; );</span>
+<span class="lineNum">     342 </span><span class="lineCov">        176 :     for ( i=0; i&lt;font-&gt;prop_cnt; ++i ) {</span>
+<span class="lineNum">     343 </span><span class="lineCov">        176 :         if ( strcmp(font-&gt;props[i].name,&quot;COMMENT&quot;)==0 &amp;&amp;</span>
+<span class="lineNum">     344 </span><span class="lineCov">          5 :                 (font-&gt;props[i].type==prt_string || font-&gt;props[i].type==prt_atom))</span>
+<span class="lineNum">     345 </span><span class="lineCov">          5 :             if ( strstr(font-&gt;props[i].u.str,&quot;Generated by fontforge&quot;)==NULL )</span>
+<span class="lineNum">     346 </span><span class="lineCov">          5 :                 fprintf( file, &quot;COMMENT \&quot;%s\&quot;\n&quot;, font-&gt;props[i].u.str );</span>
+<span class="lineNum">     347 </span>            :     }
+<span class="lineNum">     348 </span>            : 
+<span class="lineNum">     349 </span><span class="lineCov">        176 :     for ( i=pcnt=0; i&lt;font-&gt;prop_cnt; ++i ) {</span>
+<span class="lineNum">     350 </span><span class="lineCov">        171 :         if ( font-&gt;props[i].type&amp;prt_property )</span>
+<span class="lineNum">     351 </span><span class="lineCov">        161 :             ++pcnt;</span>
+<span class="lineNum">     352 </span>            :     }
+<span class="lineNum">     353 </span><span class="lineCov">          5 :     if ( pcnt!=0 ) {</span>
+<span class="lineNum">     354 </span><span class="lineCov">          5 :         fprintf( file, &quot;STARTPROPERTIES %d\n&quot;, pcnt );</span>
+<span class="lineNum">     355 </span><span class="lineCov">        176 :         for ( i=pcnt=0; i&lt;font-&gt;prop_cnt; ++i ) {</span>
+<span class="lineNum">     356 </span><span class="lineCov">        171 :             if ( font-&gt;props[i].type&amp;prt_property ) {</span>
+<span class="lineNum">     357 </span><span class="lineCov">        161 :                 fprintf( file, &quot;%s &quot;, font-&gt;props[i].name );</span>
+<span class="lineNum">     358 </span><span class="lineCov">        161 :                 switch ( font-&gt;props[i].type&amp;~prt_property ) {</span>
+<span class="lineNum">     359 </span>            :                   case prt_string:
+<span class="lineNum">     360 </span><span class="lineCov">         75 :                     fprintf( file, &quot;\&quot;%s\&quot;\n&quot;, font-&gt;props[i].u.str );</span>
+<span class="lineNum">     361 </span><span class="lineCov">         75 :                   break;</span>
+<span class="lineNum">     362 </span>            :                   case prt_atom:
+<span class="lineNum">     363 </span><span class="lineNoCov">          0 :                     fprintf( file, &quot;%s\n&quot;, font-&gt;props[i].u.atom );</span>
+<span class="lineNum">     364 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">     365 </span>            :                   case prt_int: case prt_uint:
+<span class="lineNum">     366 </span><span class="lineCov">         86 :                     if ( resolution_mismatch &amp;&amp; (strcmp(font-&gt;props[i].name,&quot;RESOLUTION_Y&quot;)==0 ||</span>
+<span class="lineNum">     367 </span><span class="lineNoCov">          0 :                             strcmp(font-&gt;props[i].name,&quot;RESOLUTION_X&quot;)==0 ))</span>
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :                         fprintf( file, &quot;%d\n&quot;, components.res_y );</span>
+<span class="lineNum">     369 </span><span class="lineCov">         86 :                     else if ( resolution_mismatch &amp;&amp; strcmp(font-&gt;props[i].name,&quot;POINT_SIZE&quot;)==0 )</span>
+<span class="lineNum">     370 </span><span class="lineNoCov">          0 :                         fprintf( file, &quot;%d\n&quot;, ((font-&gt;pixelsize*72+components.res_y/2)/components.res_y)*10 );</span>
+<span class="lineNum">     371 </span>            :                     else
+<span class="lineNum">     372 </span><span class="lineCov">         86 :                         fprintf( file, &quot;%d\n&quot;, font-&gt;props[i].u.val );</span>
+<span class="lineNum">     373 </span><span class="lineCov">         86 :                   break;</span>
+<span class="lineNum">     374 </span>            :                   default:
+<span class="lineNum">     375 </span><span class="lineNoCov">          0 :                   break;</span>
+<span class="lineNum">     376 </span>            :                 }
+<span class="lineNum">     377 </span>            :             }
+<span class="lineNum">     378 </span>            :         }
+<span class="lineNum">     379 </span>            :     } else {
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :         fprintf( file, &quot;STARTPROPERTIES %d\n&quot;, 15+ (font-&gt;clut!=NULL));</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :         fprintf( file, &quot;FONTNAME_REGISTRY \&quot;\&quot;\n&quot; );</span>
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :         fprintf( file, &quot;FOUNDRY \&quot;%s\&quot;\n&quot;, components.foundry );</span>
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :         fprintf( file, &quot;FAMILY_NAME \&quot;%s\&quot;\n&quot;, components.family );</span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :         fprintf( file, &quot;WEIGHT_NAME \&quot;%s\&quot;\n&quot;, components.weight );</span>
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :         fprintf( file, &quot;SLANT \&quot;%s\&quot;\n&quot;, components.slant );</span>
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :         fprintf( file, &quot;SETWIDTH_NAME \&quot;%s\&quot;\n&quot;, components.setwidth );</span>
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :         fprintf( file, &quot;ADD_STYLE_NAME \&quot;%s\&quot;\n&quot;, components.add_style );</span>
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 :         fprintf( file, &quot;PIXEL_SIZE %d\n&quot;, font-&gt;pixelsize );</span>
+<span class="lineNum">     389 </span><span class="lineNoCov">          0 :         fprintf( file, &quot;POINT_SIZE %d\n&quot;, components.point_size );</span>
+<span class="lineNum">     390 </span><span class="lineNoCov">          0 :         fprintf( file, &quot;RESOLUTION_X %d\n&quot;,components.res_x );</span>
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 :         fprintf( file, &quot;RESOLUTION_Y %d\n&quot;,components.res_y );</span>
+<span class="lineNum">     392 </span><span class="lineNoCov">          0 :         fprintf( file, &quot;SPACING \&quot;%s\&quot;\n&quot;, components.spacing );</span>
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 :         fprintf( file, &quot;AVERAGE_WIDTH %d\n&quot;, components.avg_width );</span>
+<span class="lineNum">     394 </span><span class="lineNoCov">          0 :         if ( font-&gt;clut!=NULL )</span>
+<span class="lineNum">     395 </span><span class="lineNoCov">          0 :             fprintf( file, &quot;BITS_PER_PIXEL %d\n&quot;, BDFDepth(font));</span>
+<span class="lineNum">     396 </span><span class="lineNoCov">          0 :         fprintf( file, &quot;CHARSET_REGISTRY \&quot;%s\&quot;\n&quot;, components.cs_reg );</span>
+<span class="lineNum">     397 </span><span class="lineNoCov">          0 :         fprintf( file, &quot;CHARSET_ENCODING \&quot;%s\&quot;\n&quot;, components.cs_enc );</span>
+<span class="lineNum">     398 </span>            :     }
+<span class="lineNum">     399 </span><span class="lineCov">          5 :     fprintf( file, &quot;ENDPROPERTIES\n&quot; );</span>
+<span class="lineNum">     400 </span>            :     { /* AllSame tells us how many glyphs in the font. Which is great for */
+<span class="lineNum">     401 </span>            :       /* many things, but BDF files care about how many encoding slots are */
+<span class="lineNum">     402 </span>            :       /* filled. Usually these are the same, but not if a glyph is used in */
+<span class="lineNum">     403 </span>            :       /* two encodings */
+<span class="lineNum">     404 </span><span class="lineCov">          5 :         int i, cnt = 0;</span>
+<span class="lineNum">     405 </span><span class="lineCov">     327685 :         for ( i=0; i&lt;map-&gt;enccount; ++i ) {</span>
+<span class="lineNum">     406 </span><span class="lineCov">     327680 :             int gid = map-&gt;map[i];</span>
+<span class="lineNum">     407 </span><span class="lineCov">     327680 :             if ( gid!=-1 &amp;&amp; !IsntBDFChar(font-&gt;glyphs[gid]))</span>
+<span class="lineNum">     408 </span><span class="lineCov">       4409 :                 ++cnt;</span>
+<span class="lineNum">     409 </span>            :         }
+<span class="lineNum">     410 </span><span class="lineCov">          5 :         components.char_cnt = cnt;</span>
+<span class="lineNum">     411 </span>            :     }
+<span class="lineNum">     412 </span><span class="lineCov">          5 :     fprintf( file, &quot;CHARS %d\n&quot;, components.char_cnt );</span>
+<span class="lineNum">     413 </span>            : 
+<span class="lineNum">     414 </span><span class="lineCov">          5 :     if ( old_prop_cnt==0 ) {</span>
+<span class="lineNum">     415 </span><span class="lineCov">          5 :         BDFPropsFree(font);</span>
+<span class="lineNum">     416 </span><span class="lineCov">          5 :         font-&gt;prop_cnt = 0;</span>
+<span class="lineNum">     417 </span><span class="lineCov">          5 :         font-&gt;props = NULL;</span>
+<span class="lineNum">     418 </span>            :     }
+<a name="419"><span class="lineNum">     419 </span><span class="lineCov">          5 : }</span></a>
+<span class="lineNum">     420 </span>            : 
+<span class="lineNum">     421 </span><span class="lineCov">          5 : int BDFFontDump(char *filename,BDFFont *font, EncMap *map, int res) {</span>
+<span class="lineNum">     422 </span>            :     char buffer[300];
+<span class="lineNum">     423 </span>            :     FILE *file;
+<span class="lineNum">     424 </span>            :     int i, enc, gid;
+<span class="lineNum">     425 </span><span class="lineCov">          5 :     int ret = 0;</span>
+<span class="lineNum">     426 </span><span class="lineCov">          5 :     const char *encodingname = EncodingName(map-&gt;enc);</span>
+<span class="lineNum">     427 </span><span class="lineCov">          5 :     int dups=0;</span>
+<span class="lineNum">     428 </span>            :     struct metric_defaults defs;
+<span class="lineNum">     429 </span>            :     BDFChar *bdfc;
+<span class="lineNum">     430 </span>            : 
+<span class="lineNum">     431 </span><span class="lineCov">     327685 :     for ( i=0; i&lt;map-&gt;enccount; i++ ) if (( gid=map-&gt;map[i])!=-1 &amp;&amp; ( bdfc = font-&gt;glyphs[gid] ) != NULL )</span>
+<span class="lineNum">     432 </span><span class="lineCov">       4461 :         BCPrepareForOutput( bdfc,true );</span>
+<span class="lineNum">     433 </span><span class="lineCov">          5 :     if ( filename==NULL ) {</span>
+<span class="lineNum">     434 </span><span class="lineNoCov">          0 :         sprintf(buffer,&quot;%s-%s.%d.bdf&quot;, font-&gt;sf-&gt;fontname, encodingname, font-&gt;pixelsize );</span>
+<span class="lineNum">     435 </span><span class="lineNoCov">          0 :         filename = buffer;</span>
+<span class="lineNum">     436 </span>            :     }
+<span class="lineNum">     437 </span><span class="lineCov">          5 :     file = fopen(filename,&quot;w&quot; );</span>
+<span class="lineNum">     438 </span><span class="lineCov">          5 :     if ( file==NULL )</span>
+<span class="lineNum">     439 </span><span class="lineNoCov">          0 :         LogError( _(&quot;Can't open %s\n&quot;), filename );</span>
+<span class="lineNum">     440 </span>            :     else {
+<span class="lineNum">     441 </span><span class="lineCov">          5 :         BDFDumpHeader(file,font,map,res,&amp;defs);</span>
+<span class="lineNum">     442 </span><span class="lineCov">     327685 :         for ( i=0; i&lt;map-&gt;enccount; ++i ) {</span>
+<span class="lineNum">     443 </span><span class="lineCov">     327680 :             gid = map-&gt;map[i];</span>
+<span class="lineNum">     444 </span><span class="lineCov">     327680 :             if ( gid!=-1 &amp;&amp; !IsntBDFChar(font-&gt;glyphs[gid])) {</span>
+<span class="lineNum">     445 </span><span class="lineCov">       4409 :                 enc = i;</span>
+<span class="lineNum">     446 </span><span class="lineCov">       4409 :                 if ( i&gt;=map-&gt;enc-&gt;char_cnt )   /* The map's enccount may contain &quot;unencoded&quot; glyphs */</span>
+<span class="lineNum">     447 </span><span class="lineNoCov">          0 :                     enc = -1;</span>
+<span class="lineNum">     448 </span><span class="lineCov">       4409 :                 BDFDumpChar(file,font,font-&gt;glyphs[gid],enc,map,&amp;dups,&amp;defs);</span>
+<span class="lineNum">     449 </span>            :             }
+<span class="lineNum">     450 </span>            :         }
+<span class="lineNum">     451 </span><span class="lineCov">          5 :         fprintf( file, &quot;ENDFONT\n&quot; );</span>
+<span class="lineNum">     452 </span><span class="lineCov">          5 :         if ( ferror(file))</span>
+<span class="lineNum">     453 </span><span class="lineNoCov">          0 :             LogError( _(&quot;Failed to write %s\n&quot;), filename );</span>
+<span class="lineNum">     454 </span>            :         else
+<span class="lineNum">     455 </span><span class="lineCov">          5 :             ret = 1;</span>
+<span class="lineNum">     456 </span><span class="lineCov">          5 :         fclose(file);</span>
+<span class="lineNum">     457 </span>            :     }
+<span class="lineNum">     458 </span><span class="lineCov">     327685 :     for ( i=0; i&lt;map-&gt;enccount; i++ ) if (( gid=map-&gt;map[i])!=-1 &amp;&amp; ( bdfc = font-&gt;glyphs[gid] ) != NULL )</span>
+<span class="lineNum">     459 </span><span class="lineCov">       4461 :         BCRestoreAfterOutput( bdfc );</span>
+<span class="lineNum">     460 </span><span class="lineCov">          5 : return( ret );</span>
+<span class="lineNum">     461 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

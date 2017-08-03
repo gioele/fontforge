@@ -1,0 +1,1452 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforge/parsettfbmf.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforge</a> - parsettfbmf.c<span style="font-size: 80%;"> (source / <a href="parsettfbmf.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">522</td>
+            <td class="headerCovTableEntry">872</td>
+            <td class="headerCovTableEntryLo">59.9 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">17</td>
+            <td class="headerCovTableEntry">22</td>
+            <td class="headerCovTableEntryMed">77.3 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            : #include &quot;parsettfbmf.h&quot;
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            : #include &quot;bitmapchar.h&quot;
+<span class="lineNum">      31 </span>            : #include &quot;bvedit.h&quot;
+<span class="lineNum">      32 </span>            : #include &quot;fontforge.h&quot;
+<span class="lineNum">      33 </span>            : #include &quot;chardata.h&quot;
+<span class="lineNum">      34 </span>            : #include &quot;mem.h&quot;
+<span class="lineNum">      35 </span>            : #include &quot;splinefill.h&quot;
+<span class="lineNum">      36 </span>            : #include &quot;tottf.h&quot;
+<span class="lineNum">      37 </span>            : #include &quot;ttfspecial.h&quot;
+<span class="lineNum">      38 </span>            : #include &quot;utype.h&quot;
+<span class="lineNum">      39 </span>            : #include &quot;ustring.h&quot;
+<span class="lineNum">      40 </span>            : #include &lt;math.h&gt;
+<span class="lineNum">      41 </span>            : #include &lt;locale.h&gt;
+<span class="lineNum">      42 </span>            : #include &lt;gwidget.h&gt;
+<span class="lineNum">      43 </span>            : #include &quot;ttf.h&quot;
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span>            : struct ttfsizehead {
+<span class="lineNum">      46 </span>            :     int ppem;
+<span class="lineNum">      47 </span>            :     int depth;
+<span class="lineNum">      48 </span>            :     int firstglyph, endglyph;
+<span class="lineNum">      49 </span>            :     int indexSubTableArrayOffset;
+<span class="lineNum">      50 </span>            :     int numIndexSubTables;
+<span class="lineNum">      51 </span>            :     int ascent, descent;
+<span class="lineNum">      52 </span>            : };
+<span class="lineNum">      53 </span>            : 
+<span class="lineNum">      54 </span>            : struct bigmetrics {
+<span class="lineNum">      55 </span>            :     int height, width;
+<span class="lineNum">      56 </span>            :     int hbearingX, hbearingY, hadvance;
+<span class="lineNum">      57 </span>            :     int vbearingX, vbearingY, vadvance; /* Small metrics doesn't use this row */
+<span class="lineNum">      58 </span>            : };
+<span class="lineNum">      59 </span>            : 
+<span class="lineNum">      60 </span>            : /* ************************************************************************** */
+<span class="lineNum">      61 </span>            : /* *********************** Input --- Reading Bitmaps ************************ */
+<a name="62"><span class="lineNum">      62 </span>            : /* ************************************************************************** */</a>
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span><span class="lineCov">      17918 : static void ttfreadbmfglyph(FILE *ttf,struct ttfinfo *info,</span>
+<span class="lineNum">      65 </span>            :         int32 offset, int32 len, struct bigmetrics *metrics, int imageformat,
+<span class="lineNum">      66 </span>            :         int gid, BDFFont *bdf) {
+<span class="lineNum">      67 </span>            :     BDFChar *bdfc;
+<span class="lineNum">      68 </span><span class="lineCov">      17918 :     BDFRefChar *ref, *prev = NULL;</span>
+<span class="lineNum">      69 </span>            :     struct bigmetrics big;
+<span class="lineNum">      70 </span>            :     int i,j,ch,l,p, num;
+<span class="lineNum">      71 </span>            : 
+<span class="lineNum">      72 </span><span class="lineCov">      17918 :     if ( gid&gt;=bdf-&gt;glyphcnt )</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">      74 </span><span class="lineCov">      17918 :     if ( len==0 )               /* Missing, but encoded, glyph */</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span><span class="lineCov">      17918 :     if ( offset!=-1 )</span>
+<span class="lineNum">      78 </span><span class="lineCov">      17918 :         fseek(ttf,info-&gt;bitmapdata_start+offset,SEEK_SET);</span>
+<span class="lineNum">      79 </span>            : 
+<span class="lineNum">      80 </span><span class="lineCov">      17918 :     if ( imageformat==1 || imageformat==2 || imageformat==8 ) {</span>
+<span class="lineNum">      81 </span>            :         /* I ignore vertical strikes, so all short metrics are horizontal for me*/
+<span class="lineNum">      82 </span><span class="lineCov">      17918 :         big.height = getc(ttf);</span>
+<span class="lineNum">      83 </span><span class="lineCov">      17918 :         big.width = getc(ttf);</span>
+<span class="lineNum">      84 </span><span class="lineCov">      17918 :         big.hbearingX = (signed char) getc(ttf);</span>
+<span class="lineNum">      85 </span><span class="lineCov">      17918 :         big.hbearingY = (signed char) getc(ttf);</span>
+<span class="lineNum">      86 </span><span class="lineCov">      17918 :         big.hadvance = getc(ttf);</span>
+<span class="lineNum">      87 </span><span class="lineCov">      17918 :         big.vbearingX = 0;</span>
+<span class="lineNum">      88 </span><span class="lineCov">      17918 :         big.vbearingY = 0;</span>
+<span class="lineNum">      89 </span><span class="lineCov">      17918 :         big.vadvance = bdf-&gt;pixelsize;</span>
+<span class="lineNum">      90 </span>            :     /* Sometimes the index format (e.g. 2) already specifies the metrics */
+<span class="lineNum">      91 </span>            :     /* Only use the provided metrics if it hasn't already been set */
+<span class="lineNum">      92 </span><span class="lineCov">      17918 :     if (metrics == NULL)</span>
+<span class="lineNum">      93 </span><span class="lineCov">      17918 :         metrics = &amp;big;</span>
+<span class="lineNum">      94 </span><span class="lineCov">      35836 :         if ( imageformat==8 )</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :             /* pad = */ getc(ttf);</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :     } else if ( imageformat==6 || imageformat==7 || imageformat==9 ) {</span>
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :         big.height = getc(ttf);</span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :         big.width = getc(ttf);</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :         big.hbearingX = (signed char) getc(ttf);</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :         big.hbearingY = (signed char) getc(ttf);</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :         big.hadvance = getc(ttf);</span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :         big.vbearingX = (signed char) getc(ttf);</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :         big.vbearingY = (signed char) getc(ttf);</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :         big.vadvance = getc(ttf);</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :         metrics = &amp;big;</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :     } else if ( imageformat==5 ) {</span>
+<span class="lineNum">     107 </span>            :         /* metrics from EBLC */
+<span class="lineNum">     108 </span>            :         /* Do nothing here */
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :         if ( metrics==NULL ) {</span>
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :             LogError(_(&quot;Unexpected use of bitmap format 5, no metrics are appearant\n&quot;));</span>
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :             info-&gt;bad_embedded_bitmap = true;</span>
+<span class="lineNum">     112 </span>            :             /*fseek(ttf,len,SEEK_CUR);*/
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     114 </span>            :         }
+<span class="lineNum">     115 </span>            :     } else {
+<span class="lineNum">     116 </span>            :         /* format 3 is obsolete */
+<span class="lineNum">     117 </span>            :         /* format 4 is compressed apple and I'm not supporting it (Nor is MS) */
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :         if ( imageformat==3 &amp;&amp; !info-&gt;obscomplain ) {</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :             LogError(_(&quot;This font contains bitmaps in the obsolete format 3 (And I can't read them)\n&quot;) );</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :             info-&gt;bad_embedded_bitmap = true;</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :             info-&gt;obscomplain = true;</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :         } else if ( imageformat==4 ) {</span>
+<span class="lineNum">     123 </span>            :             /* Apple doesn't describe it (fully) in their spec. */
+<span class="lineNum">     124 </span>            :             /* MS doesn't support it (and doesn't describe) */
+<span class="lineNum">     125 </span>            :             /* Adobe doesn't describe it (and says MS doesn't support it) */
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :             LogError(_(&quot;This font contains bitmaps in Apple's compressed format 4 (And I don't support that)\n&quot;));</span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :             info-&gt;cmpcomplain = true;</span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :         } else if ( !info-&gt;unkcomplain ) {</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :             LogError(_(&quot;This font contains bitmaps in a format %d that I've never heard of\n&quot;), imageformat );</span>
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :             info-&gt;bad_embedded_bitmap = true;</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :             info-&gt;unkcomplain = true;</span>
+<span class="lineNum">     132 </span>            :         }
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     134 </span>            :     }
+<span class="lineNum">     135 </span><span class="lineCov">      17918 :     bdfc = chunkalloc(sizeof(BDFChar));</span>
+<span class="lineNum">     136 </span><span class="lineCov">      17918 :     if ( info-&gt;chars!=NULL ) {</span>
+<span class="lineNum">     137 </span><span class="lineCov">      17918 :         if ( gid&gt;=info-&gt;glyph_cnt || info-&gt;chars[gid]==NULL ) {</span>
+<span class="lineNum">     138 </span><span class="lineCov">       1792 :             if ( gid&gt;=info-&gt;glyph_cnt ) {</span>
+<span class="lineNum">     139 </span>            :                 int i;
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :                 info-&gt;chars = realloc(info-&gt;chars,(gid+1)*sizeof(SplineChar *));</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :                 for ( i=info-&gt;glyph_cnt; i&lt;gid; ++i ) {</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :                     info-&gt;chars[i] = SplineCharCreate(2);</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :                     info-&gt;chars[i]-&gt;orig_pos = gid;</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :                     info-&gt;chars[i]-&gt;unicodeenc = -1;</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :                     info-&gt;chars[i]-&gt;width = info-&gt;chars[i]-&gt;vwidth = info-&gt;emsize;</span>
+<span class="lineNum">     146 </span>            :                 }
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :                 info-&gt;glyph_cnt = gid+1;</span>
+<span class="lineNum">     148 </span>            :             }
+<span class="lineNum">     149 </span><span class="lineCov">       1792 :             info-&gt;chars[gid] = SplineCharCreate(2);</span>
+<span class="lineNum">     150 </span><span class="lineCov">       1792 :             info-&gt;chars[gid]-&gt;orig_pos = gid;</span>
+<span class="lineNum">     151 </span><span class="lineCov">       1792 :             info-&gt;chars[gid]-&gt;unicodeenc = -1;</span>
+<span class="lineNum">     152 </span><span class="lineCov">       1792 :             info-&gt;chars[gid]-&gt;width = info-&gt;chars[gid]-&gt;vwidth = info-&gt;emsize;</span>
+<span class="lineNum">     153 </span>            :         }
+<span class="lineNum">     154 </span><span class="lineCov">      17918 :         bdfc-&gt;sc = info-&gt;chars[gid];</span>
+<span class="lineNum">     155 </span>            :         /* in the case of a cid font orig_pos will be the cid, not the gid */
+<span class="lineNum">     156 </span>            :         /* We'll need to rearrange the glyph array to match later. We need */
+<span class="lineNum">     157 </span>            :         /*  gid order until we've fixed up references                      */
+<span class="lineNum">     158 </span><span class="lineCov">      17918 :         bdfc-&gt;orig_pos = info-&gt;chars[gid]-&gt;orig_pos;</span>
+<span class="lineNum">     159 </span>            :     } else {
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :         bdfc-&gt;orig_pos = gid;</span>
+<span class="lineNum">     161 </span>            :     }
+<span class="lineNum">     162 </span><span class="lineCov">      17918 :     if ( bdf-&gt;glyphs[gid]!=NULL ) /* Shouldn't happen of course */</span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :         BDFCharFree(bdf-&gt;glyphs[gid]);</span>
+<span class="lineNum">     164 </span><span class="lineCov">      17918 :     bdf-&gt;glyphs[gid] = bdfc;</span>
+<span class="lineNum">     165 </span>            : 
+<span class="lineNum">     166 </span><span class="lineCov">      17918 :     bdfc-&gt;width = metrics-&gt;hadvance;</span>
+<span class="lineNum">     167 </span><span class="lineCov">      17918 :     bdfc-&gt;vwidth = metrics-&gt;vadvance;</span>
+<span class="lineNum">     168 </span><span class="lineCov">      17918 :     bdfc-&gt;xmin = metrics-&gt;hbearingX;</span>
+<span class="lineNum">     169 </span><span class="lineCov">      17918 :     bdfc-&gt;xmax = bdfc-&gt;xmin+metrics-&gt;width-1;</span>
+<span class="lineNum">     170 </span><span class="lineCov">      17918 :     bdfc-&gt;ymax = metrics-&gt;hbearingY-1;</span>
+<span class="lineNum">     171 </span><span class="lineCov">      17918 :     bdfc-&gt;ymin = bdfc-&gt;ymax-metrics-&gt;height+1;</span>
+<span class="lineNum">     172 </span><span class="lineCov">      17918 :     bdfc-&gt;refs = NULL;</span>
+<span class="lineNum">     173 </span><span class="lineCov">      17918 :     bdfc-&gt;dependents = NULL;</span>
+<span class="lineNum">     174 </span><span class="lineCov">      17918 :     if ( imageformat == 5 ) bdfc-&gt;widthgroup = true;</span>
+<span class="lineNum">     175 </span><span class="lineCov">      17918 :     if ( bdf-&gt;clut==NULL ) {</span>
+<span class="lineNum">     176 </span><span class="lineCov">      17918 :         bdfc-&gt;bytes_per_line = (metrics-&gt;width+7)/8;</span>
+<span class="lineNum">     177 </span><span class="lineCov">      17918 :         bdfc-&gt;depth = 1;</span>
+<span class="lineNum">     178 </span>            :     } else {
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :         bdfc-&gt;bytes_per_line = metrics-&gt;width;</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :         bdfc-&gt;byte_data = true;</span>
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 :         bdfc-&gt;depth = bdf-&gt;clut-&gt;clut_len==4 ? 2 : bdf-&gt;clut-&gt;clut_len==16 ? 4 : 8;</span>
+<span class="lineNum">     182 </span>            :     }
+<span class="lineNum">     183 </span><span class="lineCov">      17918 :     if ( imageformat!=8 &amp;&amp; imageformat!=9 )</span>
+<span class="lineNum">     184 </span><span class="lineCov">      17918 :         bdfc-&gt;bitmap = calloc(metrics-&gt;height*bdfc-&gt;bytes_per_line,sizeof(uint8));</span>
+<span class="lineNum">     185 </span>            : 
+<span class="lineNum">     186 </span><span class="lineCov">      17918 :     if ( imageformat==8 || imageformat==9 ) {</span>
+<span class="lineNum">     187 </span>            :         /* composite */
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :         num = getushort(ttf);</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :         bdfc-&gt;bitmap = calloc( 1,sizeof( uint8 ));</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :         bdfc-&gt;bytes_per_line = 1;</span>
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;num; ++i ) {</span>
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :             ref = calloc( 1,sizeof( BDFRefChar ));</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :             ref-&gt;gid = getushort(ttf);</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :             ref-&gt;xoff = (int8) getc(ttf);</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :             ref-&gt;yoff = (int8) getc(ttf);</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :             if ( prev == NULL )</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :                 bdfc-&gt;refs = ref;</span>
+<span class="lineNum">     198 </span>            :             else
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :                 prev-&gt;next = ref;</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :             prev = ref;</span>
+<span class="lineNum">     201 </span>            :         }
+<span class="lineNum">     202 </span><span class="lineCov">      17918 :     } else if ( imageformat==1 || imageformat==6 ) {</span>
+<span class="lineNum">     203 </span>            :         /* each row is byte aligned */
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :         if ( bdf-&gt;clut==NULL || bdf-&gt;clut-&gt;clut_len==256 ) {</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;metrics-&gt;height; ++i )</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :                 fread(bdfc-&gt;bitmap+i*bdfc-&gt;bytes_per_line,1,bdfc-&gt;bytes_per_line,ttf);</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :         } else if ( bdf-&gt;clut-&gt;clut_len==4 ) {</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;metrics-&gt;height; ++i ) {</span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :                 for ( j=0; j&lt;metrics-&gt;width; j+=4 ) {</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :                     ch = getc(ttf);</span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :                     bdfc-&gt;bitmap[i*bdfc-&gt;bytes_per_line+j] = (ch&gt;&gt;6);</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :                     if ( j+1 &lt; metrics-&gt;width )</span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :                         bdfc-&gt;bitmap[i*bdfc-&gt;bytes_per_line+j+1] = (ch&gt;&gt;4)&amp;3;</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :                     if ( j+2 &lt; metrics-&gt;width )</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :                         bdfc-&gt;bitmap[i*bdfc-&gt;bytes_per_line+j+2] = (ch&gt;&gt;2)&amp;3;</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :                     if ( j+3 &lt; metrics-&gt;width )</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :                         bdfc-&gt;bitmap[i*bdfc-&gt;bytes_per_line+j+3] = ch&amp;3;</span>
+<span class="lineNum">     218 </span>            :                 }
+<span class="lineNum">     219 </span>            :             }
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :         } else if ( bdf-&gt;clut-&gt;clut_len==16 ) {</span>
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;metrics-&gt;height; ++i ) {</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :                 for ( j=0; j&lt;metrics-&gt;width; j+=2 ) {</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :                     ch = getc(ttf);</span>
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :                     bdfc-&gt;bitmap[i*bdfc-&gt;bytes_per_line+j] = (ch&gt;&gt;4);</span>
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 :                     if ( j+1 &lt; metrics-&gt;width )</span>
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :                         bdfc-&gt;bitmap[i*bdfc-&gt;bytes_per_line+j+1] = ch&amp;0xf;</span>
+<span class="lineNum">     227 </span>            :                 }
+<span class="lineNum">     228 </span>            :             }
+<span class="lineNum">     229 </span>            :         }
+<span class="lineNum">     230 </span><span class="lineCov">      17918 :     } else if ( imageformat==2 || imageformat==5 || imageformat==7 ) {</span>
+<span class="lineNum">     231 </span>            :         /* each row is bit aligned, but each glyph is byte aligned */
+<span class="lineNum">     232 </span><span class="lineCov">      17918 :         if ( bdf-&gt;clut==NULL ) {</span>
+<span class="lineNum">     233 </span><span class="lineCov">     222395 :             for ( i=0; i&lt;(metrics-&gt;height*metrics-&gt;width+7)/8; ++i ) {</span>
+<span class="lineNum">     234 </span><span class="lineCov">     204477 :                 ch = getc(ttf);</span>
+<span class="lineNum">     235 </span><span class="lineCov">    1840293 :                 for ( j=0; j&lt;8; ++j ) {</span>
+<span class="lineNum">     236 </span><span class="lineCov">    1635816 :                     l = (i*8+j)/metrics-&gt;width;</span>
+<span class="lineNum">     237 </span><span class="lineCov">    1635816 :                     p = (i*8+j)%metrics-&gt;width;</span>
+<span class="lineNum">     238 </span><span class="lineCov">    1635816 :                     if ( l&lt;metrics-&gt;height &amp;&amp; (ch&amp;(1&lt;&lt;(7-j))) )</span>
+<span class="lineNum">     239 </span><span class="lineCov">     549555 :                         bdfc-&gt;bitmap[l*bdfc-&gt;bytes_per_line+(p&gt;&gt;3)] |= (1&lt;&lt;(7-(p&amp;7)));</span>
+<span class="lineNum">     240 </span>            :                 }
+<span class="lineNum">     241 </span>            :             }
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :         } else if ( bdf-&gt;clut-&gt;clut_len==256 ) {</span>
+<span class="lineNum">     243 </span>            :             /* well, yeah, it's bit aligned, but since pixels are bytes, it's byte aligned */
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;metrics-&gt;height; ++i )</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :                 fread(bdfc-&gt;bitmap+i*bdfc-&gt;bytes_per_line,1,bdfc-&gt;bytes_per_line,ttf);</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :         } else if ( bdf-&gt;clut-&gt;clut_len==4 ) {</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;metrics-&gt;height*metrics-&gt;width; i+=4 ) {</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :                 ch = getc(ttf);</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :                 bdfc-&gt;bitmap[(i/metrics-&gt;width)*bdfc-&gt;bytes_per_line+i%metrics-&gt;width] = (ch&gt;&gt;6);</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :                 if ( i+1 &lt; metrics-&gt;width*metrics-&gt;height )</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :                     bdfc-&gt;bitmap[((i+1)/metrics-&gt;width)*bdfc-&gt;bytes_per_line+(i+1)%metrics-&gt;width] = (ch&gt;&gt;4)&amp;3;</span>
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :                 if ( i+2 &lt; metrics-&gt;width*metrics-&gt;height )</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :                     bdfc-&gt;bitmap[((i+2)/metrics-&gt;width)*bdfc-&gt;bytes_per_line+(i+2)%metrics-&gt;width] = (ch&gt;&gt;2)&amp;3;</span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :                 if ( i+3 &lt; metrics-&gt;width*metrics-&gt;height )</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :                     bdfc-&gt;bitmap[((i+3)/metrics-&gt;width)*bdfc-&gt;bytes_per_line+(i+3)%metrics-&gt;width] = ch&amp;3;</span>
+<span class="lineNum">     256 </span>            :             }
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :         } else if ( bdf-&gt;clut-&gt;clut_len==16 ) {</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :             for ( i=0; i&lt;metrics-&gt;height*metrics-&gt;width; i+=2 ) {</span>
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :                 ch = getc(ttf);</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :                 bdfc-&gt;bitmap[(i/metrics-&gt;width)*bdfc-&gt;bytes_per_line+i%metrics-&gt;width] = (ch&gt;&gt;4);</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :                 if ( i+1 &lt; metrics-&gt;width*metrics-&gt;height )</span>
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :                     bdfc-&gt;bitmap[((i+1)/metrics-&gt;width)*bdfc-&gt;bytes_per_line+(i+1)%metrics-&gt;width] = ch&amp;0xf;</span>
+<span class="lineNum">     263 </span>            :             }
+<span class="lineNum">     264 </span>            :         }
+<span class="lineNum">     265 </span>            :     }
+<span class="lineNum">     266 </span><span class="lineCov">      17918 :     ff_progress_next();</span>
+<a name="267"><span class="lineNum">     267 </span>            : }</a>
+<span class="lineNum">     268 </span>            : 
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 : static void BdfCRefFixup(BDFFont *bdf, int gid, int *warned, struct ttfinfo *info) {</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :     BDFChar *bdfc = bdf-&gt;glyphs[gid], *bdfcRefd;</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :     BDFRefChar *head, *prev = NULL, *next;</span>
+<span class="lineNum">     272 </span>            : 
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :     for ( head=bdfc-&gt;refs; head!=NULL; head=next ) {</span>
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :         bdfcRefd = head-&gt;gid &lt; bdf-&gt;glyphcnt ? bdf-&gt;glyphs[head-&gt;gid] : NULL;</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :         next = head-&gt;next;</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :         if ( bdfcRefd != NULL ) {</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :             head-&gt;bdfc = bdfcRefd;</span>
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :             BCMakeDependent( bdfc, bdfcRefd );</span>
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 :             prev = head;</span>
+<span class="lineNum">     280 </span>            :             /* According to the TTF spec, the xOffset and yOffset values specify   */
+<span class="lineNum">     281 </span>            :             /* the top-left corner position of the component in the composite.     */
+<span class="lineNum">     282 </span>            :             /* In our program it is more convenient to manipulate values specified */
+<span class="lineNum">     283 </span>            :             /* relatively to the original position of the reference's parent glyph.*/
+<span class="lineNum">     284 </span>            :             /* So we have to perform this conversion each time we read or write    */
+<span class="lineNum">     285 </span>            :             /* an embedded TTF bitmap. */
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :             head-&gt;xoff = head-&gt;xoff - bdfcRefd-&gt;xmin + bdfc-&gt;xmin;</span>
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :             head-&gt;yoff = bdfc-&gt;ymax - bdfcRefd-&gt;ymax - head-&gt;yoff;</span>
+<span class="lineNum">     288 </span>            :         } else {
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :             if ( !*warned ) {</span>
+<span class="lineNum">     290 </span>            :                 /* Glyphs aren't named yet */
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :                 LogError(_(&quot;Glyph %d in bitmap strike %d pixels refers to a missing glyph (%d)&quot;),</span>
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :                         gid, bdf-&gt;pixelsize, head-&gt;gid );</span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :                 info-&gt;bad_embedded_bitmap = true;</span>
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :                 *warned = true;</span>
+<span class="lineNum">     295 </span>            :             }
+<span class="lineNum">     296 </span>            :             /* Remove bad reference node from the singly-linked list */
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 :             if ( prev == NULL )</span>
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :                 bdfc-&gt;refs = head-&gt;next;</span>
+<span class="lineNum">     299 </span>            :             else
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :                 prev-&gt;next = head-&gt;next;</span>
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :             free( head );</span>
+<span class="lineNum">     302 </span>            :         }
+<span class="lineNum">     303 </span>            :     }
+<a name="304"><span class="lineNum">     304 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     305 </span>            : 
+<span class="lineNum">     306 </span><span class="lineCov">         22 : static void BdfRefFixup(BDFFont *bdf, struct ttfinfo *info) {</span>
+<span class="lineNum">     307 </span>            :     int i;
+<span class="lineNum">     308 </span><span class="lineCov">         22 :     int warned = false;</span>
+<span class="lineNum">     309 </span>            :     BDFChar *bc;
+<span class="lineNum">     310 </span>            : 
+<span class="lineNum">     311 </span>            :     /* Associate each reference with its parent glyph and recalculate */
+<span class="lineNum">     312 </span>            :     /* x and y offsets */
+<span class="lineNum">     313 </span><span class="lineCov">      18272 :     for ( i=0; i&lt;bdf-&gt;glyphcnt; ++i )</span>
+<span class="lineNum">     314 </span><span class="lineCov">      18250 :         if ( bdf-&gt;glyphs[i]!=NULL &amp;&amp; bdf-&gt;glyphs[i]-&gt;refs != NULL )</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :             BdfCRefFixup( bdf,i,&amp;warned,info );</span>
+<span class="lineNum">     316 </span>            : 
+<span class="lineNum">     317 </span>            :     /* When offsets are recalculated, reset the composite glyph bounding */
+<span class="lineNum">     318 </span>            :     /* box to zero values */
+<span class="lineNum">     319 </span>            :     /* For glyphs which were stored in subtables format 5 compress bitmaps */
+<span class="lineNum">     320 </span>            :     /* to the image size (we could not do this before recalculating reference */
+<span class="lineNum">     321 </span>            :     /* offsets) */
+<span class="lineNum">     322 </span><span class="lineCov">      18272 :     for ( i=0; i&lt;bdf-&gt;glyphcnt; ++i ) if (( bc = bdf-&gt;glyphs[i] ) != NULL ) {</span>
+<span class="lineNum">     323 </span><span class="lineCov">      17918 :         if ( bc-&gt;refs != NULL ) {</span>
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :             bdf-&gt;glyphs[i]-&gt;xmin = 0; bdf-&gt;glyphs[i]-&gt;xmax = 0;</span>
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :             bdf-&gt;glyphs[i]-&gt;ymin = 0; bdf-&gt;glyphs[i]-&gt;ymax = 0;</span>
+<span class="lineNum">     326 </span><span class="lineCov">      17918 :         } else if ( bc-&gt;widthgroup ) {</span>
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :             BCCompressBitmap( bc );</span>
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :             bc-&gt;widthgroup = false;</span>
+<span class="lineNum">     329 </span>            :         }
+<span class="lineNum">     330 </span>            :     }
+<a name="331"><span class="lineNum">     331 </span><span class="lineCov">         22 : }</span></a>
+<span class="lineNum">     332 </span>            : 
+<span class="lineNum">     333 </span><span class="lineCov">         22 : static void BdfCleanup(BDFFont *bdf,struct ttfinfo  *info) {</span>
+<span class="lineNum">     334 </span>            :     /* for gulim (and doubtless others) bitmap references do not match */
+<span class="lineNum">     335 </span>            :     /*  outline glyph references and there are a bunch of extra glyphs */
+<span class="lineNum">     336 </span>            :     /*  at the end of the list that we can now get rid of              */
+<span class="lineNum">     337 </span>            :     /* As bitmap references are directly supported now, we no longer   */
+<span class="lineNum">     338 </span>            :     /*  can ignore the extra glyphs in Gulim, and instead create       */
+<span class="lineNum">     339 </span>            :     /*  a faked spline char for each of them. Thus the situation where */
+<span class="lineNum">     340 </span>            :     /*  info-&gt;glyph_cnt is less than bdf-&gt;glyphcnt is no longer        */
+<span class="lineNum">     341 </span>            :     /*  possible.                                                      */
+<span class="lineNum">     342 </span>            :     /* For cid keyed fonts we want to order things by cid rather than  */
+<span class="lineNum">     343 </span>            :     /*  by gid so we may also need to move things around               */
+<span class="lineNum">     344 </span>            :     int i, cnt;
+<span class="lineNum">     345 </span>            :     BDFChar **glyphs, *bdfc;
+<span class="lineNum">     346 </span>            : 
+<span class="lineNum">     347 </span><span class="lineCov">         22 :     if ( info-&gt;subfonts==NULL ) {</span>
+<span class="lineNum">     348 </span><span class="lineCov">         22 :         if ( info-&gt;glyph_cnt&lt;bdf-&gt;glyphcnt ) {</span>
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :             for ( i=info-&gt;glyph_cnt ; i&lt;bdf-&gt;glyphcnt; ++i )</span>
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :                 BDFCharFree(bdf-&gt;glyphs[i]);</span>
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :             bdf-&gt;glyphs = realloc(bdf-&gt;glyphs,info-&gt;glyph_cnt*sizeof(BDFChar *));</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :             bdf-&gt;glyphcnt = info-&gt;glyph_cnt;</span>
+<span class="lineNum">     353 </span>            :         }
+<span class="lineNum">     354 </span>            :     } else {
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :         cnt = 0;</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;info-&gt;subfontcnt; ++i )</span>
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :             if ( info-&gt;subfonts[i]-&gt;glyphcnt &gt; cnt )</span>
+<span class="lineNum">     358 </span><span class="lineNoCov">          0 :                 cnt = info-&gt;subfonts[i]-&gt;glyphcnt;</span>
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 :         glyphs = calloc(cnt,sizeof(BDFChar *));</span>
+<span class="lineNum">     360 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;bdf-&gt;glyphcnt; ++i ) if ( (bdfc = bdf-&gt;glyphs[i])!=NULL ) {</span>
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 :             if ( bdfc-&gt;orig_pos&lt;cnt )</span>
+<span class="lineNum">     362 </span><span class="lineNoCov">          0 :                 glyphs[ bdfc-&gt;orig_pos ] = bdfc;</span>
+<span class="lineNum">     363 </span>            :             else
+<span class="lineNum">     364 </span><span class="lineNoCov">          0 :                 BDFCharFree(bdfc);</span>
+<span class="lineNum">     365 </span>            :         }
+<span class="lineNum">     366 </span><span class="lineNoCov">          0 :         free(bdf-&gt;glyphs);</span>
+<span class="lineNum">     367 </span><span class="lineNoCov">          0 :         bdf-&gt;glyphs = glyphs;</span>
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :         bdf-&gt;glyphcnt = cnt;</span>
+<span class="lineNum">     369 </span>            :     }
+<a name="370"><span class="lineNum">     370 </span><span class="lineCov">         22 : }</span></a>
+<span class="lineNum">     371 </span>            : 
+<span class="lineNum">     372 </span><span class="lineCov">         22 : static void readttfbitmapfont(FILE *ttf,struct ttfinfo *info,</span>
+<span class="lineNum">     373 </span>            :         struct ttfsizehead *head, BDFFont *bdf) {
+<span class="lineNum">     374 </span>            :     int i, j, g;
+<span class="lineNum">     375 </span>            :     int indexformat, imageformat, size, num, moreoff;
+<span class="lineNum">     376 </span>            :     int32 offset, *glyphoffsets, *glyphs, loc;
+<span class="lineNum">     377 </span>            :     int first, last;
+<span class="lineNum">     378 </span>            :     struct bigmetrics big;
+<span class="lineNum">     379 </span>            : 
+<span class="lineNum">     380 </span><span class="lineCov">         22 :     fseek(ttf,info-&gt;bitmaploc_start+head-&gt;indexSubTableArrayOffset,SEEK_SET);</span>
+<span class="lineNum">     381 </span><span class="lineCov">        144 :     for ( j=0; j&lt;head-&gt;numIndexSubTables; ++j ) {</span>
+<span class="lineNum">     382 </span><span class="lineCov">        122 :         first = getushort(ttf);</span>
+<span class="lineNum">     383 </span><span class="lineCov">        122 :         last =  getushort(ttf);</span>
+<span class="lineNum">     384 </span><span class="lineCov">        122 :         moreoff = getlong(ttf);</span>
+<span class="lineNum">     385 </span><span class="lineCov">        122 :         if ( last&lt;first ) {</span>
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :             LogError(_(&quot;Bad format of subtable %d (of %d) in bloc/EBLC of strike with pixelsize=%d. First=%d, last=%d.\n&quot;),</span>
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :                     j, head-&gt;numIndexSubTables, bdf-&gt;pixelsize, first, last );</span>
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 :             info-&gt;bad_embedded_bitmap = true;</span>
+<span class="lineNum">     389 </span><span class="lineNoCov">          0 :     continue;</span>
+<span class="lineNum">     390 </span>            :         }
+<span class="lineNum">     391 </span><span class="lineCov">        122 :         loc = ftell(ttf);</span>
+<span class="lineNum">     392 </span><span class="lineCov">        122 :         fseek(ttf,info-&gt;bitmaploc_start+head-&gt;indexSubTableArrayOffset+moreoff,SEEK_SET);</span>
+<span class="lineNum">     393 </span>            : 
+<span class="lineNum">     394 </span><span class="lineCov">        122 :         indexformat=getushort(ttf);</span>
+<span class="lineNum">     395 </span><span class="lineCov">        122 :         imageformat=getushort(ttf);</span>
+<span class="lineNum">     396 </span><span class="lineCov">        122 :         offset = getlong(ttf);</span>
+<span class="lineNum">     397 </span><span class="lineCov">        122 :         switch ( indexformat ) {</span>
+<span class="lineNum">     398 </span>            :           case 1: case 3:
+<span class="lineNum">     399 </span><span class="lineCov">        122 :             glyphoffsets = malloc((last-first+2)*sizeof(int32));</span>
+<span class="lineNum">     400 </span><span class="lineCov">      18162 :             for ( i=0; i&lt;(last-first+2); ++i )</span>
+<span class="lineNum">     401 </span><span class="lineCov">      18040 :                 glyphoffsets[i] = indexformat==3?getushort(ttf):getlong(ttf);</span>
+<span class="lineNum">     402 </span><span class="lineCov">        122 :             if ( indexformat==3 &amp;&amp; ((last-first)&amp;1) )</span>
+<span class="lineNum">     403 </span><span class="lineNoCov">          0 :                 getushort(ttf);</span>
+<span class="lineNum">     404 </span><span class="lineCov">      18040 :             for ( i=0; i&lt;=last-first; ++i ) {</span>
+<span class="lineNum">     405 </span><span class="lineCov">      17918 :                 if ( info-&gt;inuse==NULL || info-&gt;inuse[i+first] )</span>
+<span class="lineNum">     406 </span><span class="lineCov">      35836 :                     ttfreadbmfglyph(ttf,info,offset+glyphoffsets[i],</span>
+<span class="lineNum">     407 </span><span class="lineCov">      17918 :                             glyphoffsets[i+1]-glyphoffsets[i],NULL,</span>
+<span class="lineNum">     408 </span>            :                             imageformat,i+first,bdf);
+<span class="lineNum">     409 </span>            :             }
+<span class="lineNum">     410 </span><span class="lineCov">        122 :             free(glyphoffsets);</span>
+<span class="lineNum">     411 </span><span class="lineCov">        122 :           break;</span>
+<span class="lineNum">     412 </span>            :           case 2:
+<span class="lineNum">     413 </span><span class="lineNoCov">          0 :             size = getlong(ttf);</span>
+<span class="lineNum">     414 </span><span class="lineNoCov">          0 :             big.height = getc(ttf);</span>
+<span class="lineNum">     415 </span><span class="lineNoCov">          0 :             big.width = getc(ttf);</span>
+<span class="lineNum">     416 </span><span class="lineNoCov">          0 :             big.hbearingX = (signed char) getc(ttf);</span>
+<span class="lineNum">     417 </span><span class="lineNoCov">          0 :             big.hbearingY = (signed char) getc(ttf);</span>
+<span class="lineNum">     418 </span><span class="lineNoCov">          0 :             big.hadvance = getc(ttf);</span>
+<span class="lineNum">     419 </span><span class="lineNoCov">          0 :             big.vbearingX = (signed char) getc(ttf);</span>
+<span class="lineNum">     420 </span><span class="lineNoCov">          0 :             big.vbearingY = (signed char) getc(ttf);</span>
+<span class="lineNum">     421 </span><span class="lineNoCov">          0 :             big.vadvance = getc(ttf);</span>
+<span class="lineNum">     422 </span><span class="lineNoCov">          0 :             for ( i=first; i&lt;=last; ++i ) {</span>
+<span class="lineNum">     423 </span><span class="lineNoCov">          0 :                 if ( info-&gt;inuse==NULL || info-&gt;inuse[i] ) {</span>
+<span class="lineNum">     424 </span><span class="lineNoCov">          0 :                     ttfreadbmfglyph(ttf,info,offset,</span>
+<span class="lineNum">     425 </span>            :                             size,&amp;big,
+<span class="lineNum">     426 </span>            :                             imageformat,i,bdf);
+<span class="lineNum">     427 </span><span class="lineNoCov">          0 :                     offset += size;</span>
+<span class="lineNum">     428 </span>            :                 } else {
+<span class="lineNum">     429 </span><span class="lineNoCov">          0 :                     fseek(ttf,size,SEEK_CUR);</span>
+<span class="lineNum">     430 </span><span class="lineNoCov">          0 :                     offset = -1;</span>
+<span class="lineNum">     431 </span>            :                 }
+<span class="lineNum">     432 </span>            :             }
+<span class="lineNum">     433 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">     434 </span>            :           case 4:
+<span class="lineNum">     435 </span><span class="lineNoCov">          0 :             num = getlong(ttf);</span>
+<span class="lineNum">     436 </span><span class="lineNoCov">          0 :             glyphoffsets = malloc((num+1)*sizeof(int32));</span>
+<span class="lineNum">     437 </span><span class="lineNoCov">          0 :             glyphs = malloc((num+1)*sizeof(int32));</span>
+<span class="lineNum">     438 </span><span class="lineNoCov">          0 :             for ( g=0; g&lt;num+1; ++g ) {</span>
+<span class="lineNum">     439 </span><span class="lineNoCov">          0 :                 glyphs[g] = getushort(ttf);</span>
+<span class="lineNum">     440 </span><span class="lineNoCov">          0 :                 glyphoffsets[g] = getushort(ttf);</span>
+<span class="lineNum">     441 </span>            :             }
+<span class="lineNum">     442 </span><span class="lineNoCov">          0 :             for ( i=0, g=0; i&lt;=last-first; ++i, ++g ) {</span>
+<span class="lineNum">     443 </span><span class="lineNoCov">          0 :                 if ( (info-&gt;inuse==NULL || info-&gt;inuse[i+first]) &amp;&amp; g&lt;num )</span>
+<span class="lineNum">     444 </span><span class="lineNoCov">          0 :                     ttfreadbmfglyph(ttf,info,offset+glyphoffsets[g],</span>
+<span class="lineNum">     445 </span><span class="lineNoCov">          0 :                             glyphoffsets[g+1]-glyphoffsets[g],NULL,</span>
+<span class="lineNum">     446 </span><span class="lineNoCov">          0 :                             imageformat,glyphs[g],bdf);</span>
+<span class="lineNum">     447 </span>            :             }
+<span class="lineNum">     448 </span><span class="lineNoCov">          0 :             free(glyphoffsets);</span>
+<span class="lineNum">     449 </span><span class="lineNoCov">          0 :             free(glyphs);</span>
+<span class="lineNum">     450 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">     451 </span>            :           case 5:
+<span class="lineNum">     452 </span><span class="lineNoCov">          0 :             size = getlong(ttf);</span>
+<span class="lineNum">     453 </span><span class="lineNoCov">          0 :             big.height = getc(ttf);</span>
+<span class="lineNum">     454 </span><span class="lineNoCov">          0 :             big.width = getc(ttf);</span>
+<span class="lineNum">     455 </span><span class="lineNoCov">          0 :             big.hbearingX = (signed char) getc(ttf);</span>
+<span class="lineNum">     456 </span><span class="lineNoCov">          0 :             big.hbearingY = (signed char) getc(ttf);</span>
+<span class="lineNum">     457 </span><span class="lineNoCov">          0 :             big.hadvance = getc(ttf);</span>
+<span class="lineNum">     458 </span><span class="lineNoCov">          0 :             big.vbearingX = (signed char) getc(ttf);</span>
+<span class="lineNum">     459 </span><span class="lineNoCov">          0 :             big.vbearingY = (signed char) getc(ttf);</span>
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 :             big.vadvance = getc(ttf);</span>
+<span class="lineNum">     461 </span><span class="lineNoCov">          0 :             num = getlong(ttf);</span>
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 :             glyphs = malloc((num+1)*sizeof(int32));</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :             for ( g=0; g&lt;num; ++g ) {</span>
+<span class="lineNum">     464 </span><span class="lineNoCov">          0 :                 glyphs[g] = getushort(ttf);</span>
+<span class="lineNum">     465 </span>            :             }
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :             if ( num&amp;1 )</span>
+<span class="lineNum">     467 </span><span class="lineNoCov">          0 :                 getushort(ttf);         /* padding */</span>
+<span class="lineNum">     468 </span><span class="lineNoCov">          0 :             for ( i=first, g=0; i&lt;=last; ++i, ++g ) {</span>
+<span class="lineNum">     469 </span><span class="lineNoCov">          0 :                 if ( (info-&gt;inuse==NULL || info-&gt;inuse[i+first]) &amp;&amp; g&lt;num )</span>
+<span class="lineNum">     470 </span><span class="lineNoCov">          0 :                     ttfreadbmfglyph(ttf,info,offset,</span>
+<span class="lineNum">     471 </span>            :                             size,&amp;big,
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 :                             imageformat,glyphs[g],bdf);</span>
+<span class="lineNum">     473 </span><span class="lineNoCov">          0 :                 offset = -1;</span>
+<span class="lineNum">     474 </span>            :             }
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 :             free(glyphs);</span>
+<span class="lineNum">     476 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">     477 </span>            :           default:
+<span class="lineNum">     478 </span><span class="lineNoCov">          0 :             LogError(_(&quot;Didn't understand index format: %d\n&quot;), indexformat );</span>
+<span class="lineNum">     479 </span><span class="lineNoCov">          0 :             info-&gt;bad_embedded_bitmap = true;</span>
+<span class="lineNum">     480 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">     481 </span>            :         }
+<span class="lineNum">     482 </span><span class="lineCov">        122 :         fseek(ttf,loc,SEEK_SET);</span>
+<span class="lineNum">     483 </span>            :     }
+<span class="lineNum">     484 </span><span class="lineCov">         22 :     BdfRefFixup(bdf,info);</span>
+<span class="lineNum">     485 </span><span class="lineCov">         22 :     BdfCleanup(bdf,info);</span>
+<a name="486"><span class="lineNum">     486 </span><span class="lineCov">         22 : }</span></a>
+<span class="lineNum">     487 </span>            : 
+<span class="lineNum">     488 </span><span class="lineCov">          5 : void TTFLoadBitmaps(FILE *ttf,struct ttfinfo *info,int onlyone) {</span>
+<span class="lineNum">     489 </span>            :     int i, cnt, j, k, good, glyphcnt;
+<span class="lineNum">     490 </span>            :     int bigval, biggest;
+<span class="lineNum">     491 </span>            :     struct ttfsizehead *sizes;
+<span class="lineNum">     492 </span>            :     BDFFont *bdf, *last;
+<span class="lineNum">     493 </span>            :     const char **choices;
+<span class="lineNum">     494 </span>            :     char *sel;
+<span class="lineNum">     495 </span>            :     char buf[300];
+<span class="lineNum">     496 </span>            :     char *buttons[3];
+<span class="lineNum">     497 </span><span class="lineCov">          5 :     buttons[0] = _(&quot;_Yes&quot;);</span>
+<span class="lineNum">     498 </span><span class="lineCov">          5 :     buttons[1] = _(&quot;_No&quot;);</span>
+<span class="lineNum">     499 </span><span class="lineCov">          5 :     buttons[2] = NULL;</span>
+<span class="lineNum">     500 </span>            : 
+<span class="lineNum">     501 </span><span class="lineCov">          5 :     fseek(ttf,info-&gt;bitmaploc_start,SEEK_SET);</span>
+<span class="lineNum">     502 </span><span class="lineCov">          5 :     /* version = */ getlong(ttf);               /* Had better be 0x00020000, or 2.0 */</span>
+<span class="lineNum">     503 </span><span class="lineCov">          5 :     cnt = getlong(ttf);</span>
+<span class="lineNum">     504 </span><span class="lineCov">          5 :     sizes = malloc(cnt*sizeof(struct ttfsizehead));</span>
+<span class="lineNum">     505 </span>            :     /* we may not like all the possible bitmaps. Some might be designed for */
+<span class="lineNum">     506 </span>            :     /*  non-square pixels, others might be color, others might be */
+<span class="lineNum">     507 </span>            :     /*  vertical data. So only pick out the ones we can use */
+<span class="lineNum">     508 </span><span class="lineCov">          5 :     bigval = biggest = -1;</span>
+<span class="lineNum">     509 </span><span class="lineCov">         27 :     for ( i = j = 0; i&lt;cnt; ++i ) {</span>
+<span class="lineNum">     510 </span><span class="lineCov">         22 :         if ( feof(ttf)) {</span>
+<span class="lineNum">     511 </span><span class="lineNoCov">          0 :             IError( &quot;End of file while reading embedded bitmaps&quot; );</span>
+<span class="lineNum">     512 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     513 </span>            :         }
+<span class="lineNum">     514 </span><span class="lineCov">         22 :         good = true;</span>
+<span class="lineNum">     515 </span><span class="lineCov">         22 :         sizes[j].indexSubTableArrayOffset = getlong(ttf);</span>
+<span class="lineNum">     516 </span><span class="lineCov">         22 :         /* size = */ getlong(ttf);</span>
+<span class="lineNum">     517 </span><span class="lineCov">         22 :         sizes[j].numIndexSubTables = getlong(ttf);</span>
+<span class="lineNum">     518 </span><span class="lineCov">         22 :         if ( /* colorRef = */ getlong(ttf)!=0 )</span>
+<span class="lineNum">     519 </span><span class="lineNoCov">          0 :             good = false;</span>
+<span class="lineNum">     520 </span><span class="lineCov">         22 :         sizes[j].ascent = getc(ttf);</span>
+<span class="lineNum">     521 </span><span class="lineCov">         22 :         sizes[j].descent = getc(ttf);</span>
+<span class="lineNum">     522 </span><span class="lineCov">         22 :         for ( k=0; k&lt;12-2; ++k ) getc(ttf);  /* Horizontal Line Metrics */</span>
+<span class="lineNum">     523 </span><span class="lineCov">         22 :         for ( k=0; k&lt;12; ++k ) getc(ttf);    /* Vertical   Line Metrics */</span>
+<span class="lineNum">     524 </span><span class="lineCov">         22 :         sizes[j].firstglyph = getushort(ttf);</span>
+<span class="lineNum">     525 </span><span class="lineCov">         22 :         sizes[j].endglyph = getushort(ttf);</span>
+<span class="lineNum">     526 </span><span class="lineCov">         22 :         sizes[j].ppem = getc(ttf);              /* X */</span>
+<span class="lineNum">     527 </span><span class="lineCov">         22 :         if ( /* ppemY */ getc(ttf) != sizes[j].ppem )</span>
+<span class="lineNum">     528 </span><span class="lineNoCov">          0 :             good = false;</span>
+<span class="lineNum">     529 </span><span class="lineCov">         22 :         if ( (sizes[j].depth = getc(ttf)) != 1 &amp;&amp; sizes[j].depth!=2 &amp;&amp;</span>
+<span class="lineNum">     530 </span><span class="lineNoCov">          0 :                 sizes[j].depth!=4 &amp;&amp; sizes[j].depth!=8 )</span>
+<span class="lineNum">     531 </span><span class="lineNoCov">          0 :             good = false;</span>
+<span class="lineNum">     532 </span><span class="lineCov">         22 :         if ( /* flags */ !(getc(ttf)&amp;1) )           /* !Horizontal */</span>
+<span class="lineNum">     533 </span><span class="lineNoCov">          0 :             good = false;</span>
+<span class="lineNum">     534 </span><span class="lineCov">         22 :         if ( good ) {</span>
+<span class="lineNum">     535 </span><span class="lineCov">         22 :             if ( sizes[j].ppem &gt; bigval ) {</span>
+<span class="lineNum">     536 </span><span class="lineCov">         22 :                 biggest = j;</span>
+<span class="lineNum">     537 </span><span class="lineCov">         22 :                 bigval = sizes[j].ppem;</span>
+<span class="lineNum">     538 </span>            :             }
+<span class="lineNum">     539 </span>            :         }
+<span class="lineNum">     540 </span><span class="lineCov">         22 :         j += good;</span>
+<span class="lineNum">     541 </span>            :     }
+<span class="lineNum">     542 </span><span class="lineCov">          5 :     cnt = j;</span>
+<span class="lineNum">     543 </span><span class="lineCov">          5 :     if ( cnt==0 ) {</span>
+<span class="lineNum">     544 </span><span class="lineNoCov">          0 :         free(sizes);</span>
+<span class="lineNum">     545 </span><span class="lineNoCov">          0 :         return;</span>
+<span class="lineNum">     546 </span>            :     }
+<span class="lineNum">     547 </span>            : 
+<span class="lineNum">     548 </span>            :     /* Ask user which (if any) s/he is interested in */
+<span class="lineNum">     549 </span><span class="lineCov">          5 :     choices = calloc(cnt+1,sizeof(char *));</span>
+<span class="lineNum">     550 </span><span class="lineCov">          5 :     sel = calloc(cnt,sizeof(char));</span>
+<span class="lineNum">     551 </span><span class="lineCov">         27 :     for ( i=0; i&lt;cnt; ++i ) {</span>
+<span class="lineNum">     552 </span><span class="lineCov">         22 :         if ( sizes[i].depth==1 )</span>
+<span class="lineNum">     553 </span><span class="lineCov">         22 :             sprintf(buf,&quot;%d&quot;, sizes[i].ppem );</span>
+<span class="lineNum">     554 </span>            :         else
+<span class="lineNum">     555 </span><span class="lineNoCov">          0 :             sprintf(buf,&quot;%d@%d&quot;, sizes[i].ppem, sizes[i].depth );</span>
+<span class="lineNum">     556 </span><span class="lineCov">         22 :         choices[i] = copy(buf);</span>
+<span class="lineNum">     557 </span>            :     }
+<span class="lineNum">     558 </span>            :     /* When loading a ttf font with only bitmaps, and there's only one strike */
+<span class="lineNum">     559 </span>            :     /*  then just load that strike. Don't ask */
+<span class="lineNum">     560 </span><span class="lineCov">          5 :     if ( info-&gt;glyphlocations_start==0 &amp;&amp; info-&gt;cff_start==0 &amp;&amp; cnt==1 )</span>
+<span class="lineNum">     561 </span><span class="lineNoCov">          0 :         sel[0] = true;</span>
+<span class="lineNum">     562 </span><span class="lineCov">          5 :     else if ( no_windowing_ui ) {</span>
+<span class="lineNum">     563 </span><span class="lineCov">          5 :         if ( onlyone ) {</span>
+<span class="lineNum">     564 </span><span class="lineNoCov">          0 :             biggest=-1; // We may not find one.</span>
+<span class="lineNum">     565 </span><span class="lineNoCov">          0 :             for ( i=1; i&lt;cnt; ++i )</span>
+<span class="lineNum">     566 </span><span class="lineNoCov">          0 :                 if ( sizes[i].depth==1 &amp;&amp; (biggest &lt; 0 || sizes[i].ppem&gt;sizes[biggest].ppem) )</span>
+<span class="lineNum">     567 </span><span class="lineNoCov">          0 :                     biggest = i;</span>
+<span class="lineNum">     568 </span><span class="lineNoCov">          0 :             sel[biggest] = true;</span>
+<span class="lineNum">     569 </span>            :         } else {
+<span class="lineNum">     570 </span><span class="lineCov">          5 :             biggest=-1;</span>
+<span class="lineNum">     571 </span><span class="lineCov">         27 :             for ( i=0; i&lt;cnt; ++i ) {</span>
+<span class="lineNum">     572 </span><span class="lineCov">         22 :                 sel[i] = true;</span>
+<span class="lineNum">     573 </span><span class="lineCov">         22 :                 if ( sizes[i].depth==1 &amp;&amp; (biggest &lt; 0 || sizes[i].ppem&gt;sizes[biggest].ppem) )</span>
+<span class="lineNum">     574 </span><span class="lineCov">         22 :                     biggest = i;</span>
+<span class="lineNum">     575 </span>            :             }
+<span class="lineNum">     576 </span>            :         }
+<span class="lineNum">     577 </span><span class="lineNoCov">          0 :     } else if ( onlyone ) {</span>
+<span class="lineNum">     578 </span><span class="lineNoCov">          0 :         biggest=ff_choose(_(&quot;Load Bitmap Fonts&quot;), choices,cnt,biggest,</span>
+<span class="lineNum">     579 </span><span class="lineNoCov">          0 :                 _(&quot;Do you want to load the bitmap fonts embedded in this true/open type file?\n(And if so, which)&quot;));</span>
+<span class="lineNum">     580 </span><span class="lineNoCov">          0 :         if ( biggest!=-1 ) sel[biggest] = true;</span>
+<span class="lineNum">     581 </span>            :     } else {
+<span class="lineNum">     582 </span><span class="lineNoCov">          0 :         biggest = ff_choose_multiple(_(&quot;Load Bitmap Fonts&quot;), choices,sel,cnt,buttons,</span>
+<span class="lineNum">     583 </span><span class="lineNoCov">          0 :                 _(&quot;Do you want to load the bitmap fonts embedded in this true/open type file?\n(And if so, which)&quot;));</span>
+<span class="lineNum">     584 </span>            :     }
+<span class="lineNum">     585 </span><span class="lineCov">          5 :     for ( i=0; i&lt;cnt; ++i ) free( (unichar_t *) (choices[i]));</span>
+<span class="lineNum">     586 </span><span class="lineCov">          5 :     free(choices);</span>
+<span class="lineNum">     587 </span><span class="lineCov">          5 :     if ( biggest&lt;0 ) {               /* Cancelled */</span>
+<span class="lineNum">     588 </span><span class="lineNoCov">          0 :         free(sizes); free(sel);</span>
+<span class="lineNum">     589 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     590 </span>            :     }
+<span class="lineNum">     591 </span>            :     /* Remove anything not selected */
+<span class="lineNum">     592 </span><span class="lineCov">         27 :     for ( i=j=0; i&lt;cnt; ++i ) {</span>
+<span class="lineNum">     593 </span><span class="lineCov">         22 :         if ( sel[i] )</span>
+<span class="lineNum">     594 </span><span class="lineCov">         22 :             sizes[j++] = sizes[i];</span>
+<span class="lineNum">     595 </span>            :     }
+<span class="lineNum">     596 </span><span class="lineCov">          5 :     cnt = j;</span>
+<span class="lineNum">     597 </span>            : 
+<span class="lineNum">     598 </span><span class="lineCov">          5 :     ff_progress_change_stages(3+cnt);</span>
+<span class="lineNum">     599 </span><span class="lineCov">          5 :     info-&gt;bitmaps = last = NULL;</span>
+<span class="lineNum">     600 </span><span class="lineCov">          5 :     if ( info-&gt;subfonts==NULL )</span>
+<span class="lineNum">     601 </span><span class="lineCov">          5 :         glyphcnt = info-&gt;glyph_cnt;</span>
+<span class="lineNum">     602 </span>            :     else {
+<span class="lineNum">     603 </span><span class="lineNoCov">          0 :         glyphcnt = 0;</span>
+<span class="lineNum">     604 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;info-&gt;subfontcnt; ++i )</span>
+<span class="lineNum">     605 </span><span class="lineNoCov">          0 :             if ( info-&gt;subfonts[i]-&gt;glyphcnt &gt; glyphcnt )</span>
+<span class="lineNum">     606 </span><span class="lineNoCov">          0 :                 glyphcnt = info-&gt;subfonts[i]-&gt;glyphcnt;</span>
+<span class="lineNum">     607 </span>            :     }
+<span class="lineNum">     608 </span><span class="lineCov">         27 :     for ( i=0; i&lt;cnt; ++i ) {</span>
+<span class="lineNum">     609 </span><span class="lineCov">         22 :         bdf = calloc(1,sizeof(BDFFont));</span>
+<span class="lineNum">     610 </span>            :         /* In cid fonts fontforge stores things by cid rather than gid */
+<span class="lineNum">     611 </span><span class="lineCov">         22 :         bdf-&gt;glyphcnt = glyphcnt;</span>
+<span class="lineNum">     612 </span><span class="lineCov">         22 :         if ( sizes[i].endglyph &gt; bdf-&gt;glyphcnt )</span>
+<span class="lineNum">     613 </span><span class="lineNoCov">          0 :             bdf-&gt;glyphcnt = sizes[i].endglyph+1;     /* Important if we have reference glyphs */</span>
+<span class="lineNum">     614 </span><span class="lineCov">         22 :         bdf-&gt;glyphmax = bdf-&gt;glyphcnt;</span>
+<span class="lineNum">     615 </span><span class="lineCov">         22 :         bdf-&gt;glyphs = calloc(bdf-&gt;glyphcnt,sizeof(BDFChar *));</span>
+<span class="lineNum">     616 </span><span class="lineCov">         22 :         bdf-&gt;pixelsize = sizes[i].ppem;</span>
+<span class="lineNum">     617 </span><span class="lineCov">         22 :         if ( sizes[i].ppem == sizes[i].ascent - sizes[i].descent )</span>
+<span class="lineNum">     618 </span><span class="lineNoCov">          0 :             bdf-&gt;ascent = sizes[i].ascent;</span>
+<span class="lineNum">     619 </span>            :         else
+<span class="lineNum">     620 </span><span class="lineCov">         22 :             bdf-&gt;ascent = (info-&gt;ascent*bdf-&gt;pixelsize + info-&gt;emsize/2)/info-&gt;emsize;</span>
+<span class="lineNum">     621 </span><span class="lineCov">         22 :         bdf-&gt;descent = bdf-&gt;pixelsize - bdf-&gt;ascent;</span>
+<span class="lineNum">     622 </span><span class="lineCov">         22 :         bdf-&gt;res = -1;</span>
+<span class="lineNum">     623 </span><span class="lineCov">         22 :         if ( sizes[i].depth!=1 )</span>
+<span class="lineNum">     624 </span><span class="lineNoCov">          0 :             BDFClut(bdf,1&lt;&lt;(sizes[i].depth/2));</span>
+<span class="lineNum">     625 </span><span class="lineCov">         22 :         if ( last==NULL )</span>
+<span class="lineNum">     626 </span><span class="lineCov">          5 :             info-&gt;bitmaps = bdf;</span>
+<span class="lineNum">     627 </span>            :         else
+<span class="lineNum">     628 </span><span class="lineCov">         17 :             last-&gt;next = bdf;</span>
+<span class="lineNum">     629 </span><span class="lineCov">         22 :         last = bdf;</span>
+<span class="lineNum">     630 </span><span class="lineCov">         22 :         snprintf(buf,sizeof(buf),_(&quot;%d pixel bitmap&quot;), sizes[i].ppem );</span>
+<span class="lineNum">     631 </span><span class="lineCov">         22 :         ff_progress_change_line2(buf);</span>
+<span class="lineNum">     632 </span><span class="lineCov">         22 :         readttfbitmapfont(ttf,info,&amp;sizes[i],bdf);</span>
+<span class="lineNum">     633 </span><span class="lineCov">         22 :         ff_progress_next_stage();</span>
+<span class="lineNum">     634 </span>            :     }
+<span class="lineNum">     635 </span><span class="lineCov">          5 :     free(sizes); free(sel);</span>
+<span class="lineNum">     636 </span>            : 
+<span class="lineNum">     637 </span><span class="lineCov">          5 :     ttf_bdf_read(ttf,info);</span>
+<span class="lineNum">     638 </span>            : }
+<span class="lineNum">     639 </span>            : 
+<span class="lineNum">     640 </span>            : /* ************************************************************************** */
+<span class="lineNum">     641 </span>            : /* *********************** Output --- Writing Bitmaps *********************** */
+<span class="lineNum">     642 </span>            : /* ************************************************************************** */
+<span class="lineNum">     643 </span>            : 
+<span class="lineNum">     644 </span>            : static BDFChar glyph0, glyph1, glyph2;
+<span class="lineNum">     645 </span>            : static SplineChar sc0, sc1, sc2;
+<a name="646"><span class="lineNum">     646 </span>            : static struct bdfcharlist bl[3];</a>
+<span class="lineNum">     647 </span>            : 
+<span class="lineNum">     648 </span><span class="lineCov">         48 : static struct bdfcharlist *BDFAddDefaultGlyphs(BDFFont *bdf, int format) {</span>
+<span class="lineNum">     649 </span>            :     /* when I dump out the glyf table I add 3 glyphs at the start. One is glyph*/
+<span class="lineNum">     650 </span>            :     /*  0, the one used when there is no match, and the other two are varients*/
+<span class="lineNum">     651 </span>            :     /*  on space. These might or might not be in the font.  Add the ones that */
+<span class="lineNum">     652 </span>            :     /*  don't exist */
+<span class="lineNum">     653 </span>            :     /* Werner tells me he doesn't want them added. He thinks sparse bitmaps */
+<span class="lineNum">     654 </span>            :     /*  are reasonable. Hadn't occurred to me. So I wanted complete strikes */
+<span class="lineNum">     655 </span>            :     /* Perhaps a better approach is to give them fake bitmaps if we gave them */
+<span class="lineNum">     656 </span>            :     /*  fake outlines, so look at the spline font not the bitmap font for the */
+<span class="lineNum">     657 </span>            :     /*  magic glyphs */
+<span class="lineNum">     658 </span><span class="lineCov">         48 :     int width, w, i, j, bit, blpos=0;</span>
+<span class="lineNum">     659 </span><span class="lineCov">         48 :     SplineFont *sf = bdf-&gt;sf;</span>
+<span class="lineNum">     660 </span><span class="lineCov">         48 :     int notdefpos = -1, nullpos = -1, nmretpos = -1;</span>
+<span class="lineNum">     661 </span><span class="lineCov">         48 :     int extracnt = format==ff_otf || format==ff_otfcid ? 1 : 3;</span>
+<span class="lineNum">     662 </span>            : 
+<span class="lineNum">     663 </span><span class="lineCov">         48 :     width = 0x7ffff;</span>
+<span class="lineNum">     664 </span><span class="lineCov">        175 :     for ( i=0; i&lt;bdf-&gt;glyphcnt; ++i ) if ( bdf-&gt;glyphs[i]!=NULL ) {</span>
+<span class="lineNum">     665 </span><span class="lineCov">        120 :         if ( width == 0x7ffff )</span>
+<span class="lineNum">     666 </span><span class="lineCov">         48 :             width = bdf-&gt;glyphs[i]-&gt;width;</span>
+<span class="lineNum">     667 </span><span class="lineCov">         72 :         else if ( width!=bdf-&gt;glyphs[i]-&gt;width ) {</span>
+<span class="lineNum">     668 </span><span class="lineCov">         48 :             width = 0x7fffe;</span>
+<span class="lineNum">     669 </span><span class="lineCov">         48 :     break;</span>
+<span class="lineNum">     670 </span>            :         }
+<span class="lineNum">     671 </span>            :     }
+<span class="lineNum">     672 </span><span class="lineCov">      39753 :     for ( i=0; i&lt;sf-&gt;glyphcnt; ++i ) if ( sf-&gt;glyphs[i]!=NULL ) {</span>
+<span class="lineNum">     673 </span><span class="lineCov">      39609 :         int ttf_glyph = sf-&gt;glyphs[i]-&gt;ttf_glyph;</span>
+<span class="lineNum">     674 </span><span class="lineCov">      39609 :         if ( ttf_glyph==0 )</span>
+<span class="lineNum">     675 </span><span class="lineCov">          2 :             notdefpos = i;</span>
+<span class="lineNum">     676 </span><span class="lineCov">      39607 :         else if ( ttf_glyph==1 )</span>
+<span class="lineNum">     677 </span><span class="lineCov">         12 :             nullpos = i;</span>
+<span class="lineNum">     678 </span><span class="lineCov">      39595 :         else if ( ttf_glyph==2 )</span>
+<span class="lineNum">     679 </span><span class="lineCov">         12 :             nmretpos = i;</span>
+<span class="lineNum">     680 </span>            :     }
+<span class="lineNum">     681 </span><span class="lineCov">         48 :     if ( width&gt;0x70000 )</span>
+<span class="lineNum">     682 </span>            :         /* Proportional */
+<span class="lineNum">     683 </span><span class="lineCov">         48 :         width = bdf-&gt;pixelsize/3;</span>
+<span class="lineNum">     684 </span>            : 
+<span class="lineNum">     685 </span><span class="lineCov">         48 :     memset(bl,0,sizeof(bl));</span>
+<span class="lineNum">     686 </span><span class="lineCov">         48 :     if ( notdefpos==-1 ) {</span>
+<span class="lineNum">     687 </span><span class="lineCov">         46 :         sc0.name = &quot;.notdef&quot;;</span>
+<span class="lineNum">     688 </span>            :         /* sc0.ttf_glyph = 0; */        /* already done */
+<span class="lineNum">     689 </span><span class="lineCov">         46 :         sc0.parent = sf;</span>
+<span class="lineNum">     690 </span><span class="lineCov">         46 :         if ( width&lt;4 ) w=4; else w=width;</span>
+<span class="lineNum">     691 </span><span class="lineCov">         46 :         sc0.width = w*(sf-&gt;ascent+sf-&gt;descent)/bdf-&gt;pixelsize;</span>
+<span class="lineNum">     692 </span><span class="lineCov">         46 :         sc0.widthset = true;</span>
+<span class="lineNum">     693 </span><span class="lineCov">         46 :         sc0.vwidth = (sf-&gt;ascent+sf-&gt;descent);</span>
+<span class="lineNum">     694 </span><span class="lineCov">         46 :         glyph0.sc = &amp;sc0;</span>
+<span class="lineNum">     695 </span><span class="lineCov">         46 :         glyph0.width = w;</span>
+<span class="lineNum">     696 </span><span class="lineCov">         46 :         glyph0.vwidth = bdf-&gt;pixelsize;</span>
+<span class="lineNum">     697 </span><span class="lineCov">         46 :         if ( BDFDepth(bdf)!=1 ) {</span>
+<span class="lineNum">     698 </span><span class="lineCov">          1 :             glyph0.bytes_per_line = 1;  /* Needs to be 1 or BCRegularizeBitmap gets upset */</span>
+<span class="lineNum">     699 </span><span class="lineCov">          1 :             glyph0.ymax = 1;</span>
+<span class="lineNum">     700 </span><span class="lineCov">          1 :             glyph0.bitmap = calloc(8,1);</span>
+<span class="lineNum">     701 </span>            :         } else {
+<span class="lineNum">     702 </span><span class="lineCov">         45 :             glyph0.xmin = (w==4)?0:1;</span>
+<span class="lineNum">     703 </span><span class="lineCov">         45 :             glyph0.xmax = w-1;</span>
+<span class="lineNum">     704 </span><span class="lineCov">         45 :             glyph0.ymin = 0;</span>
+<span class="lineNum">     705 </span><span class="lineCov">         45 :             glyph0.ymax = 8*bdf-&gt;ascent/10;</span>
+<span class="lineNum">     706 </span><span class="lineCov">         45 :             glyph0.bytes_per_line = (glyph0.xmax-glyph0.xmin+8)/8;</span>
+<span class="lineNum">     707 </span><span class="lineCov">         45 :             glyph0.bitmap = calloc((glyph0.ymax-glyph0.ymin+1)*glyph0.bytes_per_line,1);</span>
+<span class="lineNum">     708 </span><span class="lineCov">         45 :             j = (glyph0.xmax-glyph0.xmin)&gt;&gt;3;</span>
+<span class="lineNum">     709 </span><span class="lineCov">         45 :             bit = 0x80&gt;&gt;((glyph0.xmax-glyph0.xmin)&amp;7);</span>
+<span class="lineNum">     710 </span><span class="lineCov">        528 :             for ( i=0; i&lt;=glyph0.ymax; ++i ) {</span>
+<span class="lineNum">     711 </span><span class="lineCov">        483 :                 glyph0.bitmap[i*glyph0.bytes_per_line] |= 0x80;</span>
+<span class="lineNum">     712 </span><span class="lineCov">        483 :                 glyph0.bitmap[i*glyph0.bytes_per_line+j] |= bit;</span>
+<span class="lineNum">     713 </span>            :             }
+<span class="lineNum">     714 </span><span class="lineCov">        218 :             for ( i=0; i&lt;glyph0.xmax-glyph0.xmin; ++i ) {</span>
+<span class="lineNum">     715 </span><span class="lineCov">        173 :                 glyph0.bitmap[i&gt;&gt;3] |= (0x80&gt;&gt;(i&amp;7));</span>
+<span class="lineNum">     716 </span><span class="lineCov">        173 :                 glyph0.bitmap[glyph0.ymax*glyph0.bytes_per_line+(i&gt;&gt;3)] |= (0x80&gt;&gt;(i&amp;7));</span>
+<span class="lineNum">     717 </span>            :             }
+<span class="lineNum">     718 </span>            :         }
+<span class="lineNum">     719 </span><span class="lineCov">         46 :         bl[blpos++].bc = &amp;glyph0;</span>
+<span class="lineNum">     720 </span>            :     }
+<span class="lineNum">     721 </span>            : 
+<span class="lineNum">     722 </span><span class="lineCov">         48 :     if ( extracnt==3 ) {</span>
+<span class="lineNum">     723 </span><span class="lineCov">         36 :         sc1.ttf_glyph = 1;</span>
+<span class="lineNum">     724 </span><span class="lineCov">         36 :         sc2.ttf_glyph = 2;</span>
+<span class="lineNum">     725 </span><span class="lineCov">         36 :         sc1.name = &quot;.null&quot;; sc2.name = &quot;nonmarkingreturn&quot;;</span>
+<span class="lineNum">     726 </span><span class="lineCov">         36 :         sc1.parent = sc2.parent = sf;</span>
+<span class="lineNum">     727 </span><span class="lineCov">         36 :         sc1.width = sc2.width = width*(sf-&gt;ascent+sf-&gt;descent)/bdf-&gt;pixelsize;</span>
+<span class="lineNum">     728 </span><span class="lineCov">         36 :         sc1.widthset = sc2.widthset = 1;</span>
+<span class="lineNum">     729 </span><span class="lineCov">         36 :         sc1.vwidth = sc2.vwidth = (sf-&gt;ascent+sf-&gt;descent);</span>
+<span class="lineNum">     730 </span><span class="lineCov">         36 :         glyph1.sc = &amp;sc1; glyph2.sc = &amp;sc2;</span>
+<span class="lineNum">     731 </span>            :         /* xmin and so forth are zero, and are already clear */
+<span class="lineNum">     732 </span><span class="lineCov">         36 :         glyph1.width = glyph2.width = width;</span>
+<span class="lineNum">     733 </span><span class="lineCov">         36 :         glyph1.vwidth = glyph2.vwidth = bdf-&gt;pixelsize;</span>
+<span class="lineNum">     734 </span><span class="lineCov">         36 :         glyph1.bytes_per_line = glyph2.bytes_per_line = 1;      /* Needs to be 1 or BCRegularizeBitmap gets upset */</span>
+<span class="lineNum">     735 </span><span class="lineCov">         36 :         glyph1.bitmap = glyph2.bitmap = (uint8 *) &quot;&quot;;</span>
+<span class="lineNum">     736 </span><span class="lineCov">         36 :         glyph1.orig_pos = 1; glyph2.orig_pos = 2;</span>
+<span class="lineNum">     737 </span><span class="lineCov">         36 :         if ( nullpos==-1 ) {</span>
+<span class="lineNum">     738 </span><span class="lineCov">         36 :             if ( blpos!=0 )</span>
+<span class="lineNum">     739 </span><span class="lineCov">         34 :                 bl[blpos-1].next = &amp;bl[blpos];</span>
+<span class="lineNum">     740 </span><span class="lineCov">         36 :             bl[blpos++].bc = &amp;glyph1;</span>
+<span class="lineNum">     741 </span>            :         }
+<span class="lineNum">     742 </span><span class="lineCov">         36 :         if ( nmretpos==-1 ) {</span>
+<span class="lineNum">     743 </span><span class="lineCov">         36 :             if ( blpos!=0 )</span>
+<span class="lineNum">     744 </span><span class="lineCov">         36 :                 bl[blpos-1].next = &amp;bl[blpos];</span>
+<span class="lineNum">     745 </span><span class="lineCov">         36 :             bl[blpos++].bc = &amp;glyph2;</span>
+<span class="lineNum">     746 </span>            :         }
+<span class="lineNum">     747 </span>            :     }
+<span class="lineNum">     748 </span><span class="lineCov">         48 : return( blpos==0 ? NULL : &amp;bl[0] );</span>
+<a name="749"><span class="lineNum">     749 </span>            : }</a>
+<span class="lineNum">     750 </span>            : 
+<span class="lineNum">     751 </span><span class="lineCov">         48 : static void BDFCleanupDefaultGlyphs(BDFFont *bdf) {</span>
+<span class="lineNum">     752 </span><span class="lineCov">         48 :     free(glyph0.bitmap);</span>
+<span class="lineNum">     753 </span><span class="lineCov">         48 :     glyph0.bitmap = NULL;</span>
+<a name="754"><span class="lineNum">     754 </span><span class="lineCov">         48 : }</span></a>
+<span class="lineNum">     755 </span>            : 
+<span class="lineNum">     756 </span><span class="lineCov">      37730 : static void ttfdumpsmallmetrics(FILE *bdat, BDFChar *bc) {</span>
+<span class="lineNum">     757 </span>            : 
+<span class="lineNum">     758 </span>            :     /* dump small metrics */
+<span class="lineNum">     759 </span><span class="lineCov">      37730 :     putc(bc-&gt;ymax-bc-&gt;ymin+1,bdat);               /* height */</span>
+<span class="lineNum">     760 </span><span class="lineCov">      37730 :     putc(bc-&gt;xmax-bc-&gt;xmin+1,bdat);               /* width */</span>
+<span class="lineNum">     761 </span><span class="lineCov">      37730 :     putc(bc-&gt;xmin,bdat);                     /* horiBearingX */</span>
+<span class="lineNum">     762 </span><span class="lineCov">      37730 :     putc(bc-&gt;ymax+1,bdat);                   /* horiBearingY */</span>
+<span class="lineNum">     763 </span><span class="lineCov">      37730 :     putc(bc-&gt;width,bdat);                    /* advance width */</span>
+<a name="764"><span class="lineNum">     764 </span><span class="lineCov">      37730 : }</span></a>
+<span class="lineNum">     765 </span>            : 
+<span class="lineNum">     766 </span><span class="lineNoCov">          0 : static void ttfdumpbigmetrics(FILE *bdat, BDFChar *bc) {</span>
+<span class="lineNum">     767 </span>            : 
+<span class="lineNum">     768 </span>            :     /* dump big metrics */
+<span class="lineNum">     769 </span><span class="lineNoCov">          0 :     putc(bc-&gt;ymax-bc-&gt;ymin+1,bdat);               /* height */</span>
+<span class="lineNum">     770 </span><span class="lineNoCov">          0 :     putc(bc-&gt;xmax-bc-&gt;xmin+1,bdat);               /* width */</span>
+<span class="lineNum">     771 </span><span class="lineNoCov">          0 :     putc(bc-&gt;xmin,bdat);                     /* horiBearingX */</span>
+<span class="lineNum">     772 </span><span class="lineNoCov">          0 :     putc(bc-&gt;ymax+1,bdat);                   /* horiBearingY */</span>
+<span class="lineNum">     773 </span><span class="lineNoCov">          0 :     putc(bc-&gt;width,bdat);                    /* advance width */</span>
+<span class="lineNum">     774 </span><span class="lineNoCov">          0 :     putc(-bc-&gt;width/2,bdat);                 /* vertBearingX */</span>
+<span class="lineNum">     775 </span><span class="lineNoCov">          0 :     putc(0,bdat);                               /* vertBearingY */</span>
+<span class="lineNum">     776 </span><span class="lineNoCov">          0 :     putc(bc-&gt;vwidth,bdat);                   /* vert advance width */</span>
+<a name="777"><span class="lineNum">     777 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     778 </span>            : 
+<span class="lineNum">     779 </span><span class="lineCov">        244 : static int32 ttfdumpf1_6bchar(FILE *bdat, BDFChar *bc,BDFFont *bdf) {</span>
+<span class="lineNum">     780 </span>            :     /* format 1 character dump. small metrics, byte aligned data */
+<span class="lineNum">     781 </span><span class="lineCov">        244 :     int32 pos = ftell(bdat);</span>
+<span class="lineNum">     782 </span>            :     int r,c,val;
+<span class="lineNum">     783 </span>            : 
+<span class="lineNum">     784 </span><span class="lineCov">        244 :     if ( bdf-&gt;sf-&gt;hasvmetrics )</span>
+<span class="lineNum">     785 </span><span class="lineNoCov">          0 :         ttfdumpbigmetrics(bdat,bc);</span>
+<span class="lineNum">     786 </span>            :     else
+<span class="lineNum">     787 </span><span class="lineCov">        244 :         ttfdumpsmallmetrics(bdat,bc);</span>
+<span class="lineNum">     788 </span>            : 
+<span class="lineNum">     789 </span>            :     /* dump image */
+<span class="lineNum">     790 </span><span class="lineCov">       2935 :     for ( r=0; r&lt;=bc-&gt;ymax-bc-&gt;ymin; ++r ) {</span>
+<span class="lineNum">     791 </span><span class="lineCov">       5382 :         if ( bdf-&gt;clut==NULL || bdf-&gt;clut-&gt;clut_len==256 ) {</span>
+<span class="lineNum">     792 </span><span class="lineCov">      20197 :             for ( c=0; c&lt;bc-&gt;bytes_per_line; ++c )</span>
+<span class="lineNum">     793 </span><span class="lineCov">      17506 :                 putc(bc-&gt;bitmap[r*bc-&gt;bytes_per_line+c],bdat);</span>
+<span class="lineNum">     794 </span><span class="lineNoCov">          0 :         } else if ( bdf-&gt;clut-&gt;clut_len==4 ) {</span>
+<span class="lineNum">     795 </span><span class="lineNoCov">          0 :             for ( c=0; c&lt;bc-&gt;bytes_per_line; c+=2 ) {</span>
+<span class="lineNum">     796 </span><span class="lineNoCov">          0 :                 val = bc-&gt;bitmap[r*bc-&gt;bytes_per_line+c]&lt;&lt;4;</span>
+<span class="lineNum">     797 </span><span class="lineNoCov">          0 :                 if ( c+1&lt;bc-&gt;bytes_per_line )</span>
+<span class="lineNum">     798 </span><span class="lineNoCov">          0 :                     val += bc-&gt;bitmap[r*bc-&gt;bytes_per_line+c+1];</span>
+<span class="lineNum">     799 </span><span class="lineNoCov">          0 :                 putc(val,bdat);</span>
+<span class="lineNum">     800 </span>            :             }
+<span class="lineNum">     801 </span>            :         } else {
+<span class="lineNum">     802 </span><span class="lineNoCov">          0 :             for ( c=0; c&lt;bc-&gt;bytes_per_line; c+=4 ) {</span>
+<span class="lineNum">     803 </span><span class="lineNoCov">          0 :                 val = bc-&gt;bitmap[r*bc-&gt;bytes_per_line+c]&lt;&lt;6;</span>
+<span class="lineNum">     804 </span><span class="lineNoCov">          0 :                 if ( c+1&lt;bc-&gt;bytes_per_line )</span>
+<span class="lineNum">     805 </span><span class="lineNoCov">          0 :                     val += bc-&gt;bitmap[r*bc-&gt;bytes_per_line+c+1]&lt;&lt;4;</span>
+<span class="lineNum">     806 </span><span class="lineNoCov">          0 :                 if ( c+2&lt;bc-&gt;bytes_per_line )</span>
+<span class="lineNum">     807 </span><span class="lineNoCov">          0 :                     val += bc-&gt;bitmap[r*bc-&gt;bytes_per_line+c+2]&lt;&lt;2;</span>
+<span class="lineNum">     808 </span><span class="lineNoCov">          0 :                 if ( c+3&lt;bc-&gt;bytes_per_line )</span>
+<span class="lineNum">     809 </span><span class="lineNoCov">          0 :                     val += bc-&gt;bitmap[r*bc-&gt;bytes_per_line+c+3];</span>
+<span class="lineNum">     810 </span><span class="lineNoCov">          0 :                 putc(val,bdat);</span>
+<span class="lineNum">     811 </span>            :             }
+<span class="lineNum">     812 </span>            :         }
+<span class="lineNum">     813 </span>            :     }
+<span class="lineNum">     814 </span><span class="lineCov">        244 : return( pos );</span>
+<a name="815"><span class="lineNum">     815 </span>            : }</a>
+<span class="lineNum">     816 </span>            : 
+<span class="lineNum">     817 </span><span class="lineCov">      37566 : static int32 ttfdumpf2_7bchar(FILE *bdat, BDFChar *bc, BDFFont *bdf,int do_metrics) {</span>
+<span class="lineNum">     818 </span>            :     /* format 2 character dump. small metrics, bit aligned data */
+<span class="lineNum">     819 </span><span class="lineCov">      37566 :     int32 pos = ftell(bdat);</span>
+<span class="lineNum">     820 </span>            :     int r,c,ch,bit,sh;
+<span class="lineNum">     821 </span>            : 
+<span class="lineNum">     822 </span><span class="lineCov">      37566 :     if ( do_metrics ) {</span>
+<span class="lineNum">     823 </span><span class="lineCov">      37486 :         if ( bdf-&gt;sf-&gt;hasvmetrics )</span>
+<span class="lineNum">     824 </span><span class="lineNoCov">          0 :             ttfdumpbigmetrics(bdat,bc);</span>
+<span class="lineNum">     825 </span>            :         else
+<span class="lineNum">     826 </span><span class="lineCov">      37486 :             ttfdumpsmallmetrics(bdat,bc);</span>
+<span class="lineNum">     827 </span>            :     }
+<span class="lineNum">     828 </span>            : 
+<span class="lineNum">     829 </span>            :     /* dump image */
+<span class="lineNum">     830 </span><span class="lineCov">      37566 :     ch = 0; bit = 0x80; sh=7;</span>
+<span class="lineNum">     831 </span><span class="lineCov">     392798 :     for ( r=0; r&lt;=bc-&gt;ymax-bc-&gt;ymin; ++r ) {</span>
+<span class="lineNum">     832 </span><span class="lineCov">    3471464 :         for ( c = 0; c&lt;=bc-&gt;xmax-bc-&gt;xmin; ++c ) {</span>
+<span class="lineNum">     833 </span><span class="lineCov">    3116232 :             if ( bdf-&gt;clut==NULL ) {</span>
+<span class="lineNum">     834 </span><span class="lineCov">    3116232 :                 if ( bc-&gt;bitmap[r*bc-&gt;bytes_per_line+(c&gt;&gt;3)] &amp; (1&lt;&lt;(7-(c&amp;7))) )</span>
+<span class="lineNum">     835 </span><span class="lineCov">    1109437 :                     ch |= bit;</span>
+<span class="lineNum">     836 </span><span class="lineCov">    3116232 :                 bit &gt;&gt;= 1;</span>
+<span class="lineNum">     837 </span><span class="lineNoCov">          0 :             } else if ( bdf-&gt;clut-&gt;clut_len==4 ) {</span>
+<span class="lineNum">     838 </span><span class="lineNoCov">          0 :                 ch |= (bc-&gt;bitmap[r*bc-&gt;bytes_per_line+c]&lt;&lt;(sh-1));</span>
+<span class="lineNum">     839 </span><span class="lineNoCov">          0 :                 sh-=2;</span>
+<span class="lineNum">     840 </span><span class="lineNoCov">          0 :                 bit &gt;&gt;= 2;</span>
+<span class="lineNum">     841 </span>            :             } else {
+<span class="lineNum">     842 </span><span class="lineNoCov">          0 :                 ch |= (bc-&gt;bitmap[r*bc-&gt;bytes_per_line+c]&lt;&lt;(sh-3));</span>
+<span class="lineNum">     843 </span><span class="lineNoCov">          0 :                 sh-=4;</span>
+<span class="lineNum">     844 </span><span class="lineNoCov">          0 :                 bit &gt;&gt;= 4;</span>
+<span class="lineNum">     845 </span>            :             }
+<span class="lineNum">     846 </span><span class="lineCov">    3116232 :             if ( bit==0 ) {</span>
+<span class="lineNum">     847 </span><span class="lineCov">     375050 :                 putc(ch,bdat);</span>
+<span class="lineNum">     848 </span><span class="lineCov">     375050 :                 ch = 0;</span>
+<span class="lineNum">     849 </span><span class="lineCov">     375050 :                 sh = 7;</span>
+<span class="lineNum">     850 </span><span class="lineCov">     375050 :                 bit = 0x80;</span>
+<span class="lineNum">     851 </span>            :             }
+<span class="lineNum">     852 </span>            :         }
+<span class="lineNum">     853 </span>            :     }
+<span class="lineNum">     854 </span><span class="lineCov">      37566 :     if ( bit!=0x80 )</span>
+<span class="lineNum">     855 </span><span class="lineCov">      29364 :         putc(ch,bdat);</span>
+<span class="lineNum">     856 </span><span class="lineCov">      37566 : return( pos );</span>
+<a name="857"><span class="lineNum">     857 </span>            : }</a>
+<span class="lineNum">     858 </span>            : 
+<span class="lineNum">     859 </span><span class="lineNoCov">          0 : static int32 ttfdumpf8_9bchar(FILE *bdat, BDFChar *bc,BDFFont *bdf) {</span>
+<span class="lineNum">     860 </span>            :     /* format 8 character dump. small metrics, component data */
+<span class="lineNum">     861 </span><span class="lineNoCov">          0 :     int32 pos = ftell(bdat);</span>
+<span class="lineNum">     862 </span><span class="lineNoCov">          0 :     int numc = 0;</span>
+<span class="lineNum">     863 </span>            :     BDFRefChar *head;
+<span class="lineNum">     864 </span>            : 
+<span class="lineNum">     865 </span><span class="lineNoCov">          0 :     if ( bdf-&gt;sf-&gt;hasvmetrics )</span>
+<span class="lineNum">     866 </span><span class="lineNoCov">          0 :         ttfdumpbigmetrics(bdat,bc);</span>
+<span class="lineNum">     867 </span>            :     else {
+<span class="lineNum">     868 </span><span class="lineNoCov">          0 :         ttfdumpsmallmetrics(bdat,bc);</span>
+<span class="lineNum">     869 </span><span class="lineNoCov">          0 :         putc( 0,bdat );</span>
+<span class="lineNum">     870 </span>            :     }
+<span class="lineNum">     871 </span>            : 
+<span class="lineNum">     872 </span>            :     /* dump component data */
+<span class="lineNum">     873 </span><span class="lineNoCov">          0 :     for ( head = bc-&gt;refs; head!=NULL; head=head-&gt;next )</span>
+<span class="lineNum">     874 </span><span class="lineNoCov">          0 :         numc++;</span>
+<span class="lineNum">     875 </span><span class="lineNoCov">          0 :     putshort( bdat,numc );</span>
+<span class="lineNum">     876 </span><span class="lineNoCov">          0 :     for ( head = bc-&gt;refs; head!=NULL; head=head-&gt;next ) {</span>
+<span class="lineNum">     877 </span><span class="lineNoCov">          0 :         putshort( bdat,head-&gt;bdfc-&gt;sc-&gt;ttf_glyph );</span>
+<span class="lineNum">     878 </span><span class="lineNoCov">          0 :         putc( head-&gt;bdfc-&gt;xmin - bc-&gt;xmin + head-&gt;xoff,bdat );</span>
+<span class="lineNum">     879 </span><span class="lineNoCov">          0 :         putc( bc-&gt;ymax - head-&gt;bdfc-&gt;ymax - head-&gt;yoff,bdat );</span>
+<span class="lineNum">     880 </span>            :     }
+<span class="lineNum">     881 </span><span class="lineNoCov">          0 : return( pos );</span>
+<span class="lineNum">     882 </span>            : }
+<span class="lineNum">     883 </span>            : 
+<span class="lineNum">     884 </span>            : struct sbitLineMetrics {
+<span class="lineNum">     885 </span>            :     int8 ascender;
+<span class="lineNum">     886 </span>            :     int8 descender;
+<span class="lineNum">     887 </span>            :     uint8 widthMax;
+<span class="lineNum">     888 </span>            :     int8 caretRise;
+<span class="lineNum">     889 </span>            :     int8 caretRun;
+<span class="lineNum">     890 </span>            :     int8 caretOff;
+<span class="lineNum">     891 </span>            :     int8 minoriginsb;
+<span class="lineNum">     892 </span>            :     int8 minAdvancesb;
+<span class="lineNum">     893 </span>            :     int8 maxbeforebl;
+<span class="lineNum">     894 </span>            :     int8 minafterbl;
+<span class="lineNum">     895 </span>            :     int8 pad1, pad2;
+<span class="lineNum">     896 </span>            : };
+<span class="lineNum">     897 </span>            : 
+<span class="lineNum">     898 </span>            : struct bitmapSizeTable {
+<span class="lineNum">     899 </span>            :     int32 subtableoffset;
+<span class="lineNum">     900 </span>            :     int32 tablesize;
+<span class="lineNum">     901 </span>            :     int32 numsubtables;
+<span class="lineNum">     902 </span>            :     int32 colorRef;
+<span class="lineNum">     903 </span>            :     struct sbitLineMetrics hori, vert;
+<span class="lineNum">     904 </span>            :     uint16 startGlyph;
+<span class="lineNum">     905 </span>            :     uint16 endGlyph;
+<span class="lineNum">     906 </span>            :     uint8 ppemX;
+<span class="lineNum">     907 </span>            :     uint8 ppemY;
+<span class="lineNum">     908 </span>            :     uint8 bitdepth;
+<span class="lineNum">     909 </span>            :     int8 flags;
+<span class="lineNum">     910 </span>            :     struct bitmapSizeTable *next;
+<span class="lineNum">     911 </span>            :     unsigned int error: 1;
+<span class="lineNum">     912 </span>            : };
+<span class="lineNum">     913 </span>            : struct indexarray {
+<span class="lineNum">     914 </span>            :     uint16 first;
+<span class="lineNum">     915 </span>            :     uint16 last;
+<span class="lineNum">     916 </span>            :     uint32 additionalOffset;
+<span class="lineNum">     917 </span>            :     struct indexarray *next;
+<a name="918"><span class="lineNum">     918 </span>            : };</a>
+<span class="lineNum">     919 </span>            : 
+<span class="lineNum">     920 </span><span class="lineCov">         48 : static void FillLineMetrics(struct bitmapSizeTable *size,BDFFont *bdf) {</span>
+<span class="lineNum">     921 </span>            :     int i, first;
+<span class="lineNum">     922 </span>            :     BDFChar *bc;
+<span class="lineNum">     923 </span>            : 
+<span class="lineNum">     924 </span><span class="lineCov">         48 :     memset(&amp;size-&gt;hori,0,sizeof(struct sbitLineMetrics));</span>
+<span class="lineNum">     925 </span><span class="lineCov">         48 :     memset(&amp;size-&gt;vert,0,sizeof(struct sbitLineMetrics));</span>
+<span class="lineNum">     926 </span>            : 
+<span class="lineNum">     927 </span>            :     /* I shall ignore vertical metrics */
+<span class="lineNum">     928 </span><span class="lineCov">         48 :     size-&gt;hori.caretRise = 1; /* other caret fields may be 0 */</span>
+<span class="lineNum">     929 </span><span class="lineCov">         48 :     size-&gt;vert.caretRise = 1; /* other caret fields may be 0 */</span>
+<span class="lineNum">     930 </span><span class="lineCov">         48 :     first = true;</span>
+<span class="lineNum">     931 </span><span class="lineCov">      39798 :     for ( i=0; i&lt;bdf-&gt;glyphcnt ; ++i ) if ( (bc=bdf-&gt;glyphs[i])!=NULL ) {</span>
+<span class="lineNum">     932 </span><span class="lineCov">      38108 :         if ( first ) {</span>
+<span class="lineNum">     933 </span>            : /*          size-&gt;hori.ascender = bc-&gt;ymax+1;*/
+<span class="lineNum">     934 </span>            : /*          size-&gt;hori.descender = bc-&gt;ymin; */
+<span class="lineNum">     935 </span><span class="lineCov">         48 :             size-&gt;hori.widthMax = bc-&gt;xmax-bc-&gt;xmin+1;</span>
+<span class="lineNum">     936 </span><span class="lineCov">         48 :             size-&gt;hori.minoriginsb = bc-&gt;xmin;</span>
+<span class="lineNum">     937 </span><span class="lineCov">         48 :             size-&gt;hori.minAdvancesb = bc-&gt;width-bc-&gt;xmax;</span>
+<span class="lineNum">     938 </span><span class="lineCov">         48 :             size-&gt;hori.minafterbl = bc-&gt;ymin;</span>
+<span class="lineNum">     939 </span><span class="lineCov">         48 :             size-&gt;hori.maxbeforebl = bc-&gt;ymax;</span>
+<span class="lineNum">     940 </span><span class="lineCov">         48 :             first = false;</span>
+<span class="lineNum">     941 </span>            :         } else {
+<span class="lineNum">     942 </span>            : /*          if ( bc-&gt;ymax+1 &gt; size-&gt;hori.ascender ) size-&gt;hori.ascender = bc-&gt;ymax+1; */
+<span class="lineNum">     943 </span>            : /*          if ( bc-&gt;ymin &lt; size-&gt;hori.descender ) size-&gt;hori.descender = bc-&gt;ymin;   */
+<span class="lineNum">     944 </span><span class="lineCov">      38060 :             if ( bc-&gt;xmax-bc-&gt;xmin+1 &gt; size-&gt;hori.widthMax ) size-&gt;hori.widthMax = bc-&gt;xmax-bc-&gt;xmin+1;</span>
+<span class="lineNum">     945 </span><span class="lineCov">      38060 :             if ( bc-&gt;xmin &lt; size-&gt;hori.minoriginsb ) size-&gt;hori.minoriginsb = bc-&gt;xmin;</span>
+<span class="lineNum">     946 </span><span class="lineCov">      38060 :             if ( bc-&gt;width-bc-&gt;xmax &lt; size-&gt;hori.minAdvancesb ) size-&gt;hori.minAdvancesb = bc-&gt;width-bc-&gt;xmax;</span>
+<span class="lineNum">     947 </span><span class="lineCov">      38060 :             if ( bc-&gt;ymin &lt; size-&gt;hori.minafterbl ) size-&gt;hori.minafterbl = bc-&gt;ymin;</span>
+<span class="lineNum">     948 </span><span class="lineCov">      38060 :             if ( bc-&gt;ymax+1 &gt; size-&gt;hori.maxbeforebl ) size-&gt;hori.maxbeforebl = bc-&gt;ymax+1;</span>
+<span class="lineNum">     949 </span>            :         }
+<span class="lineNum">     950 </span>            :     }
+<span class="lineNum">     951 </span><span class="lineCov">         48 :     size-&gt;hori.ascender = BdfPropHasInt(bdf,&quot;FONT_ASCENT&quot;,bdf-&gt;ascent);</span>
+<span class="lineNum">     952 </span><span class="lineCov">         48 :     size-&gt;hori.descender = -BdfPropHasInt(bdf,&quot;FONT_DESCENT&quot;,bdf-&gt;descent);</span>
+<span class="lineNum">     953 </span>            : 
+<span class="lineNum">     954 </span>            :     /* There are some very cryptic pictures supposed to document the meaning */
+<span class="lineNum">     955 </span>            :     /*  of the metrics fields. MS and Apple use the same picture. The data */
+<span class="lineNum">     956 </span>            :     /*  present in font files do not match my understanding of those pictures */
+<span class="lineNum">     957 </span>            :     /*  But that's ok because different font files contain wildly different */
+<span class="lineNum">     958 </span>            :     /*  values for the same data, so they don't match each other either */
+<span class="lineNum">     959 </span>            :     /* GRRRRR */
+<span class="lineNum">     960 </span>            :     /* Apple's ftxvalidator gets unhappy if there are no vertical line metrics*/
+<span class="lineNum">     961 </span>            :     /*  so even though I've no idea what they should be, I'll include something*/
+<span class="lineNum">     962 </span>            :     /* Apple seems to say that the vertical ascender/descender are half the */
+<span class="lineNum">     963 </span>            :     /*  pixel size (which makes sense), but MS does something else */
+<span class="lineNum">     964 </span><span class="lineCov">         48 :     size-&gt;vert.ascender = bdf-&gt;pixelsize/2;</span>
+<span class="lineNum">     965 </span><span class="lineCov">         48 :     size-&gt;vert.descender = -bdf-&gt;pixelsize/2;</span>
+<span class="lineNum">     966 </span><span class="lineCov">         48 :     size-&gt;vert.widthMax = bdf-&gt;pixelsize;</span>
+<a name="967"><span class="lineNum">     967 </span><span class="lineCov">         48 : }</span></a>
+<span class="lineNum">     968 </span>            : 
+<span class="lineNum">     969 </span><span class="lineCov">      33300 : static int HasOutputtableBitmap( BDFChar *bc ) {</span>
+<span class="lineNum">     970 </span>            :     int i;
+<span class="lineNum">     971 </span>            :     
+<span class="lineNum">     972 </span><span class="lineCov">      33712 :     for ( i=0; i&lt;bc-&gt;bytes_per_line * ( bc-&gt;ymax - bc-&gt;ymin + 1 ); i++ ) {</span>
+<span class="lineNum">     973 </span><span class="lineCov">      33680 :         if ( bc-&gt;bitmap[i] != 0 )</span>
+<span class="lineNum">     974 </span><span class="lineCov">      33268 : return( true ); </span>
+<span class="lineNum">     975 </span>            :     }
+<span class="lineNum">     976 </span><span class="lineCov">         32 : return( false );        </span>
+<a name="977"><span class="lineNum">     977 </span>            : }</a>
+<span class="lineNum">     978 </span>            : 
+<span class="lineNum">     979 </span><span class="lineCov">         80 : static void BCPreserveAndExpand( BDFChar *bc,IBounds *ib ) {</span>
+<span class="lineNum">     980 </span><span class="lineCov">         80 :     int bmp_width = ( bc-&gt;ymax - bc-&gt;ymin + 1 );</span>
+<span class="lineNum">     981 </span>            :     
+<span class="lineNum">     982 </span><span class="lineCov">         80 :     bc-&gt;backup = calloc( 1,sizeof( BDFFloat ));</span>
+<span class="lineNum">     983 </span><span class="lineCov">         80 :     bc-&gt;backup-&gt;bytes_per_line = bc-&gt;bytes_per_line;</span>
+<span class="lineNum">     984 </span><span class="lineCov">         80 :     bc-&gt;backup-&gt;xmin = bc-&gt;xmin; bc-&gt;backup-&gt;xmax = bc-&gt;xmax;</span>
+<span class="lineNum">     985 </span><span class="lineCov">         80 :     bc-&gt;backup-&gt;ymin = bc-&gt;ymin; bc-&gt;backup-&gt;ymax = bc-&gt;ymax;</span>
+<span class="lineNum">     986 </span><span class="lineCov">         80 :     bc-&gt;backup-&gt;bitmap = calloc( bc-&gt;bytes_per_line * bmp_width,sizeof( uint8 ));</span>
+<span class="lineNum">     987 </span><span class="lineCov">         80 :     memcpy( bc-&gt;backup-&gt;bitmap,bc-&gt;bitmap,bc-&gt;bytes_per_line * bmp_width );</span>
+<span class="lineNum">     988 </span>            :     
+<span class="lineNum">     989 </span><span class="lineCov">         80 :     BCExpandBitmapToEmBox( bc,ib-&gt;minx,ib-&gt;miny,ib-&gt;maxx,ib-&gt;maxy );</span>
+<a name="990"><span class="lineNum">     990 </span><span class="lineCov">         80 : }</span></a>
+<span class="lineNum">     991 </span>            : 
+<span class="lineNum">     992 </span><span class="lineCov">         48 : static void DetectWidthGroups( struct glyphinfo *gi,BDFFont *bdf,int apple ) {</span>
+<span class="lineNum">     993 </span>            :     BDFChar *bc, *bc2;
+<span class="lineNum">     994 </span>            :     IBounds ib, ib2;
+<span class="lineNum">     995 </span>            :     int i, j, cnt, final;
+<span class="lineNum">     996 </span>            :     
+<span class="lineNum">     997 </span><span class="lineCov">      38434 :     for ( i=0; i&lt;gi-&gt;gcnt; ++i ) if ( gi-&gt;bygid[i] &gt;= 0 &amp;&amp; gi-&gt;bygid[i] &lt; bdf-&gt;glyphcnt &amp;&amp; bdf-&gt;glyphs[gi-&gt;bygid[i]]!=NULL )</span>
+<span class="lineNum">     998 </span><span class="lineCov">      37692 :         bdf-&gt;glyphs[gi-&gt;bygid[i]]-&gt;widthgroup = false;</span>
+<span class="lineNum">     999 </span>            : 
+<span class="lineNum">    1000 </span><span class="lineCov">      38356 :     for ( i=0; i&lt;gi-&gt;gcnt; ++i ) if ( gi-&gt;bygid[i] &gt;= 0 &amp;&amp; gi-&gt;bygid[i] &lt; bdf-&gt;glyphcnt &amp;&amp; (bc=bdf-&gt;glyphs[gi-&gt;bygid[i]])!=NULL ) {</span>
+<span class="lineNum">    1001 </span><span class="lineCov">      37614 :         BDFCharQuickBounds( bc,&amp;ib,0,0,true,true );</span>
+<span class="lineNum">    1002 </span><span class="lineCov">      75228 :         if (( apple || HasOutputtableBitmap( bc ) || bc-&gt;refs == NULL ) &amp;&amp;</span>
+<span class="lineNum">    1003 </span><span class="lineCov">     102533 :                 ib.minx &gt;= 0 &amp;&amp; ib.maxx &lt;= bc-&gt;width &amp;&amp;</span>
+<span class="lineNum">    1004 </span><span class="lineCov">      55532 :                 ib.maxy &lt; bdf-&gt;ascent &amp;&amp; ib.miny &gt;= -bdf-&gt;descent ) {</span>
+<span class="lineNum">    1005 </span><span class="lineCov">      23885 :             cnt = 1;</span>
+<span class="lineNum">    1006 </span><span class="lineCov">      34390 :             for ( j=i+1; j&lt;gi-&gt;gcnt; ++j ) if ( gi-&gt;bygid[j] &gt;= 0 &amp;&amp; gi-&gt;bygid[j] &lt; bdf-&gt;glyphcnt &amp;&amp; (bc2=bdf-&gt;glyphs[gi-&gt;bygid[j]])!=NULL ) {</span>
+<span class="lineNum">    1007 </span><span class="lineCov">      33877 :                 BDFCharQuickBounds( bc2,&amp;ib2,0,0,true,true );</span>
+<span class="lineNum">    1008 </span><span class="lineCov">      67754 :                 if (( !apple &amp;&amp; !HasOutputtableBitmap( bc2 ) &amp;&amp; bc2-&gt;refs != NULL ) ||</span>
+<span class="lineNum">    1009 </span><span class="lineCov">      95863 :                         ib2.minx &lt; 0 || ib2.maxx &gt; bc-&gt;width || ib2.miny &lt; -bdf-&gt;descent ||</span>
+<span class="lineNum">    1010 </span><span class="lineCov">      53729 :                         ib2.maxy &gt;= bdf-&gt;ascent ||</span>
+<span class="lineNum">    1011 </span><span class="lineCov">      45217 :                         bc2-&gt;width != bc-&gt;width || bc2-&gt;vwidth != bc-&gt;vwidth ||</span>
+<span class="lineNum">    1012 </span><span class="lineCov">      10045 :                         bc2-&gt;sc-&gt;ttf_glyph != bc-&gt;sc-&gt;ttf_glyph+cnt )</span>
+<span class="lineNum">    1013 </span>            :             break;
+<span class="lineNum">    1014 </span><span class="lineCov">      10037 :                 if ( ib2.maxx &gt; ib.maxx ) ib.maxx = ib2.maxx;</span>
+<span class="lineNum">    1015 </span><span class="lineCov">      10037 :                 if ( ib2.minx &lt; ib.minx ) ib.minx = ib2.minx;</span>
+<span class="lineNum">    1016 </span><span class="lineCov">      10037 :                 if ( ib2.maxy &gt; ib.maxy ) ib.maxy = ib2.maxy;</span>
+<span class="lineNum">    1017 </span><span class="lineCov">      10037 :                 if ( ib2.miny &lt; ib.miny ) ib.miny = ib2.miny;</span>
+<span class="lineNum">    1018 </span><span class="lineCov">      10037 :                 ++cnt;</span>
+<span class="lineNum">    1019 </span><span class="lineCov">      10037 :                 final = j;</span>
+<span class="lineNum">    1020 </span>            :             }
+<span class="lineNum">    1021 </span><span class="lineCov">      23885 :             if ( cnt&gt;20 ) {          /* We must have at least, oh, 20 glyphs with the same metrics */</span>
+<span class="lineNum">    1022 </span><span class="lineCov">          2 :                 bc-&gt;widthgroup = true;</span>
+<span class="lineNum">    1023 </span><span class="lineCov">          2 :                 BCPreserveAndExpand( bc,&amp;ib );</span>
+<span class="lineNum">    1024 </span><span class="lineCov">         80 :                 for ( j=i+1; j&lt;=final; ++j ) if ( gi-&gt;bygid[j] &gt;= 0 &amp;&amp; gi-&gt;bygid[j] &lt; bdf-&gt;glyphcnt &amp;&amp; ( bc2=bdf-&gt;glyphs[gi-&gt;bygid[j]])!=NULL ) {</span>
+<span class="lineNum">    1025 </span><span class="lineCov">         78 :                     bc2-&gt;widthgroup = true;</span>
+<span class="lineNum">    1026 </span><span class="lineCov">         78 :                     BCPreserveAndExpand( bc2,&amp;ib );</span>
+<span class="lineNum">    1027 </span>            :                 }
+<span class="lineNum">    1028 </span><span class="lineCov">          2 :                 i = j-1;</span>
+<span class="lineNum">    1029 </span>            :             }
+<span class="lineNum">    1030 </span>            :         }
+<span class="lineNum">    1031 </span>            :     }
+<a name="1032"><span class="lineNum">    1032 </span><span class="lineCov">         48 : }</span></a>
+<span class="lineNum">    1033 </span>            : 
+<span class="lineNum">    1034 </span><span class="lineCov">         48 : static struct bitmapSizeTable *ttfdumpstrikelocs(FILE *bloc,FILE *bdat,</span>
+<span class="lineNum">    1035 </span>            :         BDFFont *bdf, struct bdfcharlist *defs, struct glyphinfo *gi) {
+<span class="lineNum">    1036 </span><span class="lineCov">         48 :     struct bitmapSizeTable *size = calloc(1,sizeof(struct bitmapSizeTable));</span>
+<span class="lineNum">    1037 </span><span class="lineCov">         48 :     struct indexarray *cur, *last=NULL, *head=NULL;</span>
+<span class="lineNum">    1038 </span>            :     int i,j, final,cnt;
+<span class="lineNum">    1039 </span><span class="lineCov">         48 :     FILE *subtables = tmpfile();</span>
+<span class="lineNum">    1040 </span><span class="lineCov">         48 :     int32 pos = ftell(bloc), startofsubtables, base, stlen;</span>
+<span class="lineNum">    1041 </span>            :     BDFChar *bc, *bc2;
+<span class="lineNum">    1042 </span><span class="lineCov">         48 :     int depth = BDFDepth(bdf), format, mwidth, mheight;</span>
+<span class="lineNum">    1043 </span>            :     struct bdfcharlist *def;
+<span class="lineNum">    1044 </span>            : 
+<span class="lineNum">    1045 </span><span class="lineCov">        456 :     for ( i=0; i&lt;gi-&gt;gcnt &amp;&amp; gi-&gt;bygid[i]&lt;bdf-&gt;glyphcnt &amp;&amp;</span>
+<span class="lineNum">    1046 </span><span class="lineCov">        446 :             (gi-&gt;bygid[i]==-1 || bdf-&gt;glyphs[gi-&gt;bygid[i]]==NULL); ++i );</span>
+<span class="lineNum">    1047 </span><span class="lineCov">        148 :     for ( j=gi-&gt;gcnt-1; j&gt;=0 &amp;&amp;</span>
+<span class="lineNum">    1048 </span><span class="lineCov">        102 :             (gi-&gt;bygid[j]==-1 || gi-&gt;bygid[j]&gt;=bdf-&gt;glyphcnt || bdf-&gt;glyphs[gi-&gt;bygid[j]]==NULL); --j );</span>
+<span class="lineNum">    1049 </span><span class="lineCov">         48 :     if ( j==-1 ) {</span>
+<span class="lineNum">    1050 </span><span class="lineNoCov">          0 :         IError(&quot;No characters to output in strikes&quot;);</span>
+<span class="lineNum">    1051 </span><span class="lineNoCov">          0 :         free(size);</span>
+<span class="lineNum">    1052 </span><span class="lineNoCov">          0 :         fclose(subtables);</span>
+<span class="lineNum">    1053 </span><span class="lineNoCov">          0 : return(NULL);</span>
+<span class="lineNum">    1054 </span>            :     }
+<span class="lineNum">    1055 </span>            : 
+<span class="lineNum">    1056 </span><span class="lineCov">         48 :     size-&gt;flags = 0x01;              /* horizontal */</span>
+<span class="lineNum">    1057 </span><span class="lineCov">         48 :     size-&gt;bitdepth = depth;</span>
+<span class="lineNum">    1058 </span><span class="lineCov">         48 :     size-&gt;ppemX = size-&gt;ppemY = bdf-&gt;ascent+bdf-&gt;descent;</span>
+<span class="lineNum">    1059 </span><span class="lineCov">         48 :     size-&gt;endGlyph = bdf-&gt;glyphs[gi-&gt;bygid[j]]-&gt;sc-&gt;ttf_glyph;</span>
+<span class="lineNum">    1060 </span><span class="lineCov">         48 :     size-&gt;startGlyph = bdf-&gt;glyphs[gi-&gt;bygid[i]]-&gt;sc-&gt;ttf_glyph;</span>
+<span class="lineNum">    1061 </span><span class="lineCov">         48 :     size-&gt;subtableoffset = pos;</span>
+<span class="lineNum">    1062 </span>            : 
+<span class="lineNum">    1063 </span><span class="lineCov">        166 :     for ( def = defs; def != NULL; def = def-&gt;next ) {</span>
+<span class="lineNum">    1064 </span><span class="lineCov">        118 :         if ( defs-&gt;bc-&gt;sc-&gt;ttf_glyph &lt; size-&gt;startGlyph )</span>
+<span class="lineNum">    1065 </span><span class="lineCov">         48 :             size-&gt;startGlyph = defs-&gt;bc-&gt;sc-&gt;ttf_glyph;</span>
+<span class="lineNum">    1066 </span>            :     }
+<span class="lineNum">    1067 </span><span class="lineCov">         48 :     FillLineMetrics(size,bdf);</span>
+<span class="lineNum">    1068 </span>            : 
+<span class="lineNum">    1069 </span>            :     /* first we dump out the subtables (to temp file) */
+<span class="lineNum">    1070 </span>            :     /* then we dump out the indexsubtablearray (to bloc) */
+<span class="lineNum">    1071 </span>            :     /* then we copy the subtables from the temp file to bloc */
+<span class="lineNum">    1072 </span>            : 
+<span class="lineNum">    1073 </span>            :     /* the pointers */
+<span class="lineNum">    1074 </span><span class="lineCov">        982 :     for ( i=0; i&lt;gi-&gt;gcnt; ++i ) if ( gi-&gt;bygid[i]&gt;=0 &amp;&amp; gi-&gt;bygid[i]&lt;bdf-&gt;glyphcnt &amp;&amp; (bc=bdf-&gt;glyphs[gi-&gt;bygid[i]])!=NULL ) {</span>
+<span class="lineNum">    1075 </span><span class="lineCov">        240 :         int wasdef = false;</span>
+<span class="lineNum">    1076 </span><span class="lineCov">        240 :         if ( defs!=NULL &amp;&amp; defs-&gt;bc-&gt;sc-&gt;ttf_glyph &lt; bc-&gt;sc-&gt;ttf_glyph ) {</span>
+<span class="lineNum">    1077 </span><span class="lineCov">        118 :             --i;</span>
+<span class="lineNum">    1078 </span><span class="lineCov">        118 :             bc = defs-&gt;bc;</span>
+<span class="lineNum">    1079 </span><span class="lineCov">        118 :             defs = defs-&gt;next;</span>
+<span class="lineNum">    1080 </span><span class="lineCov">        118 :             wasdef = true;</span>
+<span class="lineNum">    1081 </span>            :         }
+<span class="lineNum">    1082 </span><span class="lineCov">        240 :         cur = malloc(sizeof(struct indexarray));</span>
+<span class="lineNum">    1083 </span><span class="lineCov">        240 :         cur-&gt;next = NULL;</span>
+<span class="lineNum">    1084 </span><span class="lineCov">        240 :         if ( last==NULL ) head = cur;</span>
+<span class="lineNum">    1085 </span><span class="lineCov">        192 :         else last-&gt;next = cur;</span>
+<span class="lineNum">    1086 </span><span class="lineCov">        240 :         last = cur;</span>
+<span class="lineNum">    1087 </span><span class="lineCov">        240 :         cur-&gt;first = bc-&gt;sc-&gt;ttf_glyph;</span>
+<span class="lineNum">    1088 </span><span class="lineCov">        240 :         cur-&gt;additionalOffset = ftell(subtables);</span>
+<span class="lineNum">    1089 </span>            : 
+<span class="lineNum">    1090 </span><span class="lineCov">        240 :         cnt = 1;</span>
+<span class="lineNum">    1091 </span><span class="lineCov">        240 :         final = i;</span>
+<span class="lineNum">    1092 </span><span class="lineCov">        240 :         if ( wasdef )</span>
+<span class="lineNum">    1093 </span><span class="lineCov">        118 :             cur-&gt;last = bc-&gt;sc-&gt;ttf_glyph;</span>
+<span class="lineNum">    1094 </span>            :         else {
+<span class="lineNum">    1095 </span><span class="lineCov">      37692 :             for ( j=i+1; j&lt;gi-&gt;gcnt ; ++j ) {</span>
+<span class="lineNum">    1096 </span><span class="lineCov">      37646 :                 if ( gi-&gt;bygid[j]&lt;0 || gi-&gt;bygid[j]&gt;=bdf-&gt;glyphcnt || (bc2=bdf-&gt;glyphs[gi-&gt;bygid[j]])==NULL )</span>
+<span class="lineNum">    1097 </span>            :             break;
+<span class="lineNum">    1098 </span><span class="lineCov">      75144 :                 else if ( bc2-&gt;widthgroup!=bc-&gt;widthgroup ||</span>
+<span class="lineNum">    1099 </span><span class="lineCov">      37648 :                         (bc-&gt;widthgroup &amp;&amp; (bc-&gt;width!=bc2-&gt;width || bc-&gt;vwidth!=bc2-&gt;vwidth)) )</span>
+<span class="lineNum">    1100 </span>            :             break;
+<span class="lineNum">    1101 </span><span class="lineCov">      37570 :                 else if ( bc-&gt;ticked != bc2-&gt;ticked )</span>
+<span class="lineNum">    1102 </span><span class="lineNoCov">          0 :             break;</span>
+<span class="lineNum">    1103 </span>            :                 else {
+<span class="lineNum">    1104 </span><span class="lineCov">      37570 :                     ++cnt;</span>
+<span class="lineNum">    1105 </span><span class="lineCov">      37570 :                     final = j;</span>
+<span class="lineNum">    1106 </span>            :                 }
+<span class="lineNum">    1107 </span>            :             }
+<span class="lineNum">    1108 </span><span class="lineCov">        122 :             cur-&gt;last = bdf-&gt;glyphs[gi-&gt;bygid[final]]-&gt;sc-&gt;ttf_glyph;</span>
+<span class="lineNum">    1109 </span>            :         }
+<span class="lineNum">    1110 </span>            : 
+<span class="lineNum">    1111 </span><span class="lineCov">        240 :         if ( !bc-&gt;widthgroup ) {</span>
+<span class="lineNum">    1112 </span><span class="lineCov">        238 :             putshort(subtables,1);      /* index format, 4byte offset, no metrics here */</span>
+<span class="lineNum">    1113 </span><span class="lineCov">        238 :             if ( bdf-&gt;sf-&gt;hasvmetrics &amp;&amp; bc-&gt;ticked )</span>
+<span class="lineNum">    1114 </span><span class="lineNoCov">          0 :                 format = 9;             /* data format, big metrics, component data */</span>
+<span class="lineNum">    1115 </span><span class="lineCov">        238 :             else if ( bdf-&gt;sf-&gt;hasvmetrics &amp;&amp; depth!=8 )</span>
+<span class="lineNum">    1116 </span><span class="lineNoCov">          0 :                 format = 7;             /* data format, big metrics, bit aligned */</span>
+<span class="lineNum">    1117 </span><span class="lineCov">        238 :             else if ( bdf-&gt;sf-&gt;hasvmetrics )</span>
+<span class="lineNum">    1118 </span><span class="lineNoCov">          0 :                 format = 6;             /* data format, big metrics, byte aligned */</span>
+<span class="lineNum">    1119 </span><span class="lineCov">        238 :             else if ( bc-&gt;ticked )</span>
+<span class="lineNum">    1120 </span><span class="lineNoCov">          0 :                 format = 8;             /* data format, short metrics, component data */</span>
+<span class="lineNum">    1121 </span><span class="lineCov">        238 :             else if ( depth!=8 )</span>
+<span class="lineNum">    1122 </span><span class="lineCov">        232 :                 format = 2;             /* data format, short metrics, bit aligned */</span>
+<span class="lineNum">    1123 </span>            :             else
+<span class="lineNum">    1124 </span><span class="lineCov">          6 :                 format = 1;             /* data format, short metrics, byte aligned */</span>
+<span class="lineNum">    1125 </span><span class="lineCov">        238 :             putshort( subtables,format );</span>
+<span class="lineNum">    1126 </span><span class="lineCov">        238 :             base = ftell(bdat);</span>
+<span class="lineNum">    1127 </span><span class="lineCov">        238 :             putlong( subtables,base );  /* start of glyphs in bdat */</span>
+<span class="lineNum">    1128 </span><span class="lineCov">        238 :             if ( bc-&gt;ticked )</span>
+<span class="lineNum">    1129 </span><span class="lineNoCov">          0 :                 stlen = ttfdumpf8_9bchar(bdat,bc,bdf)-base;</span>
+<span class="lineNum">    1130 </span><span class="lineCov">        238 :             else if ( depth!=8 )</span>
+<span class="lineNum">    1131 </span><span class="lineCov">        232 :                 stlen = ttfdumpf2_7bchar(bdat,bc,bdf,true)-base;</span>
+<span class="lineNum">    1132 </span>            :             else
+<span class="lineNum">    1133 </span><span class="lineCov">          6 :                 stlen = ttfdumpf1_6bchar(bdat,bc,bdf)-base;</span>
+<span class="lineNum">    1134 </span><span class="lineCov">        238 :             putlong( subtables,stlen );</span>
+<span class="lineNum">    1135 </span><span class="lineCov">      37730 :             for ( j=i+1; j&lt;=final ; ++j ) if ( (bc2=bdf-&gt;glyphs[gi-&gt;bygid[j]])!=NULL ) {</span>
+<span class="lineNum">    1136 </span><span class="lineCov">      37492 :                 if ( bc2-&gt;ticked )</span>
+<span class="lineNum">    1137 </span><span class="lineNoCov">          0 :                     stlen = ttfdumpf8_9bchar(bdat,bc2,bdf)-base;</span>
+<span class="lineNum">    1138 </span><span class="lineCov">      37492 :                 else if ( depth!=8 )</span>
+<span class="lineNum">    1139 </span><span class="lineCov">      37254 :                     stlen = ttfdumpf2_7bchar(bdat,bc2,bdf,true)-base;</span>
+<span class="lineNum">    1140 </span>            :                 else
+<span class="lineNum">    1141 </span><span class="lineCov">        238 :                     stlen = ttfdumpf1_6bchar(bdat,bc2,bdf)-base;</span>
+<span class="lineNum">    1142 </span><span class="lineCov">      37492 :                 putlong( subtables,stlen );</span>
+<span class="lineNum">    1143 </span>            :             }
+<span class="lineNum">    1144 </span><span class="lineCov">        238 :             putlong( subtables,ftell(bdat)-base );      /* Length of last entry */</span>
+<span class="lineNum">    1145 </span>            :         } else {
+<span class="lineNum">    1146 </span><span class="lineCov">          2 :             mwidth = bc-&gt;xmax - bc-&gt;xmin + 1;</span>
+<span class="lineNum">    1147 </span><span class="lineCov">          2 :             mheight = bc-&gt;ymax - bc-&gt;ymin + 1;</span>
+<span class="lineNum">    1148 </span><span class="lineCov">          2 :             putshort(subtables,2);      /* index format, big metrics, all glyphs same size */</span>
+<span class="lineNum">    1149 </span><span class="lineCov">          2 :             putshort(subtables,5);      /* data format, bit aligned no metrics */</span>
+<span class="lineNum">    1150 </span><span class="lineCov">          2 :             putlong(subtables,ftell(bdat));     /* start of glyphs in bdat */</span>
+<span class="lineNum">    1151 </span><span class="lineCov">          2 :             putlong(subtables,( mwidth * (bc-&gt;ymax - bc-&gt;ymin + 1)*depth + 7)/8);</span>
+<span class="lineNum">    1152 </span>            :                                         /* glyph size (in bytes) */
+<span class="lineNum">    1153 </span>            :             /* big metrics */
+<span class="lineNum">    1154 </span><span class="lineCov">          2 :             putc(mheight,subtables);                    /* image height */</span>
+<span class="lineNum">    1155 </span><span class="lineCov">          2 :             putc(mwidth,subtables);                     /* image width */</span>
+<span class="lineNum">    1156 </span><span class="lineCov">          2 :             putc(bc-&gt;xmin,subtables);                        /* horiBearingX */</span>
+<span class="lineNum">    1157 </span><span class="lineCov">          2 :             putc(bc-&gt;ymax+1,subtables);                      /* horiBearingY */</span>
+<span class="lineNum">    1158 </span><span class="lineCov">          2 :             putc(bc-&gt;width,subtables);                       /* advance width */</span>
+<span class="lineNum">    1159 </span><span class="lineCov">          2 :             putc(-bc-&gt;width/2,subtables);            /* vertBearingX */</span>
+<span class="lineNum">    1160 </span><span class="lineCov">          2 :             putc(0,subtables);                          /* vertBearingY */</span>
+<span class="lineNum">    1161 </span><span class="lineCov">          2 :             putc(bc-&gt;vwidth,subtables);                      /* advance height */</span>
+<span class="lineNum">    1162 </span><span class="lineCov">          2 :             ttfdumpf2_7bchar(bdat,bc,bdf,false);</span>
+<span class="lineNum">    1163 </span><span class="lineCov">         80 :             for ( j=i+1; j&lt;=final ; ++j ) if ( (bc2=bdf-&gt;glyphs[gi-&gt;bygid[j]])!=NULL )</span>
+<span class="lineNum">    1164 </span><span class="lineCov">         78 :                 ttfdumpf2_7bchar(bdat,bc2,bdf,false);</span>
+<span class="lineNum">    1165 </span>            :         }
+<span class="lineNum">    1166 </span><span class="lineCov">        240 :         i = final;</span>
+<span class="lineNum">    1167 </span>            :     }
+<span class="lineNum">    1168 </span>            : 
+<span class="lineNum">    1169 </span>            :     /* now output the pointers */
+<span class="lineNum">    1170 </span><span class="lineCov">         48 :     for ( cur=head, cnt=0; cur!=NULL; cur=cur-&gt;next ) ++cnt;</span>
+<span class="lineNum">    1171 </span><span class="lineCov">         48 :     startofsubtables = cnt*(2*sizeof(short)+sizeof(int32));</span>
+<span class="lineNum">    1172 </span><span class="lineCov">         48 :     size-&gt;numsubtables = cnt;</span>
+<span class="lineNum">    1173 </span><span class="lineCov">        288 :     for ( cur=head; cur!=NULL; cur = cur-&gt;next ) {</span>
+<span class="lineNum">    1174 </span><span class="lineCov">        240 :         putshort(bloc,cur-&gt;first);</span>
+<span class="lineNum">    1175 </span><span class="lineCov">        240 :         putshort(bloc,cur-&gt;last);</span>
+<span class="lineNum">    1176 </span><span class="lineCov">        240 :         putlong(bloc,startofsubtables+cur-&gt;additionalOffset);</span>
+<span class="lineNum">    1177 </span>            :     }
+<span class="lineNum">    1178 </span>            : 
+<span class="lineNum">    1179 </span>            :     /* copy the index file and close it (and delete it) */
+<span class="lineNum">    1180 </span><span class="lineCov">         48 :     if ( !ttfcopyfile(bloc,subtables,pos+startofsubtables,&quot;EBLC/bloc-subtables&quot;))</span>
+<span class="lineNum">    1181 </span><span class="lineNoCov">          0 :         size-&gt;error = true;</span>
+<span class="lineNum">    1182 </span>            : 
+<span class="lineNum">    1183 </span><span class="lineCov">         48 :     size-&gt;tablesize = ftell(bloc)-pos;</span>
+<span class="lineNum">    1184 </span>            : 
+<span class="lineNum">    1185 </span><span class="lineCov">        288 :     for ( cur=head; cur!=NULL; cur = last ) {</span>
+<span class="lineNum">    1186 </span><span class="lineCov">        240 :         last = cur-&gt;next;</span>
+<span class="lineNum">    1187 </span><span class="lineCov">        240 :         free(cur);</span>
+<span class="lineNum">    1188 </span>            :     }
+<span class="lineNum">    1189 </span><span class="lineCov">         48 : return( size );</span>
+<a name="1190"><span class="lineNum">    1190 </span>            : }</a>
+<span class="lineNum">    1191 </span>            : 
+<span class="lineNum">    1192 </span><span class="lineCov">         96 : static void dumpbitmapSizeTable(FILE *bloc,struct bitmapSizeTable *size) {</span>
+<span class="lineNum">    1193 </span><span class="lineCov">         96 :     putlong(bloc,size-&gt;subtableoffset);</span>
+<span class="lineNum">    1194 </span><span class="lineCov">         96 :     putlong(bloc,size-&gt;tablesize);</span>
+<span class="lineNum">    1195 </span><span class="lineCov">         96 :     putlong(bloc,size-&gt;numsubtables);</span>
+<span class="lineNum">    1196 </span><span class="lineCov">         96 :     putlong(bloc,size-&gt;colorRef);</span>
+<span class="lineNum">    1197 </span><span class="lineCov">         96 :     fwrite(&amp;size-&gt;hori,1,sizeof(struct sbitLineMetrics),bloc);</span>
+<span class="lineNum">    1198 </span><span class="lineCov">         96 :     fwrite(&amp;size-&gt;vert,1,sizeof(struct sbitLineMetrics),bloc);</span>
+<span class="lineNum">    1199 </span><span class="lineCov">         96 :     putshort(bloc,size-&gt;startGlyph);</span>
+<span class="lineNum">    1200 </span><span class="lineCov">         96 :     putshort(bloc,size-&gt;endGlyph);</span>
+<span class="lineNum">    1201 </span><span class="lineCov">         96 :     putc(size-&gt;ppemX,bloc);</span>
+<span class="lineNum">    1202 </span><span class="lineCov">         96 :     putc(size-&gt;ppemY,bloc);</span>
+<span class="lineNum">    1203 </span><span class="lineCov">         96 :     putc(size-&gt;bitdepth,bloc);</span>
+<span class="lineNum">    1204 </span><span class="lineCov">         96 :     putc(size-&gt;flags,bloc);</span>
+<a name="1205"><span class="lineNum">    1205 </span><span class="lineCov">         96 : }</span></a>
+<span class="lineNum">    1206 </span>            : 
+<span class="lineNum">    1207 </span><span class="lineCov">         13 : void ttfdumpbitmap(SplineFont *sf,struct alltabs *at,int32 *sizes) {</span>
+<span class="lineNum">    1208 </span>            :     int i, j;
+<span class="lineNum">    1209 </span>            :     static struct bitmapSizeTable space;
+<span class="lineNum">    1210 </span><span class="lineCov">         13 :     struct bitmapSizeTable *head=NULL, *cur, *last;</span>
+<span class="lineNum">    1211 </span>            :     BDFFont *bdf;
+<span class="lineNum">    1212 </span>            :     BDFChar *bc;
+<span class="lineNum">    1213 </span>            :     struct bdfcharlist *bl;
+<span class="lineNum">    1214 </span>            : 
+<span class="lineNum">    1215 </span><span class="lineCov">         13 :     at-&gt;bdat = tmpfile();</span>
+<span class="lineNum">    1216 </span><span class="lineCov">         13 :     at-&gt;bloc = tmpfile();</span>
+<span class="lineNum">    1217 </span>            :     /* aside from the names the version number is about the only difference */
+<span class="lineNum">    1218 </span>            :     /*  I'm aware of. Oh MS adds a couple new sub-tables, but I haven't seen */
+<span class="lineNum">    1219 </span>            :     /*  them used, and Apple also has a subtable MS doesn't support, but so what? */
+<span class="lineNum">    1220 </span><span class="lineCov">         13 :     putlong(at-&gt;bdat,0x20000);</span>
+<span class="lineNum">    1221 </span><span class="lineCov">         13 :     putlong(at-&gt;bloc,0x20000);</span>
+<span class="lineNum">    1222 </span><span class="lineCov">         13 :     putlong(at-&gt;bloc,at-&gt;gi.strikecnt);</span>
+<span class="lineNum">    1223 </span>            : 
+<span class="lineNum">    1224 </span>            :     /* leave space for the strike array at start of file */
+<span class="lineNum">    1225 </span><span class="lineCov">         61 :     for ( i=0; sizes[i]!=0; ++i )</span>
+<span class="lineNum">    1226 </span><span class="lineCov">         48 :         dumpbitmapSizeTable(at-&gt;bloc,&amp;space);</span>
+<span class="lineNum">    1227 </span>            : 
+<span class="lineNum">    1228 </span>            :     /* Dump out the strikes... */
+<span class="lineNum">    1229 </span><span class="lineCov">         13 :     ff_progress_change_line1(_(&quot;Saving Bitmap Font(s)&quot;));</span>
+<span class="lineNum">    1230 </span><span class="lineCov">         61 :     for ( i=0; sizes[i]!=0; ++i ) {</span>
+<span class="lineNum">    1231 </span><span class="lineCov">         48 :         ff_progress_next_stage();</span>
+<span class="lineNum">    1232 </span><span class="lineCov">         48 :         for ( bdf=sf-&gt;bitmaps; bdf!=NULL &amp;&amp; (bdf-&gt;pixelsize!=(sizes[i]&amp;0xffff) || BDFDepth(bdf)!=(sizes[i]&gt;&gt;16)); bdf=bdf-&gt;next );</span>
+<span class="lineNum">    1233 </span><span class="lineCov">         48 :         if ( bdf==NULL )</span>
+<span class="lineNum">    1234 </span><span class="lineNoCov">          0 :     continue;</span>
+<span class="lineNum">    1235 </span>            : 
+<span class="lineNum">    1236 </span>            :         /* Used to detect glyphs which can be placed into width groups (EBDT format 5) */
+<span class="lineNum">    1237 </span>            :         /* immediately during the output process. But using this format means most glyph */
+<span class="lineNum">    1238 </span>            :         /* bounding boxes are expanded to larger values than the actual bitmap size, */
+<span class="lineNum">    1239 </span>            :         /* and we need to know these new bounding box values in order to be able to */
+<span class="lineNum">    1240 </span>            :         /* correctly calculate reference placement in composite glyphs */
+<span class="lineNum">    1241 </span><span class="lineCov">         48 :         DetectWidthGroups( &amp;at-&gt;gi,bdf,at-&gt;applebitmaps );</span>
+<span class="lineNum">    1242 </span>            :         /* Apple doesn't support composite bitmaps ( EBDT formats 8 and 9) */
+<span class="lineNum">    1243 </span><span class="lineCov">      38434 :         for ( j=0; j &lt; at-&gt;gi.gcnt; ++j ) if ( at-&gt;gi.bygid[j] &gt;= 0 &amp;&amp; at-&gt;gi.bygid[j] &lt; bdf-&gt;glyphcnt &amp;&amp; ( bc = bdf-&gt;glyphs[at-&gt;gi.bygid[j]] ) != NULL )</span>
+<span class="lineNum">    1244 </span><span class="lineCov">      37692 :             BCPrepareForOutput( bc,at-&gt;applebitmaps );</span>
+<span class="lineNum">    1245 </span><span class="lineCov">         48 :         bl = BDFAddDefaultGlyphs(bdf, at-&gt;format);</span>
+<span class="lineNum">    1246 </span><span class="lineCov">         48 :         cur = ttfdumpstrikelocs(at-&gt;bloc,at-&gt;bdat,bdf,bl,&amp;at-&gt;gi);</span>
+<span class="lineNum">    1247 </span><span class="lineCov">         48 :         BDFCleanupDefaultGlyphs(bdf);</span>
+<span class="lineNum">    1248 </span><span class="lineCov">      38434 :         for ( j=0; j &lt; at-&gt;gi.gcnt; ++j ) if ( at-&gt;gi.bygid[j] &gt;= 0 &amp;&amp; at-&gt;gi.bygid[j] &lt; bdf-&gt;glyphcnt &amp;&amp; ( bc = bdf-&gt;glyphs[at-&gt;gi.bygid[j]] ) != NULL )</span>
+<span class="lineNum">    1249 </span><span class="lineCov">      37692 :             BCRestoreAfterOutput( bc );</span>
+<span class="lineNum">    1250 </span>            : 
+<span class="lineNum">    1251 </span><span class="lineCov">         48 :         if ( cur==NULL )</span>
+<span class="lineNum">    1252 </span><span class="lineNoCov">          0 :     continue;</span>
+<span class="lineNum">    1253 </span><span class="lineCov">         48 :         if ( head==NULL )</span>
+<span class="lineNum">    1254 </span><span class="lineCov">         13 :             head = cur;</span>
+<span class="lineNum">    1255 </span>            :         else
+<span class="lineNum">    1256 </span><span class="lineCov">         35 :             last-&gt;next = cur;</span>
+<span class="lineNum">    1257 </span><span class="lineCov">         48 :         last = cur;</span>
+<span class="lineNum">    1258 </span><span class="lineCov">         48 :         if ( cur-&gt;error ) at-&gt;error = true;</span>
+<span class="lineNum">    1259 </span>            :     }
+<span class="lineNum">    1260 </span>            : 
+<span class="lineNum">    1261 </span><span class="lineCov">         13 :     fseek(at-&gt;bloc,2*sizeof(int32),SEEK_SET);</span>
+<span class="lineNum">    1262 </span><span class="lineCov">         61 :     for ( cur=head; cur!=NULL; cur=cur-&gt;next )</span>
+<span class="lineNum">    1263 </span><span class="lineCov">         48 :         dumpbitmapSizeTable(at-&gt;bloc,cur);</span>
+<span class="lineNum">    1264 </span>            : 
+<span class="lineNum">    1265 </span><span class="lineCov">         61 :     for ( cur=head; cur!=NULL; cur=last ) {</span>
+<span class="lineNum">    1266 </span><span class="lineCov">         48 :         last = cur-&gt;next;</span>
+<span class="lineNum">    1267 </span><span class="lineCov">         48 :         free(cur);</span>
+<span class="lineNum">    1268 </span>            :     }
+<span class="lineNum">    1269 </span>            : 
+<span class="lineNum">    1270 </span><span class="lineCov">         13 :     at-&gt;bdatlen = ftell(at-&gt;bdat);</span>
+<span class="lineNum">    1271 </span><span class="lineCov">         13 :     if ( (at-&gt;bdatlen&amp;1)!=0 )</span>
+<span class="lineNum">    1272 </span><span class="lineCov">          4 :         putc(0,at-&gt;bdat);</span>
+<span class="lineNum">    1273 </span><span class="lineCov">         13 :     if ( ftell(at-&gt;bdat)&amp;2 )</span>
+<span class="lineNum">    1274 </span><span class="lineCov">          1 :         putshort(at-&gt;bdat,0);</span>
+<span class="lineNum">    1275 </span>            : 
+<span class="lineNum">    1276 </span><span class="lineCov">         13 :     fseek(at-&gt;bloc,0,SEEK_END);</span>
+<span class="lineNum">    1277 </span><span class="lineCov">         13 :     at-&gt;bloclen = ftell(at-&gt;bloc);</span>
+<span class="lineNum">    1278 </span><span class="lineCov">         13 :     if ( (at-&gt;bloclen&amp;1)!=0 )</span>
+<span class="lineNum">    1279 </span><span class="lineNoCov">          0 :         putc(0,at-&gt;bloc);</span>
+<span class="lineNum">    1280 </span><span class="lineCov">         13 :     if ( ftell(at-&gt;bloc)&amp;2 )</span>
+<span class="lineNum">    1281 </span><span class="lineNoCov">          0 :         putshort(at-&gt;bloc,0);</span>
+<span class="lineNum">    1282 </span>            : 
+<span class="lineNum">    1283 </span><span class="lineCov">         13 :     ff_progress_change_line1(_(&quot;Saving TrueType Font&quot;));</span>
+<span class="lineNum">    1284 </span><span class="lineCov">         13 :     ttf_bdf_dump(sf,at,sizes);</span>
+<a name="1285"><span class="lineNum">    1285 </span><span class="lineCov">         13 : }</span></a>
+<span class="lineNum">    1286 </span>            : 
+<span class="lineNum">    1287 </span><span class="lineNoCov">          0 : static BDFFont *BDFSelect(SplineFont *sf,int32 *sizes,int wanted ) {</span>
+<span class="lineNum">    1288 </span>            :     int i;
+<span class="lineNum">    1289 </span><span class="lineNoCov">          0 :     int best = -1;</span>
+<span class="lineNum">    1290 </span>            :     BDFFont *bdf;
+<span class="lineNum">    1291 </span>            : 
+<span class="lineNum">    1292 </span><span class="lineNoCov">          0 :     if ( wanted&lt;=(sizes[0]&amp;0xffff) ) {</span>
+<span class="lineNum">    1293 </span><span class="lineNoCov">          0 :         best = sizes[0]&amp;0xffff;</span>
+<span class="lineNum">    1294 </span><span class="lineNoCov">          0 :         if ( best==wanted )</span>
+<span class="lineNum">    1295 </span><span class="lineNoCov">          0 : return(NULL );</span>
+<span class="lineNum">    1296 </span>            :     } else {
+<span class="lineNum">    1297 </span><span class="lineNoCov">          0 :         for ( i=1; sizes[i]!=0 &amp;&amp; wanted&gt;(sizes[i]&amp;0xffff); ++i );</span>
+<span class="lineNum">    1298 </span><span class="lineNoCov">          0 :         best = sizes[i-1]&amp;0xffff;</span>
+<span class="lineNum">    1299 </span><span class="lineNoCov">          0 :         if ( best==wanted )     /* Exact match, no scaling needed */</span>
+<span class="lineNum">    1300 </span><span class="lineNoCov">          0 : return( NULL );</span>
+<span class="lineNum">    1301 </span>            :     }
+<span class="lineNum">    1302 </span>            : 
+<span class="lineNum">    1303 </span><span class="lineNoCov">          0 :     for ( bdf=sf-&gt;bitmaps; bdf!=NULL &amp;&amp; bdf-&gt;pixelsize!=best; bdf = bdf-&gt;next );</span>
+<span class="lineNum">    1304 </span><span class="lineNoCov">          0 : return( bdf );</span>
+<a name="1305"><span class="lineNum">    1305 </span>            : }</a>
+<span class="lineNum">    1306 </span>            : 
+<span class="lineNum">    1307 </span><span class="lineNoCov">          0 : void ttfdumpbitmapscaling(SplineFont *sf,struct alltabs *at,int32 *sizes) {</span>
+<span class="lineNum">    1308 </span>            :     int i, cnt;
+<span class="lineNum">    1309 </span>            :     BDFFont *bdf;
+<span class="lineNum">    1310 </span>            :     static int expected_sizes[] = { 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+<span class="lineNum">    1311 </span>            :             19, 20, 21, 22, 23, 24, 25, 30, 32, 33, 40, 0 };
+<span class="lineNum">    1312 </span>            :     struct bitmapSizeTable size;
+<span class="lineNum">    1313 </span>            : 
+<span class="lineNum">    1314 </span>            : /* I only generate this table if I'm trying to generate an ms bitmap-only */
+<span class="lineNum">    1315 </span>            : /*  ttf file. Now MS doesn't really support bitmap-only fonts, so we kludge */
+<span class="lineNum">    1316 </span>            : /*  we make the loca table point to a bunch of space glyphs. But to keep */
+<span class="lineNum">    1317 </span>            : /*  the rasterizer from generating spaces, we put in a bunch of scaling */
+<span class="lineNum">    1318 </span>            : /*  instructions so that for all expected bitmap sizes we might meet */
+<span class="lineNum">    1319 </span>            : /*  we either get a bitmap strike or a scaled strike */
+<span class="lineNum">    1320 </span>            : /* The sizes above were chosen to get the pixel sizes for */
+<span class="lineNum">    1321 </span>            : /*      8,9,10,11,12,14,16,18,24 are present at 72,75,96,100,120 dpi */
+<span class="lineNum">    1322 </span>            : /* (standard pointsizes) (Mac, X &amp; Win standard screen dpis) */
+<span class="lineNum">    1323 </span>            : 
+<span class="lineNum">    1324 </span>            :     /* first count the number of scaled strikes */
+<span class="lineNum">    1325 </span><span class="lineNoCov">          0 :     cnt = 0;</span>
+<span class="lineNum">    1326 </span><span class="lineNoCov">          0 :     for ( i=0; expected_sizes[i]!=0; ++i ) {</span>
+<span class="lineNum">    1327 </span><span class="lineNoCov">          0 :         if ( BDFSelect(sf,sizes,expected_sizes[i])!=NULL )</span>
+<span class="lineNum">    1328 </span><span class="lineNoCov">          0 :             ++cnt;</span>
+<span class="lineNum">    1329 </span>            :     }
+<span class="lineNum">    1330 </span>            : 
+<span class="lineNum">    1331 </span><span class="lineNoCov">          0 :     at-&gt;ebsc = tmpfile();</span>
+<span class="lineNum">    1332 </span><span class="lineNoCov">          0 :     putlong( at-&gt;ebsc, 0x20000 );</span>
+<span class="lineNum">    1333 </span><span class="lineNoCov">          0 :     putlong( at-&gt;ebsc, cnt );</span>
+<span class="lineNum">    1334 </span><span class="lineNoCov">          0 :     for ( i=0; expected_sizes[i]!=0; ++i ) {</span>
+<span class="lineNum">    1335 </span><span class="lineNoCov">          0 :         if ( (bdf=BDFSelect(sf,sizes,expected_sizes[i]))!=NULL ) {</span>
+<span class="lineNum">    1336 </span><span class="lineNoCov">          0 :             FillLineMetrics(&amp;size,bdf);</span>
+<span class="lineNum">    1337 </span>            :             /* Horizontal line metrics */
+<span class="lineNum">    1338 </span><span class="lineNoCov">          0 :              putc((int) rint(size.hori.ascender*expected_sizes[i]/bdf-&gt;pixelsize),at-&gt;ebsc);</span>
+<span class="lineNum">    1339 </span><span class="lineNoCov">          0 :              putc((int) rint(size.hori.descender*expected_sizes[i]/bdf-&gt;pixelsize),at-&gt;ebsc);</span>
+<span class="lineNum">    1340 </span><span class="lineNoCov">          0 :              putc((int) rint(size.hori.widthMax*expected_sizes[i]/bdf-&gt;pixelsize),at-&gt;ebsc);</span>
+<span class="lineNum">    1341 </span><span class="lineNoCov">          0 :              putc(size.hori.caretRise,at-&gt;ebsc);</span>
+<span class="lineNum">    1342 </span><span class="lineNoCov">          0 :              putc(size.hori.caretRun,at-&gt;ebsc);</span>
+<span class="lineNum">    1343 </span><span class="lineNoCov">          0 :              putc(size.hori.caretOff,at-&gt;ebsc);</span>
+<span class="lineNum">    1344 </span><span class="lineNoCov">          0 :              putc((int) rint(size.hori.minoriginsb*expected_sizes[i]/bdf-&gt;pixelsize),at-&gt;ebsc);</span>
+<span class="lineNum">    1345 </span><span class="lineNoCov">          0 :              putc((int) rint(size.hori.minAdvancesb*expected_sizes[i]/bdf-&gt;pixelsize),at-&gt;ebsc);</span>
+<span class="lineNum">    1346 </span><span class="lineNoCov">          0 :              putc((int) rint(size.hori.maxbeforebl*expected_sizes[i]/bdf-&gt;pixelsize),at-&gt;ebsc);</span>
+<span class="lineNum">    1347 </span><span class="lineNoCov">          0 :              putc((int) rint(size.hori.minafterbl*expected_sizes[i]/bdf-&gt;pixelsize),at-&gt;ebsc);</span>
+<span class="lineNum">    1348 </span><span class="lineNoCov">          0 :              putc(0,at-&gt;ebsc);</span>
+<span class="lineNum">    1349 </span><span class="lineNoCov">          0 :              putc(0,at-&gt;ebsc);</span>
+<span class="lineNum">    1350 </span>            :             /* Vertical line metrics */
+<span class="lineNum">    1351 </span><span class="lineNoCov">          0 :              putc((int) rint(size.hori.ascender*expected_sizes[i]/bdf-&gt;pixelsize),at-&gt;ebsc);</span>
+<span class="lineNum">    1352 </span><span class="lineNoCov">          0 :              putc((int) rint(size.hori.descender*expected_sizes[i]/bdf-&gt;pixelsize),at-&gt;ebsc);</span>
+<span class="lineNum">    1353 </span><span class="lineNoCov">          0 :              putc((int) rint(size.vert.widthMax*expected_sizes[i]/bdf-&gt;pixelsize),at-&gt;ebsc);</span>
+<span class="lineNum">    1354 </span><span class="lineNoCov">          0 :              putc(size.vert.caretRise,at-&gt;ebsc);</span>
+<span class="lineNum">    1355 </span><span class="lineNoCov">          0 :              putc(size.vert.caretRun,at-&gt;ebsc);</span>
+<span class="lineNum">    1356 </span><span class="lineNoCov">          0 :              putc(size.vert.caretOff,at-&gt;ebsc);</span>
+<span class="lineNum">    1357 </span><span class="lineNoCov">          0 :              putc((int) rint(size.vert.minoriginsb*expected_sizes[i]/bdf-&gt;pixelsize),at-&gt;ebsc);</span>
+<span class="lineNum">    1358 </span><span class="lineNoCov">          0 :              putc((int) rint(size.vert.minAdvancesb*expected_sizes[i]/bdf-&gt;pixelsize),at-&gt;ebsc);</span>
+<span class="lineNum">    1359 </span><span class="lineNoCov">          0 :              putc((int) rint(size.vert.maxbeforebl*expected_sizes[i]/bdf-&gt;pixelsize),at-&gt;ebsc);</span>
+<span class="lineNum">    1360 </span><span class="lineNoCov">          0 :              putc((int) rint(size.vert.minafterbl*expected_sizes[i]/bdf-&gt;pixelsize),at-&gt;ebsc);</span>
+<span class="lineNum">    1361 </span><span class="lineNoCov">          0 :              putc(0,at-&gt;ebsc);</span>
+<span class="lineNum">    1362 </span><span class="lineNoCov">          0 :              putc(0,at-&gt;ebsc);</span>
+<span class="lineNum">    1363 </span>            :             /* Actual scaling info */
+<span class="lineNum">    1364 </span><span class="lineNoCov">          0 :             putc( expected_sizes[i], at-&gt;ebsc);</span>
+<span class="lineNum">    1365 </span><span class="lineNoCov">          0 :             putc( expected_sizes[i], at-&gt;ebsc);</span>
+<span class="lineNum">    1366 </span><span class="lineNoCov">          0 :             putc( bdf-&gt;pixelsize, at-&gt;ebsc);</span>
+<span class="lineNum">    1367 </span><span class="lineNoCov">          0 :             putc( bdf-&gt;pixelsize, at-&gt;ebsc);</span>
+<span class="lineNum">    1368 </span>            :         }
+<span class="lineNum">    1369 </span>            :     }
+<span class="lineNum">    1370 </span>            : 
+<span class="lineNum">    1371 </span><span class="lineNoCov">          0 :     at-&gt;ebsclen = ftell(at-&gt;ebsc);</span>
+<span class="lineNum">    1372 </span><span class="lineNoCov">          0 :     if ( (at-&gt;ebsclen&amp;1)!=0 )</span>
+<span class="lineNum">    1373 </span><span class="lineNoCov">          0 :         putc(0,at-&gt;ebsc);</span>
+<span class="lineNum">    1374 </span><span class="lineNoCov">          0 :     if ( ftell(at-&gt;ebsc)&amp;2 )</span>
+<span class="lineNum">    1375 </span><span class="lineNoCov">          0 :         putshort(at-&gt;ebsc,0);</span>
+<span class="lineNum">    1376 </span><span class="lineNoCov">          0 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforgeexe/cvshapes.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforgeexe</a> - cvshapes.c<span style="font-size: 80%;"> (source / <a href="cvshapes.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">237</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">10</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &quot;cvundoes.h&quot;
+<span class="lineNum">      28 </span>            : #include &quot;fontforgeui.h&quot;
+<span class="lineNum">      29 </span>            : #include &quot;spiro.h&quot;
+<span class="lineNum">      30 </span>            : #include &quot;splineorder2.h&quot;
+<span class="lineNum">      31 </span>            : #include &quot;splineutil.h&quot;
+<span class="lineNum">      32 </span>            : #include &quot;splineutil2.h&quot;
+<span class="lineNum">      33 </span>            : #include &lt;math.h&gt;
+<span class="lineNum">      34 </span>            : 
+<span class="lineNum">      35 </span>            : static struct shapedescrip {
+<span class="lineNum">      36 </span>            :     BasePoint me, prevcp, nextcp; int nocp;
+<span class="lineNum">      37 </span>            : } ellipse3[] = {
+<span class="lineNum">      38 </span>            :     { { -1, 0 }, { -1, -0.552 }, { -1, 0.552 }, false },
+<span class="lineNum">      39 </span>            :     { { 0, 1 }, { -0.552, 1 }, { 0.552, 1 }, false },
+<span class="lineNum">      40 </span>            :     { { 1, 0 }, { 1, 0.552 }, { 1, -0.552 }, false },
+<span class="lineNum">      41 </span>            :     { { 0, -1 }, { 0.552, -1 }, { -0.552, -1 }, false },
+<span class="lineNum">      42 </span>            :     { { 0, 0 }, { 0, 0 }, { 0, 0 }, 0 }
+<a name="43"><span class="lineNum">      43 </span>            : };</a>
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span><span class="lineNoCov">          0 : static SplinePoint *SPMake(BasePoint *base,int pt) {</span>
+<span class="lineNum">      46 </span>            :     SplinePoint *new;
+<span class="lineNum">      47 </span>            : 
+<span class="lineNum">      48 </span><span class="lineNoCov">          0 :     new = SplinePointCreate(base-&gt;x,base-&gt;y);</span>
+<span class="lineNum">      49 </span><span class="lineNoCov">          0 :     new-&gt;pointtype = pt;</span>
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 :     new-&gt;selected = true;</span>
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 : return( new );</span>
+<a name="52"><span class="lineNum">      52 </span>            : }</a>
+<span class="lineNum">      53 </span>            : 
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 : static SplinePoint *SPMakeTo(BasePoint *base,int pt, SplinePoint *from) {</span>
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :     SplinePoint *to = SPMake(base,pt);</span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :     SplineMake(from,to,false);          /* Always make a cubic, then convert to quadratic when done */</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 : return( to );</span>
+<a name="58"><span class="lineNum">      58 </span>            : }</a>
+<span class="lineNum">      59 </span>            : 
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 : void CVMouseDownShape(CharView *cv,GEvent *event) {</span>
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :     real radius = CVRoundRectRadius(); int points = CVPolyStarPoints();</span>
+<span class="lineNum">      62 </span>            :     SplinePoint *last;
+<span class="lineNum">      63 </span>            :     int i;
+<span class="lineNum">      64 </span>            :     struct shapedescrip *ellipse;
+<span class="lineNum">      65 </span>            : 
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :     if ( event-&gt;u.mouse.clicks==2 &amp;&amp;</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :             (cv-&gt;active_tool == cvt_rect || cv-&gt;active_tool == cvt_elipse)) {</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :         CVRectEllipsePosDlg(cv);</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">      70 </span>            :     }
+<span class="lineNum">      71 </span>            : 
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :     CVClearSel(cv);</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :     CVPreserveState(&amp;cv-&gt;b);</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :     CVSetCharChanged(cv,true);</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :     cv-&gt;active_shape = chunkalloc(sizeof(SplineSet));</span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :     cv-&gt;active_shape-&gt;next = cv-&gt;b.layerheads[cv-&gt;b.drawmode]-&gt;splines;</span>
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :     cv-&gt;b.layerheads[cv-&gt;b.drawmode]-&gt;splines = cv-&gt;active_shape;</span>
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :     cv-&gt;active_shape-&gt;first = last = SPMake(&amp;cv-&gt;info,pt_corner);</span>
+<span class="lineNum">      79 </span>            : 
+<span class="lineNum">      80 </span>            :     /* always make a cubic shape. Then convert to order2 when done */
+<span class="lineNum">      81 </span>            :     /*  the conversion routine already knows about rounding to int */
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :     switch ( cv-&gt;active_tool ) {</span>
+<span class="lineNum">      83 </span>            :       case cvt_rect:
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :         if ( radius==0 ) {</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :             last = SPMakeTo(&amp;cv-&gt;info,pt_corner,last);</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :             last = SPMakeTo(&amp;cv-&gt;info,pt_corner,last);</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :             last = SPMakeTo(&amp;cv-&gt;info,pt_corner,last);</span>
+<span class="lineNum">      88 </span>            :         } else {
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :             last-&gt;pointtype = pt_tangent;</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :             last = SPMakeTo(&amp;cv-&gt;info,pt_tangent,last);</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :             last = SPMakeTo(&amp;cv-&gt;info,pt_tangent,last);</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :             last = SPMakeTo(&amp;cv-&gt;info,pt_tangent,last);</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :             last = SPMakeTo(&amp;cv-&gt;info,pt_tangent,last);</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :             last = SPMakeTo(&amp;cv-&gt;info,pt_tangent,last);</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :             last = SPMakeTo(&amp;cv-&gt;info,pt_tangent,last);</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :             last = SPMakeTo(&amp;cv-&gt;info,pt_tangent,last);</span>
+<span class="lineNum">      97 </span>            :         }
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">      99 </span>            :       case cvt_elipse:
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :         ellipse = /*order2 ? ellipse2 :*/ ellipse3;</span>
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 :         last-&gt;pointtype = pt_curve;</span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :         for ( i=1; ellipse[i].me.x!=0 || ellipse[i].me.y!=0 ; ++i ) {</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :             last = SPMakeTo(&amp;cv-&gt;info,pt_curve,last);</span>
+<span class="lineNum">     104 </span>            :         }
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     106 </span>            :       case cvt_poly:
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :         for ( i=1; i&lt;points; ++i )</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :             last = SPMakeTo(&amp;cv-&gt;info,pt_corner,last);</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     110 </span>            :       case cvt_star:
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :         for ( i=1; i&lt;2*points; ++i )</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :             last = SPMakeTo(&amp;cv-&gt;info,pt_corner,last);</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     114 </span>            :     }
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :     SplineMake(last,cv-&gt;active_shape-&gt;first,false);</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :     cv-&gt;active_shape-&gt;last = cv-&gt;active_shape-&gt;first;</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :     cv-&gt;b.sc-&gt;suspendMetricsViewEventPropagation = 1;</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :     SCUpdateAll(cv-&gt;b.sc);</span>
+<a name="119"><span class="lineNum">     119 </span>            : }</a>
+<span class="lineNum">     120 </span>            : 
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 : static void SetCorner(SplinePoint *sp,real x, real y) {</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :     sp-&gt;me.x = x; sp-&gt;me.y = y;</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :     sp-&gt;nextcp = sp-&gt;me;</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :     sp-&gt;prevcp = sp-&gt;me;</span>
+<a name="125"><span class="lineNum">     125 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     126 </span>            : 
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 : static void SetCurve(SplinePoint *sp,BasePoint *center,real xrad, real yrad,</span>
+<span class="lineNum">     128 </span>            :         struct shapedescrip *pt_d) {
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :     sp-&gt;me.x = center-&gt;x+xrad*pt_d-&gt;me.x; sp-&gt;me.y = center-&gt;y+yrad*pt_d-&gt;me.y;</span>
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :     sp-&gt;nextcp.x = center-&gt;x+xrad*pt_d-&gt;nextcp.x; sp-&gt;nextcp.y = center-&gt;y+yrad*pt_d-&gt;nextcp.y;</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :     sp-&gt;prevcp.x = center-&gt;x+xrad*pt_d-&gt;prevcp.x; sp-&gt;prevcp.y = center-&gt;y+yrad*pt_d-&gt;prevcp.y;</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :     sp-&gt;nonextcp = sp-&gt;noprevcp = (xrad==0 &amp;&amp; yrad==0);</span>
+<a name="133"><span class="lineNum">     133 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     134 </span>            : 
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 : static void SetPTangent(SplinePoint *sp,real x, real y,real xrad, real yrad) {</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :     sp-&gt;me.x = x; sp-&gt;me.y = y;</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :     sp-&gt;nextcp = sp-&gt;me;</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :     sp-&gt;prevcp = sp-&gt;me;</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :     if ( !sp-&gt;next-&gt;order2 ) {</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :         xrad *= .552;</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :         yrad *= .552;</span>
+<span class="lineNum">     142 </span>            :     }
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :     sp-&gt;prevcp.x += xrad;</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :     sp-&gt;prevcp.y += yrad;</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :     sp-&gt;noprevcp = (xrad==0 &amp;&amp; yrad==0);</span>
+<a name="146"><span class="lineNum">     146 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     147 </span>            : 
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 : static void SetNTangent(SplinePoint *sp,real x, real y,real xrad, real yrad) {</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :     sp-&gt;me.x = x; sp-&gt;me.y = y;</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :     sp-&gt;nextcp = sp-&gt;me;</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :     if ( !sp-&gt;next-&gt;order2 ) {</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :         xrad *= .552;</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :         yrad *= .552;</span>
+<span class="lineNum">     154 </span>            :     }
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :     sp-&gt;nextcp.x += xrad;</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :     sp-&gt;nextcp.y += yrad;</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :     sp-&gt;prevcp = sp-&gt;me;</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :     sp-&gt;nonextcp = (xrad==0 &amp;&amp; yrad==0);</span>
+<a name="159"><span class="lineNum">     159 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     160 </span>            : 
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 : static void RedoActiveSplineSet(SplineSet *ss) {</span>
+<span class="lineNum">     162 </span>            :     Spline *spline, *first;
+<span class="lineNum">     163 </span>            : 
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :     first = NULL;</span>
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :     for ( spline = ss-&gt;first-&gt;next; spline!=NULL &amp;&amp; spline!=first; spline = spline-&gt;to-&gt;next ) {</span>
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :         SplineRefigure(spline);</span>
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :         if ( first == NULL ) first = spline;</span>
+<span class="lineNum">     168 </span>            :     }
+<a name="169"><span class="lineNum">     169 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     170 </span>            : 
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 : void CVMouseMoveShape(CharView *cv) {</span>
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :     real radius = CVRoundRectRadius(); int points = CVPolyStarPoints();</span>
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :     int center_out = CVRectElipseCenter();</span>
+<span class="lineNum">     174 </span>            :     real xrad,yrad, xrr, yrr;
+<span class="lineNum">     175 </span>            :     real r2;
+<span class="lineNum">     176 </span>            :     SplinePoint *sp;
+<span class="lineNum">     177 </span>            :     real base, off;
+<span class="lineNum">     178 </span>            :     int i;
+<span class="lineNum">     179 </span>            :     struct shapedescrip *ellipse;
+<span class="lineNum">     180 </span>            :     BasePoint center;
+<span class="lineNum">     181 </span>            : 
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :     if ( cv-&gt;active_shape==NULL )</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :     switch ( cv-&gt;active_tool ) {</span>
+<span class="lineNum">     185 </span>            :       case cvt_rect:
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :         if ( radius==0 ) {</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :             sp = cv-&gt;active_shape-&gt;first-&gt;next-&gt;to;</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :             if ( !center_out ) {</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :                 SetCorner(sp,cv-&gt;p.cx,cv-&gt;info.y);</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :                 SetCorner(sp=sp-&gt;next-&gt;to, cv-&gt;info.x,cv-&gt;info.y);</span>
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :                 SetCorner(sp=sp-&gt;next-&gt;to, cv-&gt;info.x,cv-&gt;p.cy);</span>
+<span class="lineNum">     192 </span>            :             } else {
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :                 if (( xrad = (cv-&gt;p.cx-cv-&gt;info.x) )&lt;0 ) xrad = -xrad;</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :                 if (( yrad = (cv-&gt;p.cy-cv-&gt;info.y) )&lt;0 ) yrad = -yrad;</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :                 SetCorner(sp,cv-&gt;p.cx-xrad,cv-&gt;p.cy+yrad);</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :                 SetCorner(sp=sp-&gt;next-&gt;to, cv-&gt;p.cx+xrad,cv-&gt;p.cy+yrad);</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :                 SetCorner(sp=sp-&gt;next-&gt;to, cv-&gt;p.cx+xrad,cv-&gt;p.cy-yrad);</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :                 SetCorner(sp=sp-&gt;next-&gt;to, cv-&gt;p.cx-xrad,cv-&gt;p.cy-yrad);</span>
+<span class="lineNum">     199 </span>            :             }
+<span class="lineNum">     200 </span>            :         } else {
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :             if ( !center_out ) {</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :                 if (( xrad = (cv-&gt;p.cx-cv-&gt;info.x)/2 )&lt;0 ) xrad = -xrad;</span>
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :                 if (( yrad = (cv-&gt;p.cy-cv-&gt;info.y)/2 )&lt;0 ) yrad = -yrad;</span>
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :                 if ( xrad&gt;radius ) xrr = radius; else xrr = xrad;</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :                 if ( yrad&gt;radius ) yrr = radius; else yrr = yrad;</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :                 if ( cv-&gt;info.x&lt;cv-&gt;p.cx ) xrr = -xrr;</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :                 if ( cv-&gt;info.y&lt;cv-&gt;p.cy ) yrr = -yrr;</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :                 sp = cv-&gt;active_shape-&gt;first;</span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :                 SetPTangent(sp,</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :                     cv-&gt;p.cx+xrr,cv-&gt;p.cy, -xrr,0);</span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :                 SetNTangent(sp=sp-&gt;next-&gt;to,</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :                     cv-&gt;info.x-xrr,cv-&gt;p.cy, xrr,0);</span>
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :                 SetPTangent(sp=sp-&gt;next-&gt;to,</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :                     cv-&gt;info.x,cv-&gt;p.cy+yrr, 0,-yrr);</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :                 SetNTangent(sp=sp-&gt;next-&gt;to,</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :                     cv-&gt;info.x,cv-&gt;info.y-yrr, 0,yrr);</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :                 SetPTangent(sp=sp-&gt;next-&gt;to,</span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :                     cv-&gt;info.x-xrr,cv-&gt;info.y, xrr,0);</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :                 SetNTangent(sp=sp-&gt;next-&gt;to,</span>
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :                     cv-&gt;p.cx+xrr,cv-&gt;info.y, -xrr,0);</span>
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :                 SetPTangent(sp=sp-&gt;next-&gt;to,</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :                     cv-&gt;p.cx,cv-&gt;info.y-yrr, 0,yrr);</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :                 SetNTangent(sp=sp-&gt;next-&gt;to,</span>
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :                     cv-&gt;p.cx,cv-&gt;p.cy+yrr, 0,-yrr);</span>
+<span class="lineNum">     225 </span>            :             } else {
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :                 if (( xrad = (cv-&gt;p.cx-cv-&gt;info.x) )&lt;0 ) xrad = -xrad;</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :                 if (( yrad = (cv-&gt;p.cy-cv-&gt;info.y) )&lt;0 ) yrad = -yrad;</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :                 if ( xrad&gt;radius ) xrr = radius; else xrr = xrad;</span>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :                 if ( yrad&gt;radius ) yrr = radius; else yrr = yrad;</span>
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :                 sp = cv-&gt;active_shape-&gt;first;</span>
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :                 SetPTangent(sp,</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :                     cv-&gt;p.cx-xrad+xrr,cv-&gt;p.cy-yrad, -xrr,0);</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :                 SetNTangent(sp=sp-&gt;next-&gt;to,</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :                     cv-&gt;p.cx+xrad-xrr,cv-&gt;p.cy-yrad, xrr,0);</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :                 SetPTangent(sp=sp-&gt;next-&gt;to,</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :                     cv-&gt;p.cx+xrad,cv-&gt;p.cy-yrad+yrr, 0,-yrr);</span>
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :                 SetNTangent(sp=sp-&gt;next-&gt;to,</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :                     cv-&gt;p.cx+xrad,cv-&gt;p.cy+yrad-yrr, 0,yrr);</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :                 SetPTangent(sp=sp-&gt;next-&gt;to,</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :                     cv-&gt;p.cx+xrad-xrr,cv-&gt;p.cy+yrad, xrr,0);</span>
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :                 SetNTangent(sp=sp-&gt;next-&gt;to,</span>
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :                     cv-&gt;p.cx-xrad+xrr,cv-&gt;p.cy+yrad, -xrr,0);</span>
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :                 SetPTangent(sp=sp-&gt;next-&gt;to,</span>
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :                     cv-&gt;p.cx-xrad,cv-&gt;p.cy+yrad-yrr, 0,yrr);</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :                 SetNTangent(sp=sp-&gt;next-&gt;to,</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :                     cv-&gt;p.cx-xrad,cv-&gt;p.cy-yrad+yrr, 0,-yrr);</span>
+<span class="lineNum">     247 </span>            :             }
+<span class="lineNum">     248 </span>            :         }
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     250 </span>            :       case cvt_elipse:
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :         if ( !center_out ) {</span>
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :             center.x = (cv-&gt;p.cx+cv-&gt;info.x)/2; center.y = (cv-&gt;p.cy+cv-&gt;info.y)/2;</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :             if (( xrad = (cv-&gt;p.cx-cv-&gt;info.x)/2 )&lt;0 ) xrad = -xrad;</span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :             if (( yrad = (cv-&gt;p.cy-cv-&gt;info.y)/2 )&lt;0 ) yrad = -yrad;</span>
+<span class="lineNum">     255 </span>            :         } else {
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :             center.x = cv-&gt;p.cx; center.y = cv-&gt;p.cy;</span>
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :             if (( xrad = (cv-&gt;p.cx-cv-&gt;info.x) )&lt;0 ) xrad = -xrad;</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :             if (( yrad = (cv-&gt;p.cy-cv-&gt;info.y) )&lt;0 ) yrad = -yrad;</span>
+<span class="lineNum">     259 </span>            :         }
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :         if ( cv-&gt;b.layerheads[cv-&gt;b.drawmode]-&gt;order2 ) {</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :             xrad = rint(xrad);</span>
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :             yrad = rint(yrad);</span>
+<span class="lineNum">     263 </span>            :         }
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :         ellipse = /*cv-&gt;b.sc-&gt;parent-&gt;order2 ? ellipse2 :*/ ellipse3;</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :         for ( i=0, sp=cv-&gt;active_shape-&gt;first; ellipse[i].me.x!=0 || ellipse[i].me.y!=0 ; ++i, sp=sp-&gt;next-&gt;to )</span>
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :             SetCurve(sp,&amp;center,xrad,yrad,&amp;ellipse[i]);</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     268 </span>            :       case cvt_poly:
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :         base = atan2(cv-&gt;p.cy-cv-&gt;info.y,cv-&gt;p.cx-cv-&gt;info.x);</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :         radius = sqrt((cv-&gt;p.cy-cv-&gt;info.y)*(cv-&gt;p.cy-cv-&gt;info.y) +</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :                 (cv-&gt;p.cx-cv-&gt;info.x)*(cv-&gt;p.cx-cv-&gt;info.x));</span>
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :         off = -2*3.1415926535897932/points;</span>
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :         sp = cv-&gt;active_shape-&gt;last-&gt;prev-&gt;from;</span>
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;points; ++i )</span>
+<span class="lineNum">     275 </span><span class="lineNoCov">          0 :             SetCorner(sp=sp-&gt;next-&gt;to, cv-&gt;p.cx+radius*cos(base+i*off),</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :                     cv-&gt;p.cy+radius*sin(base+i*off));</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     278 </span>            :       case cvt_star:
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 :         base = atan2(cv-&gt;p.cy-cv-&gt;info.y,cv-&gt;p.cx-cv-&gt;info.x)-3.1415926535897932;</span>
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 :         if ( base&lt;-3.1416 )</span>
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :             base += 2*3.1415926535897932;</span>
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :         radius = sqrt((cv-&gt;p.cy-cv-&gt;info.y)*(cv-&gt;p.cy-cv-&gt;info.y) +</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :                 (cv-&gt;p.cx-cv-&gt;info.x)*(cv-&gt;p.cx-cv-&gt;info.x));</span>
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :         off = -2*3.1415926535897932/(2*points);</span>
+<span class="lineNum">     285 </span><span class="lineNoCov">          0 :         sp = cv-&gt;active_shape-&gt;last-&gt;prev-&gt;from;</span>
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :         r2 = radius/CVStarRatio();</span>
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;2*points; ++i ) {</span>
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :             if ( i&amp;1 ) {</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :                 SetCorner(sp=sp-&gt;next-&gt;to, cv-&gt;p.cx+r2*cos(base+i*off),</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :                         cv-&gt;p.cy+r2*sin(base+i*off));</span>
+<span class="lineNum">     291 </span>            :             } else {
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :                 SetCorner(sp=sp-&gt;next-&gt;to, cv-&gt;p.cx+radius*cos(base+i*off),</span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :                         cv-&gt;p.cy+radius*sin(base+i*off));</span>
+<span class="lineNum">     294 </span>            :             }
+<span class="lineNum">     295 </span>            :         }
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     297 </span>            :     }
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :     RedoActiveSplineSet(cv-&gt;active_shape);</span>
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :     cv-&gt;b.sc-&gt;suspendMetricsViewEventPropagation = 1;</span>
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :     SCUpdateAll(cv-&gt;b.sc);</span>
+<a name="301"><span class="lineNum">     301 </span>            : }</a>
+<span class="lineNum">     302 </span>            : 
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 : void CVMouseUpShape(CharView *cv) {</span>
+<span class="lineNum">     304 </span>            :     SplinePoint *first, *second, *sp;
+<span class="lineNum">     305 </span>            :     extern int snaptoint;
+<span class="lineNum">     306 </span>            : 
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :     if ( cv-&gt;active_shape==NULL )</span>
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     309 </span>            : 
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 :     if ( cv-&gt;b.layerheads[cv-&gt;b.drawmode]-&gt;order2 ) {</span>
+<span class="lineNum">     311 </span>            :         SplineSet *prev, *new, *ss;
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 :         new = SplineSetsTTFApprox(cv-&gt;active_shape);</span>
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :         for ( ss=cv-&gt;b.layerheads[cv-&gt;b.drawmode]-&gt;splines, prev=NULL;</span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :                 ss!=NULL &amp;&amp; ss!=cv-&gt;active_shape;</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :                 prev = ss, ss=ss-&gt;next );</span>
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :         if ( ss==NULL )</span>
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :             IError(&quot;Couldn't find shape&quot;);</span>
+<span class="lineNum">     318 </span>            :         else {
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :             if ( prev==NULL )</span>
+<span class="lineNum">     320 </span><span class="lineNoCov">          0 :                 cv-&gt;b.layerheads[cv-&gt;b.drawmode]-&gt;splines = new;</span>
+<span class="lineNum">     321 </span>            :             else
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 :                 prev-&gt;next = new;</span>
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :             SplinePointListsFree(cv-&gt;active_shape);</span>
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :             cv-&gt;active_shape = new;</span>
+<span class="lineNum">     325 </span>            :         }
+<span class="lineNum">     326 </span>            :     }
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :     first = cv-&gt;active_shape-&gt;first; second = first-&gt;next-&gt;to;</span>
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :     if ( first-&gt;me.x == second-&gt;me.x &amp;&amp; first-&gt;me.y == second-&gt;me.y ) {</span>
+<span class="lineNum">     329 </span>            :         /* Remove this shape, it will be selected */
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 :         cv-&gt;b.layerheads[cv-&gt;b.drawmode]-&gt;splines = SplinePointListRemoveSelected(cv-&gt;b.sc,</span>
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :                 cv-&gt;b.layerheads[cv-&gt;b.drawmode]-&gt;splines);</span>
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 :     } else if ( cv-&gt;active_tool==cvt_rect || cv-&gt;active_tool==cvt_elipse ) {</span>
+<span class="lineNum">     333 </span><span class="lineNoCov">          0 :         if ( SplinePointListIsClockwise(cv-&gt;active_shape)==0 )</span>
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :             SplineSetReverse(cv-&gt;active_shape);</span>
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 :         if ( snaptoint ) {</span>
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :             for ( sp= cv-&gt;active_shape-&gt;first; ; ) {</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :                 SplinePointRound(sp,1.0);</span>
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 :                 sp = sp-&gt;next-&gt;to;</span>
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 :                 if ( sp==cv-&gt;active_shape-&gt;first )</span>
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :             break;</span>
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :             for ( sp= cv-&gt;active_shape-&gt;first; ; ) {</span>
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :                 SplineRefigure(sp-&gt;next);</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :                 sp = sp-&gt;next-&gt;to;</span>
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 :                 if ( sp==cv-&gt;active_shape-&gt;first )</span>
+<span class="lineNum">     346 </span><span class="lineNoCov">          0 :             break;</span>
+<span class="lineNum">     347 </span><span class="lineNoCov">          0 :             }</span>
+<span class="lineNum">     348 </span>            :         }
+<span class="lineNum">     349 </span>            :     }
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :     if ( cv-&gt;b.sc-&gt;inspiro &amp;&amp; hasspiro()) {</span>
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :         free(cv-&gt;active_shape-&gt;spiros);</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :         cv-&gt;active_shape-&gt;spiros = SplineSet2SpiroCP(cv-&gt;active_shape,&amp;cv-&gt;active_shape-&gt;spiro_cnt);</span>
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 :         cv-&gt;active_shape-&gt;spiro_max = cv-&gt;active_shape-&gt;spiro_cnt;</span>
+<span class="lineNum">     354 </span>            :     }
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :     cv-&gt;active_shape = NULL;</span>
+<span class="lineNum">     356 </span>            : 
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :     cv-&gt;b.sc-&gt;suspendMetricsViewEventPropagation = 0;</span>
+<span class="lineNum">     358 </span><span class="lineNoCov">          0 :     SCUpdateAll(cv-&gt;b.sc);</span>
+<span class="lineNum">     359 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

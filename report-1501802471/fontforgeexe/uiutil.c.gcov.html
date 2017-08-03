@@ -1,0 +1,917 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd) - fontforgeexe/uiutil.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">fontforgeexe</a> - uiutil.c<span style="font-size: 80%;"> (source / <a href="uiutil.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">FontForge coverage report 2017-08-04 01:21:11+02:00 (commit d35f7e4107a9e1db65cce47c468fcc914cecb8fd)</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">30</td>
+            <td class="headerCovTableEntry">400</td>
+            <td class="headerCovTableEntryLo">7.5 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-08-04</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntry">26</td>
+            <td class="headerCovTableEntryLo">11.5 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* Copyright (C) 2000-2012 by George Williams */</a>
+<span class="lineNum">       2 </span>            : /*
+<span class="lineNum">       3 </span>            :  * Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       4 </span>            :  * modification, are permitted provided that the following conditions are met:
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            :  * Redistributions of source code must retain the above copyright notice, this
+<span class="lineNum">       7 </span>            :  * list of conditions and the following disclaimer.
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :  * Redistributions in binary form must reproduce the above copyright notice,
+<span class="lineNum">      10 </span>            :  * this list of conditions and the following disclaimer in the documentation
+<span class="lineNum">      11 </span>            :  * and/or other materials provided with the distribution.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :  * The name of the author may not be used to endorse or promote products
+<span class="lineNum">      14 </span>            :  * derived from this software without specific prior written permission.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+<span class="lineNum">      17 </span>            :  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+<span class="lineNum">      18 </span>            :  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+<span class="lineNum">      19 </span>            :  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      20 </span>            :  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+<span class="lineNum">      21 </span>            :  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+<span class="lineNum">      22 </span>            :  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+<span class="lineNum">      23 </span>            :  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+<span class="lineNum">      24 </span>            :  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+<span class="lineNum">      25 </span>            :  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      26 </span>            :  */
+<span class="lineNum">      27 </span>            : #include &quot;fontforgeui.h&quot;
+<span class="lineNum">      28 </span>            : #include &lt;gfile.h&gt;
+<span class="lineNum">      29 </span>            : #include &lt;stdarg.h&gt;
+<span class="lineNum">      30 </span>            : #include &lt;unistd.h&gt;
+<span class="lineNum">      31 </span>            : #include &lt;utype.h&gt;
+<span class="lineNum">      32 </span>            : #include &lt;ustring.h&gt;
+<span class="lineNum">      33 </span>            : #include &lt;sys/time.h&gt;
+<span class="lineNum">      34 </span>            : #include &lt;gkeysym.h&gt;
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            : extern GBox _ggadget_Default_Box;
+<span class="lineNum">      37 </span>            : #define ACTIVE_BORDER   (_ggadget_Default_Box.active_border)
+<span class="lineNum">      38 </span>            : #define MAIN_FOREGROUND (_ggadget_Default_Box.main_foreground)
+<span class="lineNum">      39 </span>            : 
+<span class="lineNum">      40 </span>            : #if __CygWin
+<span class="lineNum">      41 </span>            : extern void cygwin_conv_to_full_posix_path(const char *win,char *unx);
+<span class="lineNum">      42 </span>            : extern void cygwin_conv_to_full_win32_path(const char *unx,char *win);
+<span class="lineNum">      43 </span>            : #endif
+<span class="lineNum">      44 </span>            : 
+<a name="45"><span class="lineNum">      45 </span>            : static char browser[1025];</a>
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 : static void findbrowser(void) {</span>
+<span class="lineNum">      48 </span>            : /* Find a browser to use so that help messages can be displayed */
+<span class="lineNum">      49 </span>            : 
+<span class="lineNum">      50 </span>            : /* Both xdg-open and htmlview are not browsers per se, but browser dispatchers*/
+<span class="lineNum">      51 </span>            : /*  which try to figure out what browser the user intents. It seems no one */
+<span class="lineNum">      52 </span>            : /*  uses (understands?) environment variables any more, so BROWSER is a bit */
+<span class="lineNum">      53 </span>            : /*  old-fashioned */
+<span class="lineNum">      54 </span>            :     static char *stdbrowsers[] = { &quot;xdg-open&quot;, &quot;x-www-browser&quot;, &quot;htmlview&quot;,
+<span class="lineNum">      55 </span>            : #if __Mac
+<span class="lineNum">      56 </span>            :         &quot;safari&quot;,
+<span class="lineNum">      57 </span>            : #endif
+<span class="lineNum">      58 </span>            :         &quot;firefox&quot;, &quot;mozilla&quot;, &quot;seamonkey&quot;, &quot;iceweasel&quot;, &quot;opera&quot;, &quot;konqueror&quot;, &quot;google-chrome&quot;,
+<span class="lineNum">      59 </span>            :         &quot;galeon&quot;, &quot;kfmclient&quot;, &quot;netscape&quot;, &quot;mosaic&quot;, /*&quot;grail&quot;,*/ &quot;lynx&quot;,
+<span class="lineNum">      60 </span>            :         NULL };
+<span class="lineNum">      61 </span>            :     int i;
+<span class="lineNum">      62 </span>            :     char *path;
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :     if ( getenv(&quot;BROWSER&quot;)!=NULL ) {</span>
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :         strncpy(browser,getenv(&quot;BROWSER&quot;),sizeof(browser));</span>
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :     browser[sizeof(browser)-1] = '\0';</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :         if ( strcmp(browser,&quot;kde&quot;)==0 || strcmp(browser,&quot;kfm&quot;)==0 ||</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :                 strcmp(browser,&quot;konqueror&quot;)==0 || strcmp(browser,&quot;kfmclient&quot;)==0 )</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :             strcpy(browser,&quot;kfmclient openURL&quot;);</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">      71 </span>            :     }
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :     for ( i=0; stdbrowsers[i]!=NULL; ++i ) {</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :         if ( (path=_GFile_find_program_dir(stdbrowsers[i]))!=NULL ) {</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :             if ( strcmp(stdbrowsers[i],&quot;kfmclient&quot;)==0 )</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :                 strcpy(browser,&quot;kfmclient openURL&quot;);</span>
+<span class="lineNum">      76 </span>            :             else
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :                 strcpy(browser,stdbrowsers[i]);</span>
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :             free(path);</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">      80 </span>            :         }
+<span class="lineNum">      81 </span>            :     }
+<span class="lineNum">      82 </span>            : #if __Mac
+<span class="lineNum">      83 </span>            :     strcpy(browser,&quot;open&quot;);   /* thanks to riggle */
+<span class="lineNum">      84 </span>            : #endif
+<a name="85"><span class="lineNum">      85 </span>            : }</a>
+<span class="lineNum">      86 </span>            : 
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 : static int SupportedLocale(char *fullspec,char *locale) {</span>
+<span class="lineNum">      88 </span>            : /* If there's additional help files written for other languages, then check */
+<span class="lineNum">      89 </span>            : /* to see if this local matches the additional help message language. If so */
+<span class="lineNum">      90 </span>            : /* then report back that there's another language available to use for help */
+<span class="lineNum">      91 </span>            : /* NOTE: If Docs are not maintained very well, maybe comment-out lang here. */
+<span class="lineNum">      92 </span>            :     int i;
+<span class="lineNum">      93 </span>            :     /* list languages in specific to generic order, ie: en_CA, en_GB, en... */
+<span class="lineNum">      94 </span>            :     static char *supported[] = { &quot;de&quot;,&quot;ja&quot;, NULL }; /* other html lang list */
+<span class="lineNum">      95 </span>            : 
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :     for ( i=0; supported[i]!=NULL; ++i ) {</span>
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :         if ( strcmp(locale,supported[i])==0 ) {</span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :             strcat(fullspec,supported[i]);</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :             strcat(fullspec,&quot;/&quot;);</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :             return( true );</span>
+<span class="lineNum">     101 </span>            :         }
+<span class="lineNum">     102 </span>            :     }
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :     return( false );</span>
+<a name="104"><span class="lineNum">     104 </span>            : }</a>
+<span class="lineNum">     105 </span>            : 
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 : static void AppendSupportedLocale(char *fullspec) {</span>
+<span class="lineNum">     107 </span>            : /* Add Browser HELP for this local if there's more html docs for this local */
+<span class="lineNum">     108 </span>            : 
+<span class="lineNum">     109 </span>            :     /* KANOU has provided a japanese translation of the docs */
+<span class="lineNum">     110 </span>            :     /* Edward Lee is working on traditional chinese docs */
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :     const char *loc = getenv(&quot;LC_ALL&quot;);</span>
+<span class="lineNum">     112 </span>            :     char buffer[40], *pt;
+<span class="lineNum">     113 </span>            : 
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :     if ( loc==NULL ) loc = getenv(&quot;LC_CTYPE&quot;);</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :     if ( loc==NULL ) loc = getenv(&quot;LANG&quot;);</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :     if ( loc==NULL ) loc = getenv(&quot;LC_MESSAGES&quot;);</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :     if ( loc==NULL )</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :         return;</span>
+<span class="lineNum">     119 </span>            : 
+<span class="lineNum">     120 </span>            :     /* first, try checking entire string */
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :     strncpy(buffer,loc,sizeof(buffer));</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :     buffer[sizeof(buffer)-1] = '\0';</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :     if ( SupportedLocale(fullspec,buffer) )</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :         return;</span>
+<span class="lineNum">     125 </span>            : 
+<span class="lineNum">     126 </span>            :     /* parse possible suffixes, such as .UTF-8, then try again */
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :     if ( (pt=strchr(buffer,'.'))!=NULL ) {</span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :         *pt = '\0';</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :         if ( SupportedLocale(fullspec,buffer) )</span>
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :             return;</span>
+<span class="lineNum">     131 </span>            :     }
+<span class="lineNum">     132 </span>            : 
+<span class="lineNum">     133 </span>            :     /* parse possible suffixes such as _CA, _GB, and try again */
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :     if ( (pt=strchr(buffer,'_'))!=NULL ) {</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :         *pt = '\0';</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :         if ( SupportedLocale(fullspec,buffer) )</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :             return;</span>
+<span class="lineNum">     138 </span>            :     }
+<span class="lineNum">     139 </span>            : }
+<span class="lineNum">     140 </span>            : 
+<span class="lineNum">     141 </span>            : #ifdef _WIN32
+<span class="lineNum">     142 </span>            : #include &lt;gresource.h&gt;
+<span class="lineNum">     143 </span>            : #include &lt;windows.h&gt;
+<span class="lineNum">     144 </span>            : void help(char *file) {
+<span class="lineNum">     145 </span>            :     if(file){
+<span class="lineNum">     146 </span>            :         int   len     = strlen(file);
+<span class="lineNum">     147 </span>            :         char* p_file  = (char*) malloc(len+1);
+<span class="lineNum">     148 </span>            :         char* p_uri   = (char*) malloc(len+1024);
+<span class="lineNum">     149 </span>            :         char* p_param = NULL;
+<span class="lineNum">     150 </span>            : 
+<span class="lineNum">     151 </span>            :         strcpy(p_file,  file);
+<span class="lineNum">     152 </span>            : 
+<span class="lineNum">     153 </span>            :         {
+<span class="lineNum">     154 </span>            :             char* delim = strrchr(p_file, '#');
+<span class="lineNum">     155 </span>            :             if(delim){
+<span class="lineNum">     156 </span>            :                 p_param = (char*) malloc(len+1);
+<span class="lineNum">     157 </span>            :                 strcpy(p_param, delim);
+<span class="lineNum">     158 </span>            :                 *delim = '\0';
+<span class="lineNum">     159 </span>            :             }
+<span class="lineNum">     160 </span>            :         }
+<span class="lineNum">     161 </span>            : 
+<span class="lineNum">     162 </span>            :         strcpy(p_uri, p_file);
+<span class="lineNum">     163 </span>            : 
+<span class="lineNum">     164 </span>            :         if(! GFileIsAbsolute(p_uri)){
+<span class="lineNum">     165 </span>            :             char* p_helpdir = (char*) malloc(1024);
+<span class="lineNum">     166 </span>            : 
+<span class="lineNum">     167 </span>            :             #if __CygWin
+<span class="lineNum">     168 </span>            :             {   /* cygwin */
+<span class="lineNum">     169 </span>            :                 #if defined(DOCDIR)
+<span class="lineNum">     170 </span>            :                 strncpy( p_helpdir, DOCDIR &quot;/&quot;, 1024 );
+<span class="lineNum">     171 </span>            :                 #elif defined(SHAREDIR)
+<span class="lineNum">     172 </span>            :                 strncpy( p_helpdir, SHAREDIR &quot;/doc/fontforge/&quot;, 1024 );
+<span class="lineNum">     173 </span>            :                 #else
+<span class="lineNum">     174 </span>            :                 strncpy( p_helpdir, &quot;/usr/local/share/doc/fontforge/&quot;, 1024 );
+<span class="lineNum">     175 </span>            :                 #endif
+<span class="lineNum">     176 </span>            :             }
+<span class="lineNum">     177 </span>            :             #else
+<span class="lineNum">     178 </span>            :             {   /* mingw */
+<span class="lineNum">     179 </span>            :                 strcpy( p_helpdir, GResourceProgramDir );
+<span class="lineNum">     180 </span>            :                 strcat( p_helpdir, &quot;/doc/fontforge/&quot;);
+<span class="lineNum">     181 </span>            :             }
+<span class="lineNum">     182 </span>            :             #endif
+<span class="lineNum">     183 </span>            : 
+<span class="lineNum">     184 </span>            :             /* /usr/share/fontforge/doc/ja/file */
+<span class="lineNum">     185 </span>            :             strcpy(p_uri, p_helpdir);
+<span class="lineNum">     186 </span>            :             AppendSupportedLocale(p_uri);
+<span class="lineNum">     187 </span>            :             strcat(p_uri, p_file);
+<span class="lineNum">     188 </span>            : 
+<span class="lineNum">     189 </span>            :             if(!GFileReadable(p_uri)){
+<span class="lineNum">     190 </span>            :                 strcpy(p_uri, p_helpdir);
+<span class="lineNum">     191 </span>            :                 strcat(p_uri, p_file);
+<span class="lineNum">     192 </span>            : 
+<span class="lineNum">     193 </span>            :                 if(!GFileReadable(p_uri)){
+<span class="lineNum">     194 </span>            :                     strcpy(p_uri, &quot;http://fontforge.org/&quot;);
+<span class="lineNum">     195 </span>            :                     /* AppendSupportedLocale(p_uri); */
+<span class="lineNum">     196 </span>            :                     strcat(p_uri, p_file);
+<span class="lineNum">     197 </span>            :                 }
+<span class="lineNum">     198 </span>            :             }
+<span class="lineNum">     199 </span>            :             free(p_helpdir);
+<span class="lineNum">     200 </span>            :         }
+<span class="lineNum">     201 </span>            : 
+<span class="lineNum">     202 </span>            :         #if __CygWin
+<span class="lineNum">     203 </span>            :         if( strncmp(p_uri, &quot;http:&quot;, 5) != 0 ){
+<span class="lineNum">     204 </span>            :             char*  temp = (char*) malloc(1024);
+<span class="lineNum">     205 </span>            :             cygwin_conv_to_full_win32_path(p_uri, temp);
+<span class="lineNum">     206 </span>            :             free(p_uri);
+<span class="lineNum">     207 </span>            :             p_uri = temp;
+<span class="lineNum">     208 </span>            :         }
+<span class="lineNum">     209 </span>            :         #endif
+<span class="lineNum">     210 </span>            : 
+<span class="lineNum">     211 </span>            :         if(p_param){
+<span class="lineNum">     212 </span>            :             strcat(p_uri, p_param);
+<span class="lineNum">     213 </span>            :             free(p_param);
+<span class="lineNum">     214 </span>            :         }
+<span class="lineNum">     215 </span>            : 
+<span class="lineNum">     216 </span>            :         /* using default browser */
+<span class="lineNum">     217 </span>            :         ShellExecute(NULL, &quot;open&quot;, p_uri, NULL, NULL, SW_SHOWDEFAULT);
+<span class="lineNum">     218 </span>            : 
+<span class="lineNum">     219 </span>            :         free(p_uri);
+<span class="lineNum">     220 </span>            :         free(p_file);
+<span class="lineNum">     221 </span>            :     }
+<span class="lineNum">     222 </span>            : }
+<a name="223"><span class="lineNum">     223 </span>            : #else</a>
+<span class="lineNum">     224 </span>            : 
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 : void help(char *file) {</span>
+<span class="lineNum">     226 </span>            :     char fullspec[PATH_MAX], *temp, *pt;
+<span class="lineNum">     227 </span>            : 
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :     if ( browser[0]=='\0' )</span>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :         findbrowser();</span>
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :     if ( browser[0]=='\0' ) {</span>
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :         gwwv_post_error(_(&quot;No Browser&quot;),_(&quot;Could not find a browser. Set the BROWSER environment variable to point to one&quot;));</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     233 </span>            :     }
+<span class="lineNum">     234 </span>            : 
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :     if ( strstr(file,&quot;http://&quot;)==NULL ) {</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :         memset(fullspec,0,sizeof(fullspec));</span>
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :         if ( ! GFileIsAbsolute(file) )</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :             snprintf(fullspec, PATH_MAX, &quot;%s&quot;, getHelpDir());</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :         strcat(fullspec,file);</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :         if (( pt = strrchr(fullspec,'#') )!=NULL ) *pt ='\0';</span>
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :         if ( !GFileReadable( fullspec )) {</span>
+<span class="lineNum">     242 </span><span class="lineNoCov">          0 :             if ( *file!='/' ) {</span>
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :                 strcpy(fullspec,&quot;/usr/share/doc/fontforge/&quot;);</span>
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :                 strcat(fullspec,file);</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :                 if (( pt = strrchr(fullspec,'#') )!=NULL ) *pt ='\0';</span>
+<span class="lineNum">     246 </span>            :             }
+<span class="lineNum">     247 </span>            :         }
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :         if ( !GFileReadable( fullspec )) {</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :             strcpy(fullspec,&quot;http://fontforge.sf.net/&quot;);</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :             AppendSupportedLocale(fullspec);</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :             strcat(fullspec,file);</span>
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :         } else if ( pt!=NULL )</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :             *pt = '#';</span>
+<span class="lineNum">     254 </span>            :     } else
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :         strncpy(fullspec,file,sizeof(fullspec));</span>
+<span class="lineNum">     256 </span>            : #if __Mac
+<span class="lineNum">     257 </span>            :     if ( strcmp(browser,&quot;open&quot;)==0 )
+<span class="lineNum">     258 </span>            :         /* open doesn't want &quot;file:&quot; prepended */;
+<span class="lineNum">     259 </span>            :     else
+<span class="lineNum">     260 </span>            : #endif
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :     if ( strstr(fullspec,&quot;:/&quot;)==NULL ) {</span>
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :         if ( (temp=malloc(strlen(fullspec)+strlen(&quot;file:&quot;)+20))==NULL )</span>
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :             return;</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :         sprintf(temp,&quot;file:%s&quot;,fullspec);</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :         strncpy(fullspec,temp,sizeof(fullspec));</span>
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :     fullspec[sizeof(fullspec)-1] = '\0';</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :         free(temp);</span>
+<span class="lineNum">     268 </span>            :     }
+<span class="lineNum">     269 </span>            : #if __Mac
+<span class="lineNum">     270 </span>            :     /* This seems a bit easier... Thanks to riggle */
+<span class="lineNum">     271 </span>            :     if ( strcmp(browser,&quot;open&quot;)==0 ) {
+<span class="lineNum">     272 </span>            :         char *str = &quot;DYLD_LIBRARY_PATH=\&quot;\&quot;; open &quot;;
+<span class="lineNum">     273 </span>            :         if ( (temp=malloc(strlen(str) + strlen(fullspec) + 20))==NULL )
+<span class="lineNum">     274 </span>            :             return;
+<span class="lineNum">     275 </span>            :         sprintf( temp, &quot;%s \&quot;%s\&quot; &amp;&quot;, str, fullspec );
+<span class="lineNum">     276 </span>            :         system(temp);
+<span class="lineNum">     277 </span>            :         free(temp);
+<span class="lineNum">     278 </span>            :     } else {
+<span class="lineNum">     279 </span>            : #else
+<span class="lineNum">     280 </span>            :     {
+<span class="lineNum">     281 </span>            : #endif
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :         if ( (temp=malloc(strlen(browser) + strlen(fullspec) + 20))==NULL )</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :             return;</span>
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :         sprintf( temp, strcmp(browser,&quot;kfmclient openURL&quot;)==0 ? &quot;%s \&quot;%s\&quot; &amp;&quot; : &quot;\&quot;%s\&quot; \&quot;%s\&quot; &amp;&quot;, browser, fullspec );</span>
+<span class="lineNum">     285 </span><span class="lineNoCov">          0 :         system(temp);</span>
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :         free(temp);</span>
+<span class="lineNum">     287 </span>            :     }
+<span class="lineNum">     288 </span>            : }
+<a name="289"><span class="lineNum">     289 </span>            : #endif</a>
+<span class="lineNum">     290 </span>            : 
+<span class="lineNum">     291 </span><span class="lineCov">          1 : static void UI_IError(const char *format,...) {</span>
+<span class="lineNum">     292 </span>            :     va_list ap;
+<span class="lineNum">     293 </span>            :     char buffer[300];
+<span class="lineNum">     294 </span><span class="lineCov">          1 :     va_start(ap,format);</span>
+<span class="lineNum">     295 </span><span class="lineCov">          1 :     vsnprintf(buffer,sizeof(buffer),format,ap);</span>
+<span class="lineNum">     296 </span><span class="lineCov">          1 :     GDrawIError(&quot;%s&quot;,buffer);</span>
+<span class="lineNum">     297 </span><span class="lineCov">          1 :     va_end(ap);</span>
+<span class="lineNum">     298 </span><span class="lineCov">          1 : }</span>
+<span class="lineNum">     299 </span>            : 
+<span class="lineNum">     300 </span>            : #define MAX_ERR_LINES   400
+<span class="lineNum">     301 </span>            : static struct errordata {
+<span class="lineNum">     302 </span>            :     char *errlines[MAX_ERR_LINES];
+<span class="lineNum">     303 </span>            :     GFont *font;
+<span class="lineNum">     304 </span>            :     int fh, as;
+<span class="lineNum">     305 </span>            :     GGadget *vsb;
+<span class="lineNum">     306 </span>            :     GWindow gw, v;
+<span class="lineNum">     307 </span>            :     int cnt, linecnt;
+<span class="lineNum">     308 </span>            :     int offtop;
+<span class="lineNum">     309 </span>            :     int showing;
+<span class="lineNum">     310 </span>            :     int start_l, start_c, end_l, end_c;
+<span class="lineNum">     311 </span>            :     int down;
+<a name="312"><span class="lineNum">     312 </span>            : } errdata;</a>
+<span class="lineNum">     313 </span>            : 
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 : static void ErrHide(void) {</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :     GDrawSetVisible(errdata.gw,false);</span>
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :     errdata.showing = false;</span>
+<a name="317"><span class="lineNum">     317 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     318 </span>            : 
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 : static void ErrScroll(struct sbevent *sb) {</span>
+<span class="lineNum">     320 </span><span class="lineNoCov">          0 :     int newpos = errdata.offtop;</span>
+<span class="lineNum">     321 </span>            : 
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 :     switch( sb-&gt;type ) {</span>
+<span class="lineNum">     323 </span>            :       case et_sb_top:
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :         newpos = 0;</span>
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     326 </span>            :       case et_sb_uppage:
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :         newpos -= errdata.linecnt;</span>
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     329 </span>            :       case et_sb_up:
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 :         --newpos;</span>
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     332 </span>            :       case et_sb_down:
+<span class="lineNum">     333 </span><span class="lineNoCov">          0 :         ++newpos;</span>
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     335 </span>            :       case et_sb_downpage:
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :         newpos += errdata.linecnt;</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     338 </span>            :       case et_sb_bottom:
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 :         newpos = errdata.cnt-errdata.linecnt;</span>
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     341 </span>            :       case et_sb_thumb:
+<span class="lineNum">     342 </span>            :       case et_sb_thumbrelease:
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :         newpos = sb-&gt;pos;</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     345 </span>            :     }
+<span class="lineNum">     346 </span><span class="lineNoCov">          0 :     if ( newpos&gt;errdata.cnt-errdata.linecnt )</span>
+<span class="lineNum">     347 </span><span class="lineNoCov">          0 :         newpos = errdata.cnt-errdata.linecnt;</span>
+<span class="lineNum">     348 </span><span class="lineNoCov">          0 :     if ( newpos&lt;0 ) newpos =0;</span>
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :     if ( newpos!=errdata.offtop ) {</span>
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :         errdata.offtop = newpos;</span>
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :         GScrollBarSetPos(errdata.vsb,errdata.offtop);</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(errdata.v,NULL,false);</span>
+<span class="lineNum">     353 </span>            :     }
+<a name="354"><span class="lineNum">     354 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     355 </span>            : 
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 : static int ErrChar(GEvent *e) {</span>
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :     int newpos = errdata.offtop;</span>
+<span class="lineNum">     358 </span>            : 
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 :     switch( e-&gt;u.chr.keysym ) {</span>
+<span class="lineNum">     360 </span>            :       case GK_Home:
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 :         newpos = 0;</span>
+<span class="lineNum">     362 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     363 </span>            :       case GK_End:
+<span class="lineNum">     364 </span><span class="lineNoCov">          0 :         newpos = errdata.cnt-errdata.linecnt;</span>
+<span class="lineNum">     365 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     366 </span>            :       case GK_Page_Up: case GK_KP_Page_Up:
+<span class="lineNum">     367 </span><span class="lineNoCov">          0 :         newpos -= errdata.linecnt;</span>
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     369 </span>            :       case GK_Page_Down: case GK_KP_Page_Down:
+<span class="lineNum">     370 </span><span class="lineNoCov">          0 :         newpos += errdata.linecnt;</span>
+<span class="lineNum">     371 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     372 </span>            :       case GK_Up: case GK_KP_Up:
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 :         --newpos;</span>
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     375 </span>            :       case GK_Down: case GK_KP_Down:
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 :         ++newpos;</span>
+<span class="lineNum">     377 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     378 </span>            :     }
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :     if ( newpos&gt;errdata.cnt-errdata.linecnt )</span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :         newpos = errdata.cnt-errdata.linecnt;</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :     if ( newpos&lt;0 ) newpos =0;</span>
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :     if ( newpos!=errdata.offtop ) {</span>
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :         errdata.offtop = newpos;</span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 :         GScrollBarSetPos(errdata.vsb,errdata.offtop);</span>
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(errdata.v,NULL,false);</span>
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     387 </span>            :     }
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 : return( false );</span>
+<a name="389"><span class="lineNum">     389 </span>            : }</a>
+<span class="lineNum">     390 </span>            : 
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 : static int warnings_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     392 </span>            : 
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 :     if (( event-&gt;type==et_mouseup || event-&gt;type==et_mousedown ) &amp;&amp;</span>
+<span class="lineNum">     394 </span><span class="lineNoCov">          0 :             (event-&gt;u.mouse.button&gt;=4 &amp;&amp; event-&gt;u.mouse.button&lt;=7) ) {</span>
+<span class="lineNum">     395 </span><span class="lineNoCov">          0 : return( GGadgetDispatchEvent(errdata.vsb,event));</span>
+<span class="lineNum">     396 </span>            :     }
+<span class="lineNum">     397 </span>            : 
+<span class="lineNum">     398 </span><span class="lineNoCov">          0 :     switch ( event-&gt;type ) {</span>
+<span class="lineNum">     399 </span>            :       case et_char:
+<span class="lineNum">     400 </span><span class="lineNoCov">          0 : return( ErrChar(event));</span>
+<span class="lineNum">     401 </span>            :       break;
+<span class="lineNum">     402 </span>            :       case et_expose:
+<span class="lineNum">     403 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     404 </span>            :       case et_resize: {
+<span class="lineNum">     405 </span>            :           GRect size, sbsize;
+<span class="lineNum">     406 </span><span class="lineNoCov">          0 :           GDrawGetSize(gw,&amp;size);</span>
+<span class="lineNum">     407 </span><span class="lineNoCov">          0 :           GGadgetGetSize(errdata.vsb,&amp;sbsize);</span>
+<span class="lineNum">     408 </span><span class="lineNoCov">          0 :           GGadgetMove(errdata.vsb,size.width-sbsize.width,0);</span>
+<span class="lineNum">     409 </span><span class="lineNoCov">          0 :           GGadgetResize(errdata.vsb,sbsize.width,size.height);</span>
+<span class="lineNum">     410 </span><span class="lineNoCov">          0 :           GDrawResize(errdata.v,size.width-sbsize.width,size.height);</span>
+<span class="lineNum">     411 </span><span class="lineNoCov">          0 :           errdata.linecnt = size.height/errdata.fh;</span>
+<span class="lineNum">     412 </span><span class="lineNoCov">          0 :           GScrollBarSetBounds(errdata.vsb,0,errdata.cnt,errdata.linecnt);</span>
+<span class="lineNum">     413 </span><span class="lineNoCov">          0 :           if ( errdata.offtop + errdata.linecnt &gt; errdata.cnt ) {</span>
+<span class="lineNum">     414 </span><span class="lineNoCov">          0 :               errdata.offtop = errdata.cnt-errdata.linecnt;</span>
+<span class="lineNum">     415 </span><span class="lineNoCov">          0 :               if ( errdata.offtop &lt; 0 ) errdata.offtop = 0;</span>
+<span class="lineNum">     416 </span><span class="lineNoCov">          0 :               GScrollBarSetPos(errdata.vsb,errdata.offtop);</span>
+<span class="lineNum">     417 </span>            :           }
+<span class="lineNum">     418 </span><span class="lineNoCov">          0 :           GDrawRequestExpose(errdata.v,NULL,false);</span>
+<span class="lineNum">     419 </span><span class="lineNoCov">          0 :       } break;</span>
+<span class="lineNum">     420 </span>            :       case et_controlevent:
+<span class="lineNum">     421 </span><span class="lineNoCov">          0 :         switch ( event-&gt;u.control.subtype ) {</span>
+<span class="lineNum">     422 </span>            :           case et_scrollbarchange:
+<span class="lineNum">     423 </span><span class="lineNoCov">          0 :             ErrScroll(&amp;event-&gt;u.control.u.sb);</span>
+<span class="lineNum">     424 </span><span class="lineNoCov">          0 :           break;</span>
+<span class="lineNum">     425 </span>            :         }
+<span class="lineNum">     426 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     427 </span>            :       case et_close:
+<span class="lineNum">     428 </span><span class="lineNoCov">          0 :         ErrHide();</span>
+<span class="lineNum">     429 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     430 </span>            :       case et_create:
+<span class="lineNum">     431 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     432 </span>            :       case et_destroy:
+<span class="lineNum">     433 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     434 </span>            :     }
+<span class="lineNum">     435 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="436"><span class="lineNum">     436 </span>            : }</a>
+<span class="lineNum">     437 </span>            : 
+<span class="lineNum">     438 </span><span class="lineNoCov">          0 : static void noop(void *_ed) {</span>
+<a name="439"><span class="lineNum">     439 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     440 </span>            : 
+<span class="lineNum">     441 </span><span class="lineNoCov">          0 : static void *genutf8data(void *_ed,int32 *len) {</span>
+<span class="lineNum">     442 </span>            :     int cnt, l;
+<span class="lineNum">     443 </span><span class="lineNoCov">          0 :     int s_l = errdata.start_l, s_c = errdata.start_c, e_l = errdata.end_l, e_c = errdata.end_c;</span>
+<span class="lineNum">     444 </span>            :     char *ret, *pt;
+<span class="lineNum">     445 </span>            : 
+<span class="lineNum">     446 </span><span class="lineNoCov">          0 :     if ( s_l&gt;e_l ) {</span>
+<span class="lineNum">     447 </span><span class="lineNoCov">          0 :         s_l = e_l; s_c = e_c; e_l = errdata.start_l; e_c = errdata.start_c;</span>
+<span class="lineNum">     448 </span>            :     }
+<span class="lineNum">     449 </span>            : 
+<span class="lineNum">     450 </span><span class="lineNoCov">          0 :     if ( s_l==-1 ) {</span>
+<span class="lineNum">     451 </span><span class="lineNoCov">          0 :         *len = 0;</span>
+<span class="lineNum">     452 </span><span class="lineNoCov">          0 : return( copy(&quot;&quot;));</span>
+<span class="lineNum">     453 </span>            :     }
+<span class="lineNum">     454 </span>            : 
+<span class="lineNum">     455 </span><span class="lineNoCov">          0 :     l = s_l;</span>
+<span class="lineNum">     456 </span><span class="lineNoCov">          0 :     if ( e_l == l ) {</span>
+<span class="lineNum">     457 </span><span class="lineNoCov">          0 :         *len = e_c-s_c;</span>
+<span class="lineNum">     458 </span><span class="lineNoCov">          0 : return( copyn( errdata.errlines[l]+s_c, e_c-s_c ));</span>
+<span class="lineNum">     459 </span>            :     }
+<span class="lineNum">     460 </span>            : 
+<span class="lineNum">     461 </span><span class="lineNoCov">          0 :     cnt = strlen(errdata.errlines[l]+s_c)+1;</span>
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 :     for ( ++l; l&lt;e_l; ++l )</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :         cnt += strlen(errdata.errlines[l])+1;</span>
+<span class="lineNum">     464 </span><span class="lineNoCov">          0 :     cnt += e_c;</span>
+<span class="lineNum">     465 </span>            : 
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :     ret = malloc(cnt+1);</span>
+<span class="lineNum">     467 </span><span class="lineNoCov">          0 :     strcpy( ret, errdata.errlines[s_l]+s_c );</span>
+<span class="lineNum">     468 </span><span class="lineNoCov">          0 :     pt = ret+strlen( ret );</span>
+<span class="lineNum">     469 </span><span class="lineNoCov">          0 :     *pt++ = '\n';</span>
+<span class="lineNum">     470 </span><span class="lineNoCov">          0 :     for ( l=s_l+1; l&lt;e_l; ++l ) {</span>
+<span class="lineNum">     471 </span><span class="lineNoCov">          0 :         strcpy(pt,errdata.errlines[l]);</span>
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 :         pt += strlen(pt);</span>
+<span class="lineNum">     473 </span><span class="lineNoCov">          0 :         *pt++ = '\n';</span>
+<span class="lineNum">     474 </span>            :     }
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 :     strncpy(pt,errdata.errlines[l],e_c);</span>
+<span class="lineNum">     476 </span><span class="lineNoCov">          0 :     *len = cnt;</span>
+<span class="lineNum">     477 </span><span class="lineNoCov">          0 : return( ret );</span>
+<a name="478"><span class="lineNum">     478 </span>            : }</a>
+<span class="lineNum">     479 </span>            : 
+<span class="lineNum">     480 </span><span class="lineNoCov">          0 : static void MouseToPos(GEvent *event,int *_l, int *_c) {</span>
+<span class="lineNum">     481 </span><span class="lineNoCov">          0 :     int l,c=0;</span>
+<span class="lineNum">     482 </span>            : 
+<span class="lineNum">     483 </span><span class="lineNoCov">          0 :     GDrawSetFont(errdata.v,errdata.font);</span>
+<span class="lineNum">     484 </span><span class="lineNoCov">          0 :     l = event-&gt;u.mouse.y/errdata.fh + errdata.offtop;</span>
+<span class="lineNum">     485 </span><span class="lineNoCov">          0 :     if ( l&gt;=errdata.cnt ) {</span>
+<span class="lineNum">     486 </span><span class="lineNoCov">          0 :         l = errdata.cnt-1;</span>
+<span class="lineNum">     487 </span><span class="lineNoCov">          0 :         if ( l&gt;=0 )</span>
+<span class="lineNum">     488 </span><span class="lineNoCov">          0 :             c = strlen(errdata.errlines[l]);</span>
+<span class="lineNum">     489 </span><span class="lineNoCov">          0 :     } else if ( l&gt;=0 ) {</span>
+<span class="lineNum">     490 </span><span class="lineNoCov">          0 :         GDrawLayoutInit(errdata.v,errdata.errlines[l],-1,NULL);</span>
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 :         c = GDrawLayoutXYToIndex(errdata.v,event-&gt;u.mouse.x-3,4);</span>
+<span class="lineNum">     492 </span>            :     }
+<span class="lineNum">     493 </span><span class="lineNoCov">          0 :     *_l = l;</span>
+<span class="lineNum">     494 </span><span class="lineNoCov">          0 :     *_c = c;</span>
+<a name="495"><span class="lineNum">     495 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     496 </span>            : 
+<span class="lineNum">     497 </span><span class="lineNoCov">          0 : static void WarnMenuCopy(GWindow gw,struct gmenuitem *mi,GEvent *e) {</span>
+<span class="lineNum">     498 </span><span class="lineNoCov">          0 :     GDrawGrabSelection(gw,sn_clipboard);</span>
+<span class="lineNum">     499 </span><span class="lineNoCov">          0 :     GDrawAddSelectionType(gw,sn_clipboard,&quot;UTF8_STRING&quot;,&amp;errdata,1,</span>
+<span class="lineNum">     500 </span>            :             sizeof(char),
+<span class="lineNum">     501 </span>            :             genutf8data,noop);
+<span class="lineNum">     502 </span><span class="lineNoCov">          0 :     GDrawAddSelectionType(gw,sn_clipboard,&quot;STRING&quot;,&amp;errdata,1,</span>
+<span class="lineNum">     503 </span>            :             sizeof(char),
+<span class="lineNum">     504 </span>            :             genutf8data,noop);
+<a name="505"><span class="lineNum">     505 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     506 </span>            : 
+<span class="lineNum">     507 </span><span class="lineNoCov">          0 : static void WarnMenuClear(GWindow gw,struct gmenuitem *mi,GEvent *e) {</span>
+<span class="lineNum">     508 </span>            :     int i;
+<span class="lineNum">     509 </span>            : 
+<span class="lineNum">     510 </span><span class="lineNoCov">          0 :     for ( i=0; i&lt;errdata.cnt; ++i ) {</span>
+<span class="lineNum">     511 </span><span class="lineNoCov">          0 :         free(errdata.errlines[i]);</span>
+<span class="lineNum">     512 </span><span class="lineNoCov">          0 :         errdata.errlines[i] = NULL;</span>
+<span class="lineNum">     513 </span>            :     }
+<span class="lineNum">     514 </span><span class="lineNoCov">          0 :     errdata.cnt = 0;</span>
+<span class="lineNum">     515 </span><span class="lineNoCov">          0 :     GDrawRequestExpose(gw,NULL,false);</span>
+<span class="lineNum">     516 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     517 </span>            : 
+<span class="lineNum">     518 </span>            : #define MID_Copy        1
+<span class="lineNum">     519 </span>            : #define MID_Clear       2
+<span class="lineNum">     520 </span>            : 
+<span class="lineNum">     521 </span>            : GMenuItem warnpopupmenu[] = {
+<span class="lineNum">     522 </span>            :     { { (unichar_t *) N_(&quot;Cu_t&quot;), NULL, COLOR_DEFAULT, COLOR_DEFAULT, NULL, NULL, 1, 0, 0, 0, 0, 0, 1, 1, 0, 't' }, '\0', ksm_control, NULL, NULL, NULL, 0 },
+<span class="lineNum">     523 </span>            :     { { (unichar_t *) N_(&quot;_Copy&quot;), NULL, COLOR_DEFAULT, COLOR_DEFAULT, NULL, NULL, 0, 0, 0, 0, 0, 0, 1, 1, 0, 'C' }, '\0', ksm_control, NULL, NULL, WarnMenuCopy, MID_Copy },
+<span class="lineNum">     524 </span>            :     { { (unichar_t *) N_(&quot;_Paste&quot;), NULL, COLOR_DEFAULT, COLOR_DEFAULT, NULL, NULL, 1, 0, 0, 0, 0, 0, 1, 1, 0, 'P' }, '\0', ksm_control, NULL, NULL, NULL, 0 },
+<span class="lineNum">     525 </span>            :     { { (unichar_t *) N_(&quot;C_lear&quot;), NULL, COLOR_DEFAULT, COLOR_DEFAULT, NULL, NULL, 0, 0, 0, 0, 0, 0, 1, 1, 0, 'l' }, 0, 0, NULL, NULL, WarnMenuClear, MID_Clear },
+<span class="lineNum">     526 </span>            :     GMENUITEM_EMPTY
+<a name="527"><span class="lineNum">     527 </span>            : };</a>
+<span class="lineNum">     528 </span>            : 
+<span class="lineNum">     529 </span><span class="lineNoCov">          0 : static int warningsv_e_h(GWindow gw, GEvent *event) {</span>
+<span class="lineNum">     530 </span>            :     int i;
+<span class="lineNum">     531 </span>            :     extern GBox _ggadget_Default_Box;
+<span class="lineNum">     532 </span>            : 
+<span class="lineNum">     533 </span><span class="lineNoCov">          0 :     if (( event-&gt;type==et_mouseup || event-&gt;type==et_mousedown ) &amp;&amp;</span>
+<span class="lineNum">     534 </span><span class="lineNoCov">          0 :             (event-&gt;u.mouse.button&gt;=4 &amp;&amp; event-&gt;u.mouse.button&lt;=7) ) {</span>
+<span class="lineNum">     535 </span><span class="lineNoCov">          0 : return( GGadgetDispatchEvent(errdata.vsb,event));</span>
+<span class="lineNum">     536 </span>            :     }
+<span class="lineNum">     537 </span>            : 
+<span class="lineNum">     538 </span><span class="lineNoCov">          0 :     switch ( event-&gt;type ) {</span>
+<span class="lineNum">     539 </span>            :       case et_expose:
+<span class="lineNum">     540 </span>            :           /*GDrawFillRect(gw,&amp;event-&gt;u.expose.rect,GDrawGetDefaultBackground(NULL));*/
+<span class="lineNum">     541 </span><span class="lineNoCov">          0 :           GDrawSetFont(gw,errdata.font);</span>
+<span class="lineNum">     542 </span><span class="lineNoCov">          0 :           for ( i=0; i&lt;errdata.linecnt &amp;&amp; i+errdata.offtop&lt;errdata.cnt; ++i ) {</span>
+<span class="lineNum">     543 </span>            :               int xs, xe;
+<span class="lineNum">     544 </span><span class="lineNoCov">          0 :               int s_l = errdata.start_l, s_c = errdata.start_c, e_l = errdata.end_l, e_c = errdata.end_c;</span>
+<span class="lineNum">     545 </span>            :               GRect r;
+<span class="lineNum">     546 </span><span class="lineNoCov">          0 :               if ( s_l&gt;e_l ) {</span>
+<span class="lineNum">     547 </span><span class="lineNoCov">          0 :                   s_l = e_l; s_c = e_c; e_l = errdata.start_l; e_c = errdata.start_c;</span>
+<span class="lineNum">     548 </span>            :               }
+<span class="lineNum">     549 </span><span class="lineNoCov">          0 :               GDrawLayoutInit(gw,errdata.errlines[i+errdata.offtop],-1,NULL);</span>
+<span class="lineNum">     550 </span><span class="lineNoCov">          0 :               if ( i+errdata.offtop &gt;= s_l &amp;&amp; i+errdata.offtop &lt;= e_l ) {</span>
+<span class="lineNum">     551 </span><span class="lineNoCov">          0 :                   if ( i+errdata.offtop &gt; s_l )</span>
+<span class="lineNum">     552 </span><span class="lineNoCov">          0 :                       xs = 0;</span>
+<span class="lineNum">     553 </span>            :                   else {
+<span class="lineNum">     554 </span>            :                       GRect pos;
+<span class="lineNum">     555 </span><span class="lineNoCov">          0 :                       GDrawLayoutIndexToPos(gw,s_c,&amp;pos);</span>
+<span class="lineNum">     556 </span><span class="lineNoCov">          0 :                       xs = pos.x+3;</span>
+<span class="lineNum">     557 </span>            :                   }
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :                   if ( i+errdata.offtop &lt; e_l )</span>
+<span class="lineNum">     559 </span><span class="lineNoCov">          0 :                       xe = 3000;</span>
+<span class="lineNum">     560 </span>            :                   else {
+<span class="lineNum">     561 </span>            :                       GRect pos;
+<span class="lineNum">     562 </span><span class="lineNoCov">          0 :                       GDrawLayoutIndexToPos(gw,s_c,&amp;pos);</span>
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 :                       xe = pos.x+pos.width+3;</span>
+<span class="lineNum">     564 </span>            :                   }
+<span class="lineNum">     565 </span><span class="lineNoCov">          0 :                   r.x = xs+3; r.width = xe-xs;</span>
+<span class="lineNum">     566 </span><span class="lineNoCov">          0 :                   r.y = i*errdata.fh; r.height = errdata.fh;</span>
+<span class="lineNum">     567 </span><span class="lineNoCov">          0 :                   GDrawFillRect(gw,&amp;r,ACTIVE_BORDER);</span>
+<span class="lineNum">     568 </span>            :               }
+<span class="lineNum">     569 </span><span class="lineNoCov">          0 :               GDrawLayoutDraw(gw,3,i*errdata.fh+errdata.as,MAIN_FOREGROUND);</span>
+<span class="lineNum">     570 </span>            :           }
+<span class="lineNum">     571 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     572 </span>            :       case et_char:
+<span class="lineNum">     573 </span><span class="lineNoCov">          0 : return( ErrChar(event));</span>
+<span class="lineNum">     574 </span>            :       break;
+<span class="lineNum">     575 </span>            :       case et_mousedown:
+<span class="lineNum">     576 </span><span class="lineNoCov">          0 :         if ( event-&gt;u.mouse.button==3 ) {</span>
+<span class="lineNum">     577 </span><span class="lineNoCov">          0 :             warnpopupmenu[1].ti.disabled = errdata.start_l == -1;</span>
+<span class="lineNum">     578 </span><span class="lineNoCov">          0 :             warnpopupmenu[3].ti.disabled = errdata.cnt == 0;</span>
+<span class="lineNum">     579 </span><span class="lineNoCov">          0 :             GMenuCreatePopupMenu(gw,event, warnpopupmenu);</span>
+<span class="lineNum">     580 </span>            :         } else {
+<span class="lineNum">     581 </span><span class="lineNoCov">          0 :             if ( errdata.down )</span>
+<span class="lineNum">     582 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     583 </span><span class="lineNoCov">          0 :             MouseToPos(event,&amp;errdata.start_l,&amp;errdata.start_c);</span>
+<span class="lineNum">     584 </span><span class="lineNoCov">          0 :             errdata.down = true;</span>
+<span class="lineNum">     585 </span>            :         }
+<span class="lineNum">     586 </span>            :       case et_mousemove:
+<span class="lineNum">     587 </span>            :       case et_mouseup:
+<span class="lineNum">     588 </span><span class="lineNoCov">          0 :         if ( !errdata.down )</span>
+<span class="lineNum">     589 </span><span class="lineNoCov">          0 : return( true );</span>
+<span class="lineNum">     590 </span><span class="lineNoCov">          0 :         MouseToPos(event,&amp;errdata.end_l,&amp;errdata.end_c);</span>
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(gw,NULL,false);</span>
+<span class="lineNum">     592 </span><span class="lineNoCov">          0 :         if ( event-&gt;type==et_mouseup ) {</span>
+<span class="lineNum">     593 </span><span class="lineNoCov">          0 :             errdata.down = false;</span>
+<span class="lineNum">     594 </span><span class="lineNoCov">          0 :             if ( errdata.start_l == errdata.end_l &amp;&amp; errdata.start_c == errdata.end_c ) {</span>
+<span class="lineNum">     595 </span><span class="lineNoCov">          0 :                 errdata.start_l = errdata.end_l = -1;</span>
+<span class="lineNum">     596 </span>            :             } else {
+<span class="lineNum">     597 </span><span class="lineNoCov">          0 :                 GDrawGrabSelection(gw,sn_primary);</span>
+<span class="lineNum">     598 </span><span class="lineNoCov">          0 :                 GDrawAddSelectionType(gw,sn_primary,&quot;UTF8_STRING&quot;,&amp;errdata,1,</span>
+<span class="lineNum">     599 </span>            :                         sizeof(char),
+<span class="lineNum">     600 </span>            :                         genutf8data,noop);
+<span class="lineNum">     601 </span><span class="lineNoCov">          0 :                 GDrawAddSelectionType(gw,sn_primary,&quot;STRING&quot;,&amp;errdata,1,</span>
+<span class="lineNum">     602 </span>            :                         sizeof(char),
+<span class="lineNum">     603 </span>            :                         genutf8data,noop);
+<span class="lineNum">     604 </span>            :             }
+<span class="lineNum">     605 </span>            :         }
+<span class="lineNum">     606 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     607 </span>            :       case et_selclear:
+<span class="lineNum">     608 </span><span class="lineNoCov">          0 :         errdata.start_l = errdata.end_l = -1;</span>
+<span class="lineNum">     609 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(gw,NULL,false);</span>
+<span class="lineNum">     610 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     611 </span>            :       case et_timer:
+<span class="lineNum">     612 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     613 </span>            :       case et_focus:
+<span class="lineNum">     614 </span><span class="lineNoCov">          0 :       break;</span>
+<span class="lineNum">     615 </span>            :     }
+<span class="lineNum">     616 </span><span class="lineNoCov">          0 : return( true );</span>
+<a name="617"><span class="lineNum">     617 </span>            : }</a>
+<span class="lineNum">     618 </span>            : 
+<span class="lineNum">     619 </span><span class="lineNoCov">          0 : static void CreateErrorWindow(void) {</span>
+<span class="lineNum">     620 </span>            :     GWindowAttrs wattrs;
+<span class="lineNum">     621 </span>            :     FontRequest rq;
+<span class="lineNum">     622 </span>            :     GRect pos,size;
+<span class="lineNum">     623 </span>            :     int as, ds, ld;
+<span class="lineNum">     624 </span>            :     GWindow gw;
+<span class="lineNum">     625 </span>            :     GGadgetData gd;
+<span class="lineNum">     626 </span>            :     extern int _GScrollBar_Width;
+<span class="lineNum">     627 </span>            : 
+<span class="lineNum">     628 </span><span class="lineNoCov">          0 :     GDrawGetSize(GDrawGetRoot(NULL),&amp;size);</span>
+<span class="lineNum">     629 </span>            : 
+<span class="lineNum">     630 </span><span class="lineNoCov">          0 :     memset(&amp;wattrs,0,sizeof(wattrs));</span>
+<span class="lineNum">     631 </span><span class="lineNoCov">          0 :     wattrs.mask = wam_events|wam_cursor|wam_utf8_wtitle|wam_isdlg|wam_positioned;</span>
+<span class="lineNum">     632 </span><span class="lineNoCov">          0 :     wattrs.event_masks = ~(1&lt;&lt;et_charup);</span>
+<span class="lineNum">     633 </span><span class="lineNoCov">          0 :     wattrs.is_dlg = true;</span>
+<span class="lineNum">     634 </span><span class="lineNoCov">          0 :     wattrs.cursor = ct_pointer;</span>
+<span class="lineNum">     635 </span><span class="lineNoCov">          0 :     wattrs.positioned = true;</span>
+<span class="lineNum">     636 </span><span class="lineNoCov">          0 :     wattrs.utf8_window_title = _(&quot;Warnings&quot;);</span>
+<span class="lineNum">     637 </span><span class="lineNoCov">          0 :     pos.width = GDrawPointsToPixels(NULL,GGadgetScale(400));</span>
+<span class="lineNum">     638 </span><span class="lineNoCov">          0 :     pos.height = GDrawPointsToPixels(NULL,GGadgetScale(100));</span>
+<span class="lineNum">     639 </span><span class="lineNoCov">          0 :     pos.x = size.width - pos.width - 10;</span>
+<span class="lineNum">     640 </span><span class="lineNoCov">          0 :     pos.y = size.height - pos.height - 30;</span>
+<span class="lineNum">     641 </span><span class="lineNoCov">          0 :     errdata.gw = gw = GDrawCreateTopWindow(NULL,&amp;pos,warnings_e_h,&amp;errdata,&amp;wattrs);</span>
+<span class="lineNum">     642 </span>            : 
+<span class="lineNum">     643 </span><span class="lineNoCov">          0 :     memset(&amp;rq,0,sizeof(rq));</span>
+<span class="lineNum">     644 </span><span class="lineNoCov">          0 :     rq.utf8_family_name = SANS_UI_FAMILIES;</span>
+<span class="lineNum">     645 </span><span class="lineNoCov">          0 :     rq.point_size = 10;</span>
+<span class="lineNum">     646 </span><span class="lineNoCov">          0 :     rq.weight = 400;</span>
+<span class="lineNum">     647 </span><span class="lineNoCov">          0 :     errdata.font = GDrawInstanciateFont(NULL,&amp;rq);</span>
+<span class="lineNum">     648 </span><span class="lineNoCov">          0 :     errdata.font = GResourceFindFont(&quot;Warnings.Font&quot;,errdata.font);</span>
+<span class="lineNum">     649 </span><span class="lineNoCov">          0 :     GDrawWindowFontMetrics(errdata.gw,errdata.font,&amp;as,&amp;ds,&amp;ld);</span>
+<span class="lineNum">     650 </span><span class="lineNoCov">          0 :     errdata.as = as;</span>
+<span class="lineNum">     651 </span><span class="lineNoCov">          0 :     errdata.fh = as+ds;</span>
+<span class="lineNum">     652 </span>            : 
+<span class="lineNum">     653 </span><span class="lineNoCov">          0 :     memset(&amp;gd,0,sizeof(gd));</span>
+<span class="lineNum">     654 </span><span class="lineNoCov">          0 :     gd.pos.y = 0; gd.pos.height = pos.height;</span>
+<span class="lineNum">     655 </span><span class="lineNoCov">          0 :     gd.pos.width = GDrawPointsToPixels(gw,_GScrollBar_Width);</span>
+<span class="lineNum">     656 </span><span class="lineNoCov">          0 :     gd.pos.x = pos.width-gd.pos.width;</span>
+<span class="lineNum">     657 </span><span class="lineNoCov">          0 :     gd.flags = gg_visible|gg_enabled|gg_pos_in_pixels|gg_sb_vert;</span>
+<span class="lineNum">     658 </span><span class="lineNoCov">          0 :     errdata.vsb = GScrollBarCreate(gw,&amp;gd,&amp;errdata);</span>
+<span class="lineNum">     659 </span>            : 
+<span class="lineNum">     660 </span><span class="lineNoCov">          0 :     pos.width -= gd.pos.width;</span>
+<span class="lineNum">     661 </span><span class="lineNoCov">          0 :     pos.x = pos.y = 0;</span>
+<span class="lineNum">     662 </span><span class="lineNoCov">          0 :     wattrs.mask = wam_events|wam_cursor;</span>
+<span class="lineNum">     663 </span><span class="lineNoCov">          0 :     errdata.v = GWidgetCreateSubWindow(gw,&amp;pos,warningsv_e_h,&amp;errdata,&amp;wattrs);</span>
+<span class="lineNum">     664 </span><span class="lineNoCov">          0 :     GDrawSetVisible(errdata.v,true);</span>
+<span class="lineNum">     665 </span>            : 
+<span class="lineNum">     666 </span><span class="lineNoCov">          0 :     errdata.linecnt = pos.height/errdata.fh;</span>
+<span class="lineNum">     667 </span><span class="lineNoCov">          0 :     errdata.start_l = errdata.end_l = -1;</span>
+<a name="668"><span class="lineNum">     668 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     669 </span>            : 
+<span class="lineNum">     670 </span><span class="lineNoCov">          0 : static void AppendToErrorWindow(char *buffer) {</span>
+<span class="lineNum">     671 </span>            :     int i,linecnt;
+<span class="lineNum">     672 </span>            :     char *pt,*end;
+<span class="lineNum">     673 </span>            : 
+<span class="lineNum">     674 </span><span class="lineNoCov">          0 :     if ( buffer[strlen(buffer)-1]=='\n' ) buffer[strlen(buffer)-1] = '\0';</span>
+<span class="lineNum">     675 </span>            : 
+<span class="lineNum">     676 </span><span class="lineNoCov">          0 :     for ( linecnt=1, pt=buffer; (pt=strchr(pt,'\n'))!=NULL; ++linecnt )</span>
+<span class="lineNum">     677 </span><span class="lineNoCov">          0 :         ++pt;</span>
+<span class="lineNum">     678 </span><span class="lineNoCov">          0 :     if ( errdata.cnt + linecnt &gt; MAX_ERR_LINES ) {</span>
+<span class="lineNum">     679 </span><span class="lineNoCov">          0 :         int off = errdata.cnt + linecnt - MAX_ERR_LINES;</span>
+<span class="lineNum">     680 </span><span class="lineNoCov">          0 :         for ( i=0; i&lt;off; ++i )</span>
+<span class="lineNum">     681 </span><span class="lineNoCov">          0 :             free(errdata.errlines[i]);</span>
+<span class="lineNum">     682 </span><span class="lineNoCov">          0 :         for ( /*i=off*/; i&lt;errdata.cnt; ++i )</span>
+<span class="lineNum">     683 </span><span class="lineNoCov">          0 :             errdata.errlines[i-off] = errdata.errlines[i];</span>
+<span class="lineNum">     684 </span><span class="lineNoCov">          0 :         for ( ; i&lt;MAX_ERR_LINES+off ; ++i )</span>
+<span class="lineNum">     685 </span><span class="lineNoCov">          0 :             errdata.errlines[i-off] = NULL;</span>
+<span class="lineNum">     686 </span><span class="lineNoCov">          0 :         errdata.cnt -= off;</span>
+<span class="lineNum">     687 </span><span class="lineNoCov">          0 :         if (( errdata.start_l -= off)&lt; 0 ) errdata.start_l = errdata.start_c = 0;</span>
+<span class="lineNum">     688 </span><span class="lineNoCov">          0 :         if (( errdata.end_l -= off)&lt; 0 ) errdata.end_l = errdata.start_l = -1;</span>
+<span class="lineNum">     689 </span>            :     }
+<span class="lineNum">     690 </span><span class="lineNoCov">          0 :     for ( i=errdata.cnt, pt=buffer; i&lt;MAX_ERR_LINES; ++i ) {</span>
+<span class="lineNum">     691 </span><span class="lineNoCov">          0 :         end = strchr(pt,'\n');</span>
+<span class="lineNum">     692 </span><span class="lineNoCov">          0 :         if ( end==NULL ) end = pt+strlen(pt);</span>
+<span class="lineNum">     693 </span><span class="lineNoCov">          0 :         errdata.errlines[i] = copyn(pt,end-pt);</span>
+<span class="lineNum">     694 </span><span class="lineNoCov">          0 :         pt = end;</span>
+<span class="lineNum">     695 </span><span class="lineNoCov">          0 :         if ( *pt=='\0' ) {</span>
+<span class="lineNum">     696 </span><span class="lineNoCov">          0 :             ++i;</span>
+<span class="lineNum">     697 </span><span class="lineNoCov">          0 :     break;</span>
+<span class="lineNum">     698 </span>            :         }
+<span class="lineNum">     699 </span><span class="lineNoCov">          0 :         ++pt;</span>
+<span class="lineNum">     700 </span>            :     }
+<span class="lineNum">     701 </span><span class="lineNoCov">          0 :     errdata.cnt = i;</span>
+<span class="lineNum">     702 </span>            : 
+<span class="lineNum">     703 </span><span class="lineNoCov">          0 :     errdata.offtop = errdata.cnt - errdata.linecnt;</span>
+<span class="lineNum">     704 </span><span class="lineNoCov">          0 :     if ( errdata.offtop&lt;0 ) errdata.offtop = 0;</span>
+<span class="lineNum">     705 </span><span class="lineNoCov">          0 :     GScrollBarSetBounds(errdata.vsb,0,errdata.cnt,errdata.linecnt);</span>
+<span class="lineNum">     706 </span><span class="lineNoCov">          0 :     GScrollBarSetPos(errdata.vsb,errdata.offtop);</span>
+<a name="707"><span class="lineNum">     707 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     708 </span>            : 
+<span class="lineNum">     709 </span><span class="lineNoCov">          0 : int ErrorWindowExists(void) {</span>
+<span class="lineNum">     710 </span><span class="lineNoCov">          0 : return( errdata.gw!=NULL );</span>
+<a name="711"><span class="lineNum">     711 </span>            : }</a>
+<span class="lineNum">     712 </span>            : 
+<span class="lineNum">     713 </span><span class="lineNoCov">          0 : void ShowErrorWindow(void) {</span>
+<span class="lineNum">     714 </span><span class="lineNoCov">          0 :     if ( errdata.gw==NULL )</span>
+<span class="lineNum">     715 </span><span class="lineNoCov">          0 : return;</span>
+<span class="lineNum">     716 </span><span class="lineNoCov">          0 :     GDrawSetVisible(errdata.gw,true);</span>
+<span class="lineNum">     717 </span><span class="lineNoCov">          0 :     GDrawRaise(errdata.gw);</span>
+<span class="lineNum">     718 </span><span class="lineNoCov">          0 :     if ( errdata.showing )</span>
+<span class="lineNum">     719 </span><span class="lineNoCov">          0 :         GDrawRequestExpose(errdata.v,NULL,false);</span>
+<span class="lineNum">     720 </span><span class="lineNoCov">          0 :     errdata.showing = true;</span>
+<a name="721"><span class="lineNum">     721 </span>            : }</a>
+<span class="lineNum">     722 </span>            : 
+<span class="lineNum">     723 </span><span class="lineCov">        201 : static void _LogError(const char *format,va_list ap) {</span>
+<span class="lineNum">     724 </span>            :     char buffer[2500], nbuffer[2600], *str, *pt, *npt;
+<span class="lineNum">     725 </span><span class="lineCov">        201 :     vsnprintf(buffer,sizeof(buffer),format,ap);</span>
+<span class="lineNum">     726 </span><span class="lineCov">      17831 :     for ( pt=buffer, npt=nbuffer; *pt!='\0' &amp;&amp; npt&lt;nbuffer+sizeof(nbuffer)-2; ) {</span>
+<span class="lineNum">     727 </span><span class="lineCov">      17429 :         *npt++ = *pt++;</span>
+<span class="lineNum">     728 </span><span class="lineCov">      17429 :         if ( pt[-1]=='\n' &amp;&amp; *pt!='\0' ) {</span>
+<span class="lineNum">     729 </span>            :             /* Force an indent of at least two spaces on secondary lines of a warning */
+<span class="lineNum">     730 </span><span class="lineCov">         50 :             if ( npt&lt;nbuffer+sizeof(nbuffer)-2 ) {</span>
+<span class="lineNum">     731 </span><span class="lineCov">         50 :                 *npt++ = ' ';</span>
+<span class="lineNum">     732 </span><span class="lineCov">         50 :                 if ( *pt==' ' ) ++pt;</span>
+<span class="lineNum">     733 </span>            :             }
+<span class="lineNum">     734 </span><span class="lineCov">         50 :             if ( npt&lt;nbuffer+sizeof(nbuffer)-2 ) {</span>
+<span class="lineNum">     735 </span><span class="lineCov">         50 :                 *npt++ = ' ';</span>
+<span class="lineNum">     736 </span><span class="lineCov">         50 :                 if ( *pt==' ' ) ++pt;</span>
+<span class="lineNum">     737 </span>            :             }
+<span class="lineNum">     738 </span>            :         }
+<span class="lineNum">     739 </span>            :     }
+<span class="lineNum">     740 </span><span class="lineCov">        201 :     *npt='\0';</span>
+<span class="lineNum">     741 </span>            : 
+<span class="lineNum">     742 </span><span class="lineCov">        201 :     if ( no_windowing_ui || screen_display==NULL ) {</span>
+<span class="lineNum">     743 </span><span class="lineCov">        201 :         str = utf82def_copy(nbuffer);</span>
+<span class="lineNum">     744 </span><span class="lineCov">        201 :         fprintf(stderr,&quot;%s&quot;,str);</span>
+<span class="lineNum">     745 </span><span class="lineCov">        201 :         if ( str[strlen(str)-1]!='\n' )</span>
+<span class="lineNum">     746 </span><span class="lineCov">        154 :             putc('\n',stderr);</span>
+<span class="lineNum">     747 </span><span class="lineCov">        201 :         free(str);</span>
+<span class="lineNum">     748 </span>            :     } else {
+<span class="lineNum">     749 </span><span class="lineNoCov">          0 :         if ( !ErrorWindowExists())</span>
+<span class="lineNum">     750 </span><span class="lineNoCov">          0 :             CreateErrorWindow();</span>
+<span class="lineNum">     751 </span><span class="lineNoCov">          0 :         AppendToErrorWindow(nbuffer);</span>
+<span class="lineNum">     752 </span><span class="lineNoCov">          0 :         ShowErrorWindow();</span>
+<span class="lineNum">     753 </span>            :     }
+<a name="754"><span class="lineNum">     754 </span><span class="lineCov">        201 : }</span></a>
+<span class="lineNum">     755 </span>            : 
+<span class="lineNum">     756 </span><span class="lineCov">        201 : static void UI_LogError(const char *format,...) {</span>
+<span class="lineNum">     757 </span>            :     va_list ap;
+<span class="lineNum">     758 </span>            : 
+<span class="lineNum">     759 </span><span class="lineCov">        201 :     va_start(ap,format);</span>
+<span class="lineNum">     760 </span><span class="lineCov">        201 :     _LogError(format,ap);</span>
+<span class="lineNum">     761 </span><span class="lineCov">        201 :     va_end(ap);</span>
+<a name="762"><span class="lineNum">     762 </span><span class="lineCov">        201 : }</span></a>
+<span class="lineNum">     763 </span>            : 
+<span class="lineNum">     764 </span><span class="lineNoCov">          0 : static void UI_post_notice(const char *title,const char *statement,...) {</span>
+<span class="lineNum">     765 </span>            :     va_list ap;
+<span class="lineNum">     766 </span><span class="lineNoCov">          0 :     va_start(ap,statement);</span>
+<span class="lineNum">     767 </span><span class="lineNoCov">          0 :     if ( no_windowing_ui ) {</span>
+<span class="lineNum">     768 </span><span class="lineNoCov">          0 :         _LogError(statement,ap);</span>
+<span class="lineNum">     769 </span>            :     } else {
+<span class="lineNum">     770 </span><span class="lineNoCov">          0 :         if ( GWidgetPostNoticeActive8(title))</span>
+<span class="lineNum">     771 </span><span class="lineNoCov">          0 :             _LogError(statement,ap);</span>
+<span class="lineNum">     772 </span>            :         else
+<span class="lineNum">     773 </span><span class="lineNoCov">          0 :             _GWidgetPostNotice8(title,statement,ap,40);</span>
+<span class="lineNum">     774 </span>            :     }
+<span class="lineNum">     775 </span><span class="lineNoCov">          0 :     va_end(ap);</span>
+<a name="776"><span class="lineNum">     776 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     777 </span>            : 
+<span class="lineNum">     778 </span><span class="lineNoCov">          0 : static char *UI_open_file(const char *title, const char *defaultfile,</span>
+<span class="lineNum">     779 </span>            :         const char *initial_filter) {
+<span class="lineNum">     780 </span><span class="lineNoCov">          0 : return( gwwv_open_filename(title,defaultfile,initial_filter,NULL) );</span>
+<a name="781"><span class="lineNum">     781 </span>            : }</a>
+<span class="lineNum">     782 </span>            : 
+<span class="lineNum">     783 </span><span class="lineNoCov">          0 : static char *UI_saveas_file(const char *title, const char *defaultfile,</span>
+<span class="lineNum">     784 </span>            :         const char *initial_filter) {
+<span class="lineNum">     785 </span><span class="lineNoCov">          0 : return( gwwv_save_filename(title,defaultfile,initial_filter) );</span>
+<a name="786"><span class="lineNum">     786 </span>            : }</a>
+<span class="lineNum">     787 </span>            : 
+<span class="lineNum">     788 </span><span class="lineNoCov">          0 : static void tinysleep(int microsecs) {</span>
+<span class="lineNum">     789 </span>            : #if !defined(__MINGW32__)
+<span class="lineNum">     790 </span>            :     fd_set none;
+<span class="lineNum">     791 </span>            :     struct timeval timeout;
+<span class="lineNum">     792 </span>            : 
+<span class="lineNum">     793 </span><span class="lineNoCov">          0 :     FD_ZERO(&amp;none);</span>
+<span class="lineNum">     794 </span><span class="lineNoCov">          0 :     memset(&amp;timeout,0,sizeof(timeout));</span>
+<span class="lineNum">     795 </span><span class="lineNoCov">          0 :     timeout.tv_usec = microsecs;</span>
+<span class="lineNum">     796 </span>            : 
+<span class="lineNum">     797 </span><span class="lineNoCov">          0 :     select(1,&amp;none,&amp;none,&amp;none,&amp;timeout);</span>
+<span class="lineNum">     798 </span>            : #endif
+<a name="799"><span class="lineNum">     799 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     800 </span>            : 
+<span class="lineNum">     801 </span><span class="lineNoCov">          0 : static void allow_events(void) {</span>
+<span class="lineNum">     802 </span><span class="lineNoCov">          0 :     GDrawSync(NULL);</span>
+<span class="lineNum">     803 </span><span class="lineNoCov">          0 :     tinysleep(100);</span>
+<span class="lineNum">     804 </span><span class="lineNoCov">          0 :     GDrawProcessPendingEvents(NULL);</span>
+<span class="lineNum">     805 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     806 </span>            : 
+<span class="lineNum">     807 </span>            : 
+<span class="lineNum">     808 </span>            : struct ui_interface gdraw_ui_interface = {
+<span class="lineNum">     809 </span>            :     UI_IError,
+<span class="lineNum">     810 </span>            :     gwwv_post_error,
+<span class="lineNum">     811 </span>            :     UI_LogError,
+<span class="lineNum">     812 </span>            :     UI_post_notice,
+<span class="lineNum">     813 </span>            :     gwwv_ask_centered,
+<span class="lineNum">     814 </span>            :     gwwv_choose,
+<span class="lineNum">     815 </span>            :     gwwv_choose_multiple,
+<span class="lineNum">     816 </span>            :     gwwv_ask_string,
+<span class="lineNum">     817 </span>            :     gwwv_ask_password,
+<span class="lineNum">     818 </span>            :     UI_open_file,
+<span class="lineNum">     819 </span>            :     UI_saveas_file,
+<span class="lineNum">     820 </span>            :     gwwv_progress_start_indicator,
+<span class="lineNum">     821 </span>            :     gwwv_progress_end_indicator,
+<span class="lineNum">     822 </span>            :     gwwv_progress_show,
+<span class="lineNum">     823 </span>            :     gwwv_progress_enable_stop,
+<span class="lineNum">     824 </span>            :     gwwv_progress_next,
+<span class="lineNum">     825 </span>            :     gwwv_progress_next_stage,
+<span class="lineNum">     826 </span>            :     gwwv_progress_increment,
+<span class="lineNum">     827 </span>            :     gwwv_progress_change_line1,
+<span class="lineNum">     828 </span>            :     gwwv_progress_change_line2,
+<span class="lineNum">     829 </span>            :     gwwv_progress_pause_timer,
+<span class="lineNum">     830 </span>            :     gwwv_progress_resume_timer,
+<span class="lineNum">     831 </span>            :     gwwv_progress_change_stages,
+<span class="lineNum">     832 </span>            :     gwwv_progress_change_total,
+<span class="lineNum">     833 </span>            :     gwwv_progress_reset,
+<span class="lineNum">     834 </span>            : 
+<span class="lineNum">     835 </span>            :     allow_events,
+<span class="lineNum">     836 </span>            : 
+<span class="lineNum">     837 </span>            :     UI_TTFNameIds,
+<span class="lineNum">     838 </span>            :     UI_MSLangString,
+<span class="lineNum">     839 </span>            :     (int (*)(void)) Ps_StrokeFlagsDlg
+<span class="lineNum">     840 </span>            : };
+<span class="lineNum">     841 </span>            : 
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
