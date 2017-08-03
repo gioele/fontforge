@@ -911,38 +911,6 @@ typedef struct undoes {
     struct splinefont *copied_from;
 } Undoes;
 
-enum sfundotype
-{
-    sfut_none=0,
-    sfut_lookups,
-    sfut_lookups_kerns,
-    sfut_fontinfo,
-    sfut_noop
-};
-
-/**
- * A spline font level undo stack. undoes are doubly linked using the
- * 'ln' member and carry some user presentable description of what the
- * undo relates to in 'msg'.
- *
- * The sfdchunk is a pointer to an SFD fragment which will apply the
- * undo to the current state. For example, it might contain
- * information about the old value of kerning pairs which can be used
- * to restore state to how it was. Note that the sfdchunk might only
- * be partial, containing only enough information to restore the state
- * which changed when the undo was created.
- */
-typedef struct sfundoes {
-    struct dlistnode ln;
-    char* msg;
-    enum sfundotype type;
-    union {
-	int dummy;
-    } u;
-    char* sfdchunk;
-} SFUndoes;
-
-
 typedef struct enc {
     char *enc_name;
     int char_cnt;	/* Size of the next two arrays */
