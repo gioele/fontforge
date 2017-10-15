@@ -43,6 +43,7 @@
 #include "splineutil.h"
 #include "splineutil2.h"
 #include "tottf.h"
+#include <gutils.h>
 #include <ustring.h>
 #include <chardata.h>
 #include <utype.h>
@@ -3263,8 +3264,8 @@ static int GFI_AddOFL(GGadget *g, GEvent *e) {
 	time_t now;
 	struct tm *tm;
 
-	time(&now);
-	tm = localtime(&now);
+	now = GetTime();
+	tm = gmtime(&now);
 
 	tns = GMatrixEditGet(tng, &rows); newtns = NULL;
 	for ( k=0; k<2; ++k ) {
